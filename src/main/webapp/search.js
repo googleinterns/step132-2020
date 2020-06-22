@@ -16,7 +16,7 @@ function doSearch() {
 
     var topic = document.getElementById("topic-search-box").value;
 
-    fetch("/search?topic="+topic).then(response => response.json()).then((results) => {
+    fetch("/search?topic="+topic).then(response => response.text()).then((results) => {
        console.log(results);
     });
 
