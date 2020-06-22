@@ -18,6 +18,7 @@ See the License for the specific language governing permissions and
     <meta charset="UTF-8">
     <title>Registration Page</title>
     <link rel="stylesheet" href="registration.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
       <form action="/registration" method="POST">
@@ -28,22 +29,22 @@ See the License for the specific language governing permissions and
             
             <div id="general-info" style="display:none">
                 <label for="name">Name:</label>
-                <input type="text" name="name"><br>
+                <input type="text" name="name" required><br>
                 <label for="email">Email:</label>
-                <input type="text" name="email"><br><br>
-            </div>
+                <input type="text" name="email" required><br><br>
             
-            <div id="tutor-info" style="display:none">
-                <p>What topic(s) would you like to tutor in?</p>
-                <input type="checkbox" id="math" name="math" value="Math">
-                <label for="math"> Math</label><br>
-                <input type="checkbox" id="english" name="english" value="English">
-                <label for="english"> English</label><br>
-                <input type="checkbox" id="other-subject" name="other" value="Other">
-                <label for="other-subject"> Other</label><br><br>
-            </div>
+                <div id="tutor-info" style="display:none">
+                    <p>What topic(s) would you like to tutor in?</p>
+                    <input type="checkbox" id="math" name="math" value="Math">
+                    <label for="math"> Math</label><br>
+                    <input type="checkbox" id="english" name="english" value="English">
+                    <label for="english"> English</label><br>
+                    <input type="checkbox" id="other-subject" name="other" value="Other">
+                    <label for="other-subject"> Other</label><br><br>
+                </div>
 
-            <input type="submit"/>
+                <input type="submit"/>
+            </div>
       </form>
 
       <script src="registration.js"></script>
