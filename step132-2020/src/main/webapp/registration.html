@@ -1,0 +1,52 @@
+ <!-- Copyright 2019 Google LLC
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+     
+     https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+ limitations under the License. -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="registration.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+      <form action="/registration" method="POST">
+            
+            <p>Would you like to sign up as a student or a tutor?</p>
+            <input onclick="displayRegistrationInfo()" type="radio" name="role" id="student" value="student"> Student<br>
+            <input onclick="displayRegistrationInfo()" type="radio" name="role" id="tutor" value="tutor"> Tutor<br><br>
+            
+            <div id="general-info" style="display:none">
+                <label for="name">Name:</label>
+                <input type="text" name="name" required><br>
+                <label for="email">Email:</label>
+                <input type="text" name="email" required><br><br>
+            
+                <div id="tutor-info" style="display:none">
+                    <p>What topic(s) would you like to tutor in?</p>
+                    <input type="checkbox" id="math" name="math" value="Math">
+                    <label for="math"> Math</label><br>
+                    <input type="checkbox" id="english" name="english" value="English">
+                    <label for="english"> English</label><br>
+                    <input type="checkbox" id="other-subject" name="other" value="Other">
+                    <label for="other-subject"> Other</label><br><br>
+                </div>
+
+                <input type="submit"/>
+            </div>
+      </form>
+
+      <script src="registration.js"></script>
+  </body>
+</html>
