@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-/** Servlet that returns comments from and adds comments to Datastore. */
+/** Servlet that returns search results (tutors and books) for a topic. */
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
 
