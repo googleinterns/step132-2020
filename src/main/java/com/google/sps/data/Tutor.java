@@ -12,14 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package com.google.sps.data;
+
 public final class Tutor {
     
     private String name;
     private String email;
     private String[] skills;
-    private String[] availability;
+    private TimeRange[] availability;
 
-    public Tutor(String name, String email, String[] skills, String[] availability) {
+    public Tutor(String name, String email, String[] skills, TimeRange[] availability) {
         this.name = name;
         this.email = email;
         this.skills = skills;
@@ -38,7 +40,7 @@ public final class Tutor {
         return this.skills;
     }
 
-    public String[] getAvailability() {
+    public TimeRange[] getAvailability() {
         return this.availability;
     }
 
