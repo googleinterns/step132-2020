@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** Gets the topic the user searched for from the search box and redirects the page to the search-results page with a url that contains a query parameter for the topic. 
+    The user may already be on the search-results page. In that case, the page will reload with a different value for the topic query parameter. */
 function redirectToResults() {
-    console.log("Sdfsd");
+
     var topic = document.getElementById("topic-search-box").value;
 
     var url = "search-results.html?topic=" + encodeURIComponent(topic);
@@ -23,6 +25,7 @@ function redirectToResults() {
 
 }
 
+/** Fetches the search results for the topic that the user searched for. */
 function getSearchResults() {
     var topic;
 
@@ -35,7 +38,6 @@ function getSearchResults() {
     if(topic != null) {
         fetch("/search?topic="+topic).then(response => response.text()).then((results) => {
             var resultContainer = document.getElementById("result-container");
-            console.log(results);
             resultContainer.innerText = results;
         });
     }
