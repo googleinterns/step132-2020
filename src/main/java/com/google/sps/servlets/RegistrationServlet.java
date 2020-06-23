@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet that handles user's registration info */
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
 
@@ -31,8 +32,8 @@ public class RegistrationServlet extends HttpServlet {
     String role = request.getParameter("role");
     String name = request.getParameter("name");
     String email = request.getParameter("email");
+    // Make list of selected topics, remove unchecked topics
     List<String> topics = Arrays.asList(request.getParameter("math"), request.getParameter("english"), request.getParameter("other"));
-
     topics = topics
             .stream()
             .filter(t -> t!= null)
