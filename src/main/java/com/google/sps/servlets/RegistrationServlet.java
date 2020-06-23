@@ -40,12 +40,11 @@ public class RegistrationServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String role = getParameter(request, "role").orElse(null);
-    
     String firstName = getParameter(request, "first-name").orElse(null);
     String lastName = getParameter(request, "last-name").orElse(null);
     String fullName = firstName + " " + lastName;
-    
     String email = userService.getCurrentUser().getEmail();
+    String userId = userService.getCurrentUser().getUserId();
     
     // Make list of selected topics, remove unchecked topics
     List<String> topics = new ArrayList<String>();
@@ -62,6 +61,7 @@ public class RegistrationServlet extends HttpServlet {
     userEntity.setProperty("role", role);
     userEntity.setProperty("name", fullName);
     userEntity.setProperty("email", email);
+    userEntity.setProperty("userId", userId);
     userEntity.setProperty("topics", topics);
 
     datastore.put(userEntity);
