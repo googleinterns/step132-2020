@@ -12,12 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function doSearch() {
-
+function redirectToResults() {
+    console.log("Sdfsd");
     var topic = document.getElementById("topic-search-box").value;
 
-    fetch("/search?topic="+topic).then(response => response.text()).then((results) => {
-       console.log(results);
-    });
+    var url = "search-results.html?topic=" + encodeURIComponent(topic);
+    window.location = url;
 
+    return false;
+
+}
+
+function getSearchResults() {
+    var topic;
+
+    if (window.location.search.split('?').length > 0) {
+        var topicParam = window.location.search.split('?')[1];
+        topic = decodeURIComponent(topicParam.split('=')[1]);
+
+    }
+
+    if(topic != null) {
+        fetch("/search?topic="+topic).then(response => response.text()).then((results) => {
+            var resultContainer = document.getElementById("result-container");
+            console.log(results);
+            resultContainer.innerText = results;
+        });
+    }
 }
