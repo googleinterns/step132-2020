@@ -22,10 +22,10 @@ See the License for the specific language governing permissions and
   </head>
   <body>
     <div id="content">
-        <div id="search-form">
+        <form id="search-form-homepage" onsubmit="return redirectToResults();">
             <input type="text" id="topic-search-box" placeholder="What do you need help with today?">
-            <button onclick="doSearch()">Go</button>
-        </div>
+            <button type="submit">Go</button>
+        </form>
     </div>
     <script src="search.js"></script>
   </body>

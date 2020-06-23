@@ -17,16 +17,17 @@ See the License for the specific language governing permissions and
   <head>
     <meta charset="UTF-8">
     <title>Results</title>
-    <link rel="stylesheet" type="text/css" href="homepage.css">
+    <link rel="stylesheet" type="text/css" href="search-results.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
-  <body>
+  <body onload="getSearchResults()">
     <div id="content">
-        <div id="search-form">
+        <form id="search-form" onsubmit="return redirectToResults();">
             <input type="text" id="topic-search-box" placeholder="What do you need help with today?">
-            <button onclick="doSearch()">Go</button>
-        </div>
+            <button type="submit">Go</button>
+        </form>
     </div>
+    <div id="result-container"></div>
     <script src="search.js"></script>
   </body>
 </html>
