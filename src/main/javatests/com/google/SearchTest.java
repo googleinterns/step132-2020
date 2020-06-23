@@ -23,4 +23,4 @@ import org.junit.runners.JUnit4;
 public final class SearchTest {
 
 
-} 
+}
