@@ -19,18 +19,20 @@ function fetchLoginStatus() {
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
         console.log(loginStatus);
 
-        // If logged in, display registration form and logout URL
+        // If logged in, display logout URL
         if (loginStatus.isLoggedIn) {
+            // If not registered, display registration form
+            if (loginStatus.needsToRegister) {
+                var registrationForm = document.getElementById('registration-form');
+                registrationForm.style.display = 'block';
+            }
+
             var logout = document.getElementById('logout-form');
             logout.style.display = 'block';
-            var registrationForm = document.getElementById('registration-form');
-            registrationForm.style.display = 'block';
-
             document.getElementById('logout-url').href = loginStatus.url;
-        } else {   // Else display a login link
+        } else {  // Logged out, display login URL
             var login = document.getElementById('login-form');
             login.style.display = 'block';
-
             document.getElementById('login-url').href = loginStatus.url;
         }
     });
