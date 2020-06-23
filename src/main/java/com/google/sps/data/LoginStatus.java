@@ -18,10 +18,12 @@ package com.google.sps.servlets;
 public class LoginStatus {
     
     private boolean isLoggedIn;
+    private boolean needsToRegister;
     private String url;
 
-    public LoginStatus(boolean isLoggedIn, String url) {
+    public LoginStatus(boolean isLoggedIn, boolean needsToRegister, String url) {
         this.isLoggedIn = isLoggedIn;
+        this.needsToRegister = needsToRegister;
         this.url = url;
     }
 }
