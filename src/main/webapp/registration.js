@@ -13,6 +13,30 @@
 // limitations under the License.
 
 /**
+ * Checks if user is logged in, if not display registration page
+ */
+function fetchLoginStatus() {
+    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        console.log(loginStatus);
+
+        // If logged in, display registration form and logout URL
+        if (loginStatus.isLoggedIn) {
+            var logout = document.getElementById('logout-form');
+            logout.style.display = 'block';
+            var registrationForm = document.getElementById('registration-form');
+            registrationForm.style.display = 'block';
+
+            document.getElementById('logout-url').href = loginStatus.url;
+        } else {   // Else display a login link
+            var login = document.getElementById('login-form');
+            login.style.display = 'block';
+
+            document.getElementById('login-url').href = loginStatus.url;
+        }
+    });
+}
+
+/**
  * Displays registration information on the page
  */
 function displayRegistrationInfo() {
