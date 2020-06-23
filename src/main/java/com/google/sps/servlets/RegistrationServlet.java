@@ -14,9 +14,16 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,22 +34,50 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
 
+  private UserService userService = UserServiceFactory.getUserService();
+  private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String role = request.getParameter("role");
-    String name = request.getParameter("name");
-    String email = request.getParameter("email");
+    String role = getParameter(request, "role").orElse(null);
+    
+    String firstName = getParameter(request, "first-name").orElse(null);
+    String lastName = getParameter(request, "last-name").orElse(null);
+    String fullName = firstName + " " + lastName;
+    
+    String email = userService.getCurrentUser().getEmail();
+    
     // Make list of selected topics, remove unchecked topics
-    List<String> topics = Arrays.asList(request.getParameter("math"), request.getParameter("english"), request.getParameter("other"));
+    List<String> topics = new ArrayList<String>();
+    topics.add(getParameter(request, "math").orElse(null));
+    topics.add(getParameter(request, "english").orElse(null));
+    topics.add(getParameter(request, "other").orElse(null));
     topics = topics
             .stream()
             .filter(t -> t!= null)
             .collect(Collectors.toList());
 
-    response.setContentType("text/html;");
-    response.getWriter().println("<p>Student or tutor? " + role + "</p>");
-    response.getWriter().println("<p>Name: " + name + "</p>");
-    response.getWriter().println("<p>Email: " + email + "</p>");
-    response.getWriter().println("<p>Subject(s): " + topics + "</p>");
+    // Make entity for user with all registration info
+    Entity userEntity = new Entity("User");
+    userEntity.setProperty("role", role);
+    userEntity.setProperty("name", fullName);
+    userEntity.setProperty("email", email);
+    userEntity.setProperty("topics", topics);
+
+    datastore.put(userEntity);
+
+    response.sendRedirect("/scheduling.html");
   }
+
+  /**
+   * @return the Optional of the request parameter
+   */
+   private Optional<String> getParameter(HttpServletRequest request, String name) {
+       String value = request.getParameter(name);
+       //return empty Optional if string is null or empty
+       if (value == null || value.isEmpty()) {
+           return Optional.empty();
+       }
+       return Optional.ofNullable(value);
+   }
 }
