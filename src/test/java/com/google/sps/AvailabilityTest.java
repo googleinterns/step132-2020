@@ -14,13 +14,39 @@
 
 package com.google.sps;
 
+import java.util.List;
+import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import com.google.sps.data.TimeRange;
+import com.google.gson.Gson;
 
 @RunWith(JUnit4.class)
 public final class SearchTest {
 
+    public final class AvailabilityTest {
+    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
+    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
+    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
+    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
 
+    @Test
+    public void testConvertToJsonUsingGson() {
+        TimeRange[] availability = new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_0900AM), TimeRange.fromStartToEnd(TIME_1100AM, TIME_1200AM)};
+
+        String actual = convertToJsonUsingGson(Arrays.asList(availability));
+        String expected = "[{\"start\":480,\"duration\":60,\"end\":540},{\"start\":660,\"duration\":60,\"end\":720}]";
+
+        Assert.assertEquals(actual, expected);
+    }
+
+    // Converts the time slot array into a JSON string using the Gson library.
+    private String convertToJsonUsingGson(List<TimeRange> timeslots) {
+        Gson gson = new Gson();
+        String json = gson.toJson(timeslots);
+        return json;
+    }
 }
