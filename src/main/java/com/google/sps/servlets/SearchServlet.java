@@ -23,6 +23,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.lang.String;
+import com.google.gson.Gson;
+import java.util.Optional;
 
 
 /** Servlet that returns search results (tutors and books) for a topic. */
@@ -46,14 +49,59 @@ public class SearchServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        response.setContentType("plain/text");
-        response.getWriter().println("Hello world");
+        String topic =  getParameter(request, "topic").orElse("");
+
+        ArrayList<Tutor> results = getTutorsForTopic(topic);
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json;");
+        response.getWriter().println(convertListToJson(results));
        
     }
 
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /**
+    * This method converts a list of tutors to a JSON string.
+    * @return String, the list of tutors as a JSON string
+    */
+    private String convertListToJson(ArrayList<Tutor> tutors) {
+        ArrayList<String> jsonTutors = new ArrayList<String>();
+        Gson gson = new Gson();
+        //convert all Tutor objects to JSON
+        for(Tutor t : tutors) {
+            jsonTutors.add(gson.toJson(t));
+        }
 
+        //convert list to JSON
+        return gson.toJson(jsonTutors);
+    }
+
+    /**
+    * Gets a list of tutors that have the specified topic as a skill.
+    * @return ArrayList<Tutor>
+    */
+    private ArrayList<Tutor> getTutorsForTopic(String topic) {
+        ArrayList<Tutor> results = new ArrayList<Tutor>();
+
+        for(Tutor tutor : tutors) {
+            String[] skills = tutor.getSkills();
+
+            for(String skill : skills) {
+                if(skill.toLowerCase().equals(topic.toLowerCase())) {
+                    results.add(tutor);
+                    break;
+                }
+            }
+        }
+
+        return results;
+    }
+
+    /**
+    * @return an Optional of the request parameter
+    */
+    private Optional<String> getParameter(HttpServletRequest request, String name) {
+        String value = request.getParameter(name);
+        return Optional.ofNullable(value);
     }
 
 }
