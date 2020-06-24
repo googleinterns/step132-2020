@@ -15,24 +15,29 @@
 /** Gets the topic the user searched for from the search box and redirects the page to the search-results page with a url that contains a query parameter for the topic. 
     The user may already be on the search-results page. In that case, the page will reload with a different value for the topic query parameter. */
 function redirectToResults() {
+    return redirectToResultsHelper(document, window);
+}
 
+function redirectToResultsHelper(document, window) {
     var topic = document.getElementById("topic-search-box").value;
 
     var url = "search-results.html?topic=" + encodeURIComponent(topic);
-    window.location = url;
+    window.location.href = url;
 
     return false;
-
 }
 
 /** Fetches the search results for the topic that the user searched for. */
 function getSearchResults() {
+    return getSearchResultsHelper(document, window);
+}
+
+function getSearchResultsHelper(document, window) {
     var topic;
 
     if (window.location.search.split('?').length > 0) {
         var topicParam = window.location.search.split('?')[1];
         topic = decodeURIComponent(topicParam.split('=')[1]);
-
     }
 
     if(topic != null) {
