@@ -42,6 +42,7 @@ function readTutorID(queryString, window) {
     }
 }
 
+
 function createTimeSlotBox(timeslot, tutorID) {
     const timeslotElement = document.createElement('li');
     timeslotElement.className = 'list-group-item';
@@ -73,3 +74,4 @@ function selectTimeSlot(tutorID, window) {
     var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID);
     window.location.href = url;
 }
+
