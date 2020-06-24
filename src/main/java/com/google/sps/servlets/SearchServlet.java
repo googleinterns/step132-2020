@@ -81,7 +81,6 @@ public class SearchServlet extends HttpServlet {
     */
     private ArrayList<Tutor> getTutorsForTopic(String topic) {
         ArrayList<Tutor> results = new ArrayList<Tutor>();
-        
         for(Tutor tutor : tutors) {
             String[] skills = tutor.getSkills();
 
