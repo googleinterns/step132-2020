@@ -70,3 +70,8 @@ function createTimeSlotBox(timeslot, tutorID) {
     return timeslotElement;
 }
 
+function selectTimeSlot(tutorID, window) {
+    var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID);
+    window.location.href = url;
+}
+
