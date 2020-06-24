@@ -62,6 +62,7 @@ public final class SearchTest {
 
     }
 
+    
     @Test
     public void doGetReturnsCorrectEmptyResponseForBusiness() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
@@ -80,6 +81,7 @@ public final class SearchTest {
         //verify that getParameter was called
         verify(request, atLeast(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
+
         //there are no tutors for business, so it should return an empty string
         String expected = "";
         Assert.assertTrue(stringWriter.toString().contains(expected));
