@@ -42,6 +42,10 @@ function fetchLoginStatus() {
  * Displays registration information on the page
  */
 function displayRegistrationInfo() {
+    displayRegistrationInfoHelper(document);
+}
+
+function displayRegistrationInfoHelper(document) {
     var generalInfo = document.getElementById('general-info');
     var tutorInfo = document.getElementById('tutor-info');
     generalInfo.style.display = 'block';
