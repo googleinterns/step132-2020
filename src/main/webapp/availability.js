@@ -41,3 +41,32 @@ function readTutorID(queryString, window) {
         }
     }
 }
+
+
+function createTimeSlotBox(timeslot, tutorID) {
+    const timeslotElement = document.createElement('li');
+    timeslotElement.className = 'list-group-item';
+
+    const dateElement = document.createElement('h3');
+    dateElement.style.textAlign = 'left';
+    dateElement.style.display = 'inline';
+    dateElement.innerHTML = timeslot.start;
+
+    const selectButtonElement = document.createElement('button');
+    selectButtonElement.innerText = 'Select';
+    selectButtonElement.style.textAlign = 'right';
+    selectButtonElement.style.display = 'inline';
+    selectButtonElement.className = 'btn btn-default btn-lg';
+    selectButtonElement.addEventListener('click', () => {
+        selectTimeSlot(tutorID, window);
+    });
+
+    const mainLineElement = document.createElement('div');
+    mainLineElement.className = 'd-flex w-100 justify-content-between';
+    mainLineElement.appendChild(dateElement);
+    mainLineElement.appendChild(selectButtonElement);
+
+    timeslotElement.appendChild(mainLineElement);
+    return timeslotElement;
+}
+
