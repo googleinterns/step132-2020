@@ -14,20 +14,21 @@
 
 describe("Search", function() {
 
+    // beforeAll(function() {
+    //     spyOn(document, "getElementById").and.returnValue(testSearchBox);
+
+    // })
+
     describe("when homepage needs to get redirected to search results", function() {
         var testSearchBox = document.createElement("input");
         testSearchBox.setAttribute("type", "text");
         testSearchBox.id = "topic-search-box";
-        testSearchBox.value = "math";
-
-        //store the real function so we can restore the original after mocking
-        // var realDocument = document.getElementById;
-
-        document.getElementById = jasmine.createSpy("search box").and.returnValue(testSearchBox);
+        testSearchBox.setAttribute("value", "math") ;
 
         var mockWindow = {location: {href: "homepage.html"}};
 
         it("should change window.location.href to the correct search results url", function() {
+            spyOn(document, "getElementById").withArgs("topic-search-box").and.returnValue(testSearchBox);
             redirectToResultsHelper(document, mockWindow);
             expect(mockWindow.location.href).toEqual("search-results.html?topic=math");
         });
@@ -38,14 +39,13 @@ describe("Search", function() {
         var resultContainer = document.createElement("div");
         resultContainer.id = "result-container";
 
-        document.getElementById = jasmine.createSpy("result container").and.returnValue(resultContainer);
-
         fetch = jasmine.createSpy("mockFetch").and.returnValue(Promise.resolve({text: () => Promise.resolve("hello world.")}));
 
         var mockWindow = {location: {href: "search-results.html?topic=math", search: "?topic=math"}};
 
-        it("should set resultContainer's text to results returned by fetch call", async function() {
-            await getSearchResultsHelper(document, mockWindow);
+        it("should set resultContainer's text to results returned by fetch call", function() {
+            spyOn(document, "getElementById").withArgs("result-container").and.returnValue(resultContainer);
+            getSearchResultsHelper(document, mockWindow);
             expect(resultContainer.innerHTML).toContain("hello world.");
         });
 
