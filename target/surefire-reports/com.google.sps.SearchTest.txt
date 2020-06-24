@@ -1,8 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.google.sps.SearchTest
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.136 sec <<< FAILURE!
-initializationError(com.google.sps.SearchTest)  Time elapsed: 0.016 sec  <<< ERROR!
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.228 sec <<< FAILURE!
+initializationError(com.google.sps.SearchTest)  Time elapsed: 0.012 sec  <<< ERROR!
 java.lang.Exception: No runnable methods
 	at org.junit.runners.BlockJUnit4ClassRunner.validateInstanceMethods(BlockJUnit4ClassRunner.java:191)
 	at org.junit.runners.BlockJUnit4ClassRunner.collectInitializationErrors(BlockJUnit4ClassRunner.java:128)

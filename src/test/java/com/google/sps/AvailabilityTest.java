@@ -24,9 +24,7 @@ import com.google.sps.data.TimeRange;
 import com.google.gson.Gson;
 
 @RunWith(JUnit4.class)
-public final class SearchTest {
-
-    public final class AvailabilityTest {
+public final class AvailabilityTest {
     private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
     private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
     private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
