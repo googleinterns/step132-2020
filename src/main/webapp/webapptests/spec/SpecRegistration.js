@@ -61,3 +61,38 @@ describe("When displaying registration form", function() {
         expect(window.getComputedStyle(document.getElementById('general-info')).display).toBe('block');
     });
 });
+
+describe("Fetching login status", function() {
+
+
+    it("displays only sign in link if user not logged in", function() {
+        
+        expect(window.getComputedStyle(document.getElementById('login-form')).display).toBe('block');
+        expect(window.getComputedStyle(document.getElementById('logout-form')).display).toBe('none');
+        expect(window.getComputedStyle(document.getElementById('registration-form')).display).toBe('none');
+    });
+
+    it("displays only sign out link if user is logged in and registered", function() {
+        
+        expect(window.getComputedStyle(document.getElementById('login-form')).display).toBe('none');
+        expect(window.getComputedStyle(document.getElementById('logout-form')).display).toBe('block');
+        expect(window.getComputedStyle(document.getElementById('registration-form')).display).toBe('none');
+    });
+
+    it("displays only sign out link and registration form if logged in and needs to register", function() {
+        
+        expect(window.getComputedStyle(document.getElementById('login-form')).display).toBe('none');
+        expect(window.getComputedStyle(document.getElementById('logout-form')).display).toBe('block');
+        expect(window.getComputedStyle(document.getElementById('registration-form')).display).toBe('block');
+    });
+
+    it("sets correct link when user logged out", function() {
+        
+        expect(document.getElementById('logout-url').href.toBe('/_ah/login?continue=%2Fregistration.html'));
+    });
+
+    it("sets correct link when user logged in", function() {
+       
+        expect(document.getElementById('login-url').href.toBe('/_ah/logout?continue=%2Fhomepage.html'));
+    });
+});
