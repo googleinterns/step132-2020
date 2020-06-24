@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.servlets;
+package com.google.sps;
 
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
@@ -81,7 +81,7 @@ public class SearchServlet extends HttpServlet {
     */
     private ArrayList<Tutor> getTutorsForTopic(String topic) {
         ArrayList<Tutor> results = new ArrayList<Tutor>();
-
+        
         for(Tutor tutor : tutors) {
             String[] skills = tutor.getSkills();
 
