@@ -16,6 +16,10 @@
  * Checks if user is logged in, if not display registration page
  */
 function fetchLoginStatus() {
+    fetchLoginStatusHelper(document);
+}
+
+function fetchLoginStatusHelper(document) {
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
         console.log(loginStatus);
 
