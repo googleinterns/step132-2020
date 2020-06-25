@@ -31,11 +31,11 @@ public final class SampleData {
 
     public SampleData() {
         tutors = new ArrayList<Tutor>();
-        tutors.add(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM), TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM)}));
-        tutors.add(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM), TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM)}));
-        tutors.add(new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
-        tutors.add(new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
-        tutors.add(new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
+        tutors.add(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM), TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM)}, new TutorSession[]{}));
+        tutors.add(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM), TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM)}, new TutorSession[]{}));
+        tutors.add(new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}, new TutorSession[]{}));
+        tutors.add(new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)},new TutorSession[]{}));
+        tutors.add(new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}, new TutorSession[]{}));
     }
 
     public ArrayList<Tutor> getSampleTutors() {
