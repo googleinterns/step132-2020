@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/scheduling")
 public class SchedulingServlet extends HttpServlet {
+    private List<String> scheduledSessions = new ArrayList<String>(); 
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -31,6 +32,23 @@ public class SchedulingServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String tutorID = request.getParameter("tutorID");
+        String start = request.getParameter("start");
+        String end = request.getParameter("end");
+        String studentEmail = request.getParameter("studentEmail");
+        String subtopics = request.getParameter("subtopics");
+        String questions = request.getParameter("questions");
+
+        List<String> tutorSession = new ArrayList<String>();
+        tutorSession.add(tutorID);
+        tutorSession.add(start);
+        tutorSession.add(end);
+        tutorSession.add(studentEmail);
+        tutorSession.add(subtopics);
+        tutorSession.add(questions);
+
+        scheduledSessions.add(tutorSession);
+
         response.setContentType("plain/text");
         response.getWriter().println("To be implemented");
     }
