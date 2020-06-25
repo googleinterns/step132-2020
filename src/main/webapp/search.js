@@ -32,7 +32,7 @@ function getSearchResults() {
     return getSearchResultsHelper(document, window);
 }
 
-function getSearchResultsHelper(document, window) {
+async function getSearchResultsHelper(document, window) {
     var topic;
 
     if (window.location.search.split('?').length > 0) {
@@ -41,10 +41,8 @@ function getSearchResultsHelper(document, window) {
     }
 
     if(topic != null) {
-        fetch("/search?topic="+topic).then(response => response.text()).then((results) => {
+        await fetch("/search?topic="+topic).then(response => response.text()).then((results) => {
             var resultContainer = document.getElementById("result-container");
-            resultContainer.innerHTML = '';
-            console.log(resultContainer);
             resultContainer.innerHTML = results;
         });
     }
