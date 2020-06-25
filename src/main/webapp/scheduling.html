@@ -26,7 +26,7 @@
         <div class="container-fluid">
             <h1>Last Step!</h1>
 
-            <form action="/scheduling" method="POST">
+            <form>
                 <div class="form-group">
                     <label for="name" class="col-sm-2 col-form-label">Name:</label>
                     <input type="text" class="form-control" name="name" style="color: #555555;" placeholder="Your name here..." required>
@@ -42,8 +42,10 @@
                     <textarea class="form-control" name="questions" rows="3" placeholder="Any questions you might have..."></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" onclick="scheduleTutorSession()">Submit</button>
             </form>
         </div>
+
+        <script src="scheduling.js"></script>
     </body>
 </html>
