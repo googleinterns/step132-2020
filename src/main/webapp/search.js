@@ -18,6 +18,7 @@ function redirectToResults() {
     return redirectToResultsHelper(document, window);
 }
 
+/** Helper function for redirectToResults, used for testing purposes. */
 function redirectToResultsHelper(document, window) {
     var topic = document.getElementById("topic-search-box").value;
 
@@ -32,6 +33,7 @@ function getSearchResults() {
     return getSearchResultsHelper(document, window);
 }
 
+/** Helper function for getSearchResults, used for testing purposes. */
 async function getSearchResultsHelper(document, window) {
     var topic;
 
