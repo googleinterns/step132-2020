@@ -69,10 +69,11 @@ describe("Availability", function() {
 
     describe("when a user selects an available time slot", function() {
         var mockWindow = {location: {href: "availability.html"}};
+        var timeslot = {duration: 60, end: 540, start: 480};
 
         it("should redirect the user to scheduling.html and pass tutorID as an URI component", function() {
-            selectTimeSlot("test@gmail.com", mockWindow);
-            expect(mockWindow.location.href).toEqual("scheduling.html?tutorID=test%40gmail.com");
+            selectTimeSlot("test@gmail.com", mockWindow, timeslot);
+            expect(mockWindow.location.href).toEqual("scheduling.html?tutorID=test%40gmail.com&start=480&end=540");
         });
     });
 
