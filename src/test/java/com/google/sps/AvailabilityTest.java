@@ -16,12 +16,20 @@ package com.google.sps;
 
 import java.util.List;
 import java.util.Arrays;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import static org.mockito.Mockito.*;
 import com.google.sps.data.TimeRange;
+import com.google.sps.servlets.AvailabilityServlet;
 import com.google.gson.Gson;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class AvailabilityTest {
@@ -30,6 +38,29 @@ public final class AvailabilityTest {
     private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
     private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
     private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+
+    @Test
+    public void testDoPost() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ServletConfig config = mock(ServletConfig.class);    
+
+        when(request.getParameter("tutorID")).thenReturn("john@gmail.com");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getContentType()).thenReturn("application/json");
+
+        AvailabilityServlet servlet = new AvailabilityServlet();
+        servlet.init(config);
+        servlet.doPost(request, response);
+
+        verify(request, atLeast(1)).getParameter("tutorID");
+        writer.flush();
+        System.out.println("What is this: " + stringWriter.toString());
+        Assert.assertTrue(stringWriter.toString().contains("{\"start\":480,\"duration\":60,\"end\":540},{\"start\":660,\"duration\":60,\"end\":720}"));
+    }
 
     @Test
     public void testConvertToJsonUsingGson() {
