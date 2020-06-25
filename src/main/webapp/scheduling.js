@@ -19,10 +19,17 @@ function scheduleTutorSession() {
     const start = queryString["start"];
     const end = queryString["end"];
 
+    var studentEmail = document.getElementById("studentEmail").value;
+    var subtopics = document.getElementById("topics").value;
+    var questions = document.getElementById("questions").value;
+
     const params = new URLSearchParams();
     params.append('tutorID', tutorID);
     params.append('start', start);
     params.append('end', end);
+    params.append('studentEmail', studentEmail);
+    params.append('subtopics', subtopics);
+    params.append('questions', questions);
 
     fetch('/scheduling', {method: 'POST', body: params});
 }
