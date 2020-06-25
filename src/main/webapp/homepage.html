@@ -18,13 +18,15 @@ See the License for the specific language governing permissions and
     <meta charset="UTF-8">
     <title>Sullivan</title>
     <link rel="stylesheet" type="text/css" href="homepage.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body>
-    <div id="content">
-        <form id="search-form-homepage" onsubmit="return redirectToResults();">
-            <input type="text" id="topic-search-box" placeholder="What do you need help with today?">
-            <button type="submit">Go</button>
+    <div id="content" class="container-fluid">
+        <form id="search-form-homepage" class="center-block" onsubmit="return redirectToResults();">
+            <div class="form-group-lg"><input class="form-control" type="text" id="search-box-homepage" placeholder="What do you need help with today?"></div>
+            <button class="btn btn-lg" type="submit" id="search-submit-homepage">Go</button>
         </form>
     </div>
     <script src="search.js"></script>
