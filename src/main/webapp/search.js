@@ -20,7 +20,7 @@ function redirectToResults() {
 
 /** Helper function for redirectToResults, used for testing purposes. */
 function redirectToResultsHelper(document, window) {
-    var topic = document.getElementById("search-box-homepage").value;
+    var topic = document.getElementsByClassName("search-box")[0].value;
 
     var url = "search-results.html?topic=" + encodeURIComponent(topic);
     window.location.href = url;
@@ -69,7 +69,7 @@ function createSearchResult(result) {
 
     name.innerText = result.name;
     email.innerText = result.email;
-    skills.innerText = "Skills: " + result.skills.join(" ");
+    skills.innerText = "Skills: " + result.skills.join(", ");
     availabilityLink.innerText = "Availability";
 
     availabilityLink.href = "/availability.html?tutorID=" + result.email;
