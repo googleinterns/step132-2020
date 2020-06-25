@@ -56,7 +56,31 @@ public class AvailabilityServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
+        // Get the id of the tutor whose availability will be displayed.
+        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse(null);
+
+        List<TimeRange> timeslots = new ArrayList<TimeRange>();
+
+        //System.out.println("tutorID: " + tutorID);
+
+        for (Tutor tutor : hardcoded) {
+            //System.out.println("tutor email: " + tutor.getEmail());
+            if (tutorID.equals(tutor.getEmail())) {
+                //System.out.println("match");
+                timeslots = Arrays.asList(tutor.getAvailability());
+            }
+        }
+
+        String json = convertToJsonUsingGson(timeslots);
+        response.setContentType("application/json;");
+        response.getWriter().println(json);
+        return;
+    }
+
+    // Converts the time slot array into a JSON string using the Gson library.
+    private String convertToJsonUsingGson(List<TimeRange> timeslots) {
+        Gson gson = new Gson();
+        String json = gson.toJson(timeslots);
+        return json;
     }
 }
