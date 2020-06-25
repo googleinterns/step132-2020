@@ -46,7 +46,11 @@ public final class Tutor {
         return this.availability;
     }
 
+<<<<<<< HEAD
     public TutorSession[] getScheduledSessions() {
+=======
+    public Session[] getScheduledSessions() {
+>>>>>>> e49f1cdfa9d27a7fb28e52b08a8c32cbfaad7064
         return this.scheduledSessions;
     }
 
