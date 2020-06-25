@@ -17,6 +17,7 @@ package com.google.sps.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/** Class that stores sample Tutor objects for testing. */
 public final class SampleData {
     private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
     private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
@@ -44,6 +45,7 @@ public final class SampleData {
         tutors.add(tutor);
     }
 
+    /** Finds and deletes a tutor with given email. */
     public static void deleteTutorByEmail(String email) {
         for(Tutor tutor : tutors) {
             if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
@@ -53,6 +55,9 @@ public final class SampleData {
         }
     }
 
+    /** Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
+    * @return Tutor
+    */
     public static Tutor getTutorByEmail(String email) {
         for(Tutor tutor : tutors) {
             if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
