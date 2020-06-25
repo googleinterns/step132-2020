@@ -14,7 +14,7 @@
 
 package com.google.sps.data;
 
-public final class Session {
+public final class TutorSession {
     
     private String studentEmail;
     private String tutorEmail;
@@ -22,7 +22,7 @@ public final class Session {
     private String questions;
     private TimeRange timeslot;
 
-    public Session(String studentEmail, String tutorEmail, String subtopics, String questions, TimeRange timeslot) {
+    public TutorSession(String studentEmail, String tutorEmail, String subtopics, String questions, TimeRange timeslot) {
         this.studentEmail = studentEmail;
         this.tutorEmail = tutorEmail;
         this.subtopics = subtopics;
