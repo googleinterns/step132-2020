@@ -18,6 +18,13 @@ function scheduleTutorSession() {
     const tutorID = queryString["tutorID"];
     const start = queryString["start"];
     const end = queryString["end"];
+
+    const params = new URLSearchParams();
+    params.append('tutorID', tutorID);
+    params.append('start', start);
+    params.append('end', end);
+
+    fetch('/scheduling', {method: 'POST', body: params});
 }
 
 // Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
