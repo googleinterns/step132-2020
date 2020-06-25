@@ -57,7 +57,7 @@ function createTimeSlotBox(timeslot, tutorID) {
     selectButtonElement.style.display = 'inline';
     selectButtonElement.className = 'btn btn-default btn-lg';
     selectButtonElement.addEventListener('click', () => {
-        selectTimeSlot(tutorID, window);
+        selectTimeSlot(tutorID, window, timeslot);
     });
 
     const mainLineElement = document.createElement('div');
@@ -69,7 +69,8 @@ function createTimeSlotBox(timeslot, tutorID) {
     return timeslotElement;
 }
 
-function selectTimeSlot(tutorID, window) {
-    var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID);
+// Redirects the user to the scheduling page and passes down the tutor ID along with the selected time range for the session.
+function selectTimeSlot(tutorID, window, timeslot) {
+    var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID) + "&start=" + encodeURIComponent(timeslot.start) + "&end=" + encodeURIComponent(timeslot.end);
     window.location.href = url;
 }
