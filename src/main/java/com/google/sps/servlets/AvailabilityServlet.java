@@ -16,6 +16,7 @@ package com.google.sps.servlets;
 
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
+import com.google.sps.data.TutorSession;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Optional;
@@ -44,8 +45,8 @@ public class AvailabilityServlet extends HttpServlet {
     private List<Tutor> hardcoded = new ArrayList<Tutor>(); 
 
     public void init(ServletConfig servletconfig) throws ServletException { 
-        hardcoded.add(new Tutor("John", "john@gmail.com", SKILLS1, AVAILABILITY1));
-        hardcoded.add(new Tutor("Jane", "jane@gmail.com", SKILLS1, AVAILABILITY1));
+        hardcoded.add(new Tutor("John", "john@gmail.com", SKILLS1, AVAILABILITY1, new TutorSession[]{}));
+        hardcoded.add(new Tutor("Jane", "jane@gmail.com", SKILLS1, AVAILABILITY1, new TutorSession[]{}));
     }
 
     @Override
