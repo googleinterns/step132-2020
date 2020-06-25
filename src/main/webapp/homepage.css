@@ -12,10 +12,22 @@ distributed under the License is distributed on an "AS IS" BASIS,
 See the License for the specific language governing permissions and
  limitations under the License.  */
  
-#topic-search-box {
-    width: 25%;
+#search-box-homepage {
+    width: 75%;
+    display:inline-block;
+    float:left;
+}
+
+#search-submit-homepage {
+    display: inline-block;
+    width: 15%;
+    font-weight: bold;
+    background-color: #337ab7;
+    color:white;
+    margin-left: 10px;
 }
 
 #search-form-homepage {
-    text-align: center;
+    margin-top: 20% !important;
+    width: 50%;
 }
