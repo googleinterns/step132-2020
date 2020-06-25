@@ -68,3 +68,8 @@ function createTimeSlotBox(timeslot, tutorID) {
     timeslotElement.appendChild(mainLineElement);
     return timeslotElement;
 }
+
+function selectTimeSlot(tutorID, window) {
+    var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID);
+    window.location.href = url;
+}
