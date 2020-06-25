@@ -43,7 +43,9 @@ function getSearchResultsHelper(document, window) {
     if(topic != null) {
         fetch("/search?topic="+topic).then(response => response.text()).then((results) => {
             var resultContainer = document.getElementById("result-container");
-            resultContainer.innerText = results;
+            resultContainer.innerHTML = '';
+            console.log(resultContainer);
+            resultContainer.innerHTML = results;
         });
     }
 }

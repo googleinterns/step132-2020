@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps;
+// package com.google.sps;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+// import org.junit.Assert;
+// import org.junit.Test;
+// import org.junit.runner.RunWith;
+// import org.junit.runners.JUnit4;
 
-@RunWith(JUnit4.class)
-public final class SchedulingTest {
+// @RunWith(JUnit4.class)
+// public final class SchedulingTest {
 
     @Test
     public void noFailTest() {
         Assert.assertEquals(true, true);
     }
 
-}
+// }
