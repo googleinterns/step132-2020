@@ -18,16 +18,18 @@ See the License for the specific language governing permissions and
     <meta charset="UTF-8">
     <title>Results</title>
     <link rel="stylesheet" type="text/css" href="search-results.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
   <body onload="getSearchResults()">
-    <div id="content">
-        <form id="search-form" onsubmit="return redirectToResults();">
-            <input type="text" id="topic-search-box" placeholder="What do you need help with today?">
-            <button type="submit">Go</button>
+    <div id="content" class="container-fluid" style="text-align: center;">
+        <form id="search-form-results" onsubmit="return redirectToResults();">
+            <input class="form-control" type="text" id="search-box-results" placeholder="What do you need help with today?">
+            <button class="btn btn-default" type="submit" id="search-submit-results">Go</button>
         </form>
     </div>
-    <div id="result-container"></div>
+    <div id="result-container" class="list-group"></div>
     <script src="search.js"></script>
   </body>
 </html>
