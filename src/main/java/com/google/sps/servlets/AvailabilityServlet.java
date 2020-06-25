@@ -57,7 +57,7 @@ public class AvailabilityServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the tutor whose availability will be displayed.
-        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse(null);
+        String tutorID = request.getParameter("tutorID");
 
         List<TimeRange> timeslots = new ArrayList<TimeRange>();
 
