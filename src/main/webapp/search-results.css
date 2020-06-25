@@ -1,0 +1,28 @@
+.search-result {
+    margin: auto;
+    width: 75%;
+}
+
+#search-form-results {
+    margin:auto;
+    margin-top: 2% !important;
+}
+
+#search-box-results {
+    display: inline-block;
+    width: 75%;
+}
+
+#search-submit-results {
+    display: inline-block;
+}
+
+#search-results-topic {
+    width: 75%;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+#result-container {
+    margin-top: 3%;
+}
