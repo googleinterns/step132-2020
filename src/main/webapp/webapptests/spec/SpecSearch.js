@@ -14,44 +14,38 @@
 
 describe("Search", function() {
 
-    // describe("when homepage needs to get redirected to search results", function() {
-    //     var testSearchBox = document.createElement("input");
-    //     testSearchBox.setAttribute("type", "text");
-    //     testSearchBox.id = "topic-search-box";
-    //     testSearchBox.setAttribute("value", "math") ;
+    describe("when homepage needs to get redirected to search results", function() {
+        var testSearchBox = document.createElement("input");
+        testSearchBox.setAttribute("type", "text");
+        testSearchBox.id = "topic-search-box";
+        testSearchBox.setAttribute("value", "math") ;
 
-    //     var mockWindow = {location: {href: "homepage.html"}};
+        var mockWindow = {location: {href: "homepage.html"}};
 
-    //     it("should change window.location.href to the correct search results url", function() {
-    //         // document.getElementById = jasmine.createSpy("search result").and.returnValue(testSearchBox);
-    //         spyOn(document, "getElementById").withArgs("topic-search-box").and.returnValue(testSearchBox);
-    //         redirectToResultsHelper(document, mockWindow);
-    //         expect(mockWindow.location.href).toEqual("search-results.html?topic=math");
-    //     });
+        it("should change window.location.href to the correct search results url", function() {
+            // document.getElementById = jasmine.createSpy("search result").and.returnValue(testSearchBox);
+            spyOn(document, "getElementById").withArgs("topic-search-box").and.returnValue(testSearchBox);
+            redirectToResultsHelper(document, mockWindow);
+            expect(mockWindow.location.href).toEqual("search-results.html?topic=math");
+        });
 
-    // });
+    });
 
     describe("when search results page is loaded", function() {
         var resultContainer = document.createElement("div");
         resultContainer.id = "result-container";
-        
-        // document.body.appendChild(resultContainer);
-        // fetch = jasmine.createSpy("mockFetch").and.returnValue(Promise.resolve({text: () => Promise.resolve("hello world.")}));
+
         var mockWindow = {location: {href: "search-results.html?topic=math", search: "?topic=math"}};
         var mockDocument = {getElementById: (id) => resultContainer};
-        console.log(resultContainer);
+
         it("should set resultContainer's text to results returned by fetch call", async function() {
             spyOn(window, "fetch").and.callFake(function(servletUrl) {
                 return Promise.resolve({text: () => Promise.resolve("hello world.")});
             });
-            console.log(resultContainer);
             await getSearchResultsHelper(mockDocument, mockWindow);
-            console.log(resultContainer);
-            console.log(resultContainer.innerText);
             
+            expect(window.fetch).toHaveBeenCalledWith("/search?topic=math");
             expect(resultContainer.innerHTML).toContain("hello world.");
-            console.log(resultContainer);
-
         });
 
     });
