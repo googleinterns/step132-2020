@@ -17,16 +17,25 @@ package com.google.sps.data;
 import java.util.ArrayList;
 
 public final class SampleData {
+    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
+    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
+    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
+    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+    private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+    private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
+    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
     
     private ArrayList<Tutor> tutors;
 
     public SampleData() {
         tutors = new ArrayList<Tutor>();
-        tutors.add(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(720, 780), TimeRange.fromStartToEnd(900,1020)}));
-        tutors.add(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(480, 600), TimeRange.fromStartToEnd(660,930)}));
-        tutors.add(new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"}, new TimeRange[]{TimeRange.fromStartToEnd(600, 720), TimeRange.fromStartToEnd(780,840)}));
-        tutors.add(new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"}, new TimeRange[]{TimeRange.fromStartToEnd(600, 720), TimeRange.fromStartToEnd(780,840)}));
-        tutors.add(new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"}, new TimeRange[]{TimeRange.fromStartToEnd(600, 720), TimeRange.fromStartToEnd(780,840)}));
+        tutors.add(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM), TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM)}));
+        tutors.add(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM), TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM)}));
+        tutors.add(new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
+        tutors.add(new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
+        tutors.add(new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
     }
 
     public ArrayList<Tutor> getSampleTutors() {
