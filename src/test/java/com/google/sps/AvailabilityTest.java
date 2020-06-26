@@ -56,8 +56,6 @@ public final class AvailabilityTest {
         servlet.init(config);
         servlet.doPost(request, response);
 
-        System.out.println(stringWriter.toString());
-
         verify(request, atLeast(1)).getParameter("tutorID");
         writer.flush();
         Assert.assertTrue(stringWriter.toString().contains("{\"start\":720,\"duration\":60,\"end\":780},{\"start\":900,\"duration\":120,\"end\":1020}"));
