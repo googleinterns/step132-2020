@@ -62,4 +62,11 @@ public final class Tutor {
         this.availability = availabilityList.toArray(new TimeRange[0]);
     }
 
+    /** Adds the given Tutor Session to the scheduledSessions array. */
+    public void addToScheduledSessions(TutorSession tutoringSession) {
+        List<TutorSession> scheduledSessionsList = new LinkedList<TutorSession>(Arrays.asList(this.scheduledSessions));
+        scheduledSessionsList.add(tutoringSession);
+        this.scheduledSessions = scheduledSessionsList.toArray(new TutorSession[0]);
+    }
+
 }
