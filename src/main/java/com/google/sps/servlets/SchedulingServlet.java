@@ -30,8 +30,6 @@ import javax.servlet.*; // Can be deleted after hardcoded database is removed
 
 @WebServlet("/scheduling")
 public class SchedulingServlet extends HttpServlet {
-    private List<String> scheduledSessions = new ArrayList<String>(); 
-
     SampleData hardcoded;
 
     public void init(ServletConfig servletconfig) throws ServletException { 
@@ -53,15 +51,12 @@ public class SchedulingServlet extends HttpServlet {
         String subtopics = request.getParameter("subtopics");
         String questions = request.getParameter("questions");
 
-        List<String> tutorSession = new ArrayList<String>();
-        tutorSession.add(tutorID);
-        tutorSession.add(start);
-        tutorSession.add(end);
-        tutorSession.add(studentEmail);
-        tutorSession.add(subtopics);
-        tutorSession.add(questions);
+        TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end));
 
-        //scheduledSessions.add(tutorSession);
+        // Update scheduledSessions
+
+        // Remove available timeslot
+        hardcoded.deleteAvailabilityByTimeRange(tutorID, timeslot);
 
         response.setContentType("plain/text");
         response.getWriter().println("To be implemented");
