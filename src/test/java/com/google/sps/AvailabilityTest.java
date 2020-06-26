@@ -38,7 +38,7 @@ public final class AvailabilityTest {
     private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
     private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
     private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
-
+  
     @Test
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
