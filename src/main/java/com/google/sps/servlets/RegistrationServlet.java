@@ -40,8 +40,10 @@ public class RegistrationServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String role = getParameter(request, "role").orElse(null);
-    String firstName = getParameter(request, "first-name").orElse(null);
-    String lastName = getParameter(request, "last-name").orElse(null);
+    String firstName = getParameter(request, "first-name")
+            .orElseThrow(() -> new IllegalArgumentException("Must fill out first name"));
+    String lastName = getParameter(request, "last-name")
+            .orElseThrow(() -> new IllegalArgumentException("Must fill out last name"));
     String fullName = firstName + " " + lastName;
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
@@ -78,6 +80,6 @@ public class RegistrationServlet extends HttpServlet {
        if (value == null || value.isEmpty()) {
            return Optional.empty();
        }
-       return Optional.ofNullable(value);
+       return Optional.<String>ofNullable(value);
    }
 }
