@@ -33,8 +33,6 @@ import javax.servlet.http.*;
 public final class SearchTest {
     private SearchServlet servlet;
 
-    private SearchServlet servlet;
-
     @Before
     public void setUp() {
         servlet = new SearchServlet();
@@ -84,86 +82,6 @@ public final class SearchTest {
         verify(request, atLeast(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
 
-        //there are no tutors for business, so it should return an empty string
-        String expected = "";
-        Assert.assertTrue(stringWriter.toString().contains(expected));
-
-    }
-
-    @Test
-    public void doGetReturnsCorrectEmptyResponseForBusiness() throws IOException {
-        HttpServletRequest request = mock(HttpServletRequest.class);       
-        HttpServletResponse response = mock(HttpServletResponse.class); 
-
-        when(request.getParameter("topic")).thenReturn("business");
-
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-
-        //create the hard coded data
-        servlet.init();
-        servlet.doGet(request, response);
-
-        //verify that getParameter was called
-        verify(request, atLeast(1)).getParameter("topic"); 
-        writer.flush(); // it may not have been flushed yet...
-        //there are no tutors for business, so it should return an empty string
-        String expected = "";
-        Assert.assertTrue(stringWriter.toString().contains(expected));
-
-    }
-
-    private SearchServlet servlet;
-
-    @Before
-    public void setUp() {
-        servlet = new SearchServlet();
-    }
-
-    @Test
-    public void doGetReturnsCorrectResponseForHistory() throws IOException {
-        HttpServletRequest request = mock(HttpServletRequest.class);       
-        HttpServletResponse response = mock(HttpServletResponse.class); 
-
-        when(request.getParameter("topic")).thenReturn("history");
-
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-
-        //create the hard coded data
-        servlet.init();
-        servlet.doGet(request, response);
-
-        //verify that getParameter was called
-        verify(request, atLeast(1)).getParameter("topic"); 
-        writer.flush(); // it may not have been flushed yet...
-        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(720, 780), TimeRange.fromStartToEnd(900,1020)}));
-        String expected = convertListToJson(expectedTutorList);
-        Assert.assertTrue(stringWriter.toString().contains(expected));
-
-    }
-
-
-    @Test
-    public void doGetReturnsCorrectEmptyResponseForBusiness() throws IOException {
-        HttpServletRequest request = mock(HttpServletRequest.class);       
-        HttpServletResponse response = mock(HttpServletResponse.class); 
-
-        when(request.getParameter("topic")).thenReturn("business");
-
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter writer = new PrintWriter(stringWriter);
-        when(response.getWriter()).thenReturn(writer);
-
-        //create the hard coded data
-        servlet.init();
-        servlet.doGet(request, response);
-
-        //verify that getParameter was called
-        verify(request, atLeast(1)).getParameter("topic"); 
-        writer.flush(); // it may not have been flushed yet...
         //there are no tutors for business, so it should return an empty string
         String expected = "";
         Assert.assertTrue(stringWriter.toString().contains(expected));
