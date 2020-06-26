@@ -50,7 +50,6 @@ public final class SearchTest {
         when(response.getWriter()).thenReturn(writer);
 
         //create the hard coded data
-        servlet.init();
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -75,7 +74,6 @@ public final class SearchTest {
         when(response.getWriter()).thenReturn(writer);
 
         //create the hard coded data
-        servlet.init();
         servlet.doGet(request, response);
 
         //verify that getParameter was called

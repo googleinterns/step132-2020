@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.sps.data.SampleData;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
@@ -31,20 +32,6 @@ import java.util.Optional;
 /** Servlet that returns search results (tutors and books) for a topic. */
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
-
-    private ArrayList<Tutor> tutors;
-
-    public void init() {
-
-        tutors = new ArrayList<Tutor>();
-
-        tutors.add(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(720, 780), TimeRange.fromStartToEnd(900,1020)}));
-        tutors.add(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(480, 600), TimeRange.fromStartToEnd(660,930)}));
-        tutors.add(new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"}, new TimeRange[]{TimeRange.fromStartToEnd(600, 720), TimeRange.fromStartToEnd(780,840)}));
-        tutors.add(new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"}, new TimeRange[]{TimeRange.fromStartToEnd(600, 720), TimeRange.fromStartToEnd(780,840)}));
-        tutors.add(new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"}, new TimeRange[]{TimeRange.fromStartToEnd(600, 720), TimeRange.fromStartToEnd(780,840)}));
-
-    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -82,7 +69,7 @@ public class SearchServlet extends HttpServlet {
     private ArrayList<Tutor> getTutorsForTopic(String topic) {
         ArrayList<Tutor> results = new ArrayList<Tutor>();
 
-        for(Tutor tutor : tutors) {
+        for(Tutor tutor : SampleData.getSampleTutors()) {
             String[] skills = tutor.getSkills();
 
             for(String skill : skills) {
