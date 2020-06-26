@@ -45,7 +45,7 @@ public final class AvailabilityTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         ServletConfig config = mock(ServletConfig.class);    
 
-        when(request.getParameter("tutorID")).thenReturn("btrevisan@google.com");
+        when(request.getParameter("tutorID")).thenReturn("kashisharora@google.com");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -56,9 +56,11 @@ public final class AvailabilityTest {
         servlet.init(config);
         servlet.doPost(request, response);
 
+        System.out.println(stringWriter.toString());
+
         verify(request, atLeast(1)).getParameter("tutorID");
         writer.flush();
-        Assert.assertTrue(stringWriter.toString().contains("{\"start\":480,\"duration\":120,\"end\":600},{\"start\":660,\"duration\":120,\"end\":780}"));
+        Assert.assertTrue(stringWriter.toString().contains("{\"start\":720,\"duration\":60,\"end\":780},{\"start\":900,\"duration\":120,\"end\":1020}"));
     }
 
     @Test
