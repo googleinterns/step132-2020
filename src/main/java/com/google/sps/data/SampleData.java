@@ -15,7 +15,9 @@
 package com.google.sps.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
+/** Class that stores sample Tutor objects for testing. */
 public final class SampleData {
     private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
     private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
@@ -27,19 +29,43 @@ public final class SampleData {
     private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
     private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
     
-    private ArrayList<Tutor> tutors;
+    private static ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
+        new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM), TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM)}),
+        new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM), TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM)}),
+        new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}),
+        new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}),
+        new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)})
+    ));
 
-    public SampleData() {
-        tutors = new ArrayList<Tutor>();
-        tutors.add(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM), TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM)}));
-        tutors.add(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM), TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM)}));
-        tutors.add(new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
-        tutors.add(new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
-        tutors.add(new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)}));
+    public static ArrayList<Tutor> getSampleTutors() {
+        return tutors;
     }
 
-    public ArrayList<Tutor> getSampleTutors() {
-        return this.tutors;
+    public static void addTutor(Tutor tutor) {
+        tutors.add(tutor);
+    }
+
+    /** Finds and deletes a tutor with given email. */
+    public static void deleteTutorByEmail(String email) {
+        for(Tutor tutor : tutors) {
+            if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
+                tutors.remove(tutor);
+                break;
+            }
+        }
+    }
+
+    /** Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
+    * @return Tutor
+    */
+    public static Tutor getTutorByEmail(String email) {
+        for(Tutor tutor : tutors) {
+            if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
+                return tutor;
+            }
+        }
+
+        return null;
     }
 
 }
