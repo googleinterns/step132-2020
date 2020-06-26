@@ -83,4 +83,13 @@ public final class SampleData {
         }
     }
 
+    /** Adds the given TutorSession to the scheduled sessions array of the given tutor. */
+    public static void addToScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
+        Tutor tutor = getTutorByEmail(email);
+
+        tutors.remove(tutor);
+        tutor.addToScheduledSessions(tutoringSession);
+        tutors.add(tutor);
+    }
+
 }
