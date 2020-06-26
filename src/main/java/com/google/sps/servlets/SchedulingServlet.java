@@ -53,7 +53,10 @@ public class SchedulingServlet extends HttpServlet {
 
         TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end));
 
+        TutorSession tutoringSession = new TutorSession(studentEmail, tutorID, subtopics, questions, timeslot);
+        
         // Update scheduledSessions
+        hardcoded.addToScheduledSessionsByEmail(tutorID, tutoringSession);
 
         // Remove available timeslot
         hardcoded.deleteAvailabilityByTimeRange(tutorID, timeslot);
