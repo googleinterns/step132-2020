@@ -35,6 +35,8 @@ function fetchLoginStatusHelper(document, loginStatus) {
         // If not registered, also display registration form
         if (loginStatus.needsToRegister) {
             registrationForm.style.display = 'block';
+        } else {
+            registrationForm.style.display = 'none';
         }
         loginForm.style.display = 'none';
         logoutForm.style.display = 'block';
