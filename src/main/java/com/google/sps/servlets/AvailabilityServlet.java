@@ -53,7 +53,6 @@ public class AvailabilityServlet extends HttpServlet {
         List<TimeRange> timeslots = new ArrayList<TimeRange>();
 
         for (Tutor tutor : hardcoded.getSampleTutors()) {
-            System.out.println(tutor.getEmail());
             if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
                 timeslots = Arrays.asList(tutor.getAvailability());
             }
