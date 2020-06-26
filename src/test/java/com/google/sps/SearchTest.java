@@ -86,6 +86,31 @@ public final class SearchTest {
 
     }
 
+    @Test
+    public void doGetReturnsCorrectErrorResponseForEmptyString() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+
+        when(request.getParameter("topic")).thenReturn("");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        //create the hard coded data
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, atLeast(1)).getParameter("topic"); 
+        writer.flush(); // it may not have been flushed yet...
+
+        //there are no tutors for business, so it should return an empty string
+        String expected = "{\"error\": \"Invalid search request.\"}";
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+
+    }
+
+
     /**
     * This method converts a list of tutors to a JSON string.
     * @return String, the list of tutors as a JSON string
