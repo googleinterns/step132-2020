@@ -36,12 +36,19 @@ public class SearchServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String topic =  getParameter(request, "topic").orElse("");
+        String topic = request.getParameter("topic");
+
+        response.setContentType("application/json;");
+
+        //send error message if the search was invalid
+        if(topic == null || topic.equals("")) {
+            response.getWriter().println("{\"error\": \"Invalid search request.\"}");
+            return;
+        }
 
         ArrayList<Tutor> results = getTutorsForTopic(topic);
 
         response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;");
         response.getWriter().println(convertListToJson(results));
        
     }

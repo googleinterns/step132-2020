@@ -45,11 +45,17 @@ async function getSearchResultsHelper(document, window) {
     if(topic != null) {
         await fetch("/search?topic="+topic).then(response => response.json()).then((results) => {
             var resultContainer = document.getElementById("result-container");
-            var searchResultsFor = document.createElement("h4");
-            searchResultsFor.innerText = "Search results for " + topic + ":";
-            searchResultsFor.id = "search-results-topic";
+            var numSearchResults = document.createElement("h4");
+            numSearchResults.id = "num-search-results";
+            resultContainer.appendChild(numSearchResults);
 
-            resultContainer.appendChild(searchResultsFor);
+            //if there was an error reported by the servlet, display the error message
+            if(results.error) {
+                numSearchResults.innerText = results.error;
+                return;
+            }
+
+            numSearchResults.innerText = "Found " + results.length + " tutors for " + topic;
 
             results.forEach(function(result) {
                 resultContainer.append(createSearchResult(result));
