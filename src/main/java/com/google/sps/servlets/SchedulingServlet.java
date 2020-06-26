@@ -14,6 +14,10 @@
 
 package com.google.sps.servlets;
 
+import com.google.sps.data.Tutor;
+import com.google.sps.data.TimeRange;
+import com.google.sps.data.TutorSession;
+import com.google.sps.data.SampleData;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/scheduling")
 public class SchedulingServlet extends HttpServlet {
     private List<String> scheduledSessions = new ArrayList<String>(); 
+
+    public void init(ServletConfig servletconfig) throws ServletException { 
+        hardcoded = new SampleData();
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
