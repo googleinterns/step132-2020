@@ -37,6 +37,14 @@ public class SearchServlet extends HttpServlet {
 
         String topic = request.getParameter("topic");
 
+        response.setContentType("application/json;");
+
+        //send error message if the search was invalid
+        if(topic == null || topic.equals("")) {
+            response.getWriter().println("{\"error\": \"Invalid search request.\"}");
+            return;
+        }
+
         ArrayList<Tutor> results = getTutorsForTopic(topic);
 
         response.setCharacterEncoding("UTF-8");
