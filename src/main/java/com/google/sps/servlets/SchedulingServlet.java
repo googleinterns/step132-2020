@@ -18,6 +18,7 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +62,16 @@ public class SchedulingServlet extends HttpServlet {
         // Remove available timeslot
         hardcoded.deleteAvailabilityByTimeRange(tutorID, timeslot);
 
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
+        String json = convertToJsonUsingGson(hardcoded.getSampleTutors());
+        response.setContentType("application/json;");
+        response.getWriter().println(json);
+        return;
+    }
+
+    // Converts the hardcoded into a JSON string using the Gson library.
+    private String convertToJsonUsingGson(List<Tutor> tutors) {
+        Gson gson = new Gson();
+        String json = gson.toJson(tutors);
+        return json;
     }
 }
