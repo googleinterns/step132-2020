@@ -24,13 +24,11 @@ describe("When displaying registration form", function() {
 
         var mockStudentRadioBtn = document.createElement('input');
         mockStudentRadioBtn.setAttribute('type', 'radio');
-        mockStudentRadioBtn.setAttribute('checked', true);
         mockStudentRadioBtn.id = 'student';
         mockStudentRadioBtn.name = 'role';
 
         var mockTutorRadioBtn = document.createElement('input');
         mockTutorRadioBtn.setAttribute('type', 'radio');
-        mockTutorRadioBtn.setAttribute('checked', false);
         mockTutorRadioBtn.id = 'tutor';
         mockTutorRadioBtn.name = 'role';
 
@@ -40,59 +38,96 @@ describe("When displaying registration form", function() {
         mockGenInfoDiv.appendChild(mockTutorInfoDiv);
     })
 
-    it("should always ask for general info", function() {
+    it("should ask only for general info if user is student", function() {
+        document.getElementById('student').checked = true;
         displayRegistrationInfoHelper(document);
-        expect(window.getComputedStyle(document.getElementById('general-info')).display).toBe('block');
-        expect(window.getComputedStyle(document.getElementById('tutor-info')).display).toBe('none');
+
+        expect(document.getElementById('general-info').style.display).toBe('block');
+        expect(document.getElementById('tutor-info').style.display).toBe('none');
     });
 
     it("should ask for general and tutor info if user is tutor", function() {
         document.getElementById('tutor').checked = true;
         displayRegistrationInfoHelper(document);
-        expect(window.getComputedStyle(document.getElementById('tutor-info')).display).toBe('block');
-        expect(window.getComputedStyle(document.getElementById('general-info')).display).toBe('block');
+
+        expect(document.getElementById('general-info').style.display).toBe('block');
+        expect(document.getElementById('tutor-info').style.display).toBe('block');
     });
 
     it("should ask only for general info if user clicks tutor then switches to student", function() {
         document.getElementById('tutor').checked = true;
         document.getElementById('student').checked = true;
         displayRegistrationInfoHelper(document);
-        expect(window.getComputedStyle(document.getElementById('tutor-info')).display).toBe('none');
-        expect(window.getComputedStyle(document.getElementById('general-info')).display).toBe('block');
+
+        expect(document.getElementById('general-info').style.display).toBe('block');
+        expect(document.getElementById('tutor-info').style.display).toBe('none');
     });
 });
 
 describe("Fetching login status", function() {
+    var mockLoginStatus;
 
+    beforeEach(function() {
+        var mockLoginForm = document.createElement('p');
+        mockLoginForm.id = 'login-form';
+
+        var mockLoginUrl = document.createElement('a');
+        mockLoginUrl.id = 'login-url';
+
+        var mockLogoutForm = document.createElement('p');
+        mockLogoutForm.id = 'logout-form';
+
+        var mockLogoutUrl = document.createElement('a');
+        mockLogoutUrl.id = 'logout-url';
+
+        var mockRegistrationDiv = document.createElement('div');
+        mockRegistrationDiv.id = 'registration-form';
+
+        document.body.appendChild(mockLoginForm);
+        mockLoginForm.appendChild(mockLoginUrl);
+        document.body.appendChild(mockLogoutForm);
+        mockLogoutForm.appendChild(mockLogoutUrl);
+        document.body.appendChild(mockRegistrationDiv);
+    })
 
     it("displays only sign in link if user not logged in", function() {
-        
-        expect(window.getComputedStyle(document.getElementById('login-form')).display).toBe('block');
-        expect(window.getComputedStyle(document.getElementById('logout-form')).display).toBe('none');
-        expect(window.getComputedStyle(document.getElementById('registration-form')).display).toBe('none');
+        mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:''};
+        fetchLoginStatusHelper(document, mockLoginStatus);
+
+        expect(document.getElementById('login-form').style.display).toBe('block');
+        expect(document.getElementById('logout-form').style.display).toBe('none');
+        expect(document.getElementById('registration-form').style.display).toBe('none');
     });
 
     it("displays only sign out link if user is logged in and registered", function() {
-        
-        expect(window.getComputedStyle(document.getElementById('login-form')).display).toBe('none');
-        expect(window.getComputedStyle(document.getElementById('logout-form')).display).toBe('block');
-        expect(window.getComputedStyle(document.getElementById('registration-form')).display).toBe('none');
+        mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:''};
+        fetchLoginStatusHelper(document, mockLoginStatus);      
+
+        expect(document.getElementById('login-form').style.display).toBe('none');
+        expect(document.getElementById('logout-form').style.display).toBe('block');
+        expect(document.getElementById('registration-form').style.display).toBe('none');
     });
 
     it("displays only sign out link and registration form if logged in and needs to register", function() {
-        
-        expect(window.getComputedStyle(document.getElementById('login-form')).display).toBe('none');
-        expect(window.getComputedStyle(document.getElementById('logout-form')).display).toBe('block');
-        expect(window.getComputedStyle(document.getElementById('registration-form')).display).toBe('block');
+        mockLoginStatus = {isLoggedIn:true, needsToRegister:true, url:''};
+        fetchLoginStatusHelper(document, mockLoginStatus);
+
+        expect(document.getElementById('login-form').style.display).toBe('none');
+        expect(document.getElementById('logout-form').style.display).toBe('block');
+        expect(document.getElementById('registration-form').style.display).toBe('block');
     });
 
-    it("sets correct link when user logged out", function() {
-        
-        expect(document.getElementById('logout-url').href.toBe('/_ah/login?continue=%2Fregistration.html'));
+    it("sets login link correctly", function() {
+        mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html'};
+        fetchLoginStatusHelper(document, mockLoginStatus);
+
+        expect(document.getElementById('login-url').href).toBe('http://localhost:8080/_ah/login?continue=%2Fregistration.html');
     });
 
-    it("sets correct link when user logged in", function() {
-       
-        expect(document.getElementById('login-url').href.toBe('/_ah/logout?continue=%2Fhomepage.html'));
+    it("sets logout link correctly", function() {
+        mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'/_ah/logout?continue=%2Fhomepage.html'};
+        fetchLoginStatusHelper(document, mockLoginStatus);
+
+        expect(document.getElementById('logout-url').href).toBe('http://localhost:8080/_ah/logout?continue=%2Fhomepage.html');
     });
 });
