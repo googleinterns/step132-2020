@@ -14,6 +14,11 @@
 
 package com.google.sps.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.LinkedList;
+
 public final class Tutor {
     
     private String name;
@@ -48,6 +53,13 @@ public final class Tutor {
 
     public TutorSession[] getScheduledSessions() {
         return this.scheduledSessions;
+    }
+    
+    /** Deletes the given timeslot from the availability array. */
+    public void deleteAvailabilityByTimeRange(TimeRange timeslot) {
+        List<TimeRange> availabilityList = new LinkedList<TimeRange>(Arrays.asList(this.availability));
+        availabilityList.remove(timeslot);
+        this.availability = availabilityList.toArray(new TimeRange[0]);
     }
 
 }
