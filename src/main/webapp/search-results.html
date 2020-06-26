@@ -25,7 +25,7 @@ See the License for the specific language governing permissions and
   <body onload="getSearchResults()">
     <div id="content" class="container-fluid" style="text-align: center;">
         <form id="search-form-results" onsubmit="return redirectToResults();">
-            <input class="form-control search-box" type="text" id="search-box-results" placeholder="What do you need help with today?">
+            <input class="form-control search-box" type="text" id="search-box-results" required="" aria-required=true placeholder="What do you need help with today?">
             <button class="btn btn-default" type="submit" id="search-submit-results">Go</button>
         </form>
     </div>
