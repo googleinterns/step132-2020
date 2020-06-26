@@ -38,4 +38,13 @@ describe("Scheduling", function() {
         });
     });
 
+    describe("when a user submits the form", function() {
+        var mockWindow = {location: {href: "scheduling.html"}};
+
+        it("should redirect the user to confirmation.html and pass tutorID as an URI component", function() {
+            redirectToConfirmation("test@gmail.com", mockWindow);
+            expect(mockWindow.location.href).toEqual("confirmation.html?tutorID=test%40gmail.com");
+        });
+    });
+
 }); 
