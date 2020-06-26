@@ -59,21 +59,10 @@ public class LoginStatusServlet extends HttpServlet {
     /** Returns the name of the user with id, or null if the user has not yet registered. */
     private String getName(String userId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Query query = new Query("User");
+        //Make userId a query filter
+        Query query = new Query("User").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query);
-
-        Iterator<Entity> iteration = results.asIterator();
-        Entity userEntity = null;
-        // Check to see if user is in datastore
-        while(iteration.hasNext()) {
-            Entity entity = iteration.next();
-            String id = (String) entity.getProperty("userId");
-
-            if (id.equals(userId)) {
-                userEntity = entity;
-                break;
-            }
-        }
+        Entity userEntity = results.asSingleEntity();
 
         // User not registered
         if (userEntity == null) {
