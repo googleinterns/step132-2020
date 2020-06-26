@@ -20,8 +20,8 @@ function redirectToResults() {
 
 /** Helper function for redirectToResults, used for testing purposes. */
 function redirectToResultsHelper(document, window) {
-    var topic = document.getElementById("topic-search-box").value;
-
+    var topic = document.getElementsByClassName("search-box")[0].value;
+    
     var url = "search-results.html?topic=" + encodeURIComponent(topic);
     window.location.href = url;
 
@@ -45,6 +45,19 @@ async function getSearchResultsHelper(document, window) {
     if(topic != null) {
         await fetch("/search?topic="+topic).then(response => response.json()).then((results) => {
             var resultContainer = document.getElementById("result-container");
+
+            var numSearchResults = document.createElement("h4");
+            numSearchResults.id = "num-search-results";
+
+            resultContainer.appendChild(numSearchResults);
+
+            //if there was an error reported by the servlet, display the error message
+            if(results.error) {
+                numSearchResults.innerText = results.error;
+                return;
+            }
+
+            numSearchResults.innerText = "Found " + results.length + " tutors for " + topic;
 
             results.forEach(function(result) {
                 resultContainer.append(createSearchResult(result));
