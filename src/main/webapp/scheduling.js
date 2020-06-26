@@ -31,7 +31,10 @@ function scheduleTutorSession() {
     params.append('subtopics', subtopics);
     params.append('questions', questions);
 
-    fetch('/scheduling', {method: 'POST', body: params});
+    // Redirect user to confirmation
+    fetch('/scheduling', {method: 'POST', body: params}).then(response => response.json()).then((tutors) => {
+        redirectToConfirmation(tutorID, window);
+    });
 }
 
 // Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
@@ -49,4 +52,10 @@ function readComponents(queryString, window) {
             }
         }
     }
+}
+
+// Redirects the user to the confirmation page and passes down the tutor ID.
+function redirectToConfirmation(tutorID, window) {
+    var url = "confirmation.html?tutorID=" + encodeURIComponent(tutorID);
+    window.location.href = url;
 }
