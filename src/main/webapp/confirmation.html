@@ -22,13 +22,19 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body>
+    <body onload="getScheduledSessions();">
         <div class="container-fluid">
             <h1>SUCCESS</h1>
             <h2>Your session has been scheduled!</h2>
         </div>
 
+        <div class="container-fluid">
+            <h1>Upcoming Tutoring Sessions</h1>
+            <ul class="list-group" id="scheduledSessions"></ul>
+        </div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="confirmation.js"></script>
     </body>
 </html>
