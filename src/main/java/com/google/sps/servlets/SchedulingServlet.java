@@ -19,14 +19,20 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.*; // Can be deleted after hardcoded database is removed
 
 @WebServlet("/scheduling")
 public class SchedulingServlet extends HttpServlet {
     private List<String> scheduledSessions = new ArrayList<String>(); 
+
+    SampleData hardcoded;
 
     public void init(ServletConfig servletconfig) throws ServletException { 
         hardcoded = new SampleData();
@@ -55,7 +61,7 @@ public class SchedulingServlet extends HttpServlet {
         tutorSession.add(subtopics);
         tutorSession.add(questions);
 
-        scheduledSessions.add(tutorSession);
+        //scheduledSessions.add(tutorSession);
 
         response.setContentType("plain/text");
         response.getWriter().println("To be implemented");
