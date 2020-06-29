@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
@@ -33,10 +34,10 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that handles user's registration info */
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
-
+  
   private UserService userService = UserServiceFactory.getUserService();
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-  
+
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String role = getParameter(request, "role").orElse(null);
@@ -45,18 +46,20 @@ public class RegistrationServlet extends HttpServlet {
     String lastName = getParameter(request, "last-name")
             .orElseThrow(() -> new IllegalArgumentException("Must fill out last name"));
     String fullName = firstName + " " + lastName;
+    
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
     
     // Make list of selected topics, remove unchecked topics
-    List<String> topics = new ArrayList<String>();
-    topics.add(getParameter(request, "math").orElse(null));
-    topics.add(getParameter(request, "english").orElse(null));
-    topics.add(getParameter(request, "other").orElse(null));
-    topics = topics
-            .stream()
-            .filter(t -> t!= null)
-            .collect(Collectors.toList());
+    List<Optional<String>> topics = new ArrayList<Optional<String>>();
+    topics.add(getParameter(request, "math"));
+    topics.add(getParameter(request, "english"));
+    topics.add(getParameter(request, "other"));
+    List<String> topicsToStr = topics
+                                .stream()
+                                .filter(t -> t.isPresent())
+                                .map(t -> t.get())
+                                .collect(Collectors.toList());
 
     // Make entity for user with all registration info
     Entity userEntity = new Entity("User");
@@ -64,7 +67,7 @@ public class RegistrationServlet extends HttpServlet {
     userEntity.setProperty("name", fullName);
     userEntity.setProperty("email", email);
     userEntity.setProperty("userId", userId);
-    userEntity.setProperty("topics", topics);
+    userEntity.setProperty("topics", topicsToStr);
 
     datastore.put(userEntity);
 
