@@ -37,12 +37,28 @@ public final class SampleData {
         new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM), TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM)},  new TutorSession[]{})
     ));
 
+    private static ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
+        new Student("Kashish Arora", "kashisharora@google.com", new String[]{"English", "Physics"}, new TutorSession[]{}),
+        new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"Math", "History"}, new TutorSession[]{}),
+        new Student("Sam Falberg", "sfalberg@google.com", new String[]{"Finance", "Chemistry"}, new TutorSession[]{}),
+        new Student("Anand Desai", "thegoogler@google.com", new String[]{"Geology", "English"},  new TutorSession[]{}),
+        new Student("Elian Dumitru", "elian@google.com", new String[]{"Finance", "Chemistry"},  new TutorSession[]{})
+    ));
+
     public static ArrayList<Tutor> getSampleTutors() {
         return tutors;
     }
 
+    public static ArrayList<Student> getSampleStudents() {
+        return students;
+    }
+
     public static void addTutor(Tutor tutor) {
         tutors.add(tutor);
+    }
+
+    public static void addStudent(Student student) {
+        students.add(student);
     }
 
     /** Finds and deletes a tutor with given email. */
@@ -55,13 +71,38 @@ public final class SampleData {
         }
     }
 
-    /** Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
-    * @return Tutor
+    /** Finds and deletes a student with given email. */
+    public static void deleteStudentByEmail(String email) {
+        for(Student student : students) {
+            if(student.getEmail().toLowerCase().equals(email.toLowerCase())) {
+                students.remove(student);
+                break;
+            }
+        }
+    }
+
+   /** 
+    *  Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
+    *  @return Tutor
     */
     public static Tutor getTutorByEmail(String email) {
         for(Tutor tutor : tutors) {
             if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 return tutor;
+            }
+        }
+
+        return null;
+    }
+
+    /** 
+    *  Finds and returns a student that has the given email. If no such student is found, returns null.
+    *  @return Student
+    */
+    public static Student getStudentByEmail(String email) {
+        for(Student student : students) {
+            if(student.getEmail().toLowerCase().equals(email.toLowerCase())) {
+                return student;
             }
         }
 
@@ -84,12 +125,21 @@ public final class SampleData {
     }
 
     /** Adds the given TutorSession to the scheduled sessions array of the given tutor. */
-    public static void addToScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
+    public static void addToTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Tutor tutor = getTutorByEmail(email);
 
         tutors.remove(tutor);
         tutor.addToScheduledSessions(tutoringSession);
         tutors.add(tutor);
+    }
+
+    /** Adds the given TutorSession to the scheduled sessions array of the given student. */
+    public static void addToStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
+        Student student = getStudentByEmail(email);
+
+        students.remove(student);
+        student.addToScheduledSessions(tutoringSession);
+        students.add(student);
     }
 
 }
