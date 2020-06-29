@@ -56,16 +56,9 @@ public class SchedulingServlet extends HttpServlet {
         // Remove available timeslot
         SampleData.deleteAvailabilityByTimeRange(tutorID, timeslot);
 
-        String json = convertToJsonUsingGson(SampleData.getSampleTutors());
+        String json = new Gson().toJson(SampleData.getSampleTutors());
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
-    }
-
-    // Converts the hardcoded into a JSON string using the Gson library.
-    private String convertToJsonUsingGson(List<Tutor> tutors) {
-        Gson gson = new Gson();
-        String json = gson.toJson(tutors);
-        return json;
     }
 }
