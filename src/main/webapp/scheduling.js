@@ -33,7 +33,7 @@ function scheduleTutorSession() {
 
     // Redirect user to confirmation
     fetch('/scheduling', {method: 'POST', body: params}).then(response => response.json()).then((tutors) => {
-        redirectToConfirmation(tutorID, window);
+        redirectToConfirmation(studentEmail, window);
     });
 }
 
@@ -55,7 +55,7 @@ function readComponents(queryString, window) {
 }
 
 // Redirects the user to the confirmation page and passes down the tutor ID.
-function redirectToConfirmation(tutorID, window) {
-    var url = "confirmation.html?tutorID=" + encodeURIComponent(tutorID);
+function redirectToConfirmation(studentEmail, window) {
+    var url = "confirmation.html?studentEmail=" + encodeURIComponent(studentEmail);
     window.location.href = url;
 }
