@@ -142,12 +142,17 @@ public final class SampleData {
         students.add(student);
     }
 
-    public static void rateTutorByEmail(String email, int newRating) {
-        Tutor tutor = getTutorByEmail(email);
+    public static void rateTutorByEmail(String tutorEmail, String studentEmail, int newRating) {
+        Tutor tutor = getTutorByEmail(tutorEmail);
+        Student student = getStudentByEmail(studentEmail);
 
         tutors.remove(tutor);
         tutor.rateTutor(newRating);
         tutors.add(tutor);
+
+        students.remove(student);
+        student.markTutoringSessionAsRatedByTutorEmail(tutorEmail);
+        students.add(student);
     }
 
 }
