@@ -27,15 +27,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.*; // Can be deleted after hardcoded database is removed
 
 @WebServlet("/scheduling")
 public class SchedulingServlet extends HttpServlet {
-    SampleData hardcoded;
-
-    public void init(ServletConfig servletconfig) throws ServletException { 
-        hardcoded = new SampleData();
-    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -57,12 +51,12 @@ public class SchedulingServlet extends HttpServlet {
         TutorSession tutoringSession = new TutorSession(studentEmail, tutorID, subtopics, questions, timeslot);
 
         // Update scheduledSessions
-        hardcoded.addToScheduledSessionsByEmail(tutorID, tutoringSession);
+        SampleData.addToScheduledSessionsByEmail(tutorID, tutoringSession);
 
         // Remove available timeslot
-        hardcoded.deleteAvailabilityByTimeRange(tutorID, timeslot);
+        SampleData.deleteAvailabilityByTimeRange(tutorID, timeslot);
 
-        String json = convertToJsonUsingGson(hardcoded.getSampleTutors());
+        String json = convertToJsonUsingGson(SampleData.getSampleTutors());
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;

@@ -28,16 +28,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.*; // Can be deleted after hardcoded database is removed
-
 
 @WebServlet("/availability")
 public class AvailabilityServlet extends HttpServlet {
-    SampleData hardcoded;
-
-    public void init(ServletConfig servletconfig) throws ServletException { 
-        hardcoded = new SampleData();
-    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -52,7 +45,7 @@ public class AvailabilityServlet extends HttpServlet {
 
         List<TimeRange> timeslots = new ArrayList<TimeRange>();
 
-        for (Tutor tutor : hardcoded.getSampleTutors()) {
+        for (Tutor tutor : SampleData.getSampleTutors()) {
             if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
                 timeslots = Arrays.asList(tutor.getAvailability());
             }
