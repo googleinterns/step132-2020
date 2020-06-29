@@ -28,16 +28,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.*; // Can be deleted after hardcoded database is removed
-
 
 @WebServlet("/confirmation")
 public class ConfirmationServlet extends HttpServlet {
-    SampleData hardcoded;
-
-    public void init(ServletConfig servletconfig) throws ServletException { 
-        hardcoded = new SampleData();
-    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -52,7 +45,7 @@ public class ConfirmationServlet extends HttpServlet {
 
         List<TutorSession> scheduledSessions = new ArrayList<TutorSession>();
 
-        for (Tutor tutor : hardcoded.getSampleTutors()) {
+        for (Tutor tutor : SampleData.getSampleTutors()) {
             if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
                 scheduledSessions = Arrays.asList(tutor.getScheduledSessions());
             }
