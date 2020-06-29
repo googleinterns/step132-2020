@@ -35,6 +35,9 @@ public final class Tutor {
         this.skills = skills;
         this.availability = availability;
         this.scheduledSessions = scheduledSessions;
+        // Rating count and sum are both initially set to 0 by default
+        this.ratingCount = 0;
+        this.ratingSum = 0;
     }
 
     public String getName() {
