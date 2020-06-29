@@ -27,7 +27,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.*;
 import com.google.sps.servlets.SchedulingServlet;
 import com.google.sps.data.SampleData;
+import com.google.sps.data.TimeRange;
+import com.google.sps.data.Tutor;
 import com.google.sps.data.TutorSession;
+import com.google.gson.Gson;
 
 @RunWith(JUnit4.class)
 public final class SchedulingTest {
@@ -36,7 +39,6 @@ public final class SchedulingTest {
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletConfig config = mock(ServletConfig.class);
 
         when(request.getParameter("tutorID")).thenReturn("btrevisan@google.com");
         when(request.getParameter("start")).thenReturn("480");
@@ -51,7 +53,6 @@ public final class SchedulingTest {
         when(request.getContentType()).thenReturn("application/json");
 
         SchedulingServlet servlet = new SchedulingServlet();
-        servlet.init(config);
         servlet.doPost(request, response);
 
         verify(request, atLeast(1)).getParameter("tutorID");
@@ -61,11 +62,14 @@ public final class SchedulingTest {
         verify(request, atLeast(1)).getParameter("subtopics");
         verify(request, atLeast(1)).getParameter("questions");
 
+        String expected = new Gson().toJson(new TutorSession("test@gmail.com", "btrevisan@google.com", "algebra", "How does it work?",  TimeRange.fromStartToEnd(480, 600)));
+        String unexpected = new Gson().toJson(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(480, 600), TimeRange.fromStartToEnd(660,780)}, new TutorSession[]{}));
+
         writer.flush();
         // Tutoring session should have been scheduled
-        Assert.assertTrue(stringWriter.toString().contains("{\"studentEmail\":\"test@gmail.com\",\"tutorEmail\":\"btrevisan@google.com\",\"subtopics\":\"algebra\",\"questions\":\"How does it work?\",\"timeslot\":{\"start\":480,\"duration\":120,\"end\":600}}"));
+        Assert.assertTrue(stringWriter.toString().contains(expected));
         // Previously available timeslot should no longer be available
-        Assert.assertFalse(stringWriter.toString().contains("{\"name\":\"Bernardo Eilert Trevisan\",\"email\":\"btrevisan@google.com\",\"skills\":[\"English\",\"Physics\"],\"availability\":[{\"start\":480,\"duration\":120,\"end\":600}]"));
+        Assert.assertFalse(stringWriter.toString().contains(unexpected));
     }
 
 }
