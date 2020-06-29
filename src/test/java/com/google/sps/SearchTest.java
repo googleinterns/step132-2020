@@ -58,7 +58,7 @@ public final class SearchTest {
         verify(request, atLeast(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
         List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(720, 780), TimeRange.fromStartToEnd(900,1020)}, new TutorSession[]{}));
-        String expected = convertListToJson(expectedTutorList);
+        String expected = new Gson().toJson(expectedTutorList);
         Assert.assertTrue(stringWriter.toString().contains(expected));
 
     }
@@ -82,7 +82,7 @@ public final class SearchTest {
         writer.flush(); // it may not have been flushed yet...
 
         //there are no tutors for business, so it should return an empty string
-        String expected = "";
+        String expected = "[]";
         Assert.assertTrue(stringWriter.toString().contains(expected));
 
     }
