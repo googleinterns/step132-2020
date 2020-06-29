@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
+import com.google.sps.data.SampleData;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Optional;
@@ -27,27 +28,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.*; // Can be deleted after hardcoded database is removed
-
 
 @WebServlet("/availability")
 public class AvailabilityServlet extends HttpServlet {
-    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
-    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
-    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
-    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
-    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
-
-    private static final String[] SKILLS1 = new String[]{"math"};
-
-    private static final TimeRange[] AVAILABILITY1 = new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_0900AM), TimeRange.fromStartToEnd(TIME_1100AM, TIME_1200AM)};
-
-    private List<Tutor> hardcoded = new ArrayList<Tutor>(); 
-
-    public void init(ServletConfig servletconfig) throws ServletException { 
-        hardcoded.add(new Tutor("John", "john@gmail.com", SKILLS1, AVAILABILITY1, new TutorSession[]{}));
-        hardcoded.add(new Tutor("Jane", "jane@gmail.com", SKILLS1, AVAILABILITY1, new TutorSession[]{}));
-    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -62,22 +45,15 @@ public class AvailabilityServlet extends HttpServlet {
 
         List<TimeRange> timeslots = new ArrayList<TimeRange>();
 
-        for (Tutor tutor : hardcoded) {
+        for (Tutor tutor : SampleData.getSampleTutors()) {
             if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
                 timeslots = Arrays.asList(tutor.getAvailability());
             }
         }
 
-        String json = convertToJsonUsingGson(timeslots);
+        String json = new Gson().toJson(timeslots);
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
-    }
-
-    // Converts the time slot array into a JSON string using the Gson library.
-    private String convertToJsonUsingGson(List<TimeRange> timeslots) {
-        Gson gson = new Gson();
-        String json = gson.toJson(timeslots);
-        return json;
     }
 }

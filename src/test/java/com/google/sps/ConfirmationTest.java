@@ -23,9 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
-import com.google.sps.data.TimeRange;
-import com.google.sps.data.SampleData;
-import com.google.sps.servlets.AvailabilityServlet;
+import com.google.sps.servlets.ConfirmationServlet;
 import com.google.gson.Gson;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,27 +31,26 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.*;
 
 @RunWith(JUnit4.class)
-public final class AvailabilityTest {
-  
+public final class ConfirmationTest {
+
     @Test
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn("kashisharora@google.com");
+        when(request.getParameter("tutorID")).thenReturn("elian@google.com");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        AvailabilityServlet servlet = new AvailabilityServlet();
+        ConfirmationServlet servlet = new ConfirmationServlet();
         servlet.doPost(request, response);
-
-        String expected = new Gson().toJson(SampleData.getTutorByEmail("kashisharora@google.com").getAvailability());
 
         verify(request, atLeast(1)).getParameter("tutorID");
         writer.flush();
-        Assert.assertTrue(stringWriter.toString().contains(expected));
+        // If the user has no scheduled sessions, the return json string should be an empty array
+        Assert.assertTrue(stringWriter.toString().contains("[]"));
     }
 }

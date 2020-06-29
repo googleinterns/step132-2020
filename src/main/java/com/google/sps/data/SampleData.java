@@ -68,4 +68,28 @@ public final class SampleData {
         return null;
     }
 
+    /** Deletes the given timeslot from the given tutor's availability array. */
+    public static void deleteAvailabilityByTimeRange(String email, TimeRange delete) {
+        Tutor tutor = getTutorByEmail(email);
+
+        for(TimeRange timeslot : tutor.getAvailability()) {
+
+            if(timeslot.getStart() == delete.getStart() && timeslot.getEnd() == delete.getEnd()) {
+                tutors.remove(tutor);
+                tutor.deleteAvailabilityByTimeRange(timeslot);
+                tutors.add(tutor);
+                break;
+            }
+        }
+    }
+
+    /** Adds the given TutorSession to the scheduled sessions array of the given tutor. */
+    public static void addToScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
+        Tutor tutor = getTutorByEmail(email);
+
+        tutors.remove(tutor);
+        tutor.addToScheduledSessions(tutoringSession);
+        tutors.add(tutor);
+    }
+
 }

@@ -20,6 +20,7 @@ import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -28,8 +29,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/scheduling")
-public class SchedulingServlet extends HttpServlet {
+@WebServlet("/confirmation")
+public class ConfirmationServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -39,24 +40,18 @@ public class SchedulingServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Get the id of the tutor whose availability will be displayed.
         String tutorID = request.getParameter("tutorID");
-        String start = request.getParameter("start");
-        String end = request.getParameter("end");
-        String studentEmail = request.getParameter("studentEmail");
-        String subtopics = request.getParameter("subtopics");
-        String questions = request.getParameter("questions");
 
-        TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end));
+        List<TutorSession> scheduledSessions = new ArrayList<TutorSession>();
 
-        TutorSession tutoringSession = new TutorSession(studentEmail, tutorID, subtopics, questions, timeslot);
+        for (Tutor tutor : SampleData.getSampleTutors()) {
+            if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
+                scheduledSessions = Arrays.asList(tutor.getScheduledSessions());
+            }
+        }
 
-        // Update scheduledSessions
-        SampleData.addToScheduledSessionsByEmail(tutorID, tutoringSession);
-
-        // Remove available timeslot
-        SampleData.deleteAvailabilityByTimeRange(tutorID, timeslot);
-
-        String json = new Gson().toJson(SampleData.getSampleTutors());
+        String json = new Gson().toJson(scheduledSessions);
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
