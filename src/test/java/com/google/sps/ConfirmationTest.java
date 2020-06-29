@@ -37,7 +37,6 @@ public final class ConfirmationTest {
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletConfig config = mock(ServletConfig.class);    
 
         when(request.getParameter("tutorID")).thenReturn("elian@google.com");
 
@@ -47,7 +46,6 @@ public final class ConfirmationTest {
         when(request.getContentType()).thenReturn("application/json");
 
         ConfirmationServlet servlet = new ConfirmationServlet();
-        servlet.init(config);
         servlet.doPost(request, response);
 
         verify(request, atLeast(1)).getParameter("tutorID");
@@ -55,5 +53,4 @@ public final class ConfirmationTest {
         // If the user has no scheduled sessions, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains("[]"));
     }
-
 }
