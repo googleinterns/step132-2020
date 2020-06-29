@@ -48,7 +48,10 @@ public class SearchServlet extends HttpServlet {
         ArrayList<Tutor> results = getTutorsForTopic(topic);
 
         response.setCharacterEncoding("UTF-8");
-        response.getWriter().println(convertListToJson(results));
+
+        String jsonResults = new Gson().toJson(results);
+
+        response.getWriter().println(jsonResults);
        
     }
 
@@ -71,22 +74,6 @@ public class SearchServlet extends HttpServlet {
         }
 
         return results;
-    }
-
-    /**
-    * This method converts a list of tutors to a JSON string.
-    * @return String, the list of tutors as a JSON string
-    */
-    private String convertListToJson(ArrayList<Tutor> tutors) {
-        ArrayList<String> jsonTutors = new ArrayList<String>();
-        Gson gson = new Gson();
-        //convert all Tutor objects to JSON
-        for(Tutor t : tutors) {
-            jsonTutors.add(gson.toJson(t));
-        }
-
-        //convert list to JSON
-        return gson.toJson(jsonTutors);
     }
 
 }

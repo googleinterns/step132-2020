@@ -68,8 +68,6 @@ async function getSearchResultsHelper(document, window) {
 
 /** Creates a div element containing information about a search result. */
 function createSearchResult(result) {
-   result = JSON.parse(result);
-
     var container = document.createElement("div");
     var name = document.createElement("h3");
     var email = document.createElement("h6");
