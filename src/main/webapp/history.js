@@ -56,12 +56,58 @@ function createTutoringSessionBox(tutoringSession) {
     tutorNameElement.style.display = 'inline';
     tutorNameElement.innerHTML = tutoringSession.tutorEmail;
 
-
     const mainLineElement = document.createElement('div');
     mainLineElement.className = 'd-flex w-100 justify-content-between';
     mainLineElement.appendChild(dateElement);
     mainLineElement.appendChild(tutorNameElement);
 
+    const starsElement = document.createElement('div');
+    if (tutoringSession.rated == true) {
+        // Get the number of stars
+    } else {
+        mainLineElement.appendChild(createStars(starsElement, tutoringSession));
+    }
+
     tutoringSessionElement.appendChild(mainLineElement);
     return tutoringSessionElement;
+}
+
+function createStars(starsElement, tutoringSession) {
+
+    const star1Element = document.createElement('span');
+    star1Element.className = 'glyphicon glyphicon-star-empty';
+    star1Element.addEventListener('click', () => {
+        rateTutor(tutoringSession, 1);
+    });
+
+    const star2Element = document.createElement('span');
+    star2Element.className = 'glyphicon glyphicon-star-empty';
+    star2Element.addEventListener('click', () => {
+        rateTutor(tutoringSession, 2);
+    });
+
+    const star3Element = document.createElement('span');
+    star3Element.className = 'glyphicon glyphicon-star-empty';
+    star3Element.addEventListener('click', () => {
+        rateTutor(tutoringSession, 3);
+    });
+
+    const star4Element = document.createElement('span');
+    star4Element.className = 'glyphicon glyphicon-star-empty';
+    star4Element.addEventListener('click', () => {
+        rateTutor(tutoringSession, 4);
+    });
+
+    const star5Element = document.createElement('span');
+    star5Element.className = 'glyphicon glyphicon-star-empty';
+    star5Element.addEventListener('click', () => {
+        rateTutor(tutoringSession, 5);
+    });
+
+    starsElement.appendChild(star1Element);
+    starsElement.appendChild(star2Element);
+    starsElement.appendChild(star3Element);
+    starsElement.appendChild(star4Element);
+    starsElement.appendChild(star5Element);
+    return starsElement;
 }
