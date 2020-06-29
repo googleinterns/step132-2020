@@ -43,7 +43,7 @@ public final class SchedulingTest {
         when(request.getParameter("tutorID")).thenReturn("btrevisan@google.com");
         when(request.getParameter("start")).thenReturn("480");
         when(request.getParameter("end")).thenReturn("600");
-        when(request.getParameter("studentEmail")).thenReturn("test@gmail.com");
+        when(request.getParameter("studentEmail")).thenReturn("thegoogler@google.com");
         when(request.getParameter("subtopics")).thenReturn("algebra");
         when(request.getParameter("questions")).thenReturn("How does it work?");
 
@@ -62,7 +62,7 @@ public final class SchedulingTest {
         verify(request, atLeast(1)).getParameter("subtopics");
         verify(request, atLeast(1)).getParameter("questions");
 
-        String expected = new Gson().toJson(new TutorSession("test@gmail.com", "btrevisan@google.com", "algebra", "How does it work?",  TimeRange.fromStartToEnd(480, 600)));
+        String expected = new Gson().toJson(new TutorSession("thegoogler@google.com", "btrevisan@google.com", "algebra", "How does it work?",  TimeRange.fromStartToEnd(480, 600)));
         String unexpected = new Gson().toJson(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(480, 600), TimeRange.fromStartToEnd(660,780)}, new TutorSession[]{}));
 
         writer.flush();
