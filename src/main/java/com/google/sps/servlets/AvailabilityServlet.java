@@ -51,16 +51,9 @@ public class AvailabilityServlet extends HttpServlet {
             }
         }
 
-        String json = convertToJsonUsingGson(timeslots);
+        String json = new Gson().toJson(timeslots);
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
-    }
-
-    // Converts the time slot array into a JSON string using the Gson library.
-    private String convertToJsonUsingGson(List<TimeRange> timeslots) {
-        Gson gson = new Gson();
-        String json = gson.toJson(timeslots);
-        return json;
     }
 }
