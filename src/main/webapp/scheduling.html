@@ -26,24 +26,26 @@
         <div class="container-fluid">
             <h1>Last Step!</h1>
 
-            <form action="/scheduling" method="POST">
+            <form>
                 <div class="form-group">
-                    <label for="name" class="col-sm-2 col-form-label">Name:</label>
-                    <input type="text" class="form-control" name="name" style="color: #555555;" placeholder="Your name here..." required>
+                    <label for="studentEmail" class="col-sm-2 col-form-label">Email:</label>
+                    <input type="text" class="form-control" name="studentEmail" id="studentEmail" style="color: #555555;" placeholder="Your email here..." required>
                 </div>
 
                 <div class="form-group">
                     <label for="topics" class="col-sm-2 col-form-label">What topics would you like to cover?</label>
-                    <textarea class="form-control" name="topics" rows="3" placeholder="Topics you would like your tutor to cover..."></textarea>
+                    <textarea class="form-control" name="topics" id="topics" rows="3" placeholder="Topics you would like your tutor to cover..."></textarea>
                 </div>
                 
                 <div class="form-group">
                     <label for="questions" class="col-sm-2 col-form-label">What questions do you have?</label>
-                    <textarea class="form-control" name="questions" rows="3" placeholder="Any questions you might have..."></textarea>
+                    <textarea class="form-control" name="questions" id="questions" rows="3" placeholder="Any questions you might have..."></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" onclick="scheduleTutorSession()">Submit</button>
             </form>
         </div>
+
+        <script src="scheduling.js"></script>
     </body>
 </html>

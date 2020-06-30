@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
 import com.google.sps.data.TimeRange;
+import com.google.sps.data.SampleData;
 import com.google.sps.servlets.AvailabilityServlet;
 import com.google.gson.Gson;
 import javax.servlet.http.HttpServlet;
@@ -33,19 +34,13 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class AvailabilityTest {
-    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
-    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
-    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
-    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
-    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
   
     @Test
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
-        ServletConfig config = mock(ServletConfig.class);    
 
-        when(request.getParameter("tutorID")).thenReturn("john@gmail.com");
+        when(request.getParameter("tutorID")).thenReturn("kashisharora@google.com");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -53,29 +48,12 @@ public final class AvailabilityTest {
         when(request.getContentType()).thenReturn("application/json");
 
         AvailabilityServlet servlet = new AvailabilityServlet();
-        servlet.init(config);
         servlet.doPost(request, response);
+
+        String expected = new Gson().toJson(SampleData.getTutorByEmail("kashisharora@google.com").getAvailability());
 
         verify(request, atLeast(1)).getParameter("tutorID");
         writer.flush();
-        System.out.println("What is this: " + stringWriter.toString());
-        Assert.assertTrue(stringWriter.toString().contains("{\"start\":480,\"duration\":60,\"end\":540},{\"start\":660,\"duration\":60,\"end\":720}"));
-    }
-
-    @Test
-    public void testConvertToJsonUsingGson() {
-        TimeRange[] availability = new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_0900AM), TimeRange.fromStartToEnd(TIME_1100AM, TIME_1200AM)};
-
-        String actual = convertToJsonUsingGson(Arrays.asList(availability));
-        String expected = "[{\"start\":480,\"duration\":60,\"end\":540},{\"start\":660,\"duration\":60,\"end\":720}]";
-
-        Assert.assertEquals(actual, expected);
-    }
-
-    // Converts the time slot array into a JSON string using the Gson library.
-    private String convertToJsonUsingGson(List<TimeRange> timeslots) {
-        Gson gson = new Gson();
-        String json = gson.toJson(timeslots);
-        return json;
+        Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 }
