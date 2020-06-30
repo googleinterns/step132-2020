@@ -63,17 +63,23 @@ public class RegistrationServlet extends HttpServlet {
 
     // Make entity for user with all registration info
     Entity userEntity = new Entity("User");
-    userEntity.setProperty("role", role);
-    userEntity.setProperty("name", fullName);
-    userEntity.setProperty("email", email);
-    userEntity.setProperty("userId", userId);
-    userEntity.setProperty("topics", topicsToStr);
-
-    datastore.put(userEntity);
+    createEntityAndPutInDatastore(datastore, userEntity, role, fullName, email, userId, topicsToStr);
 
     response.sendRedirect("/scheduling.html");
   }
 
+ /**
+  * Creates a user entity and puts it in datastore, used for testing
+  */
+  public void createEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String name, String email, String userId, List<String> topics) {
+    entity.setProperty("role", role);
+    entity.setProperty("name", name);
+    entity.setProperty("email", email);
+    entity.setProperty("userId", userId);
+    entity.setProperty("topics", topics);
+    ds.put(entity);
+  }
+  
   /**
    * @return the Optional of the request parameter
    */
