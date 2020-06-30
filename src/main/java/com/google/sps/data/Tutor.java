@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
 
+/** Stores information about a tutor including name, email, skills, availability, and scheduled tutoring sessions. */
 public final class Tutor {
     
     private String name;
