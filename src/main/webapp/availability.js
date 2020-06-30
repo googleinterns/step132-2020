@@ -71,6 +71,11 @@ function createTimeSlotBox(timeslot, tutorID) {
 
 // Redirects the user to the scheduling page and passes down the tutor ID along with the selected time range for the session.
 function selectTimeSlot(tutorID, window, timeslot) {
-    var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID) + "&start=" + encodeURIComponent(timeslot.start) + "&end=" + encodeURIComponent(timeslot.end);
+    var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID) +
+                "&start=" + encodeURIComponent(timeslot.start) +
+                "&end=" + encodeURIComponent(timeslot.end) +
+                "&year=" + encodeURIComponent(timeslot.year) +
+                "&month=" + encodeURIComponent(timeslot.month) +
+                "&day=" + encodeURIComponent(timeslot.day);
     window.location.href = url;
 }
