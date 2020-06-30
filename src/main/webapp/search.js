@@ -12,6 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** Lets users switch between the tutors and books tabs. */
+function switchTab(elem) {
+    var currentActiveTab = document.getElementsByClassName("active")[0];
+    var currentActiveContainer = document.getElementsByClassName("active-container")[0];
+
+    currentActiveTab.classList.remove("active");
+    currentActiveContainer.classList.remove("active-container");
+
+    document.getElementById(elem.innerText.toLowerCase()).classList.add("active-container");
+
+    elem.parentNode.classList.add("active");
+}
+
 /** Gets the topic the user searched for from the search box and redirects the page to the search-results page with a url that contains a query parameter for the topic. 
     The user may already be on the search-results page. In that case, the page will reload with a different value for the topic query parameter. */
 function redirectToResults() {
