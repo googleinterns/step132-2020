@@ -89,7 +89,7 @@ public final class RegistrationTest {
     }
 
     @Test
-    public void doPostCreatesAndStoresEntities() throws IOException {
+    public void doPostCreatesAndStoresEntities() {
         List<String> mockTopics = Arrays.asList("math", "biology");
 
         Entity expected = new Entity("User");
