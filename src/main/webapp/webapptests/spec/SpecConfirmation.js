@@ -14,7 +14,7 @@
 
 describe("Confirmation", function() {
     describe("when the list of upcoming sessions is loaded", function() {
-        var mockWindow = {location: {href: "confirmation.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
+        var mockWindow = {location: {href: "confirmation.html?studentEmail=test%40gmail.com", search: "?studentEmail=test%40gmail.com"}};
 
         it("should trigger the fetch function", function() {
             spyOn(window, "onload").and.callFake(function() {
@@ -27,19 +27,19 @@ describe("Confirmation", function() {
     });
 
     describe("when the tutor ID is read", function() {
-        var mockWindow = {location: {href: "confirmation.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
+        var mockWindow = {location: {href: "confirmation.html?studentEmail=test%40gmail.com", search: "?studentEmail=test%40gmail.com"}};
         var queryString = new Array();
         readTutorID(queryString, mockWindow);
 
         it("should set tutorID inside queryString as the tutorID", function() {
-            expect(queryString["tutorID"]).toEqual("test@gmail.com");
+            expect(queryString["studentEmail"]).toEqual("test@gmail.com");
         });
     });
 
     describe("when a scheduled session box is created", function() {
         var scheduledSession = {timeslot: {start: 480}};
-        var tutorID = "test@gmail.com";
-        var actual = createScheduledSessionBox(scheduledSession, tutorID);
+        var studentEmail = "test@gmail.com";
+        var actual = createScheduledSessionBox(scheduledSession, studentEmail);
 
         it("should return a list item element", function() {
             expect(actual.tagName).toEqual("LI");

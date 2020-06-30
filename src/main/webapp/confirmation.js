@@ -15,13 +15,13 @@
 function getScheduledSessions() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);
-    const tutorID = queryString["tutorID"];
+    const studentEmail = queryString["studentEmail"];
 
     const params = new URLSearchParams();
-    params.append('tutorID', tutorID);
+    params.append('studentEmail', studentEmail);
     fetch('/confirmation', {method: 'POST', body: params}).then(response => response.json()).then((scheduledSessions) => {
         scheduledSessions.forEach((scheduledSession) => {
-            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession, tutorID));
+            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession, studentEmail));
         })
     });
 }
@@ -42,7 +42,7 @@ function readTutorID(queryString, window) {
     }
 }
 
-function createScheduledSessionBox(scheduledSession, tutorID) {
+function createScheduledSessionBox(scheduledSession, studentEmail) {
     const scheduledSessionElement = document.createElement('li');
     scheduledSessionElement.className = 'list-group-item';
 

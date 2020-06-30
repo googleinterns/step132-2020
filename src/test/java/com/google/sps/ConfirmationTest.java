@@ -25,6 +25,11 @@ import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
 import com.google.sps.servlets.ConfirmationServlet;
 import com.google.gson.Gson;
+import com.google.sps.data.Tutor;
+import com.google.sps.data.TimeRange;
+import com.google.sps.data.TutorSession;
+import com.google.sps.data.SampleData;
+import com.google.sps.data.Student;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,11 +39,11 @@ import javax.servlet.*;
 public final class ConfirmationTest {
 
     @Test
-    public void testDoPost() throws Exception {
+    public void testDoPostNoSession() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn("elian@google.com");
+        when(request.getParameter("studentEmail")).thenReturn("elian@google.com");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -48,9 +53,35 @@ public final class ConfirmationTest {
         ConfirmationServlet servlet = new ConfirmationServlet();
         servlet.doPost(request, response);
 
-        verify(request, atLeast(1)).getParameter("tutorID");
+        verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
         // If the user has no scheduled sessions, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains("[]"));
+    }
+
+    @Test
+    public void testDoPostWithSessions() throws Exception {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        when(request.getParameter("studentEmail")).thenReturn("sfalberg@google.com");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getContentType()).thenReturn("application/json");
+
+        TutorSession tutoringSessionFake = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600));
+        SampleData.addToStudentScheduledSessionsByEmail("sfalberg@google.com", tutoringSessionFake);
+
+        ConfirmationServlet servlet = new ConfirmationServlet();
+        servlet.doPost(request, response);
+
+        String expected = new Gson().toJson(new TutorSession[]{tutoringSessionFake});
+
+        verify(request, atLeast(1)).getParameter("studentEmail");
+        writer.flush();
+        // If the user has no scheduled sessions, the return json string should be an empty array
+        Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 }

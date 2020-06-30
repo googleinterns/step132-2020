@@ -51,7 +51,8 @@ public class SchedulingServlet extends HttpServlet {
         TutorSession tutoringSession = new TutorSession(studentEmail, tutorID, subtopics, questions, timeslot);
 
         // Update scheduledSessions
-        SampleData.addToScheduledSessionsByEmail(tutorID, tutoringSession);
+        SampleData.addToTutorScheduledSessionsByEmail(tutorID, tutoringSession);
+        SampleData.addToStudentScheduledSessionsByEmail(studentEmail, tutoringSession);
 
         // Remove available timeslot
         SampleData.deleteAvailabilityByTimeRange(tutorID, timeslot);
