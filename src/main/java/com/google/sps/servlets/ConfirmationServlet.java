@@ -18,6 +18,7 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
+import com.google.sps.data.Student;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Optional;
@@ -29,8 +30,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/availability")
-public class AvailabilityServlet extends HttpServlet {
+@WebServlet("/confirmation")
+public class ConfirmationServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -40,19 +41,19 @@ public class AvailabilityServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Get the id of the tutor whose availability will be displayed.
-        String tutorID = request.getParameter("tutorID");
+        // Get the id of the student whose availability will be displayed.
+        String studentEmail = request.getParameter("studentEmail");
 
-        List<TimeRange> timeslots = new ArrayList<TimeRange>();
+        List<TutorSession> scheduledSessions = new ArrayList<TutorSession>();
 
-        for (Tutor tutor : SampleData.getSampleTutors()) {
-            if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
-                timeslots = Arrays.asList(tutor.getAvailability());
+        for (Student student : SampleData.getSampleStudents()) {
+            if (studentEmail.toLowerCase().equals(student.getEmail().toLowerCase())) {
+                scheduledSessions = Arrays.asList(student.getScheduledSessions());
                 break;
             }
         }
 
-        String json = new Gson().toJson(timeslots);
+        String json = new Gson().toJson(scheduledSessions);
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;

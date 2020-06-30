@@ -19,20 +19,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.LinkedList;
 
-/** Stores information about a tutor including name, email, skills, availability, and scheduled tutoring sessions. */
-public final class Tutor {
+/**
+ * Keeps track of a student's information, which includes their name, email, topics they
+ * are learning, and tutoring sessions they have scheduled.
+ * Student connects to the overarching database as a list of Students inside the database. 
+ */
+public final class Student {
     
     private String name;
     private String email;
-    private String[] skills;
-    private TimeRange[] availability;
+    private String[] learning;
     private TutorSession[] scheduledSessions;
 
-    public Tutor(String name, String email, String[] skills, TimeRange[] availability, TutorSession[] scheduledSessions) {
+    public Student(String name, String email, String[] learning, TutorSession[] scheduledSessions) {
         this.name = name;
         this.email = email;
-        this.skills = skills;
-        this.availability = availability;
+        this.learning = learning;
         this.scheduledSessions = scheduledSessions;
     }
 
@@ -44,23 +46,12 @@ public final class Tutor {
         return this.email;
     }
 
-    public String[] getSkills() {
-        return this.skills;
-    }
-
-    public TimeRange[] getAvailability() {
-        return this.availability;
+    public String[] getLearning() {
+        return this.learning;
     }
 
     public TutorSession[] getScheduledSessions() {
         return this.scheduledSessions;
-    }
-
-    /** Deletes the given timeslot from the availability array. */
-    public void deleteAvailabilityByTimeRange(TimeRange timeslot) {
-        List<TimeRange> availabilityList = new LinkedList<TimeRange>(Arrays.asList(this.availability));
-        availabilityList.remove(timeslot);
-        this.availability = availabilityList.toArray(new TimeRange[0]);
     }
 
     /** Adds the given Tutor Session to the scheduledSessions array. */
