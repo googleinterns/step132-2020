@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
-import com.google.sps.servlets.ConfirmationServlet;
+import com.google.sps.servlets.HistoryServlet;
 import com.google.gson.Gson;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
@@ -50,7 +50,7 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        ConfirmationServlet servlet = new ConfirmationServlet();
+        HistoryServlet servlet = new HistoryServlet();
         servlet.doPost(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
@@ -74,7 +74,7 @@ public final class HistoryTest {
         TutorSession tutoringSessionFake = new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600));
         SampleData.addToStudentScheduledSessionsByEmail("btrevisan@google.com", tutoringSessionFake);
 
-        ConfirmationServlet servlet = new ConfirmationServlet();
+        HistoryServlet servlet = new HistoryServlet();
         servlet.doPost(request, response);
 
         String expected = new Gson().toJson(new TutorSession[]{tutoringSessionFake});
