@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.*;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
+import com.google.sps.data.LoginStatus;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
@@ -29,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that gets the login status of the user and displays appropriate form */
 @WebServlet("/login-status")
 public class LoginStatusServlet extends HttpServlet {
+    private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
@@ -44,7 +47,7 @@ public class LoginStatusServlet extends HttpServlet {
             return;
         } 
         
-        String name = getName(userService.getCurrentUser().getUserId());
+        String name = getName(userService.getCurrentUser().getUserId(), datastore);
         // Name is null if user hasn't registered, set needsToRegister to 'true' and make logout URL
         if (name == null) {
             loginStatus = new LoginStatus(true, true, userService.createLogoutURL("/homepage.html"));
@@ -57,12 +60,12 @@ public class LoginStatusServlet extends HttpServlet {
     }
 
     /** Returns the name of the user with id, or null if the user has not yet registered. */
-    private String getName(String userId) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    public String getName(String userId, DatastoreService datastore) {
         //Make userId a query filter
         Query query = new Query("User").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query);
         Entity userEntity = results.asSingleEntity();
+        
 
         // User not registered
         if (userEntity == null) {
