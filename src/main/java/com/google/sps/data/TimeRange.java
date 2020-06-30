@@ -14,26 +14,30 @@
 
 package com.google.sps.data;
 
+import java.util.Calendar;
+
 public final class TimeRange {
     
     private int start;
     private int duration;
     private int end;
+    private Calendar date;
 
-    private TimeRange(int start, int duration) {
+    private TimeRange(int start, int duration, Calendar date) {
         this.start = start;
         this.duration = duration;
         this.end = start + duration;
+        this.date = date;
     }
 
     /** Create new TimeRange with start time (in minutes) and end time (in minutes). */
-    public static TimeRange fromStartToEnd(int start, int end) {
-        return new TimeRange(start, end - start);
+    public static TimeRange fromStartToEnd(int start, int end, Calendar date) {
+        return new TimeRange(start, end - start, date);
     }
 
     /** Create new TimeRange with start time (in minutes) and duration (in minutes). */
-    public static TimeRange fromStartWithDuration(int start, int duration) {
-        return new TimeRange(start, duration);
+    public static TimeRange fromStartWithDuration(int start, int duration, Calendar date) {
+        return new TimeRange(start, duration, date);
     }
 
     public int getStart() {
@@ -46,6 +50,10 @@ public final class TimeRange {
 
     public int getEnd() {
         return this.end;
+    }
+
+    public Calendar getDate() {
+        return this.date;
     }
 
     @Override
