@@ -81,7 +81,8 @@ async function getBooks(topic) {
             return;
         }
 
-        numSearchResults.innerText = "Found " + results.length + " books for " + topic;
+        //Only make "books" plural if there are 0 or more than 1 books
+        numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " books for " : " book for ") + topic;
 
         //create container to put books
         var booksContainer = document.createElement("div");
@@ -111,7 +112,8 @@ async function getTutors(topic) {
             return;
         }
 
-        numSearchResults.innerText = "Found " + results.length + " tutors for " + topic;
+        //Only make "tutors" plural if there are 0 or more than 1 tutors
+        numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " tutors for " : " tutor for ") + topic;
 
         results.forEach(function(result) {
             tutorContainer.append(createTutorResult(result));
