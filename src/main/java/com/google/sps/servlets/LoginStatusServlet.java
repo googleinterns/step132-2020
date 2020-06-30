@@ -31,23 +31,27 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/login-status")
 public class LoginStatusServlet extends HttpServlet {
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private UserService userService = UserServiceFactory.getUserService();
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("application/json");
-        UserService userService = UserServiceFactory.getUserService();
-
-        LoginStatus loginStatus;
-
         // If user not logged in, show login form
         if (!userService.isUserLoggedIn()) {
-            loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"));
+            LoginStatus loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"));
             String json = new Gson().toJson(loginStatus);
+            response.setContentType("application/json");
             response.getWriter().println(json);
             return;
         } 
         
         String name = getName(userService.getCurrentUser().getUserId(), datastore);
+        setRegistered(response, name);
+    }
+
+    /** Determines if a logged in user needs to register, created for testing */
+    public void setRegistered(HttpServletResponse response, String name) throws IOException {
+        LoginStatus loginStatus;
+
         // Name is null if user hasn't registered, set needsToRegister to 'true' and make logout URL
         if (name == null) {
             loginStatus = new LoginStatus(true, true, userService.createLogoutURL("/homepage.html"));
@@ -56,6 +60,7 @@ public class LoginStatusServlet extends HttpServlet {
         }
 
         String json = new Gson().toJson(loginStatus);
+        response.setContentType("application/json");
         response.getWriter().println(json);
     }
 
