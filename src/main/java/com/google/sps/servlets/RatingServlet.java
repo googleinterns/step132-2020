@@ -46,7 +46,9 @@ public class RatingServlet extends HttpServlet {
         // Update tutor's rating
         SampleData.rateTutorByEmail(tutorEmail, studentEmail, rating);
 
-        String json = new Gson().toJson(SampleData.getSampleTutors());
+        String jsonTutors = new Gson().toJson(SampleData.getSampleTutors());
+        String jsonStudents = new Gson().toJson(SampleData.getSampleStudents());
+        String json = jsonTutors + ", " + jsonStudents; 
         response.setContentType("application/json;");
         response.getWriter().println(json);
         response.sendRedirect("/history.html");
