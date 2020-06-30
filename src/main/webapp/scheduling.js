@@ -18,6 +18,9 @@ function scheduleTutorSession() {
     const tutorID = queryString["tutorID"];
     const start = queryString["start"];
     const end = queryString["end"];
+    const year = queryString["year"];
+    const month = queryString["month"];
+    const day = queryString["day"];
 
     var studentEmail = document.getElementById("studentEmail").value;
     var subtopics = document.getElementById("topics").value;
@@ -27,6 +30,9 @@ function scheduleTutorSession() {
     params.append('tutorID', tutorID);
     params.append('start', start);
     params.append('end', end);
+    params.append('year', year);
+    params.append('month', month);
+    params.append('day', day);
     params.append('studentEmail', studentEmail);
     params.append('subtopics', subtopics);
     params.append('questions', questions);
