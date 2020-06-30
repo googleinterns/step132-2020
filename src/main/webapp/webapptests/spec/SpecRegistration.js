@@ -13,7 +13,7 @@
 // limitations under the License.
 
 describe("When displaying registration form", function() {
-    beforeEach(function() {  
+    beforeAll(function() {  
         var mockGenInfoDiv = document.createElement('div');
         mockGenInfoDiv.id = "general-info";
         mockGenInfoDiv.style.display = 'none';
@@ -67,7 +67,7 @@ describe("When displaying registration form", function() {
 describe("Fetching login status", function() {
     var mockLoginStatus;
 
-    beforeEach(function() {
+    beforeAll(function() {
         var mockLoginForm = document.createElement('p');
         mockLoginForm.id = 'login-form';
 
