@@ -14,17 +14,100 @@
 
 package com.google.sps;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
+import com.google.common.collect.ImmutableMap;
+import com.google.sps.servlets.RegistrationServlet;
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import javax.servlet.http.*;
 import org.junit.Assert;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.ArgumentCaptor;
+import static org.mockito.Mockito.*;
 
 @RunWith(JUnit4.class)
 public final class RegistrationTest {
+    private static final String USER_EMAIL = "tutorguy@gmail.com";
+    private static final String USER_ID = "blahblahid";
+
+    private final LocalServiceTestHelper helper =
+      new LocalServiceTestHelper(new LocalUserServiceTestConfig())
+          .setEnvEmail(USER_EMAIL)
+          .setEnvAuthDomain("gmail.com")
+          .setEnvIsLoggedIn(true)
+          .setEnvAttributes(
+              new HashMap(
+                  ImmutableMap.of(
+                      "com.google.appengine.api.users.UserService.user_id_key", USER_ID)));
+    
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private DatastoreService datastore;
+    private RegistrationServlet servlet;
+
+    @Before 
+    public void setUp() {
+        helper.setUp();
+
+        request = mock(HttpServletRequest.class);       
+        response = mock(HttpServletResponse.class);
+        datastore = mock(DatastoreService.class);
+        servlet = new RegistrationServlet();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
+    }
 
     @Test
-    public void noFailTest() {
-        Assert.assertEquals(true, true);
+    public void doPostCorrectlyRedirects() throws IOException {
+        when(request.getParameter("role")).thenReturn("tutor");
+        when(request.getParameter("first-name")).thenReturn("Sam");
+        when(request.getParameter("last-name")).thenReturn("Falberg");
+        when(request.getParameter("math")).thenReturn("math");
+        when(request.getParameter("english")).thenReturn(null);
+        when(request.getParameter("other")).thenReturn("other");
+
+        servlet.doPost(request, response);
+
+        ArgumentCaptor<String> url = ArgumentCaptor.forClass(String.class);
+        verify(response).sendRedirect(url.capture());
+        List<String> expected = Arrays.asList("/scheduling.html");
+        // Response redirected to correct URL
+        Assert.assertEquals(expected, url.getAllValues());
+    }
+
+    @Test
+    public void doPostCreatesAndStoresEntities() throws IOException {
+        List<String> mockTopics = Arrays.asList("math", "biology");
+
+        Entity expected = new Entity("User");
+        expected.setProperty("role", "tutor");
+        expected.setProperty("name", "Sam F");
+        expected.setProperty("email", USER_EMAIL);
+        expected.setProperty("userId", USER_ID);
+        expected.setProperty("topics", mockTopics);
+
+        Entity actual = new Entity("User");
+        servlet.createEntityAndPutInDatastore(datastore, actual, "tutor", "Sam F", USER_EMAIL, USER_ID, mockTopics);
+
+        // Entity was put in datastore
+        verify(datastore).put(actual);
+
+        // Compare stringified versions of entities to check if values are same
+        // Comparing entities themselves won't work because they're two different objects
+        Assert.assertEquals(expected.toString(), actual.toString());
     }
 
 }
