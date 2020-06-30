@@ -29,6 +29,7 @@ public final class TutorSession {
     private String questions;
     private TimeRange timeslot;
     private boolean rated;
+    private int rating;
 
     /**
      * Creates a new tutoring session.
@@ -47,6 +48,8 @@ public final class TutorSession {
         this.timeslot = timeslot;
         // Rated is initially set to false by default
         this.rated = false;
+        // Rating is initially set to 0 by default
+        this.rating = 0;
     }
 
     public String getStudentEmail() {
@@ -73,9 +76,13 @@ public final class TutorSession {
         return this.rated;
     }
 
-    public void markAsRated() {
-        this.rated = true;
+    public int getRating() {
+        return this.rating;
+    }
 
+    public void rateSession(int newRating) {
+        this.rated = true;
+        this.rating = newRating;
         return;
     }
 

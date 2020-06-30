@@ -62,12 +62,12 @@ public final class Student {
     }
 
     /** Marks the tutoring session that has the given tutor's email as rated.*/
-    public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail) {
+    public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail, int newRating) {
         List<TutorSession> scheduledSessionsList = new LinkedList<TutorSession>(Arrays.asList(this.scheduledSessions));
         for(TutorSession tutorSession : this.scheduledSessions) {
             if(tutorEmail.toLowerCase().equals(tutorSession.getTutorEmail().toLowerCase())) {
                 scheduledSessionsList.remove(tutorSession);
-                tutorSession.markAsRated();
+                tutorSession.rateSession(newRating);
                 scheduledSessionsList.add(tutorSession);
             }
         }

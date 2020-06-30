@@ -62,52 +62,49 @@ function createTutoringSessionBox(tutoringSession) {
     mainLineElement.appendChild(tutorNameElement);
 
     const starsElement = document.createElement('div');
-    if (tutoringSession.rated == true) {
-        // Get the number of stars
-    } else {
-        mainLineElement.appendChild(createStars(starsElement, tutoringSession));
-    }
+    mainLineElement.appendChild(loadStars(starsElement, tutoringSession));
 
     tutoringSessionElement.appendChild(mainLineElement);
     return tutoringSessionElement;
 }
 
-function createStars(starsElement, tutoringSession) {
+function loadStars(starsElement, tutoringSession) {
+    var rating = 0;
+    if (tutoringSession.rated) {
+        rating = tutoringSession.rating;
+    }
 
-    const star1Element = document.createElement('span');
-    star1Element.className = 'glyphicon glyphicon-star-empty';
-    star1Element.addEventListener('click', () => {
-        rateTutor(tutoringSession, 1);
-    });
+    var stars = [];
+    for (var i = 0; i < rating; i++) {
+        stars[i] = document.createElement('span');
+        stars[i].className = 'glyphicon glyphicon-star';
+        const rating = i + 1;
+        stars[i].addEventListener('click', () => {
+            rateTutor(tutoringSession, rating);
+            location.reload();
+        });
+        starsElement.appendChild(stars[i])
+    }
 
-    const star2Element = document.createElement('span');
-    star2Element.className = 'glyphicon glyphicon-star-empty';
-    star2Element.addEventListener('click', () => {
-        rateTutor(tutoringSession, 2);
-    });
+    for (var i = rating; i < 5; i++) {
+        stars[i] = document.createElement('span');
+        stars[i].className = 'glyphicon glyphicon-star-empty';
+        const rating = i + 1;
+        stars[i].addEventListener('click', () => {
+            rateTutor(tutoringSession, rating);
+            location.reload();
+        });
+        starsElement.appendChild(stars[i])
+    }
 
-    const star3Element = document.createElement('span');
-    star3Element.className = 'glyphicon glyphicon-star-empty';
-    star3Element.addEventListener('click', () => {
-        rateTutor(tutoringSession, 3);
-    });
-
-    const star4Element = document.createElement('span');
-    star4Element.className = 'glyphicon glyphicon-star-empty';
-    star4Element.addEventListener('click', () => {
-        rateTutor(tutoringSession, 4);
-    });
-
-    const star5Element = document.createElement('span');
-    star5Element.className = 'glyphicon glyphicon-star-empty';
-    star5Element.addEventListener('click', () => {
-        rateTutor(tutoringSession, 5);
-    });
-
-    starsElement.appendChild(star1Element);
-    starsElement.appendChild(star2Element);
-    starsElement.appendChild(star3Element);
-    starsElement.appendChild(star4Element);
-    starsElement.appendChild(star5Element);
     return starsElement;
+}
+
+function rateTutor(tutoringSession, rating) {
+    console.log("this is the rating that will be applied " + rating);
+    const params = new URLSearchParams();
+    params.append('studentEmail', tutoringSession.studentEmail);
+    params.append('tutorEmail', tutoringSession.tutorEmail);
+    params.append('rating', rating);
+    fetch('/rating', {method: 'POST', body: params});
 }

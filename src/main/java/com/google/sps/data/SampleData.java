@@ -151,8 +151,7 @@ public final class SampleData {
         tutors.add(tutor);
 
         students.remove(student);
-        student.markTutoringSessionAsRatedByTutorEmail(tutorEmail);
+        student.markTutoringSessionAsRatedByTutorEmail(tutorEmail, newRating);
         students.add(student);
     }
-
 }
