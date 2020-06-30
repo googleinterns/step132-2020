@@ -20,6 +20,7 @@ import java.lang.String;
 import java.util.Collection;
 import java.util.ArrayList;
 
+/** Mock datastore class used for testing. */
 public final class MockDatastore implements DatabaseService {
 
     @Override
