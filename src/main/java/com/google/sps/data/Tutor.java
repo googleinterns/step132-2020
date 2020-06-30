@@ -27,6 +27,8 @@ public final class Tutor {
     private String[] skills;
     private TimeRange[] availability;
     private TutorSession[] scheduledSessions;
+    private int ratingSum;
+    private int ratingCount;
 
     public Tutor(String name, String email, String[] skills, TimeRange[] availability, TutorSession[] scheduledSessions) {
         this.name = name;
@@ -34,6 +36,9 @@ public final class Tutor {
         this.skills = skills;
         this.availability = availability;
         this.scheduledSessions = scheduledSessions;
+        // Rating count and sum are both initially set to 0 by default
+        this.ratingCount = 0;
+        this.ratingSum = 0;
     }
 
     public String getName() {
@@ -56,6 +61,10 @@ public final class Tutor {
         return this.scheduledSessions;
     }
 
+    public Float getRating() {
+        return (float) this.ratingSum / this.ratingCount;
+    }
+
     /** Deletes the given timeslot from the availability array. */
     public void deleteAvailabilityByTimeRange(TimeRange timeslot) {
         List<TimeRange> availabilityList = new LinkedList<TimeRange>(Arrays.asList(this.availability));
@@ -68,6 +77,11 @@ public final class Tutor {
         List<TutorSession> scheduledSessionsList = new LinkedList<TutorSession>(Arrays.asList(this.scheduledSessions));
         scheduledSessionsList.add(tutoringSession);
         this.scheduledSessions = scheduledSessionsList.toArray(new TutorSession[0]);
+    }
+
+    public void rateTutor(int newRating) {
+        this.ratingSum = this.ratingSum + newRating;
+        this.ratingCount++;
     }
 
 }
