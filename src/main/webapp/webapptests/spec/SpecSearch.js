@@ -31,33 +31,134 @@ describe("Search", function() {
     });
 
     describe("when search results page is loaded", function() {
-        var testResults = ['{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"]}', 
-                            '{"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"]}'];
+        var tutors = [{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"]}, 
+                            {"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"]}];
 
-        var resultContainer = document.createElement("div");
-        resultContainer.id = "result-container";
+        var books = [{"title": "Book 1", "author": "Author 1", "subject": "Math", "thumbnail": ""},
+                    {"title": "Book 2", "author": "Author 2", "subject": "Math", "thumbnail": ""}]
+
+        var tutorContainer = document.createElement("div");
+        tutorContainer.id = "tutors";
+
+        var bookContainer = document.createElement("div");
+        bookContainer.id = "books";
 
         var mockWindow = {location: {href: "search-results.html?topic=math", search: "?topic=math"}};
 
-        it("should create result elements inside resultContainer", async function() {
-            spyOn(window, "fetch").withArgs("/search?topic=math").and.returnValue(Promise.resolve({json: () => Promise.resolve(testResults)}));
+        it("should create result elements inside tutorContainer", async function() {
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutors)}), Promise.resolve({json: () => Promise.resolve(books)}));
 
-            spyOn(document, "getElementById").withArgs("result-container").and.returnValue(resultContainer);
+            spyOn(document, "getElementById").and.returnValues(tutorContainer, bookContainer);
 
             await getSearchResultsHelper(document, mockWindow);
-            
-            expect(window.fetch).toHaveBeenCalledWith("/search?topic=math");
-            //one for the number of results label + 2 for the number of results in testResults
-            expect(resultContainer.childNodes.length).toEqual(3);
-            expect(resultContainer.childNodes[0].innerText).toContain("Found 2 tutors for math");
-        });
 
+            expect(window.fetch).toHaveBeenCalledTimes(2);
+            expect(window.fetch.calls.allArgs()[0][0]).toEqual("/search?topic=math");
+            expect(window.fetch.calls.allArgs()[1][0]).toEqual("/books?topic=math");
+
+            //one for the number of results label + 2 for the number of results in testResults
+            expect(tutorContainer.childNodes.length).toEqual(3);
+            expect(tutorContainer.childNodes[0].innerText).toContain("Found 2 tutors for math");
+
+            //one for the number of results label + div container that contains the book results
+            expect(bookContainer.childNodes.length).toEqual(2);
+            expect(tutorContainer.childNodes[0].innerText).toContain("Found 2 tutors for math");
+            //the div child container should contain the 2 books 
+            expect(bookContainer.childNodes[1].childNodes.length).toEqual(2);
+        });
 
     });
 
-    describe("when a search result is created", function() {
-        var result = '{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"]}';
-        var element = createSearchResult(result);
+    describe("when tabs are clicked", function() {
+        var tutorsTab = document.createElement("li");
+        var tutorsLink = document.createElement("a");
+        tutorsLink.innerText = "Tutors";
+        tutorsTab.appendChild(tutorsLink);
+
+        var booksTab = document.createElement("li");
+        var booksLink = document.createElement("a");
+        booksLink.innerText = "Books";
+        booksTab.appendChild(booksLink);
+
+        var tutorContainer = document.createElement("div");
+        tutorContainer.id = "tutors";
+
+        var bookContainer = document.createElement("div");
+        bookContainer.id = "books";
+
+        describe("when Tutors page is active and Books tab is clicked", function() {
+            tutorsTab.classList.add("active");
+            tutorContainer.classList.add("active-container");
+
+            it("should make the Books tab active and remove active class from Tutors", function() {
+                spyOn(document, "getElementsByClassName").and.returnValues([tutorsTab], [tutorContainer]);
+                spyOn(document, "getElementById").and.returnValue(bookContainer);
+
+                switchTab(booksLink);
+                expect(booksTab.classList).toContain("active");
+                expect(tutorsTab.classList).not.toContain("active");
+                expect(bookContainer.classList).toContain("active-container");
+                expect(tutorContainer.classList).not.toContain("active-container");
+            });
+
+        });
+
+        describe("when Books page is active and Tutors tab is clicked", function() {
+            booksTab.classList.add("active");
+            bookContainer.classList.add("active-container");
+
+            it("should make the Tutors tab active and remove active class from Books", function() {
+                spyOn(document, "getElementsByClassName").and.returnValues([booksTab], [bookContainer]);
+                spyOn(document, "getElementById").and.returnValue(tutorContainer);
+
+                switchTab(tutorsLink);
+                expect(tutorsTab.classList).toContain("active");
+                expect(booksTab.classList).not.toContain("active");
+                expect(tutorContainer.classList).toContain("active-container");
+                expect(bookContainer.classList).not.toContain("active-container");
+            });
+
+        });
+
+        describe("when Tutors page is active and Tutors tab is clicked", function() {
+            tutorsTab.classList.add("active");
+            tutorContainer.classList.add("active-container");
+
+            it("should stay on Tutors page", function() {
+                spyOn(document, "getElementsByClassName").and.returnValues([tutorsTab], [tutorContainer]);
+                spyOn(document, "getElementById").and.returnValue(tutorContainer);
+
+                switchTab(tutorsLink);
+                expect(tutorsTab.classList).toContain("active");
+                expect(booksTab.classList).not.toContain("active");
+                expect(tutorContainer.classList).toContain("active-container");
+                expect(bookContainer.classList).not.toContain("active-container");
+            });
+
+        });
+
+        describe("when Books page is active and Books tab is clicked", function() {
+            booksTab.classList.add("active");
+            bookContainer.classList.add("active-container");
+
+            it("should stay on Books page", function() {
+                spyOn(document, "getElementsByClassName").and.returnValues([booksTab], [bookContainer]);
+                spyOn(document, "getElementById").and.returnValue(bookContainer);
+
+                switchTab(booksLink);
+                expect(booksTab.classList).toContain("active");
+                expect(tutorsTab.classList).not.toContain("active");
+                expect(bookContainer.classList).toContain("active-container");
+                expect(tutorContainer.classList).not.toContain("active-container");
+            });
+
+        });
+
+    });
+
+    describe("when a tutor result is created", function() {
+        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"]};
+        var element = createTutorResult(result);
 
         it("should create div for result element", function() {
             expect(element.tagName).toEqual("DIV");
@@ -82,6 +183,31 @@ describe("Search", function() {
             expect(element.childNodes[3].tagName).toEqual("A");
             expect(element.childNodes[3].innerText).toContain("Availability");
             expect(element.childNodes[3].href).toContain("/availability.html?tutorID=tutor1@gmail.com");
+        });
+
+    });
+
+    describe("when a book result is created", function() {
+        var result = {"title": "Book 1", "author": "Author 1", "subject": "Math", "thumbnail": ""};
+        var element = createBookResult(result);
+
+        it("should create div for result element", function() {
+            expect(element.tagName).toEqual("DIV");
+        });
+
+        it("should create img element inside result element for thumbnail", function() {
+            expect(element.childNodes[0].tagName).toEqual("IMG");
+            expect(element.childNodes[0].src).toContain("");
+        });
+
+        it("should create p element inside result element for title", function() {
+            expect(element.childNodes[1].tagName).toEqual("P");
+            expect(element.childNodes[1].innerText).toContain("Book 1");
+        });
+
+        it("should create p element inside result element for author", function() {
+            expect(element.childNodes[2].tagName).toEqual("P");
+            expect(element.childNodes[2].innerText).toContain("Author 1");
         });
 
     });
