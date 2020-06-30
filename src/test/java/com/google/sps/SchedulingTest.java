@@ -36,7 +36,7 @@ import com.google.gson.Gson;
 public final class SchedulingTest {
 
     @Test
-    public void testDoPost() throws Exception {
+    public void testDoPost() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
