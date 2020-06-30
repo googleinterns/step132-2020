@@ -16,6 +16,7 @@ package com.google.sps.data;
 
 import java.lang.String;
 
+/** Stores information about a book including a title, author, subject, and a thumbnail image. */
 public final class Book {
 
     private String title;
