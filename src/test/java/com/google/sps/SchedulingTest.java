@@ -16,6 +16,7 @@ package com.google.sps;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.util.Calendar;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,6 +35,17 @@ import com.google.gson.Gson;
 
 @RunWith(JUnit4.class)
 public final class SchedulingTest {
+    private static final Calendar MAY182020 = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
+    private static final Calendar JUNE102020 = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 6, 10).build();
+    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
+    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
+    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
+    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+    private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+    private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
+    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
 
     @Test
     public void testDoPost() throws Exception {
@@ -43,6 +55,9 @@ public final class SchedulingTest {
         when(request.getParameter("tutorID")).thenReturn("btrevisan@google.com");
         when(request.getParameter("start")).thenReturn("480");
         when(request.getParameter("end")).thenReturn("600");
+        when(request.getParameter("year")).thenReturn("2020");
+        when(request.getParameter("month")).thenReturn("5");
+        when(request.getParameter("day")).thenReturn("18");
         when(request.getParameter("studentEmail")).thenReturn("thegoogler@google.com");
         when(request.getParameter("subtopics")).thenReturn("algebra");
         when(request.getParameter("questions")).thenReturn("How does it work?");
@@ -58,12 +73,17 @@ public final class SchedulingTest {
         verify(request, atLeast(1)).getParameter("tutorID");
         verify(request, atLeast(1)).getParameter("start");
         verify(request, atLeast(1)).getParameter("end");
+        verify(request, atLeast(1)).getParameter("year");
+        verify(request, atLeast(1)).getParameter("month");
+        verify(request, atLeast(1)).getParameter("day");
         verify(request, atLeast(1)).getParameter("studentEmail");
         verify(request, atLeast(1)).getParameter("subtopics");
         verify(request, atLeast(1)).getParameter("questions");
 
-        String expected = new Gson().toJson(new TutorSession("thegoogler@google.com", "btrevisan@google.com", "algebra", "How does it work?",  TimeRange.fromStartToEnd(480, 600)));
-        String unexpected = new Gson().toJson(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(480, 600), TimeRange.fromStartToEnd(660,780)}, new TutorSession[]{}));
+        Calendar date = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
+
+        String expected = new Gson().toJson(new TutorSession("thegoogler@google.com", "btrevisan@google.com", "algebra", "How does it work?",  TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020)));
+        String unexpected = new Gson().toJson(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020)}, new TutorSession[]{}));
 
         writer.flush();
         // Tutoring session should have been scheduled
