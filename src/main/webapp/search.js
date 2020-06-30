@@ -20,8 +20,8 @@ function redirectToResults() {
 
 /** Helper function for redirectToResults, used for testing purposes. */
 function redirectToResultsHelper(document, window) {
-    var topic = document.getElementById("topic-search-box").value;
-
+    var topic = document.getElementsByClassName("search-box")[0].value;
+    
     var url = "search-results.html?topic=" + encodeURIComponent(topic);
     window.location.href = url;
 
@@ -43,9 +43,52 @@ async function getSearchResultsHelper(document, window) {
     }
 
     if(topic != null) {
-        await fetch("/search?topic="+topic).then(response => response.text()).then((results) => {
+        await fetch("/search?topic="+topic).then(response => response.json()).then((results) => {
             var resultContainer = document.getElementById("result-container");
-            resultContainer.innerHTML = results;
+
+            var numSearchResults = document.createElement("h4");
+            numSearchResults.id = "num-search-results";
+
+            resultContainer.appendChild(numSearchResults);
+
+            //if there was an error reported by the servlet, display the error message
+            if(results.error) {
+                numSearchResults.innerText = results.error;
+                return;
+            }
+
+            numSearchResults.innerText = "Found " + results.length + " tutors for " + topic;
+
+            results.forEach(function(result) {
+                resultContainer.append(createSearchResult(result));
+            });
         });
     }
 }
+
+/** Creates a div element containing information about a search result. */
+function createSearchResult(result) {
+    var container = document.createElement("div");
+    var name = document.createElement("h3");
+    var email = document.createElement("h6");
+    var skills = document.createElement("p");
+    var availabilityLink = document.createElement("a");
+
+    name.innerText = result.name;
+    email.innerText = result.email;
+    skills.innerText = "Skills: " + result.skills.join(", ");
+    availabilityLink.innerText = "Availability";
+
+    availabilityLink.href = "/availability.html?tutorID=" + result.email;
+
+    container.classList.add("search-result");
+    container.classList.add("list-group-item");
+
+    container.appendChild(name);
+    container.appendChild(email);
+    container.appendChild(skills);
+    container.appendChild(availabilityLink);
+
+    return container;
+
+} 
