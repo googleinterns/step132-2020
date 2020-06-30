@@ -56,31 +56,93 @@ async function getSearchResultsHelper(document, window) {
     }
 
     if(topic != null) {
-        await fetch("/search?topic="+topic).then(response => response.json()).then((results) => {
-            var resultContainer = document.getElementById("result-container");
-
-            var numSearchResults = document.createElement("h4");
-            numSearchResults.id = "num-search-results";
-
-            resultContainer.appendChild(numSearchResults);
-
-            //if there was an error reported by the servlet, display the error message
-            if(results.error) {
-                numSearchResults.innerText = results.error;
-                return;
-            }
-
-            numSearchResults.innerText = "Found " + results.length + " tutors for " + topic;
-
-            results.forEach(function(result) {
-                resultContainer.append(createSearchResult(result));
-            });
-        });
+        var tutors = getTutors(topic);
+        var books = getBooks(topic);
+        
+        await tutors;
+        await books;
     }
 }
 
-/** Creates a div element containing information about a search result. */
-function createSearchResult(result) {
+/** Fetches the list of books for the topic the user searched for. */
+async function getBooks(topic) {
+    //to be placed by Google Books API
+    await fetch("/books?topic="+topic).then(response => response.json()).then((results) => {
+        var books = document.getElementById("books");
+
+        var numSearchResults = document.createElement("h4");
+        numSearchResults.className = "num-search-results";
+
+        books.appendChild(numSearchResults);
+
+        //if there was an error reported by the servlet, display the error message
+        if(results.error) {
+            numSearchResults.innerText = results.error;
+            return;
+        }
+
+        numSearchResults.innerText = "Found " + results.length + " books for " + topic;
+
+        //create container to put books
+        var booksContainer = document.createElement("div");
+        booksContainer.id = "books-container";
+
+        results.forEach(function(result) {
+            booksContainer.append(createBookResult(result));
+        });
+
+        books.appendChild(booksContainer);
+    });
+}
+
+/** Fetches the list of tutors for the topic the user searched for. */
+async function getTutors(topic) {
+    await fetch("/search?topic="+topic).then(response => response.json()).then((results) => {
+        var tutorContainer = document.getElementById("tutors");
+
+        var numSearchResults = document.createElement("h4");
+        numSearchResults.className = "num-search-results";
+
+        tutorContainer.appendChild(numSearchResults);
+
+        //if there was an error reported by the servlet, display the error message
+        if(results.error) {
+            numSearchResults.innerText = results.error;
+            return;
+        }
+
+        numSearchResults.innerText = "Found " + results.length + " tutors for " + topic;
+
+        results.forEach(function(result) {
+            tutorContainer.append(createTutorResult(result));
+        });
+    });
+
+}
+
+/** Creates a div element containing information about a book result. */
+function createBookResult(result) {
+    var container = document.createElement("div");
+    var thumbnail = document.createElement("img");
+    var title = document.createElement("p");
+    var author = document.createElement("p");
+
+    thumbnail.src = result.thumbnail;
+    title.innerText = result.title;
+    author.innerText = "by " + result.author;
+
+    container.classList.add("book-result");
+    container.classList.add("col-md-4");
+
+    container.appendChild(thumbnail);
+    container.appendChild(title);
+    container.appendChild(author);
+
+    return container;
+}
+
+/** Creates a div element containing information about a tutor result. */
+function createTutorResult(result) {
     var container = document.createElement("div");
     var name = document.createElement("h3");
     var email = document.createElement("h6");
@@ -94,7 +156,7 @@ function createSearchResult(result) {
 
     availabilityLink.href = "/availability.html?tutorID=" + result.email;
 
-    container.classList.add("search-result");
+    container.classList.add("tutor-result");
     container.classList.add("list-group-item");
 
     container.appendChild(name);
@@ -103,5 +165,4 @@ function createSearchResult(result) {
     container.appendChild(availabilityLink);
 
     return container;
-
 } 
