@@ -28,7 +28,7 @@ import java.lang.String;
 import com.google.gson.Gson;
 
 
-/** Servlet that returns search results (tutors and books) for a topic. */
+/** Servlet that returns a list of tutors for a searched topic. */
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
 
