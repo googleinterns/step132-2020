@@ -26,7 +26,18 @@ See the License for the specific language governing permissions and
             <button class="btn btn-default" type="submit" id="search-submit-results">Go</button>
         </form>
     </div>
-    <div id="result-container" class="list-group"></div>
+    <ul id="tabs" class="nav nav-pills nav-justified">
+        <li class="nav-item active">
+            <a class="nav-link" href="#" onclick="switchTab(this)">Tutors</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" onclick="switchTab(this)">Books</a>
+        </li>
+    </ul>
+    <div id="result-container" class="list-group">
+        <div id="tutors" class="list-group active-container"></div>
+        <div id="books"></div>
+    </div>
     <script src="search.js"></script>
   </body>
 </html>
