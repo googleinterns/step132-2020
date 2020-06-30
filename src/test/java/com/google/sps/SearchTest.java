@@ -38,6 +38,7 @@ public final class SearchTest {
     @Before
     public void setUp() {
         servlet = new SearchServlet();
+        servlet.init();
     }
 
     @Test
