@@ -15,6 +15,7 @@
 package com.google.sps;
 
 import java.util.List;
+import java.util.Calendar;
 import java.util.Arrays;
 import java.io.StringWriter;
 import java.io.PrintWriter;
@@ -37,6 +38,11 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class HistoryTest {
+
+    private static final Calendar MAY182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 5, 18)
+                                                        .build();
 
     @Test
     public void testDoPostNoHistory() throws Exception {
@@ -71,7 +77,10 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        TutorSession tutoringSessionFake = new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600));
+        TutorSession tutoringSessionFake = new TutorSession("btrevisan@google.com",
+                                                        "btrevisan@google.com",
+                                                        null, null,
+                                                        TimeRange.fromStartToEnd(540, 600, MAY182020));
         SampleData.addToStudentScheduledSessionsByEmail("btrevisan@google.com", tutoringSessionFake);
 
         HistoryServlet servlet = new HistoryServlet();
