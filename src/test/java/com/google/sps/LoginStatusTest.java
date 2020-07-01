@@ -95,7 +95,7 @@ public final class LoginStatusTest {
 
         String name = null;
 
-        when(request.getParameter("pathname")).thenReturn("/homepage.html");
+        when(request.getParameter("url")).thenReturn("/homepage.html");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -120,7 +120,7 @@ public final class LoginStatusTest {
 
         String name = "Sam Falberg";
 
-        when(request.getParameter("pathname")).thenReturn("/homepage.html");
+        when(request.getParameter("url")).thenReturn("/homepage.html");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
