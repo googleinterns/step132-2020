@@ -77,15 +77,15 @@ public final class SchedulingTest {
         SchedulingServlet servlet = new SchedulingServlet();
         servlet.doPost(request, response);
 
-        verify(request, atLeast(1)).getParameter("tutorID");
-        verify(request, atLeast(1)).getParameter("start");
-        verify(request, atLeast(1)).getParameter("end");
-        verify(request, atLeast(1)).getParameter("year");
-        verify(request, atLeast(1)).getParameter("month");
-        verify(request, atLeast(1)).getParameter("day");
-        verify(request, atLeast(1)).getParameter("studentEmail");
-        verify(request, atLeast(1)).getParameter("subtopics");
-        verify(request, atLeast(1)).getParameter("questions");
+        verify(request, times(1)).getParameter("tutorID");
+        verify(request, times(1)).getParameter("start");
+        verify(request, times(1)).getParameter("end");
+        verify(request, times(1)).getParameter("year");
+        verify(request, times(1)).getParameter("month");
+        verify(request, times(1)).getParameter("day");
+        verify(request, times(1)).getParameter("studentEmail");
+        verify(request, times(1)).getParameter("subtopics");
+        verify(request, times(1)).getParameter("questions");
 
         Calendar date = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
 

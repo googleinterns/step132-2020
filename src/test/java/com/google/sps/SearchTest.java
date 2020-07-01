@@ -74,7 +74,7 @@ public final class SearchTest {
         servlet.doGet(request, response);
 
         //verify that getParameter was called
-        verify(request, atLeast(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
         List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora",
                                                             "kashisharora@google.com",
@@ -126,7 +126,7 @@ public final class SearchTest {
         servlet.doGet(request, response);
 
         //verify that getParameter was called
-        verify(request, atLeast(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
 
         //there are no tutors for business, so it should return an empty string
