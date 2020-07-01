@@ -13,9 +13,54 @@
 // limitations under the License.
 
 /**
+ * Checks if user is logged in, if not display registration page
+ */
+function fetchLoginStatus() {
+    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        console.log(loginStatus);    
+        fetchLoginStatusHelper(document, loginStatus);
+    });
+}
+
+/**
+ * Used for testing purposes with Jasmine
+ */
+function fetchLoginStatusHelper(document, loginStatus) {
+    loginForm = document.getElementById('login-form');
+    logoutForm = document.getElementById('logout-form');
+    registrationForm = document.getElementById('registration-form')
+
+    // If logged in, set and display logout URL
+    if (loginStatus.isLoggedIn) {
+        // If not registered, also display registration form
+        if (loginStatus.needsToRegister) {
+            registrationForm.style.display = 'block';
+        } else {
+            registrationForm.style.display = 'none';
+        }
+        loginForm.style.display = 'none';
+        logoutForm.style.display = 'block';
+        document.getElementById('logout-url').href = loginStatus.url;
+
+    } else {  // Logged out, set and display login URL
+        logoutForm.style.display = 'none';
+        registrationForm.style.display = 'none';
+        loginForm.style.display = 'block';
+        document.getElementById('login-url').href = loginStatus.url;
+    }
+}
+
+/**
  * Displays registration information on the page
  */
 function displayRegistrationInfo() {
+    displayRegistrationInfoHelper(document);
+}
+
+/**
+ * Used for testing purposes with Jasmine
+ */
+function displayRegistrationInfoHelper(document) {
     var generalInfo = document.getElementById('general-info');
     var tutorInfo = document.getElementById('tutor-info');
     generalInfo.style.display = 'block';

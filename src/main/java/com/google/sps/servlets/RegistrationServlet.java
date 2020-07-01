@@ -14,9 +14,17 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.users.User;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,23 +34,49 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that handles user's registration info */
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
+  
+  private UserService userService = UserServiceFactory.getUserService();
+  private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String role = request.getParameter("role");
-    String name = request.getParameter("name");
-    String email = request.getParameter("email");
+    String role = Optional.ofNullable(request.getParameter("role")).orElse(null);
+    String firstName = Optional.ofNullable(request.getParameter("first-name"))
+            .orElseThrow(() -> new IllegalArgumentException("Must fill out first name"));
+    String lastName = Optional.ofNullable(request.getParameter("last-name"))
+            .orElseThrow(() -> new IllegalArgumentException("Must fill out last name"));
+    String fullName = firstName + " " + lastName;
+    
+    String email = userService.getCurrentUser().getEmail();
+    String userId = userService.getCurrentUser().getUserId();
+    
     // Make list of selected topics, remove unchecked topics
-    List<String> topics = Arrays.asList(request.getParameter("math"), request.getParameter("english"), request.getParameter("other"));
-    topics = topics
-            .stream()
-            .filter(t -> t!= null)
-            .collect(Collectors.toList());
+    List<Optional<String>> topics = new ArrayList<Optional<String>>();
+    topics.add(Optional.ofNullable(request.getParameter("math")));
+    topics.add(Optional.ofNullable(request.getParameter("english")));
+    topics.add(Optional.ofNullable(request.getParameter("other")));
+    List<String> topicsToStr = topics
+                                .stream()
+                                .filter(t -> t.isPresent())
+                                .map(t -> t.get())
+                                .collect(Collectors.toList());
 
-    response.setContentType("text/html;");
-    response.getWriter().println("<p>Student or tutor? " + role + "</p>");
-    response.getWriter().println("<p>Name: " + name + "</p>");
-    response.getWriter().println("<p>Email: " + email + "</p>");
-    response.getWriter().println("<p>Subject(s): " + topics + "</p>");
+    // Make entity for user with all registration info
+    Entity userEntity = new Entity("User");
+    createEntityAndPutInDatastore(datastore, userEntity, role, fullName, email, userId, topicsToStr);
+
+    response.sendRedirect("/scheduling.html");
+  }
+
+ /**
+  * Creates a user entity and puts it in datastore, used for testing
+  */
+  public void createEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String name, String email, String userId, List<String> topics) {
+    entity.setProperty("role", role);
+    entity.setProperty("name", name);
+    entity.setProperty("email", email);
+    entity.setProperty("userId", userId);
+    entity.setProperty("topics", topics);
+    ds.put(entity);
   }
 }
