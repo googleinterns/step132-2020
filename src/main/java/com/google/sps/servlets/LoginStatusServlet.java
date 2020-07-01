@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.google.sps.data.LoginStatus;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.util.Iterator;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -45,18 +46,20 @@ public class LoginStatusServlet extends HttpServlet {
         } 
         
         String name = getName(userService.getCurrentUser().getUserId(), datastore);
-        setRegistered(response, name);
+        setRegistered(request, response, name);
     }
 
     /** Determines if a logged in user needs to register, created for testing */
-    public void setRegistered(HttpServletResponse response, String name) throws IOException {
+    public void setRegistered(HttpServletRequest request, HttpServletResponse response, String name) throws IOException {
         LoginStatus loginStatus;
+        // Gets the current URL of the user so we can return them to the same page when they logout
+        String url = request.getParameter("url");
 
         // Name is null if user hasn't registered, set needsToRegister to 'true' and make logout URL
         if (name == null) {
-            loginStatus = new LoginStatus(true, true, userService.createLogoutURL("/homepage.html"));
+            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(url));
         } else {  // User is logged in and registered, make logout URL
-            loginStatus = new LoginStatus(true, false, userService.createLogoutURL("/homepage.html"));
+            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(url));
         }
 
         String json = new Gson().toJson(loginStatus);
