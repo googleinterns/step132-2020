@@ -82,7 +82,7 @@ public final class ConfirmationTest {
 
         String expected = new Gson().toJson(new TutorSession[]{tutoringSessionFake});
 
-        verify(request, atLeast(1)).getParameter("studentEmail");
+        verify(request, times(1)).getParameter("studentEmail");
         writer.flush();
         // If the user has no scheduled sessions, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains(expected));
