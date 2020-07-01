@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Calendar;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -42,11 +43,19 @@ public class SchedulingServlet extends HttpServlet {
         String tutorID = request.getParameter("tutorID");
         String start = request.getParameter("start");
         String end = request.getParameter("end");
+        String year = request.getParameter("year");
+        String month = request.getParameter("month");
+        String day = request.getParameter("day");
         String studentEmail = request.getParameter("studentEmail");
         String subtopics = request.getParameter("subtopics");
         String questions = request.getParameter("questions");
 
-        TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end));
+        Calendar date = new Calendar.Builder()
+                                .setCalendarType("iso8601")
+                                .setDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day))
+                                .build();
+
+        TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end), date);
 
         TutorSession tutoringSession = new TutorSession(studentEmail, tutorID, subtopics, questions, timeslot);
 
