@@ -35,8 +35,15 @@ import com.google.gson.Gson;
 
 @RunWith(JUnit4.class)
 public final class SchedulingTest {
-    private static final Calendar MAY182020 = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
-    private static final Calendar JUNE102020 = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 6, 10).build();
+    private static final Calendar MAY182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 5, 18)
+                                                        .build();
+    private static final Calendar JUNE102020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 6, 10)
+                                                        .build();
+
     private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
     private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
     private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
@@ -82,8 +89,19 @@ public final class SchedulingTest {
 
         Calendar date = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
 
-        String expected = new Gson().toJson(new TutorSession("thegoogler@google.com", "btrevisan@google.com", "algebra", "How does it work?",  TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020)));
-        String unexpected = new Gson().toJson(new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020)}, new TutorSession[]{}));
+        String expected = new Gson()
+                            .toJson(new TutorSession("thegoogler@google.com",
+                                            "btrevisan@google.com",
+                                            "algebra",
+                                            "How does it work?",
+                                            TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020)));
+        String unexpected = new Gson()
+                            .toJson(new Tutor("Bernardo Eilert Trevisan",
+                                            "btrevisan@google.com",
+                                            new String[]{"English", "Physics"},
+                                            new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
+                                                        TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020)},
+                                                        new TutorSession[]{}));
 
         writer.flush();
         // Tutoring session should have been scheduled
