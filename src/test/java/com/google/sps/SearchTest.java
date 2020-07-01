@@ -43,8 +43,14 @@ public final class SearchTest {
     private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
     private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
     
-    private static final Calendar MAY182020 = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
-    private static final Calendar JUNE102020 = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 6, 10).build();
+    private static final Calendar MAY182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 5, 18)
+                                                        .build();
+    private static final Calendar JUNE102020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 6, 10)
+                                                        .build();
 
     private SearchServlet servlet;
 
@@ -70,7 +76,12 @@ public final class SearchTest {
         //verify that getParameter was called
         verify(request, atLeast(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
-        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020), TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020)}, new TutorSession[]{}));
+        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora",
+                                                            "kashisharora@google.com",
+                                                            new String[]{"Math", "History"},
+                                                            new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                                                                        TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020)},
+                                                            new TutorSession[]{}));
         String expected = new Gson().toJson(expectedTutorList);
         Assert.assertTrue(stringWriter.toString().contains(expected));
 

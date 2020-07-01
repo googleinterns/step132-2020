@@ -50,7 +50,10 @@ public class SchedulingServlet extends HttpServlet {
         String subtopics = request.getParameter("subtopics");
         String questions = request.getParameter("questions");
 
-        Calendar date = new Calendar.Builder().setCalendarType("iso8601").setDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day)).build();
+        Calendar date = new Calendar.Builder()
+                                .setCalendarType("iso8601")
+                                .setDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day))
+                                .build();
 
         TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end), date);
 
