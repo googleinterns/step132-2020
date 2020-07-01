@@ -40,10 +40,10 @@ public class RegistrationServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String role = getParameter(request, "role").orElse(null);
-    String firstName = getParameter(request, "first-name")
+    String role = Optional.ofNullable(request.getParameter("role")).orElse(null);
+    String firstName = Optional.ofNullable(request.getParameter("first-name"))
             .orElseThrow(() -> new IllegalArgumentException("Must fill out first name"));
-    String lastName = getParameter(request, "last-name")
+    String lastName = Optional.ofNullable(request.getParameter("last-name"))
             .orElseThrow(() -> new IllegalArgumentException("Must fill out last name"));
     String fullName = firstName + " " + lastName;
     
@@ -52,9 +52,9 @@ public class RegistrationServlet extends HttpServlet {
     
     // Make list of selected topics, remove unchecked topics
     List<Optional<String>> topics = new ArrayList<Optional<String>>();
-    topics.add(getParameter(request, "math"));
-    topics.add(getParameter(request, "english"));
-    topics.add(getParameter(request, "other"));
+    topics.add(Optional.ofNullable(request.getParameter("math")));
+    topics.add(Optional.ofNullable(request.getParameter("english")));
+    topics.add(Optional.ofNullable(request.getParameter("other")));
     List<String> topicsToStr = topics
                                 .stream()
                                 .filter(t -> t.isPresent())
@@ -79,16 +79,4 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("topics", topics);
     ds.put(entity);
   }
-  
-  /**
-   * @return the Optional of the request parameter
-   */
-   private Optional<String> getParameter(HttpServletRequest request, String name) {
-       String value = request.getParameter(name);
-       //return empty Optional if string is null or empty
-       if (value == null || value.isEmpty()) {
-           return Optional.empty();
-       }
-       return Optional.<String>ofNullable(value);
-   }
 }
