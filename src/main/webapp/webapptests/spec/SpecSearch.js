@@ -86,12 +86,17 @@ describe("Search", function() {
         var bookContainer = document.createElement("div");
         bookContainer.id = "books";
 
+        beforeEach(function() {
+            tutorsTab.classList.remove("active");
+            tutorContainer.classList.remove("active-container");
+            booksTab.classList.remove("active");
+            bookContainer.classList.remove("active-container");
+
+        });
+
         describe("when Tutors page is active and Books tab is clicked", function() {
             tutorsTab.classList.add("active");
             tutorContainer.classList.add("active-container");
-
-            booksTab.classList.remove("active");
-            bookContainer.classList.remove("active-container");
 
             it("should make the Books tab active and remove active class from Tutors", function() {
                 spyOn(document, "getElementsByClassName").and.returnValues([tutorsTab], [tutorContainer]);
@@ -110,9 +115,6 @@ describe("Search", function() {
             booksTab.classList.add("active");
             bookContainer.classList.add("active-container");
 
-            tutorsTab.classList.remove("active");
-            tutorContainer.classList.remove("active-container");
-
             it("should make the Tutors tab active and remove active class from Books", function() {
                 spyOn(document, "getElementsByClassName").and.returnValues([booksTab], [bookContainer]);
                 spyOn(document, "getElementById").and.returnValue(tutorContainer);
@@ -130,9 +132,6 @@ describe("Search", function() {
             tutorsTab.classList.add("active");
             tutorContainer.classList.add("active-container");
 
-            booksTab.classList.remove("active");
-            bookContainer.classList.remove("active-container");
-
             it("should stay on Tutors page", function() {
                 spyOn(document, "getElementsByClassName").and.returnValues([tutorsTab], [tutorContainer]);
                 spyOn(document, "getElementById").and.returnValue(tutorContainer);
@@ -149,9 +148,6 @@ describe("Search", function() {
         describe("when Books page is active and Books tab is clicked", function() {
             booksTab.classList.add("active");
             bookContainer.classList.add("active-container");
-
-            tutorsTab.classList.remove("active");
-            tutorContainer.classList.remove("active-container");
 
             it("should stay on Books page", function() {
                 spyOn(document, "getElementsByClassName").and.returnValues([booksTab], [bookContainer]);
