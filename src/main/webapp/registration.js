@@ -13,10 +13,14 @@
 // limitations under the License.
 
 /**
- * Function for registration.html, checks if user is logged in, if not display registration page
+ * Function for registration.html, checks if user needs to register, if not display registration page
  */
 function fetchLoginStatus() {
-    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+    // TODO: after login, if registered, redirect user to page they were at before they logged in
+    const url = '/homepage.html';
+    console.log(url);
+
+    fetch('/login-status?url='+url).then(response => response.json()).then((loginStatus) => {
         console.log(loginStatus);    
         fetchLoginStatusHelper(document, loginStatus);
     });
@@ -44,7 +48,10 @@ function fetchLoginStatusHelper(document, loginStatus) {
  * Function for every page BUT registration.html, fetches login status and displays either login/logout link
  */
 function displayLoginLogoutLink() {
-    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+    const url = window.location.pathname + window.location.search;
+    console.log(url);
+
+    fetch('/login-status?url='+url).then(response => response.json()).then((loginStatus) => {
         console.log(loginStatus);   
         displayLoginLogoutLinkHelper(document, loginStatus);
     });
