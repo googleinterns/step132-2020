@@ -14,25 +14,25 @@
 
 describe("Scheduling", function() {
     describe("when tutoring session is scheduled", function() {
-        var mockWindow = {location: {href: "scheduling.html?tutorID=test%40gmail.com&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=test%40gmail.com&start=480&end=540&year=2020&month=5&day=18"}};
+        var mockWindow = {location: {href: "scheduling.html?tutorID=elian%40google.com&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=elian%40google.com&start=480&end=540&year=2020&month=5&day=18"}};
 
         it("should trigger the fetch function", function() {
             spyOn(document, "getElementById").and.returnValue("");
             spyOn(window, 'fetch').and.callThrough();
 
-            scheduleTutorSession(mockWindow);
+            scheduleTutorSessionHelper(mockWindow);
 
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
     describe("when the URI components are read", function() {
-        var mockWindow = {location: {href: "scheduling.html?tutorID=test%40gmail.com&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=test%40gmail.com&start=480&end=540&year=2020&month=5&day=18"}};
+        var mockWindow = {location: {href: "scheduling.html?tutorID=thegoogler%40google.com&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=thegoogler%40google.com&start=480&end=540&year=2020&month=5&day=18"}};
         var queryString = new Array();
         readComponents(queryString, mockWindow);
 
         it("should add tutorID, start, end, year, month, and day to the query string", function() {
-            expect(queryString["tutorID"]).toEqual("test@gmail.com");
+            expect(queryString["tutorID"]).toEqual("thegoogler@gmail.com");
             expect(queryString["start"]).toEqual("480");
             expect(queryString["end"]).toEqual("540");
             expect(queryString["year"]).toEqual("2020");

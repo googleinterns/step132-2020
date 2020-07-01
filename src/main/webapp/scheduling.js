@@ -13,6 +13,10 @@
 // limitations under the License.
 
 function scheduleTutorSession() {
+    scheduleTutorSessionHelper(window);
+}
+
+function scheduleTutorSessionHelper(window) {
     var queryString = new Array();
     window.onload = readComponents(queryString, window);
     const tutorID = queryString["tutorID"];
