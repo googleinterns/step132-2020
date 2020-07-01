@@ -61,4 +61,17 @@ public final class Student {
         this.scheduledSessions = scheduledSessionsList.toArray(new TutorSession[0]);
     }
 
+    /** Marks the tutoring session that has the given tutor's email as rated.*/
+    public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail, int newRating) {
+        List<TutorSession> scheduledSessionsList = new LinkedList<TutorSession>(Arrays.asList(this.scheduledSessions));
+        for(TutorSession tutorSession : this.scheduledSessions) {
+            if(tutorEmail.toLowerCase().equals(tutorSession.getTutorEmail().toLowerCase())) {
+                scheduledSessionsList.remove(tutorSession);
+                tutorSession.rateSession(newRating);
+                scheduledSessionsList.add(tutorSession);
+            }
+        }
+        this.scheduledSessions = scheduledSessionsList.toArray(new TutorSession[0]);
+    }
+
 }
