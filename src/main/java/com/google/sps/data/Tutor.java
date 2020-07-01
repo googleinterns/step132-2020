@@ -24,11 +24,11 @@ public final class Tutor {
     
     private String name;
     private String email;
-    private String[] skills;
+    private List<String> skills;
     private TimeRange[] availability;
     private TutorSession[] scheduledSessions;
 
-    public Tutor(String name, String email, String[] skills, TimeRange[] availability, TutorSession[] scheduledSessions) {
+    public Tutor(String name, String email, List<String> skills, TimeRange[] availability, TutorSession[] scheduledSessions) {
         this.name = name;
         this.email = email;
         this.skills = skills;
@@ -44,7 +44,7 @@ public final class Tutor {
         return this.email;
     }
 
-    public String[] getSkills() {
+    public List<String> getSkills() {
         return this.skills;
     }
 

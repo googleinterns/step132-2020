@@ -40,23 +40,23 @@ public final class SampleData {
                                                         .build();
 
     private static ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
-        new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"},
+        new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String>(Arrays.asList("Math", "History")),
                 new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020)},
                 new TutorSession[]{}),
-        new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"},
+        new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String>(Arrays.asList("English", "Physics")),
                 new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                              TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020)},
                 new TutorSession[]{}),
-        new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"},
+        new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String>(Arrays.asList("Geology", "English")),
                 new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020)},
                 new TutorSession[]{}),
-        new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"},
+        new Tutor("Anand Desai", "thegoogler@google.com", new ArrayList<String>(Arrays.asList("Finance", "Chemistry")),
                 new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020)}, 
                 new TutorSession[]{}),
-        new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"},
+        new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String>(Arrays.asList("Geology", "Math")),
                 new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020)},
                 new TutorSession[]{})

@@ -19,6 +19,8 @@ import com.google.sps.data.Tutor;
 import java.lang.String;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.List;
+
 
 /** Mock datastore class used for testing. */
 public final class MockDatastore implements DatabaseService {
@@ -28,7 +30,7 @@ public final class MockDatastore implements DatabaseService {
         ArrayList<Tutor> results = new ArrayList<Tutor>();
 
         for(Tutor tutor : SampleData.getSampleTutors()) {
-            String[] skills = tutor.getSkills();
+            List<String> skills = tutor.getSkills();
 
             for(String skill : skills) {
                 if(skill.toLowerCase().equals(topic.toLowerCase())) {
