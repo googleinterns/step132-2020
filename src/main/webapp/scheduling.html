@@ -18,12 +18,19 @@
     <head>
         <meta charset="UTF-8">
         <title>Scheduling</title>
+        <link rel="stylesheet" type="text/css" href="general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body>
+    <body onload="displayLoginLogoutLink()">
         <a href="./homepage.html"><p>Homepage</p></a>
+
+        <div class="top-right">
+            <a href="./registration.html"><p id="login" style="display:none">Login</p></a>
+            <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
+        </div>
+
         <div class="container-fluid">
             <h1>Last Step!</h1>
 
@@ -48,5 +55,6 @@
         </div>
 
         <script src="scheduling.js"></script>
+        <script src="registration.js"></script>
     </body>
 </html>

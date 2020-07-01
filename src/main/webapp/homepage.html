@@ -15,11 +15,17 @@ See the License for the specific language governing permissions and
     <meta charset="UTF-8">
     <title>Sullivan</title>
     <link rel="stylesheet" type="text/css" href="homepage.css">
+    <link rel="stylesheet" type="text/css" href="general.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
-  <body>
+  <body onload="displayLoginLogoutLink()">
+    <div class="top-right">
+        <a href="./registration.html"><p id="login" style="display:none">Login</p></a>
+        <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
+    </div>
+
     <div id="content" class="container-fluid">
         <form id="search-form-homepage" class="center-block" onsubmit="return redirectToResults();">
             <div class="form-group-lg"><input class="form-control search-box" type="text" id="search-box-homepage" required="" aria-required=true placeholder="What do you need help with today?"></div>
@@ -27,5 +33,6 @@ See the License for the specific language governing permissions and
         </form>
     </div>
     <script src="search.js"></script>
+    <script src="registration.js"></script>
   </body>
 </html>
