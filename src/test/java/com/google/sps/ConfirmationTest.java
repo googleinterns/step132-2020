@@ -16,6 +16,7 @@ package com.google.sps;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
@@ -71,7 +72,9 @@ public final class ConfirmationTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        TutorSession tutoringSessionFake = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600));
+        Calendar date = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
+
+        TutorSession tutoringSessionFake = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, date));
         SampleData.addToStudentScheduledSessionsByEmail("sfalberg@google.com", tutoringSessionFake);
 
         ConfirmationServlet servlet = new ConfirmationServlet();
@@ -79,7 +82,7 @@ public final class ConfirmationTest {
 
         String expected = new Gson().toJson(new TutorSession[]{tutoringSessionFake});
 
-        verify(request, atLeast(1)).getParameter("studentEmail");
+        verify(request, times(1)).getParameter("studentEmail");
         writer.flush();
         // If the user has no scheduled sessions, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains(expected));

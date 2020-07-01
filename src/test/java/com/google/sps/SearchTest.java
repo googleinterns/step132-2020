@@ -26,12 +26,31 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
+import java.util.Calendar;
 import com.google.gson.Gson;
 import java.io.*;
 import javax.servlet.http.*;
 
 @RunWith(JUnit4.class)
 public final class SearchTest {
+    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
+    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
+    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
+    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+    private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+    private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
+    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
+    
+    private static final Calendar MAY182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 5, 18)
+                                                        .build();
+    private static final Calendar JUNE102020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 6, 10)
+                                                        .build();
 
     private SearchServlet servlet;
 
@@ -55,9 +74,14 @@ public final class SearchTest {
         servlet.doGet(request, response);
 
         //verify that getParameter was called
-        verify(request, atLeast(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
-        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"}, new TimeRange[]{TimeRange.fromStartToEnd(720, 780), TimeRange.fromStartToEnd(900,1020)}, new TutorSession[]{}));
+        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora",
+                                                            "kashisharora@google.com",
+                                                            new String[]{"Math", "History"},
+                                                            new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                                                                        TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020)},
+                                                            new TutorSession[]{}));
         String expected = new Gson().toJson(expectedTutorList);
         Assert.assertTrue(stringWriter.toString().contains(expected));
 
@@ -102,7 +126,7 @@ public final class SearchTest {
         servlet.doGet(request, response);
 
         //verify that getParameter was called
-        verify(request, atLeast(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
 
         //there are no tutors for business, so it should return an empty string

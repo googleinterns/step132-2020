@@ -52,7 +52,7 @@ public final class AvailabilityTest {
 
         String expected = new Gson().toJson(SampleData.getTutorByEmail("kashisharora@google.com").getAvailability());
 
-        verify(request, atLeast(1)).getParameter("tutorID");
+        verify(request, times(1)).getParameter("tutorID");
         writer.flush();
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
