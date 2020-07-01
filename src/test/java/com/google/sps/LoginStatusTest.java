@@ -95,18 +95,22 @@ public final class LoginStatusTest {
 
         String name = null;
 
+        when(request.getParameter("pathname")).thenReturn("/homepage.html");
+
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.setRegistered(response, name);
+        servlet.setRegistered(request, response, name);
 
         writer.flush();
         //Remove new line at the end to compare to expected String
         String actual = stringWriter.toString().replace("\n", "");
         LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html");
         String expected = new Gson().toJson(expectedStatus);
+        System.out.println("Actual: " + actual);
+        System.out.println("Expected: " + expected);
         Assert.assertEquals(expected, actual);
     }
 
@@ -116,12 +120,14 @@ public final class LoginStatusTest {
 
         String name = "Sam Falberg";
 
+        when(request.getParameter("pathname")).thenReturn("/homepage.html");
+
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.setRegistered(response, name);
+        servlet.setRegistered(request, response, name);
 
         writer.flush();
         //Remove new line at the end to compare to expected String
