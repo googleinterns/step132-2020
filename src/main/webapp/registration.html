@@ -20,31 +20,34 @@ See the License for the specific language governing permissions and
     <link rel="stylesheet" href="registration.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
-  <body>
-      <form action="/registration" method="POST">
-            
-            <p>Would you like to sign up as a student or a tutor?</p>
-            <input onclick="displayRegistrationInfo()" type="radio" name="role" id="student" value="student"> Student<br>
-            <input onclick="displayRegistrationInfo()" type="radio" name="role" id="tutor" value="tutor"> Tutor<br><br>
-            
-            <div id="general-info" style="display:none">
-                <label for="name">Name:</label>
-                <input type="text" name="name" required><br>
-                <label for="email">Email:</label>
-                <input type="text" name="email" required><br><br>
-            
-                <div id="tutor-info" style="display:none">
-                    <p>What topic(s) would you like to tutor in?</p>
-                    <input type="checkbox" id="math" name="math" value="Math">
-                    <label for="math"> Math</label><br>
-                    <input type="checkbox" id="english" name="english" value="English">
-                    <label for="english"> English</label><br>
-                    <input type="checkbox" id="other-subject" name="other" value="Other">
-                    <label for="other-subject"> Other</label><br><br>
-                </div>
+  <body onload="fetchLoginStatus()">
+      <p id="login-form" style="display:none">Sign up with Google <a id="login-url">here</a></p>
+      <p id="logout-form" style="display:none">Sign out <a id="logout-url">here</a></p>
 
-                <input type="submit"/>
+      <form id="registration-form" action="/registration" method="POST" style="display:none">
+
+        <p>Would you like to sign up as a student or a tutor?</p>
+        <input onclick="displayRegistrationInfo()" type="radio" name="role" id="student" value="student"> Student<br>
+        <input onclick="displayRegistrationInfo()" type="radio" name="role" id="tutor" value="tutor"> Tutor<br><br>
+        
+        <div id="general-info" style="display:none">
+            <label for="first-name">First Name:</label>
+            <input type="text" name="first-name" required><br>
+            <label for="last-name">Last Name:</label>
+            <input type="text" name="last-name" required><br><br>
+        
+            <div id="tutor-info" style="display:none">
+                <p>What topic(s) would you like to tutor in?</p>
+                <input type="checkbox" id="math" name="math" value="Math">
+                <label for="math"> Math</label><br>
+                <input type="checkbox" id="english" name="english" value="English">
+                <label for="english"> English</label><br>
+                <input type="checkbox" id="other-subject" name="other" value="Other">
+                <label for="other-subject"> Other</label><br><br>
             </div>
+        </div>
+
+        <input type="submit"/>
       </form>
 
       <script src="registration.js"></script>
