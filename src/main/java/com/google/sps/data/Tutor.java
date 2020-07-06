@@ -23,7 +23,7 @@ import java.util.LinkedList;
 public final class Tutor {
     
     private String name;
-    private String email
+    private String email;
     private ArrayList<String>  skills;
     private ArrayList<TimeRange> availability;
     private ArrayList<TutorSession> scheduledSessions;

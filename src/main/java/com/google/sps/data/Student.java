@@ -57,6 +57,7 @@ public final class Student {
     /** Adds the given Tutor Session to the scheduledSessions array. */
     public void addToScheduledSessions(TutorSession tutoringSession) {
         this.scheduledSessions.add(tutoringSession);
+    }
 
     /** Marks the tutoring session that has the given tutor's email as rated.*/
     public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail, int newRating) {
