@@ -49,7 +49,7 @@ public final class HistoryTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("studentEmail")).thenReturn("thegoogler@google.com");
+        when(request.getParameter("studentEmail")).thenReturn("test@google.com");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
