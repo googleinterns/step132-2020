@@ -78,7 +78,7 @@ public final class SearchTest {
         writer.flush(); // it may not have been flushed yet...
         List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora",
                                                             "kashisharora@google.com",
-                                                            new String[]{"Math", "History"},
+                                                             new ArrayList<String>(Arrays.asList("Math", "History")),
                                                             new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                                                                         TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020)},
                                                             new TutorSession[]{}));
