@@ -65,7 +65,7 @@ public class RegistrationServlet extends HttpServlet {
     Entity userEntity = new Entity("User");
     createEntityAndPutInDatastore(datastore, userEntity, role, fullName, email, userId, topicsToStr);
 
-    response.sendRedirect("/scheduling.html");
+    response.sendRedirect("/homepage.html");
   }
 
  /**
