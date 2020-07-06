@@ -40,39 +40,39 @@ public final class SampleData {
                                                         .build();
 
     private static ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
-        new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String>(Arrays.asList("Math", "History")),
-                new ArrayList<TimeRange>(Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+        new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020))),
-                new ArrayList<TutorSession>()),
-        new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String>(Arrays.asList("English", "Physics")),
-                new ArrayList<TimeRange>(Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                              TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020))),
-                new ArrayList<TutorSession>()),
-        new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String>(Arrays.asList("Geology", "English")),
-                new ArrayList<TimeRange>(Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
-                new ArrayList<TutorSession>()),
-        new Tutor("Anand Desai", "thegoogler@google.com", new ArrayList<String>(Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TimeRange>(Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))), 
-                new ArrayList<TutorSession>()),
-        new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String>(Arrays.asList("Geology", "Math")),
-                new ArrayList<TimeRange>(Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Tutor("Anand Desai", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
-                new ArrayList<TutorSession>())
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
+                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
+                new ArrayList<TutorSession> (Arrays.asList()))
     ));
 
     private static ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
-        new Student("Kashish Arora", "kashisharora@google.com", new ArrayList<String>(Arrays.asList("English", "Physics")),
-                new ArrayList<TutorSession>()),
-        new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String>(Arrays.asList("Math", "History")),
-                new ArrayList<TutorSession>()),
-        new Student("Sam Falberg", "sfalberg@google.com", new ArrayList<String>(Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession>()),
-        new Student("Anand Desai", "thegoogler@google.com", new ArrayList<String>(Arrays.asList("Geology", "English")),
-                new ArrayList<TutorSession>()),
-        new Student("Elian Dumitru", "elian@google.com", new ArrayList<String>(Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession>())
+        new Student("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Student("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+                 new ArrayList<TutorSession> (Arrays.asList())),
+        new Student("Anand Desai", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Student("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+                new ArrayList<TutorSession> (Arrays.asList()))
     ));
 
     public static ArrayList<Tutor> getSampleTutors() {
@@ -171,5 +171,18 @@ public final class SampleData {
         student.addToScheduledSessions(tutoringSession);
         students.add(student);
     }
+
+     public static void rateTutorByEmail(String tutorEmail, String studentEmail, int newRating) {
+        Tutor tutor = getTutorByEmail(tutorEmail);
+        Student student = getStudentByEmail(studentEmail);
+
+        tutors.remove(tutor);
+        tutor.rateTutor(newRating);
+        tutors.add(tutor);
+
+        students.remove(student);
+        student.markTutoringSessionAsRatedByTutorEmail(tutorEmail, newRating);
+        students.add(student);
+     }
 
 }
