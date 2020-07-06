@@ -16,11 +16,7 @@
  * Function for registration.html, checks if user needs to register, if not display registration page
  */
 function fetchLoginStatus() {
-    // TODO: after login, if registered, redirect user to page they were at before they logged in
-    const url = '/homepage.html';
-    console.log(url);
-
-    fetch('/login-status?url='+url).then(response => response.json()).then((loginStatus) => {
+    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
         console.log(loginStatus);    
         fetchLoginStatusHelper(document, loginStatus);
     });
@@ -30,17 +26,16 @@ function fetchLoginStatus() {
  * Used for testing purposes with Jasmine
  */
 function fetchLoginStatusHelper(document, loginStatus) {
-    loginForm = document.getElementById('login-form');
+    returnForm = document.getElementById('return');
     registrationForm = document.getElementById('registration-form');
 
     // If not registered, display registration form
     if (loginStatus.needsToRegister) {
-        loginForm.style.display = 'none';
+        returnForm.style.display = 'none';
         registrationForm.style.display = 'block';
-    } else {  // Logged out, set and display login URL
+    } else {  // Logged out, set and display homepage URL
         registrationForm.style.display = 'none';
-        loginForm.style.display = 'block';
-        document.getElementById('login-url').href = loginStatus.url;
+        returnForm.style.display = 'block';
     }
 }
 
@@ -48,10 +43,7 @@ function fetchLoginStatusHelper(document, loginStatus) {
  * Function for every page BUT registration.html, fetches login status and displays either login/logout link
  */
 function displayLoginLogoutLink() {
-    const url = window.location.pathname + window.location.search;
-    console.log(url);
-
-    fetch('/login-status?url='+url).then(response => response.json()).then((loginStatus) => {
+    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
         console.log(loginStatus);   
         displayLoginLogoutLinkHelper(document, loginStatus);
     });
@@ -70,6 +62,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
     else {   // Display login link
         document.getElementById('logout').style.display = "none";
         document.getElementById('login').style.display = "block";
+        document.getElementById('login-url').href = loginStatus.url;
     }
 }
 
