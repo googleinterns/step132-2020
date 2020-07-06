@@ -28,10 +28,10 @@ public final class Student {
     
     private String name;
     private String email;
-    private String[] learning;
-    private TutorSession[] scheduledSessions;
+    private ArrayList<String> learning;
+    private ArrayList<TutorSession> scheduledSessions;
 
-    public Student(String name, String email, String[] learning, TutorSession[] scheduledSessions) {
+    public Student(String name, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions) {
         this.name = name;
         this.email = email;
         this.learning = learning;
@@ -46,32 +46,26 @@ public final class Student {
         return this.email;
     }
 
-    public String[] getLearning() {
+    public ArrayList<String> getLearning() {
         return this.learning;
     }
 
-    public TutorSession[] getScheduledSessions() {
+    public ArrayList<TutorSession> getScheduledSessions() {
         return this.scheduledSessions;
     }
 
     /** Adds the given Tutor Session to the scheduledSessions array. */
     public void addToScheduledSessions(TutorSession tutoringSession) {
-        List<TutorSession> scheduledSessionsList = new LinkedList<TutorSession>(Arrays.asList(this.scheduledSessions));
-        scheduledSessionsList.add(tutoringSession);
-        this.scheduledSessions = scheduledSessionsList.toArray(new TutorSession[0]);
+        this.scheduledSessions.add(tutoringSession);
     }
 
     /** Marks the tutoring session that has the given tutor's email as rated.*/
     public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail, int newRating) {
-        List<TutorSession> scheduledSessionsList = new LinkedList<TutorSession>(Arrays.asList(this.scheduledSessions));
         for(TutorSession tutorSession : this.scheduledSessions) {
             if(tutorEmail.toLowerCase().equals(tutorSession.getTutorEmail().toLowerCase())) {
-                scheduledSessionsList.remove(tutorSession);
                 tutorSession.rateSession(newRating);
-                scheduledSessionsList.add(tutorSession);
             }
         }
-        this.scheduledSessions = scheduledSessionsList.toArray(new TutorSession[0]);
     }
 
 }

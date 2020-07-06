@@ -24,13 +24,13 @@ public final class Tutor {
     
     private String name;
     private String email;
-    private String[] skills;
-    private TimeRange[] availability;
-    private TutorSession[] scheduledSessions;
+    private ArrayList<String>  skills;
+    private ArrayList<TimeRange> availability;
+    private ArrayList<TutorSession> scheduledSessions;
     private int ratingSum;
     private int ratingCount;
 
-    public Tutor(String name, String email, String[] skills, TimeRange[] availability, TutorSession[] scheduledSessions) {
+    public Tutor(String name, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions) {
         this.name = name;
         this.email = email;
         this.skills = skills;
@@ -49,15 +49,15 @@ public final class Tutor {
         return this.email;
     }
 
-    public String[] getSkills() {
+    public ArrayList<String>  getSkills() {
         return this.skills;
     }
 
-    public TimeRange[] getAvailability() {
+    public ArrayList<TimeRange> getAvailability() {
         return this.availability;
     }
 
-    public TutorSession[] getScheduledSessions() {
+    public ArrayList<TutorSession> getScheduledSessions() {
         return this.scheduledSessions;
     }
 
@@ -67,16 +67,12 @@ public final class Tutor {
 
     /** Deletes the given timeslot from the availability array. */
     public void deleteAvailabilityByTimeRange(TimeRange timeslot) {
-        List<TimeRange> availabilityList = new LinkedList<TimeRange>(Arrays.asList(this.availability));
-        availabilityList.remove(timeslot);
-        this.availability = availabilityList.toArray(new TimeRange[0]);
+        this.availability.remove(timeslot);
     }
 
     /** Adds the given Tutor Session to the scheduledSessions array. */
     public void addToScheduledSessions(TutorSession tutoringSession) {
-        List<TutorSession> scheduledSessionsList = new LinkedList<TutorSession>(Arrays.asList(this.scheduledSessions));
-        scheduledSessionsList.add(tutoringSession);
-        this.scheduledSessions = scheduledSessionsList.toArray(new TutorSession[0]);
+        this.scheduledSessions.add(tutoringSession);
     }
 
     public void rateTutor(int newRating) {

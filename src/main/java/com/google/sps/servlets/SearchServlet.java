@@ -63,7 +63,7 @@ public class SearchServlet extends HttpServlet {
         ArrayList<Tutor> results = new ArrayList<Tutor>();
 
         for(Tutor tutor : SampleData.getSampleTutors()) {
-            String[] skills = tutor.getSkills();
+            ArrayList<String> skills = tutor.getSkills();
 
             for(String skill : skills) {
                 if(skill.toLowerCase().equals(topic.toLowerCase())) {

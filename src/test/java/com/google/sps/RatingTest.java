@@ -17,6 +17,8 @@ package com.google.sps;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.io.*;
@@ -71,7 +73,7 @@ public final class RatingTest {
         float actualTutorRating = SampleData.getTutorByEmail("sfalberg@google.com").getRating();
         float expectedTutorRating = 5;
 
-        TutorSession actualScheduledSession = SampleData.getStudentByEmail("elian@google.com").getScheduledSessions()[0];
+        TutorSession actualScheduledSession = SampleData.getStudentByEmail("elian@google.com").getScheduledSessions().get(0);
         boolean actualSessionRated = actualScheduledSession.isRated();
         int actualSessionRating = actualScheduledSession.getRating();
         int expectedSessionRating = 5;

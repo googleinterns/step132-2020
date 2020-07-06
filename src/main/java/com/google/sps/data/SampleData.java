@@ -40,39 +40,39 @@ public final class SampleData {
                                                         .build();
 
     private static ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
-        new Tutor("Kashish Arora", "kashisharora@google.com", new String[]{"Math", "History"},
-                new TimeRange[]{TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020)},
-                new TutorSession[]{}),
-        new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"English", "Physics"},
-                new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
-                             TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020)},
-                new TutorSession[]{}),
-        new Tutor("Sam Falberg", "sfalberg@google.com", new String[]{"Geology", "English"},
-                new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020)},
-                new TutorSession[]{}),
-        new Tutor("Anand Desai", "thegoogler@google.com", new String[]{"Finance", "Chemistry"},
-                new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020)}, 
-                new TutorSession[]{}),
-        new Tutor("Elian Dumitru", "elian@google.com", new String[]{"Geology", "Math"},
-                new TimeRange[]{TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020)},
-                new TutorSession[]{})
+        new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                            TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020))),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
+                             TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020))),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
+                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Tutor("Anand Desai", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
+                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
+                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
+                new ArrayList<TutorSession> (Arrays.asList()))
     ));
 
     private static ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
-        new Student("Kashish Arora", "kashisharora@google.com", new String[]{"English", "Physics"},
-                new TutorSession[]{}),
-        new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"Math", "History"},
-                new TutorSession[]{}),
-        new Student("Sam Falberg", "sfalberg@google.com", new String[]{"Finance", "Chemistry"},
-                new TutorSession[]{}),
-        new Student("Anand Desai", "thegoogler@google.com", new String[]{"Geology", "English"},
-                new TutorSession[]{}),
-        new Student("Elian Dumitru", "elian@google.com", new String[]{"Finance", "Chemistry"},
-                new TutorSession[]{})
+        new Student("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Student("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+                 new ArrayList<TutorSession> (Arrays.asList())),
+        new Student("Anand Desai", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                new ArrayList<TutorSession> (Arrays.asList())),
+        new Student("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+                new ArrayList<TutorSession> (Arrays.asList()))
     ));
 
     public static ArrayList<Tutor> getSampleTutors() {
