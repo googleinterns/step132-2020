@@ -96,12 +96,6 @@ describe("Fetching login status", function() {
             expect(document.getElementById('registration-form').style.display).toBe('block');
         });
 
-        // it("sets login link correctly", function() {
-        //     mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html'};
-        //     fetchLoginStatusHelper(document, mockLoginStatus);
-
-        //     expect(document.getElementById('login-url').href).toBe('http://localhost:8080/_ah/login?continue=%2Fregistration.html');
-        // });
     });
 
     describe("for any page excluding registration", function() {
