@@ -65,6 +65,7 @@ public class RegistrationServlet extends HttpServlet {
     Entity userEntity = new Entity("User");
     createEntityAndPutInDatastore(datastore, userEntity, role, fullName, email, userId, topicsToStr);
 
+    // TODO: Redirect back to page user was at before registration rather than always redirect to homepage, Issue #41
     response.sendRedirect("/homepage.html");
   }
 
