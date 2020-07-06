@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * Checks if user is logged in, if not display registration page
+ * Function for registration.html, checks if user needs to register, if not display registration page
  */
 function fetchLoginStatus() {
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
@@ -26,26 +26,42 @@ function fetchLoginStatus() {
  * Used for testing purposes with Jasmine
  */
 function fetchLoginStatusHelper(document, loginStatus) {
-    loginForm = document.getElementById('login-form');
-    logoutForm = document.getElementById('logout-form');
-    registrationForm = document.getElementById('registration-form')
+    returnForm = document.getElementById('return');
+    registrationForm = document.getElementById('registration-form');
 
-    // If logged in, set and display logout URL
-    if (loginStatus.isLoggedIn) {
-        // If not registered, also display registration form
-        if (loginStatus.needsToRegister) {
-            registrationForm.style.display = 'block';
-        } else {
-            registrationForm.style.display = 'none';
-        }
-        loginForm.style.display = 'none';
-        logoutForm.style.display = 'block';
-        document.getElementById('logout-url').href = loginStatus.url;
-
-    } else {  // Logged out, set and display login URL
-        logoutForm.style.display = 'none';
+    // If not registered, display registration form
+    if (loginStatus.needsToRegister) {
+        returnForm.style.display = 'none';
+        registrationForm.style.display = 'block';
+    } else {  // Logged out, set and display homepage URL
         registrationForm.style.display = 'none';
-        loginForm.style.display = 'block';
+        returnForm.style.display = 'block';
+    }
+}
+
+/**
+ * Function for every page BUT registration.html, fetches login status and displays either login/logout link
+ */
+function displayLoginLogoutLink() {
+    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        console.log(loginStatus);   
+        displayLoginLogoutLinkHelper(document, loginStatus);
+    });
+}
+
+/**
+ * Used for testing purposes with Jasmine
+ */
+function displayLoginLogoutLinkHelper(document, loginStatus) {
+    // User is logged in, display logout link on page 
+    if (loginStatus.isLoggedIn) {
+        document.getElementById('login').style.display = "none";
+        document.getElementById('logout').style.display = "block";
+        document.getElementById('logout-url').href = loginStatus.url;
+    }
+    else {   // Display login link
+        document.getElementById('logout').style.display = "none";
+        document.getElementById('login').style.display = "block";
         document.getElementById('login-url').href = loginStatus.url;
     }
 }
