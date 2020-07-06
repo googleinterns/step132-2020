@@ -48,7 +48,8 @@ public class RatingServlet extends HttpServlet {
 
         String jsonTutors = new Gson().toJson(SampleData.getSampleTutors());
         String jsonStudents = new Gson().toJson(SampleData.getSampleStudents());
-        String json = jsonTutors + ", " + jsonStudents; 
+
+        String json = new Gson().toJson(new String[]{jsonTutors, jsonStudents}); 
         response.setContentType("application/json;");
         response.getWriter().println(json);
         response.sendRedirect("/history.html");
