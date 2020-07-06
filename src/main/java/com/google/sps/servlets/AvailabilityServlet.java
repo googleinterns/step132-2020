@@ -47,7 +47,7 @@ public class AvailabilityServlet extends HttpServlet {
 
         for (Tutor tutor : SampleData.getSampleTutors()) {
             if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
-                timeslots = Arrays.asList(tutor.getAvailability());
+                timeslots = tutor.getAvailability();
                 break;
             }
         }

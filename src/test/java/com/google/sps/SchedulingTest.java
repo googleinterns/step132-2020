@@ -102,9 +102,9 @@ public final class SchedulingTest {
                             .toJson(new Tutor("Bernardo Eilert Trevisan",
                                             "btrevisan@google.com",
                                             new ArrayList<String>(Arrays.asList("English", "Physics")),
-                                            new TimeRange[]{TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
-                                                        TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020)},
-                                                        new TutorSession[]{}));
+                                            new ArrayList<TimeRange>(Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
+                                                        TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020))),
+                                                        new ArrayList<TutorSession>()));
 
         writer.flush();
         // Tutoring session should have been scheduled
