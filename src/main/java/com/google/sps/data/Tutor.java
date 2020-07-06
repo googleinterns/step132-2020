@@ -24,16 +24,21 @@ public final class Tutor {
     
     private String name;
     private String email;
-    private List<String> skills;
-    private List<TimeRange> availability;
-    private List<TutorSession> scheduledSessions;
+    private ArrayList<String>  skills;
+    private ArrayList<TimeRange> availability;
+    private ArrayList<TutorSession> scheduledSessions;
+    private int ratingSum;
+    private int ratingCount;
 
-    public Tutor(String name, String email, List<String> skills, List<TimeRange> availability, List<TutorSession> scheduledSessions) {
+    public Tutor(String name, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions) {
         this.name = name;
         this.email = email;
         this.skills = skills;
         this.availability = availability;
         this.scheduledSessions = scheduledSessions;
+        // Rating count and sum are both initially set to 0 by default
+        this.ratingCount = 0;
+        this.ratingSum = 0;
     }
 
     public String getName() {
@@ -44,16 +49,20 @@ public final class Tutor {
         return this.email;
     }
 
-    public List<String> getSkills() {
+    public ArrayList<String>  getSkills() {
         return this.skills;
     }
 
-    public List<TimeRange> getAvailability() {
+    public ArrayList<TimeRange> getAvailability() {
         return this.availability;
     }
 
-    public List<TutorSession> getScheduledSessions() {
+    public ArrayList<TutorSession> getScheduledSessions() {
         return this.scheduledSessions;
+    }
+
+    public Float getRating() {
+        return (float) this.ratingSum / this.ratingCount;
     }
 
     /** Deletes the given timeslot from the availability array. */
@@ -64,6 +73,11 @@ public final class Tutor {
     /** Adds the given Tutor Session to the scheduledSessions array. */
     public void addToScheduledSessions(TutorSession tutoringSession) {
         this.scheduledSessions.add(tutoringSession);
+    }
+
+    public void rateTutor(int newRating) {
+        this.ratingSum = this.ratingSum + newRating;
+        this.ratingCount++;
     }
 
 }
