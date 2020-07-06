@@ -28,10 +28,10 @@ public final class Student {
     
     private String name;
     private String email;
-    private String[] learning;
-    private TutorSession[] scheduledSessions;
+    private List<String> learning;
+    private List<TutorSession> scheduledSessions;
 
-    public Student(String name, String email, String[] learning, TutorSession[] scheduledSessions) {
+    public Student(String name, String email, List<String> learning, List<TutorSession> scheduledSessions) {
         this.name = name;
         this.email = email;
         this.learning = learning;
@@ -46,19 +46,17 @@ public final class Student {
         return this.email;
     }
 
-    public String[] getLearning() {
+    public List<String> getLearning() {
         return this.learning;
     }
 
-    public TutorSession[] getScheduledSessions() {
+    public List<TutorSession> getScheduledSessions() {
         return this.scheduledSessions;
     }
 
     /** Adds the given Tutor Session to the scheduledSessions array. */
     public void addToScheduledSessions(TutorSession tutoringSession) {
-        List<TutorSession> scheduledSessionsList = new LinkedList<TutorSession>(Arrays.asList(this.scheduledSessions));
-        scheduledSessionsList.add(tutoringSession);
-        this.scheduledSessions = scheduledSessionsList.toArray(new TutorSession[0]);
+        this.scheduledSessions.add(tutoringSession);
     }
 
 }

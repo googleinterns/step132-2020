@@ -74,8 +74,8 @@ function selectTimeSlot(tutorID, window, timeslot) {
     var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID) +
                 "&start=" + encodeURIComponent(timeslot.start) +
                 "&end=" + encodeURIComponent(timeslot.end) +
-                "&year=" + encodeURIComponent(timeslot.year) +
-                "&month=" + encodeURIComponent(timeslot.month) +
-                "&day=" + encodeURIComponent(timeslot.day);
+                "&year=" + encodeURIComponent(timeslot.date.year) +
+                "&month=" + encodeURIComponent(timeslot.date.month) +
+                "&day=" + encodeURIComponent(timeslot.date.dayOfMonth);
     window.location.href = url;
 }
