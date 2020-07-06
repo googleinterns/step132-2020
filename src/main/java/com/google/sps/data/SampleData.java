@@ -63,16 +63,16 @@ public final class SampleData {
     ));
 
     private static ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
-        new Student("Kashish Arora", "kashisharora@google.com", new String[]{"English", "Physics"},
-                new TutorSession[]{}),
-        new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new String[]{"Math", "History"},
-                new TutorSession[]{}),
-        new Student("Sam Falberg", "sfalberg@google.com", new String[]{"Finance", "Chemistry"},
-                new TutorSession[]{}),
-        new Student("Anand Desai", "thegoogler@google.com", new String[]{"Geology", "English"},
-                new TutorSession[]{}),
-        new Student("Elian Dumitru", "elian@google.com", new String[]{"Finance", "Chemistry"},
-                new TutorSession[]{})
+        new Student("Kashish Arora", "kashisharora@google.com", new ArrayList<String>(Arrays.asList("English", "Physics")),
+                new ArrayList<TutorSession>()),
+        new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String>(Arrays.asList("Math", "History")),
+                new ArrayList<TutorSession>()),
+        new Student("Sam Falberg", "sfalberg@google.com", new ArrayList<String>(Arrays.asList("Finance", "Chemistry")),
+                new ArrayList<TutorSession>()),
+        new Student("Anand Desai", "thegoogler@google.com", new ArrayList<String>(Arrays.asList("Geology", "English")),
+                new ArrayList<TutorSession>()),
+        new Student("Elian Dumitru", "elian@google.com", new ArrayList<String>(Arrays.asList("Finance", "Chemistry")),
+                new ArrayList<TutorSession>())
     ));
 
     public static ArrayList<Tutor> getSampleTutors() {

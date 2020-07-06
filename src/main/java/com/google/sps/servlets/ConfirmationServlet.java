@@ -48,7 +48,7 @@ public class ConfirmationServlet extends HttpServlet {
 
         for (Student student : SampleData.getSampleStudents()) {
             if (studentEmail.toLowerCase().equals(student.getEmail().toLowerCase())) {
-                scheduledSessions = Arrays.asList(student.getScheduledSessions());
+                scheduledSessions = student.getScheduledSessions();
                 break;
             }
         }
