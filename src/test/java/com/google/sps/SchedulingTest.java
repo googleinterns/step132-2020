@@ -17,6 +17,9 @@ package com.google.sps;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -101,10 +104,10 @@ public final class SchedulingTest {
         String unexpected = new Gson()
                             .toJson(new Tutor("Bernardo Eilert Trevisan",
                                             "btrevisan@google.com",
-                                            new ArrayList<String>(Arrays.asList("English", "Physics")),
-                                            new ArrayList<TimeRange>(Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
+                                            new ArrayList<String> (Arrays.asList("English", "Physics")),
+                                            new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                                                         TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020))),
-                                                        new ArrayList<TutorSession>()));
+                                            new ArrayList<TutorSession> (Arrays.asList())));
 
         writer.flush();
         // Tutoring session should have been scheduled

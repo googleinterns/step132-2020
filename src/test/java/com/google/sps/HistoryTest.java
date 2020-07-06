@@ -15,8 +15,8 @@
 package com.google.sps;
 
 import java.util.List;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Arrays;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
-import com.google.sps.servlets.ConfirmationServlet;
+import com.google.sps.servlets.HistoryServlet;
 import com.google.gson.Gson;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
@@ -37,10 +37,15 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.*;
 
 @RunWith(JUnit4.class)
-public final class ConfirmationTest {
+public final class HistoryTest {
+
+    private static final Calendar MAY182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 5, 18)
+                                                        .build();
 
     @Test
-    public void testDoPostNoSession() throws Exception {
+    public void testDoPostNoHistory() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -51,40 +56,41 @@ public final class ConfirmationTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        ConfirmationServlet servlet = new ConfirmationServlet();
+        HistoryServlet servlet = new HistoryServlet();
         servlet.doPost(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
-        // If the user has no scheduled sessions, the return json string should be an empty array
+        // If the user has no tutoring session history, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains("[]"));
     }
 
     @Test
-    public void testDoPostWithSessions() throws Exception {
+    public void testDoPostWithHistory() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("studentEmail")).thenReturn("sfalberg@google.com");
+        when(request.getParameter("studentEmail")).thenReturn("btrevisan@google.com");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        Calendar date = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
+        TutorSession tutoringSessionFake = new TutorSession("btrevisan@google.com",
+                                                        "btrevisan@google.com",
+                                                        null, null,
+                                                        TimeRange.fromStartToEnd(540, 600, MAY182020));
+        SampleData.addToStudentScheduledSessionsByEmail("btrevisan@google.com", tutoringSessionFake);
 
-        TutorSession tutoringSessionFake = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, date));
-        SampleData.addToStudentScheduledSessionsByEmail("sfalberg@google.com", tutoringSessionFake);
-
-        ConfirmationServlet servlet = new ConfirmationServlet();
+        HistoryServlet servlet = new HistoryServlet();
         servlet.doPost(request, response);
 
         String expected = new Gson().toJson(new TutorSession[]{tutoringSessionFake});
 
-        verify(request, times(1)).getParameter("studentEmail");
+        verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
-        // If the user has no scheduled sessions, the return json string should be an empty array
+        // If the user has a tutoring session history, the return json string should reflect that history
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 }

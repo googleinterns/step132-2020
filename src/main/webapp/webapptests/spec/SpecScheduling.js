@@ -32,7 +32,7 @@ describe("Scheduling", function() {
         readComponents(queryString, mockWindow);
 
         it("should add tutorID, start, end, year, month, and day to the query string", function() {
-            expect(queryString["tutorID"]).toEqual("thegoogler@gmail.com");
+            expect(queryString["tutorID"]).toEqual("thegoogler@google.com");
             expect(queryString["start"]).toEqual("480");
             expect(queryString["end"]).toEqual("540");
             expect(queryString["year"]).toEqual("2020");
