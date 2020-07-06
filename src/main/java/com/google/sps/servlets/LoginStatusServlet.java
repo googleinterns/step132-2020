@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,14 +53,14 @@ public class LoginStatusServlet extends HttpServlet {
     /** Determines if a logged in user needs to register, created for testing */
     public void setRegistered(HttpServletRequest request, HttpServletResponse response, String name) throws IOException {
         LoginStatus loginStatus;
-        // Gets the current URL of the user so we can return them to the same page when they logout
-        String url = request.getParameter("url");
+        // Gets the referring URL of the user so we can return them to the same page when they logout
+        String referrer = request.getHeader("referer");     //"referer" is intentionally misspelled
 
         // Name is null if user hasn't registered, set needsToRegister to 'true' and make logout URL
         if (name == null) {
-            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(url));
+            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer));
         } else {  // User is logged in and registered, make logout URL
-            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(url));
+            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer));
         }
 
         String json = new Gson().toJson(loginStatus);
