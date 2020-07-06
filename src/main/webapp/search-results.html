@@ -15,11 +15,17 @@ See the License for the specific language governing permissions and
     <meta charset="UTF-8">
     <title>Results</title>
     <link rel="stylesheet" type="text/css" href="search-results.css">
+    <link rel="stylesheet" type="text/css" href="general.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   </head>
-  <body onload="getSearchResults()">
+  <body onload="getSearchResults(), displayLoginLogoutLink()">
+    <a href="./homepage.html"><p>Homepage</p></a>
+    <div class="top-right">
+        <a id="login-url"><p id="login" style="display:none">Login with Google</p></a>
+        <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
+    </div>
     <div id="content" class="container-fluid" style="text-align: center;">
         <form id="search-form-results" onsubmit="return redirectToResults();">
             <input class="form-control search-box" type="text" id="search-box-results" required="" aria-required=true placeholder="What do you need help with today?">
@@ -39,5 +45,6 @@ See the License for the specific language governing permissions and
         <div id="books"></div>
     </div>
     <script src="search.js"></script>
+    <script src="registration.js"></script>
   </body>
 </html>
