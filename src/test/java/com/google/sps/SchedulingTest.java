@@ -35,6 +35,9 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TutorSession;
 import com.google.gson.Gson;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 
 @RunWith(JUnit4.class)
 public final class SchedulingTest {
@@ -105,6 +108,7 @@ public final class SchedulingTest {
                                             new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                                                         TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020))),
                                             new ArrayList<TutorSession> (Arrays.asList())));
+     
 
         writer.flush();
         // Tutoring session should have been scheduled
