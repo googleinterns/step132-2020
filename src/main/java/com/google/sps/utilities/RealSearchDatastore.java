@@ -61,12 +61,13 @@ public final class RealSearchDatastore implements SearchDatastoreService {
             PreparedQuery tutorResults = datastore.prepare(tutorQuery);
 
             for (Entity tutorEntity : tutorResults.asIterable()) {
-
+                
+                long id = (long) tutorEntity.getKey().getId();
                 String name = (String) tutorEntity.getProperty("name");
                 String email = (String) tutorEntity.getProperty("email");
                 ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
-                ArrayList<TimeRange> availability = getTimeRanges(datastore, txn, (ArrayList) tutorEntity.getProperty("availability"));
-                ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, txn, (ArrayList) tutorEntity.getProperty("scheduledSessions"));
+                ArrayList<TimeRange> availability = getTimeRanges(datastore, id);
+                ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, txn, id);
 
                 Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
 
@@ -86,69 +87,66 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     }
 
     /**
-    * Gets all the tutor session entities corresponding to the ids in sessionIds and creates TutorSession objects.
+    * Gets all the tutor session entities with the corresponding tutorId. 
     * @return ArrayList<TutorSession>
     */
-    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, Transaction txn, List<Long> sessionIds) {
+    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, Transaction txn, long tutorId) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
-        //datastore stores empty lists as null values, so if sessionIds is null, there are no scheduled sessions
-        if(sessionIds == null) {
-            return sessions;
-        }
+        //get all sessions with tutor id
+        Filter filter = new FilterPredicate("tutorId", FilterOperator.EQUAL, tutorId);
+        Query query = new Query("TutorSession").setFilter(filter);
 
-        for(Long id : sessionIds) {
-            Key tutorSessionKey = KeyFactory.createKey("TutorSession", id);
+        PreparedQuery sessionEntities = datastore.prepare(query);
 
+        for(Entity entity : sessionEntities.asIterable()) {
             try {
-                Entity entity = datastore.get(txn, tutorSessionKey);
+
                 String studentEmail = (String) entity.getProperty("studentEmail");
                 String tutorEmail = (String) entity.getProperty("tutorEmail");
                 String subtopics = (String) entity.getProperty("subtopics");
                 String questions = (String) entity.getProperty("questions");
-                TimeRange timeslot = getTimeRange(datastore, txn, (long) entity.getProperty("timeslot"));
+
+                Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
+                Entity timeEntity = datastore.get(txn, timeRangeKey); 
+                TimeRange timeslot = createTimeRange(timeEntity);
 
                 sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot));
-            } catch (EntityNotFoundException e)  {
-                //The tutoring session doesn't exist, skip this id
+
+            } catch (EntityNotFoundException e) {
+                //timeslot was not found, skip this tutoring session
             }
+           
         }
 
         return sessions;
     }
 
     /**
-    * Gets all the time range entities corresponding to the ids in rangeIds and creates TimeRange objects.
+    * Gets all the time range entities corresponding that have the given tutorId.
     * @return ArrayList<TimeRange>
     */
-    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Transaction txn, List<Long> rangeIds) {
+    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, long tutorId) {
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
+        
+        //get all time ranges with tutor id
+        Filter filter = new FilterPredicate("tutorId", FilterOperator.EQUAL, tutorId);
+        Query query = new Query("TimeRange").setFilter(filter);
 
-        //datastore stores empty lists as null values, so if rangeIds is null, there are no available times
-        if(rangeIds == null) {
-            return availability;
-        }
+        PreparedQuery timeRanges = datastore.prepare(query);
 
-        for(Long id : rangeIds) {
-            try {
-                availability.add(getTimeRange(datastore, txn, id));
-            } catch (EntityNotFoundException e)  {
-                //The time range doesn't exist, skip this id
-            }
+        for(Entity time : timeRanges.asIterable()) {
+            availability.add(createTimeRange(time));
         }
 
         return availability;
     }
 
     /**
-    * Gets the time range entity corresponding to the id and creates a TimeRange object.
+    * Creates a TimeRange object from a given TimeRange entity.
     * @return TimeRange
     */
-    private TimeRange getTimeRange(DatastoreService datastore, Transaction txn, long id) throws EntityNotFoundException{
-
-        Key timeRangeKey = KeyFactory.createKey("TimeRange", id);
-
-        Entity entity = datastore.get(txn, timeRangeKey);
+    private TimeRange createTimeRange(Entity entity) {
         int start = Math.toIntExact((long) entity.getProperty("start"));
         int end = Math.toIntExact((long) entity.getProperty("end"));
         Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
