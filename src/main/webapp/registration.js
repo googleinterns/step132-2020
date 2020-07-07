@@ -79,12 +79,18 @@ function displayRegistrationInfo() {
 function displayRegistrationInfoHelper(document) {
     var generalInfo = document.getElementById('general-info');
     var tutorInfo = document.getElementById('tutor-info');
+    var studentTopics = document.getElementById('student-topics');
+    var tutorTopics = document.getElementById('tutor-topics');
     generalInfo.style.display = 'block';
 
-    // Display extra information to fill if user is a tutor
+    // Display tutor info, hide student info
     if (document.getElementById('tutor').checked) {
+        studentTopics.style.display = 'none';
+        tutorTopics.style.display = 'block';
         tutorInfo.style.display = 'block';
-    } else {   // User may have clicked tutor then switched back to student, in that case hide tutor information
+    } else if (document.getElementById('student').checked) {   // Display student info, hide tutor info
+        tutorTopics.style.display = 'none';
         tutorInfo.style.display = 'none';
+        studentTopics.style.display = 'block';
     }
 }
