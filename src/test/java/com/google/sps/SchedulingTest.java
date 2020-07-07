@@ -111,7 +111,7 @@ public final class SchedulingTest {
 
         writer.flush();
         // Tutoring session should have been scheduled
-src/test/java/com/google/sps/SchedulingTest.java        Assert.assertTrue(stringWriter.toString().contains(expected));
+        Assert.assertTrue(stringWriter.toString().contains(expected));
         // Previously available timeslot should no longer be available
         Assert.assertFalse(stringWriter.toString().contains(unexpected));
     }
