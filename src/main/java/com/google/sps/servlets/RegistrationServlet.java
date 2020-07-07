@@ -75,7 +75,8 @@ public class RegistrationServlet extends HttpServlet {
         createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, email, topicsToStr, userId);
     }
 
-    response.sendRedirect("/scheduling.html");
+    // TODO: Redirect back to page user was at before registration rather than always redirect to homepage, Issue #41
+    response.sendRedirect("/homepage.html");
   }
 
   /**

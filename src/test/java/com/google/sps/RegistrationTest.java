@@ -84,7 +84,7 @@ public final class RegistrationTest {
 
         ArgumentCaptor<String> url = ArgumentCaptor.forClass(String.class);
         verify(response).sendRedirect(url.capture());
-        List<String> expected = Arrays.asList("/scheduling.html");
+        List<String> expected = Arrays.asList("/homepage.html");
         // Response redirected to correct URL
         Assert.assertEquals(expected, url.getAllValues());
     }
