@@ -58,7 +58,7 @@ public class RegistrationServlet extends HttpServlet {
     List<String> topicsToStr = topics
                                 .stream()
                                 .filter(t -> t.isPresent())
-                                .map(t -> t.get())
+                                .map(t -> t.get().toLowerCase())
                                 .collect(Collectors.toList());
 
     // Make entity for user with all registration info
