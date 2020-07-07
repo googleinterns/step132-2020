@@ -84,7 +84,7 @@ function createTimeSlotBox(timeslot, tutorID) {
     buttonLineElement.appendChild(selectButtonElement);
 
     timeslotElement.appendChild(dateLineElement);
-    timeslotElement.appendChild(selectButtonElement);
+    timeslotElement.appendChild(buttonLineElement);
     return timeslotElement;
 }
 
