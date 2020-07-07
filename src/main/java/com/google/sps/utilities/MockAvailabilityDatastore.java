@@ -31,15 +31,24 @@ public final class MockAvailabilityDatastore implements AvailabilityDatastoreSer
     @Override
     public List<TimeRange> getAvailabilityForTutor(String email) {
 
-        List<TimeRange> timeslots = new ArrayList<TimeRange>();
+        Tutor tutor = SampleData.getTutorByEmail(email);
+        return tutor.getAvailability();
+    }
 
-        for (Tutor tutor : SampleData.getSampleTutors()) {
-            if (email.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
-                timeslots = tutor.getAvailability();
-                break;
-            }
-        }
+    /**
+    * Adds a new time range to a tutor's availability.
+    */
+    @Override
+    public void addAvailability(String email, TimeRange time) {
+        Tutor tutor = SampleData.getTutorByEmail(email);
+        tutor.addAvailabilityByTimeRange(time);
+    }
 
-        return timeslots;
+    /**
+    * Deletes a time range from a tutor's availability.
+    */
+    @Override
+    public void deleteAvailability(String email, TimeRange time) {
+        SampleData.deleteAvailabilityByTimeRange(email, time);
     }
 }
