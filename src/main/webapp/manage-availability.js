@@ -17,6 +17,8 @@ function getAvailability() {
     window.onload = readTutorID(queryString, window);
     const tutorID = queryString["tutorID"];
 
+    document.getElementById("tutorEmail").value = tutorID;
+
     const params = new URLSearchParams();
     params.append('tutorID', tutorID);
     fetch('/availability', {method: 'POST', body: params}).then(response => response.json()).then((timeslots) => {

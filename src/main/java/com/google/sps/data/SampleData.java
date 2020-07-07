@@ -140,7 +140,7 @@ public final class SampleData {
         return null;
     }
 
-    /** Deletes the given timeslot from the given tutor's availability array. */
+    /** Deletes the given timeslot from the given tutor's availability list. */
     public static void deleteAvailabilityByTimeRange(String email, TimeRange delete) {
         Tutor tutor = getTutorByEmail(email);
 
@@ -153,15 +153,10 @@ public final class SampleData {
         }
     }
 
-    /** Deletes the given timeslot from the given tutor's availability array. */
-    public static void xfbhddeleteAvailabilityByTimeRange(String email, TimeRange delete) {
+    /** Adds the given timeslot to the given tutor's availability list. */
+    public static void addAvailabilityByTutorEmail(String email, TimeRange timeslot) {
         Tutor tutor = getTutorByEmail(email);
-
-        for(TimeRange timeslot : tutor.getAvailability()) {
-            if (isTimeRangeEqual(delete, timeslot)) {
-                tutor.deleteAvailabilityByTimeRange(timeslot);
-            }
-        }
+        tutor.addAvailabilityByTimeRange(timeslot);
     }
 
     private static boolean isTimeRangeEqual(TimeRange timerange1, TimeRange timerange2) {
