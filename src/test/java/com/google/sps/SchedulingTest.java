@@ -44,6 +44,7 @@ public final class SchedulingTest {
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 5, 18)
+                                                        .set(Calendar.HOUR_OF_DAY, 8)
                                                         .build();
     private static final Calendar JUNE102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
@@ -93,14 +94,13 @@ public final class SchedulingTest {
         verify(request, times(1)).getParameter("subtopics");
         verify(request, times(1)).getParameter("questions");
 
-        Calendar date = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 5, 18).build();
-
         String expected = new Gson()
                             .toJson(new TutorSession("thegoogler@google.com",
                                             "btrevisan@google.com",
                                             "algebra",
                                             "How does it work?",
                                             TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020)));
+
         String unexpected = new Gson()
                             .toJson(new Tutor("Bernardo Eilert Trevisan",
                                             "btrevisan@google.com",
@@ -111,7 +111,7 @@ public final class SchedulingTest {
 
         writer.flush();
         // Tutoring session should have been scheduled
-        Assert.assertTrue(stringWriter.toString().contains(expected));
+src/test/java/com/google/sps/SchedulingTest.java        Assert.assertTrue(stringWriter.toString().contains(expected));
         // Previously available timeslot should no longer be available
         Assert.assertFalse(stringWriter.toString().contains(unexpected));
     }
