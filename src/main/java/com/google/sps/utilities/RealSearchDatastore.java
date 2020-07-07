@@ -29,6 +29,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.TransactionOptions;
 import java.lang.String;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -47,26 +49,36 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     public List<Tutor> getTutorsForTopic(String topic) {
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction();
 
         Filter topicFilter = new FilterPredicate("topics", FilterOperator.EQUAL, topic.toLowerCase());
         Query tutorQuery = new Query("Tutor").setFilter(topicFilter);
 
-        PreparedQuery tutorResults = datastore.prepare(tutorQuery);
-
         ArrayList<Tutor> tutors = new ArrayList<Tutor>();
 
-        for (Entity tutorEntity : tutorResults.asIterable()) {
+        try {
+            PreparedQuery tutorResults = datastore.prepare(tutorQuery);
 
-            String name = (String) tutorEntity.getProperty("name");
-            String email = (String) tutorEntity.getProperty("email");
-            ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
-            ArrayList<TimeRange> availability = getTimeRanges(datastore, (ArrayList) tutorEntity.getProperty("availability"));
-            ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, (ArrayList) tutorEntity.getProperty("scheduledSessions"));
+            for (Entity tutorEntity : tutorResults.asIterable()) {
 
-            Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
+                String name = (String) tutorEntity.getProperty("name");
+                String email = (String) tutorEntity.getProperty("email");
+                ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
+                ArrayList<TimeRange> availability = getTimeRanges(datastore, txn, (ArrayList) tutorEntity.getProperty("availability"));
+                ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, txn, (ArrayList) tutorEntity.getProperty("scheduledSessions"));
 
-            tutors.add(tutor);
+                Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
+
+                tutors.add(tutor);
+                
+            }
             
+            txn.commit();
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
         }
 
         return tutors;
@@ -77,7 +89,7 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     * Gets all the tutor session entities corresponding to the ids in sessionIds and creates TutorSession objects.
     * @return ArrayList<TutorSession>
     */
-    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, List<Long> sessionIds) {
+    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, Transaction txn, List<Long> sessionIds) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //datastore stores empty lists as null values, so if sessionIds is null, there are no scheduled sessions
@@ -89,12 +101,12 @@ public final class RealSearchDatastore implements SearchDatastoreService {
             Key tutorSessionKey = KeyFactory.createKey("TutorSession", id);
 
             try {
-                Entity entity = datastore.get(tutorSessionKey);
+                Entity entity = datastore.get(txn, tutorSessionKey);
                 String studentEmail = (String) entity.getProperty("studentEmail");
                 String tutorEmail = (String) entity.getProperty("tutorEmail");
                 String subtopics = (String) entity.getProperty("subtopics");
                 String questions = (String) entity.getProperty("questions");
-                TimeRange timeslot = getTimeRange(datastore, (long) entity.getProperty("timeslot"));
+                TimeRange timeslot = getTimeRange(datastore, txn, (long) entity.getProperty("timeslot"));
 
                 sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot));
             } catch (EntityNotFoundException e)  {
@@ -109,7 +121,7 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     * Gets all the time range entities corresponding to the ids in rangeIds and creates TimeRange objects.
     * @return ArrayList<TimeRange>
     */
-    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, List<Long> rangeIds) {
+    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Transaction txn, List<Long> rangeIds) {
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
 
         //datastore stores empty lists as null values, so if rangeIds is null, there are no available times
@@ -119,7 +131,7 @@ public final class RealSearchDatastore implements SearchDatastoreService {
 
         for(Long id : rangeIds) {
             try {
-                availability.add(getTimeRange(datastore, id));
+                availability.add(getTimeRange(datastore, txn, id));
             } catch (EntityNotFoundException e)  {
                 //The time range doesn't exist, skip this id
             }
@@ -132,11 +144,11 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     * Gets the time range entity corresponding to the id and creates a TimeRange object.
     * @return TimeRange
     */
-    private TimeRange getTimeRange(DatastoreService datastore, long id) throws EntityNotFoundException{
+    private TimeRange getTimeRange(DatastoreService datastore, Transaction txn, long id) throws EntityNotFoundException{
 
         Key timeRangeKey = KeyFactory.createKey("TimeRange", id);
 
-        Entity entity = datastore.get(timeRangeKey);
+        Entity entity = datastore.get(txn, timeRangeKey);
         int start = (int) entity.getProperty("start");
         int end = (int) entity.getProperty("end");
         Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
