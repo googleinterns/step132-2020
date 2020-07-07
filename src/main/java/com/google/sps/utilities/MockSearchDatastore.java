@@ -17,8 +17,6 @@ package com.google.sps.utilities;
 
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Tutor;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.String;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -33,7 +31,7 @@ public final class MockSearchDatastore implements SearchDatastoreService {
     * @return List<Tutor>
     */
     @Override
-    public List<Tutor> getTutorsForTopic(String topic, HttpServletResponse response) throws IOException {
+    public List<Tutor> getTutorsForTopic(String topic) {
         ArrayList<Tutor> results = new ArrayList<Tutor>();
 
         for(Tutor tutor : SampleData.getSampleTutors()) {

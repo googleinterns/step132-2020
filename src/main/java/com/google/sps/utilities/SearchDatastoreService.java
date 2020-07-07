@@ -15,8 +15,6 @@
 package com.google.sps.utilities;
 
 import com.google.sps.data.Tutor;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.String;
 import java.util.List;
 
@@ -27,5 +25,5 @@ public interface SearchDatastoreService {
     * Gets a list of tutors that have the specified topic as a skill.
     * @return List<Tutor>
     */
-    public List<Tutor> getTutorsForTopic(String topic, HttpServletResponse response) throws IOException;
+    public List<Tutor> getTutorsForTopic(String topic);
 }
