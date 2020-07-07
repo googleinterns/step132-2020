@@ -28,9 +28,26 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+// import com.google.sps.utilities.RealAvailabilityDatastore;
+import com.google.sps.utilities.MockAvailabilityDatastore;
+import com.google.sps.utilities.AvailabilityDatastoreService;
 
 @WebServlet("/availability")
 public class AvailabilityServlet extends HttpServlet {
+
+    private AvailabilityDatastoreService datastore;
+
+    public AvailabilityServlet(){}
+
+    public AvailabilityServlet(boolean test) {
+        if(test) {
+            datastore = new MockAvailabilityDatastore();
+        }
+    }
+
+    // public void init() {
+    //     datastore = new RealAvailabilityDatastore();
+    // }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -43,14 +60,7 @@ public class AvailabilityServlet extends HttpServlet {
         // Get the id of the tutor whose availability will be displayed.
         String tutorID = request.getParameter("tutorID");
 
-        List<TimeRange> timeslots = new ArrayList<TimeRange>();
-
-        for (Tutor tutor : SampleData.getSampleTutors()) {
-            if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
-                timeslots = tutor.getAvailability();
-                break;
-            }
-        }
+        List<TimeRange> timeslots = datastore.getAvailabilityForTutor(tutorID);
 
         String json = new Gson().toJson(timeslots);
         response.setContentType("application/json;");

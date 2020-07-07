@@ -16,23 +16,25 @@ package com.google.sps.utilities;
 
 import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
+import com.google.sps.data.Tutor;
 import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
 /** Mock datastore service class used for testing getting tutor availability. */
-public interface AvailabilityDatastoreService {
+public final class MockAvailabilityDatastore implements AvailabilityDatastoreService {
 
     /**
     * Gets the availability of a tutor with the given email.
     * @return List<TimeRange>
     */
+    @Override
     public List<TimeRange> getAvailabilityForTutor(String email) {
 
         List<TimeRange> timeslots = new ArrayList<TimeRange>();
 
         for (Tutor tutor : SampleData.getSampleTutors()) {
-            if (tutorID.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
+            if (email.toLowerCase().equals(tutor.getEmail().toLowerCase())) {
                 timeslots = tutor.getAvailability();
                 break;
             }
