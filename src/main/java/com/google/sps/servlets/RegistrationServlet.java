@@ -63,21 +63,58 @@ public class RegistrationServlet extends HttpServlet {
 
     // Make entity for user with all registration info
     Entity userEntity = new Entity("User");
-    createEntityAndPutInDatastore(datastore, userEntity, role, fullName, email, userId, topicsToStr);
+    createUserEntityAndPutInDatastore(datastore, userEntity, role, userId);
+
+    if(role.toLowerCase().equals("tutor")) {
+        Entity tutorEntity = new Entity("Tutor");
+        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, email, topicsToStr, userId);
+    }
+
+    if(role.toLowerCase().equals("student")) {
+        Entity studentEntity = new Entity("Student");
+        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, email, topicsToStr, userId);
+    }
 
     // TODO: Redirect back to page user was at before registration rather than always redirect to homepage, Issue #41
     response.sendRedirect("/homepage.html");
   }
 
+  /**
+  * Creates a student entity and puts it in datastore, used for testing
+  */
+  public void createStudentEntityAndPutInDatastore(DatastoreService ds, Entity entity, String name, String email, List<String> topics, String userId) {
+    entity.setProperty("name", name);
+    entity.setProperty("email", email);
+    entity.setProperty("learning", topics);
+    //stores a list of TutorSession entity ids
+    entity.setProperty("scheduledSessions", new ArrayList<Long>());
+    entity.setProperty("topics", topics);
+    entity.setProperty("userId", userId);
+    ds.put(entity);
+  }
+
+  /**
+  * Creates a tutor entity and puts it in datastore, used for testing
+  */
+  public void createTutorEntityAndPutInDatastore(DatastoreService ds, Entity entity, String name, String email, List<String> topics, String userId) {
+    entity.setProperty("name", name);
+    entity.setProperty("email", email);
+    entity.setProperty("topics", topics);
+    //stores a list of TimeRange entity ids
+    entity.setProperty("availability", new ArrayList<Long>());
+    //stores a list of TutorSession entity ids
+    entity.setProperty("scheduledSessions", new ArrayList<Long>());
+    entity.setProperty("topics", topics);
+    entity.setProperty("userId", userId);
+    ds.put(entity);
+  }
+
  /**
   * Creates a user entity and puts it in datastore, used for testing
   */
-  public void createEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String name, String email, String userId, List<String> topics) {
+  public void createUserEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String userId) {
     entity.setProperty("role", role);
-    entity.setProperty("name", name);
-    entity.setProperty("email", email);
     entity.setProperty("userId", userId);
-    entity.setProperty("topics", topics);
     ds.put(entity);
   }
 }
