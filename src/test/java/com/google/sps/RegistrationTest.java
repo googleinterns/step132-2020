@@ -23,6 +23,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.sps.servlets.RegistrationServlet;
 import java.io.*;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.*;
@@ -92,22 +93,32 @@ public final class RegistrationTest {
     public void doPostCreatesAndStoresEntities() {
         List<String> mockTopics = Arrays.asList("math", "biology");
 
-        Entity expected = new Entity("User");
-        expected.setProperty("role", "tutor");
-        expected.setProperty("name", "Sam F");
-        expected.setProperty("email", USER_EMAIL);
-        expected.setProperty("userId", USER_ID);
-        expected.setProperty("topics", mockTopics);
+        Entity expectedUser = new Entity("User");
+        expectedUser.setProperty("role", "tutor");
+        expectedUser.setProperty("userId", USER_ID);
 
-        Entity actual = new Entity("User");
-        servlet.createEntityAndPutInDatastore(datastore, actual, "tutor", "Sam F", USER_EMAIL, USER_ID, mockTopics);
+        Entity expectedTutor = new Entity("Tutor");
+        expectedTutor.setProperty("name", "Sam F");
+        expectedTutor.setProperty("email", USER_EMAIL);
+        expectedTutor.setProperty("availability", new ArrayList<Long>());
+        expectedTutor.setProperty("scheduledSessions", new ArrayList<Long>());
+        expectedTutor.setProperty("topics", mockTopics);
+        expectedTutor.setProperty("userId", USER_ID);
+
+        Entity actualUser = new Entity("User");
+        servlet.createUserEntityAndPutInDatastore(datastore, actualUser, "tutor", USER_ID);
+
+        Entity actualTutor = new Entity("Tutor");
+        servlet.createTutorEntityAndPutInDatastore(datastore, actualTutor, "Sam F", USER_EMAIL, mockTopics, USER_ID);
 
         // Entity was put in datastore
-        verify(datastore).put(actual);
+        verify(datastore).put(actualUser);
+        verify(datastore).put(actualTutor);
 
         // Compare stringified versions of entities to check if values are same
         // Comparing entities themselves won't work because they're two different objects
-        Assert.assertEquals(expected.toString(), actual.toString());
+        Assert.assertEquals(expectedUser.toString(), actualUser.toString());
+        Assert.assertEquals(expectedTutor.toString(), actualTutor.toString());
     }
 
 }
