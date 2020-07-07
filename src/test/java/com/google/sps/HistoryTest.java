@@ -17,6 +17,7 @@ package com.google.sps;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
@@ -41,7 +42,7 @@ public final class HistoryTest {
 
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 5, 18)
+                                                        .setDate(2020, 4, 18)
                                                         .build();
 
     @Test
@@ -86,9 +87,9 @@ public final class HistoryTest {
         HistoryServlet servlet = new HistoryServlet();
         servlet.doPost(request, response);
 
-        String expected = new Gson().toJson(new TutorSession[]{tutoringSessionFake});
+        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(tutoringSessionFake)));
 
-        verify(request, atLeast(1)).getParameter("studentEmail");
+        verify(request, times(1)).getParameter("studentEmail");
         writer.flush();
         // If the user has a tutoring session history, the return json string should reflect that history
         Assert.assertTrue(stringWriter.toString().contains(expected));

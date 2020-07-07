@@ -44,7 +44,7 @@ public final class RatingTest {
 
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 5, 18)
+                                                        .setDate(2020, 4, 18)
                                                         .build();
 
     @Test
