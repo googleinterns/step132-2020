@@ -53,17 +53,30 @@ function displayLoginLogoutLink() {
  * Used for testing purposes with Jasmine
  */
 function displayLoginLogoutLinkHelper(document, loginStatus) {
-    // User is logged in, display logout link on page 
+    // User is logged in, display logout and profile link on page 
     if (loginStatus.isLoggedIn) {
         document.getElementById('login').style.display = "none";
+        document.getElementById('profile').style.display = "block";
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = loginStatus.url;
+        document.getElementById('profile').addEventListener('click', () => {
+            setProfilePathname(window, loginStatus);
+        });
     }
     else {   // Display login link
         document.getElementById('logout').style.display = "none";
+        document.getElementById('profile').style.display = "none";
         document.getElementById('login').style.display = "block";
         document.getElementById('login-url').href = loginStatus.url;
     }
+}
+
+/**
+ * Sets the URL pathname for the user's profile to their user ID
+ */
+function setProfilePathname(window, loginStatus) {
+    var url = "profile.html/" + loginStatus.userId;
+    window.location.href = url;
 }
 
 /**
