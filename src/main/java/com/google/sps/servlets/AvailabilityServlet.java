@@ -32,11 +32,16 @@ import com.google.sps.utilities.RealAvailabilityDatastore;
 import com.google.sps.utilities.MockAvailabilityDatastore;
 import com.google.sps.utilities.AvailabilityDatastoreService;
 
+/** Servlet that getting and adding availability for a tutor. */
 @WebServlet("/availability")
 public class AvailabilityServlet extends HttpServlet {
 
     private AvailabilityDatastoreService datastore;
 
+    /**
+    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
+    * We need the default one for deployment because the servlet is created without parameters.
+    */
     public AvailabilityServlet(){}
 
     public AvailabilityServlet(boolean test) {
