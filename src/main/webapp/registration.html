@@ -39,16 +39,17 @@ See the License for the specific language governing permissions and
             <textarea name="bio"></textarea><br>
             <label for="image">Profile picture (optional):</label>
             <input type="file" name="pfp"><br><br>
-        
-            <div id="tutor-info" style="display:none">
-                <p>What topic(s) would you like to tutor in?</p>
+
+            <p id="student-topics" style="display:none">What topic(s) would you like to learn?</p>
+            <p id="tutor-topics" style="display:none">What topic(s) would you like to tutor in?</p>
                 <input type="checkbox" id="math" name="math" value="Math">
                 <label for="math"> Math</label><br>
                 <input type="checkbox" id="english" name="english" value="English">
                 <label for="english"> English</label><br>
                 <input type="checkbox" id="other-subject" name="other" value="Other">
                 <label for="other-subject"> Other</label><br><br>
-
+        
+            <div id="tutor-info" style="display:none">
                 <!-- This will be made more detailed later -->
                 <p>Would you like to work in the morning or the afternoon?</p>
                 <input type="radio" name="time" id="morning" value="morning"> Morning<br>
