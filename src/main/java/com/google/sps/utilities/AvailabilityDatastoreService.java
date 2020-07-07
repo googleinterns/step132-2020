@@ -26,4 +26,14 @@ public interface AvailabilityDatastoreService {
     * @return List<TimeRange>
     */
     public List<TimeRange> getAvailabilityForTutor(String email);
+
+    /**
+    * Adds a new time range to a tutor's availability.
+    */
+    public void addAvailability(String email, TimeRange time);
+
+    /**
+    * Deletes a time range from a tutor's availability.
+    */
+    public void deleteAvailability(String email, TimeRange time);
 }
