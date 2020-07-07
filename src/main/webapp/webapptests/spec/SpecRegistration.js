@@ -141,10 +141,14 @@ describe("Registration", function() {
                 var mockLogoutUrl = document.createElement('a');
                 mockLogoutUrl.id = 'logout-url';
 
+                var mockProfileLink = document.createElement('button');
+                mockProfileLink.id = 'profile';
+
                 document.body.appendChild(mockLoginForm);
                 document.body.appendChild(mockLoginUrl);
                 document.body.appendChild(mockLogoutForm);
                 document.body.appendChild(mockLogoutUrl);
+                document.body.appendChild(mockProfileLink);
             })
 
             it("displays login link when user logged out", function() {
@@ -153,6 +157,7 @@ describe("Registration", function() {
 
                 expect(document.getElementById('login').style.display).toBe('block');
                 expect(document.getElementById('logout').style.display).toBe('none');
+                expect(document.getElementById('profile').style.display).toBe('none');
             });
 
             it("displays logout link when user logged in", function() {
@@ -161,21 +166,30 @@ describe("Registration", function() {
 
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
+                expect(document.getElementById('profile').style.display).toBe('block');
             });
 
             it("sets logout link correctly", function() {
-                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'/_ah/logout?continue=%2Fhomepage.html'};
+                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'/_ah/logout?continue=%2Fhomepage.html', userId:'abc123'};
                 displayLoginLogoutLinkHelper(document, mockLoginStatus);
 
                 expect(document.getElementById('logout-url').href).toBe('http://localhost:8080/_ah/logout?continue=%2Fhomepage.html');
             });
 
             it("sets login link correctly", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html'};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:null};
                 displayLoginLogoutLinkHelper(document, mockLoginStatus);
 
                 expect(document.getElementById('login-url').href).toBe('http://localhost:8080/_ah/login?continue=%2Fregistration.html');
             });
+
+            it("adds event listener that redirects the user to their profile", function() {
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'blah'};
+                var mockWindow = {location: {href: "homepage.html"}};
+                setProfilePathname(mockWindow, mockLoginStatus);
+
+                expect(mockWindow.location.href).toEqual("profile.html/blah");
+            })
         });
     });
 });
