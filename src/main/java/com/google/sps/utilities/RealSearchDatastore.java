@@ -149,8 +149,8 @@ public final class RealSearchDatastore implements SearchDatastoreService {
         Key timeRangeKey = KeyFactory.createKey("TimeRange", id);
 
         Entity entity = datastore.get(txn, timeRangeKey);
-        int start = (int) entity.getProperty("start");
-        int end = (int) entity.getProperty("end");
+        int start = Math.toIntExact((long) entity.getProperty("start"));
+        int end = Math.toIntExact((long) entity.getProperty("end"));
         Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
 
         return TimeRange.fromStartToEnd(start, end, date);
