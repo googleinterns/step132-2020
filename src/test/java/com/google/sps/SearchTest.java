@@ -57,7 +57,7 @@ public final class SearchTest {
 
     @Before
     public void setUp() {
-        servlet = new SearchServlet();
+        servlet = new SearchServlet(true);
     }
 
     @Test
