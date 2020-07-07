@@ -17,6 +17,7 @@ package com.google.sps.data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 
 /** Class that stores sample Tutor objects for testing. */
 public final class SampleData {
@@ -145,13 +146,47 @@ public final class SampleData {
 
         for(TimeRange timeslot : tutor.getAvailability()) {
 
-            if(timeslot.getStart() == delete.getStart() && timeslot.getEnd() == delete.getEnd()) {
-                tutors.remove(tutor);
+            if (isTimeRangeEqual(delete, timeslot)) {
                 tutor.deleteAvailabilityByTimeRange(timeslot);
-                tutors.add(tutor);
                 break;
             }
         }
+    }
+
+    /** Deletes the given timeslot from the given tutor's availability array. */
+    public static void xfbhddeleteAvailabilityByTimeRange(String email, TimeRange delete) {
+        Tutor tutor = getTutorByEmail(email);
+
+        for(TimeRange timeslot : tutor.getAvailability()) {
+            if (isTimeRangeEqual(delete, timeslot)) {
+                tutor.deleteAvailabilityByTimeRange(timeslot);
+            }
+        }
+    }
+
+    private static boolean isTimeRangeEqual(TimeRange timerange1, TimeRange timerange2) {
+        Calendar timerange1Calendar = timerange1.getDate();
+        int timerange1Start = timerange1.getStart();
+        int timerange1Hour = timerange1Start / 60;
+        int timerange1Minute= timerange1Start % 60;
+
+        timerange1Calendar.set(Calendar.HOUR_OF_DAY, timerange1Hour);
+        timerange1Calendar.set(Calendar.MINUTE, timerange1Minute);
+
+        Date timerange1Date = timerange1Calendar.getTime();
+
+        Calendar timerange2Calendar = timerange2.getDate();
+        int timerange2Start = timerange2.getStart();
+        int timerange2Hour = timerange2Start / 60;
+        int timerange2Minute= timerange2Start % 60;
+
+        timerange2Calendar.set(Calendar.HOUR_OF_DAY, timerange2Hour);
+        timerange2Calendar.set(Calendar.MINUTE, timerange2Minute);
+
+        Date timerange2Date = timerange2Calendar.getTime();
+
+        int comparison = timerange1Date.compareTo(timerange2Date);
+        return comparison == 0;
     }
 
     /** Adds the given TutorSession to the scheduled sessions array of the given tutor. */
