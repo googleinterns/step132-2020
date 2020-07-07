@@ -64,6 +64,9 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
             timeslots = getTimeRanges(datastore, txn, (ArrayList) tutorEntity.getProperty("availability"));
 
             txn.commit();
+
+        } catch(NullPointerException e) {
+            //the entity does not exist, skip to finally statement and return empty list
         } finally {
           if (txn.isActive()) {
             txn.rollback();
