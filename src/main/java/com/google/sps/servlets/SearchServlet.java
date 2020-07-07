@@ -35,7 +35,11 @@ import com.google.gson.Gson;
 @WebServlet("/search")
 public class SearchServlet extends HttpServlet {
     private SearchDatastoreService datastore;
-
+    
+    /**
+    * Because we specified a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
+    * We need the default one for deployment because the servlet is created without parameters.
+    */
     public SearchServlet() {}
 
     /**
