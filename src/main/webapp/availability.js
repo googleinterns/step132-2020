@@ -43,13 +43,31 @@ function readTutorID(queryString, window) {
 }
 
 function createTimeSlotBox(timeslot, tutorID) {
+    var months = [ "January", "February", "March", "April", "May", "June", 
+           "July", "August", "September", "October", "November", "December" ];
+
     const timeslotElement = document.createElement('li');
     timeslotElement.className = 'list-group-item';
 
     const dateElement = document.createElement('h3');
     dateElement.style.textAlign = 'left';
     dateElement.style.display = 'inline';
-    dateElement.innerHTML = timeslot.start;
+    var hour = parseInt(timeslot.start) / 60;
+    var amOrPm = "am";
+    if (hour > 12) {
+        hour = hour - 12;
+        amOrPm = "pm"
+    }
+    var minute = parseInt(timeslot.start) % 60;
+    if (minute == 0) {
+        minute = "00";
+    }
+    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
+
+    const dateLineElement = document.createElement('div');
+    dateLineElement.className = 'd-flex w-100 justify-content-between';
+    dateLineElement.style.padding = '10px';
+    dateLineElement.appendChild(dateElement);
 
     const selectButtonElement = document.createElement('button');
     selectButtonElement.innerText = 'Select';
@@ -60,12 +78,13 @@ function createTimeSlotBox(timeslot, tutorID) {
         selectTimeSlot(tutorID, window, timeslot);
     });
 
-    const mainLineElement = document.createElement('div');
-    mainLineElement.className = 'd-flex w-100 justify-content-between';
-    mainLineElement.appendChild(dateElement);
-    mainLineElement.appendChild(selectButtonElement);
+    const buttonLineElement = document.createElement('div');
+    buttonLineElement.className = 'd-flex w-100 justify-content-between';
+    buttonLineElement.style.padding = '10px';
+    buttonLineElement.appendChild(selectButtonElement);
 
-    timeslotElement.appendChild(mainLineElement);
+    timeslotElement.appendChild(dateLineElement);
+    timeslotElement.appendChild(selectButtonElement);
     return timeslotElement;
 }
 
