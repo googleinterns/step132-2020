@@ -29,14 +29,12 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
-// import com.google.cloud.datastore.Query.newGqlQueryBuilder;
 import java.lang.String;
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
 import com.google.gson.Gson;
-// import com.google.appengine.api.datastore.GqlQuery;
 
 /** Accesses Datastore to implement the SearchDatastoreService methods. */
 public final class RealSearchDatastore implements SearchDatastoreService {
