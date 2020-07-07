@@ -34,7 +34,11 @@ See the License for the specific language governing permissions and
             <label for="first-name">First Name:</label>
             <input type="text" name="first-name" required><br>
             <label for="last-name">Last Name:</label>
-            <input type="text" name="last-name" required><br><br>
+            <input type="text" name="last-name" required><br>
+            <label for="bio">Tell us about yourself (optional):</label><br>
+            <textarea name="bio"></textarea><br>
+            <label for="image">Profile picture (optional):</label>
+            <input type="file" name="pfp"><br><br>
         
             <div id="tutor-info" style="display:none">
                 <p>What topic(s) would you like to tutor in?</p>
@@ -44,6 +48,11 @@ See the License for the specific language governing permissions and
                 <label for="english"> English</label><br>
                 <input type="checkbox" id="other-subject" name="other" value="Other">
                 <label for="other-subject"> Other</label><br><br>
+
+                <!-- This will be made more detailed later -->
+                <p>Would you like to work in the morning or the afternoon?</p>
+                <input type="radio" name="time" id="morning" value="morning"> Morning<br>
+                <input type="radio" name="time" id="afternoon" value="afternoon"> Afternoon<br><br>   
             </div>
         </div>
 
