@@ -25,6 +25,10 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -53,9 +57,36 @@ public class ConfirmationServlet extends HttpServlet {
             }
         }
 
-        String json = new Gson().toJson(scheduledSessions);
+        List<TutorSession> upcomingSessions = new ArrayList<TutorSession>();
+
+        filterUpcomingSessions(scheduledSessions, upcomingSessions);
+
+        String json = new Gson().toJson(upcomingSessions);
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
     }
+
+    private void filterUpcomingSessions(List<TutorSession> allSessions, List<TutorSession> upcomingSessions) {
+        Date currentDate = new Date();
+
+        for (TutorSession session : allSessions) {
+            Calendar sessionCalendar = session.getTimeslot().getDate();
+            int start = session.getTimeslot().getStart();
+            int hour = start / 60;
+            int minute = start % 60;
+
+            sessionCalendar.set(Calendar.HOUR_OF_DAY, hour);
+            sessionCalendar.set(Calendar.MINUTE, minute);
+
+            Date sessionDate = sessionCalendar.getTime();
+            int comparison = currentDate.compareTo(sessionDate);
+            if (comparison == 0 || comparison == -1) {
+                    upcomingSessions.add(session);
+            }
+        }
+
+        return;
+    }
+
 }
