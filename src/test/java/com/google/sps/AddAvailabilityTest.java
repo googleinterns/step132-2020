@@ -111,6 +111,8 @@ public final class AddAvailabilityTest {
                                             new ArrayList<TutorSession> (Arrays.asList())));
 
         writer.flush();
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         // New available timeslot should have been added
         Assert.assertTrue(stringWriter.toString().contains(expected));
         Assert.assertFalse(stringWriter.toString().contains(unexpected));

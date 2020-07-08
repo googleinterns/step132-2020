@@ -85,6 +85,8 @@ public final class SearchTest {
                                                                         TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
                                                             new ArrayList<TutorSession> (Arrays.asList())));
         String expected = new Gson().toJson(expectedTutorList);
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
 
     }
