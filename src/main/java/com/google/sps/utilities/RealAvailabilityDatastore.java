@@ -47,27 +47,21 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
     */
     @Override
     public List<TimeRange> getAvailabilityForTutor(String email) {
-
-        List<TimeRange> timeslots = new ArrayList<TimeRange>();
-
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
+        ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
+        
+        //get all time ranges with tutor email
         Filter filter = new FilterPredicate("email", FilterOperator.EQUAL, email.toLowerCase());
-        Query tutorQuery = new Query("Tutor").setFilter(filter);
+        Query query = new Query("TimeRange").setFilter(filter);
 
-        try {
-            PreparedQuery pq = datastore.prepare(tutorQuery);
+        PreparedQuery timeRanges = datastore.prepare(query);
 
-            //there should only be one result
-            Entity tutorEntity = pq.asSingleEntity();
+        for(Entity time : timeRanges.asIterable()) {
+            availability.add(createTimeRange(time));
+        }
 
-            timeslots = getTimeRanges(datastore, tutorEntity.getKey());
-
-        } catch(NullPointerException e) {
-            //the tutor entity does not exist, return empty list
-        } 
-
-        return timeslots;
+        return availability;
     }
 
     /**
@@ -81,21 +75,11 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
-        
-        //get tutor entity by email
-        Filter filter = new FilterPredicate("email", FilterOperator.EQUAL, email.toLowerCase());
-        Query tutorQuery = new Query("Tutor").setFilter(filter);
 
-        try {
-            PreparedQuery pq = datastore.prepare(tutorQuery);
+        try {            
+            Entity timeEntity = new Entity("TimeRange");
 
-            //there should only be one result
-            Entity tutorEntity = pq.asSingleEntity();
-            
-            //make tutor ancestor of time range
-            Entity timeEntity = new Entity("TimeRange", tutorEntity.getKey());
-
-            timeEntity.setProperty("email", email);
+            timeEntity.setProperty("email", email.toLowerCase());
             timeEntity.setProperty("start", time.getStart());
             timeEntity.setProperty("end", time.getEnd());
             timeEntity.setProperty("date", new Gson().toJson(time.getDate()));
@@ -157,24 +141,6 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
         }
 
         return deleted;
-    }
-
-    /**
-    * Gets all the time range entities corresponding that have the given tutorId.
-    * @return ArrayList<TimeRange>
-    */
-    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Key tutorKey) {
-        ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
-        
-        //Use ancestor query to get all time ranges that belong to the tutor
-        Query query = new Query("TimeRange", tutorKey);
-        PreparedQuery timeRanges = datastore.prepare(query);
-
-        for(Entity time : timeRanges.asIterable()) {
-            availability.add(createTimeRange(time));
-        }
-
-        return availability;
     }
 
     /**
