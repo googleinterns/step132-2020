@@ -64,7 +64,7 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
             timeslots = getTimeRanges(datastore, tutorEntity.getKey());
 
         } catch(NullPointerException e) {
-            //the entity does not exist, skip to finally statement and return empty list
+            //the tutor entity does not exist, return empty list
         } 
 
         return timeslots;
