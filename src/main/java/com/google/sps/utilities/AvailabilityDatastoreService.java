@@ -29,11 +29,13 @@ public interface AvailabilityDatastoreService {
 
     /**
     * Adds a new time range to a tutor's availability.
+    * @return boolean, true if time was added, false if there was a problem adding it
     */
-    public void addAvailability(String email, TimeRange time);
+    public boolean addAvailability(String email, TimeRange time);
 
     /**
     * Deletes a time range from a tutor's availability.
+    * @return boolean, true if time was deleted, false if there was a problem deleting it
     */
-    public void deleteAvailability(String email, TimeRange time);
+    public boolean deleteAvailability(String email, TimeRange time);
 }
