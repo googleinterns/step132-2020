@@ -46,9 +46,15 @@ public final class SchedulingTest {
                                                         .setDate(2020, 5, 18)
                                                         .set(Calendar.HOUR_OF_DAY, 8)
                                                         .build();
-    private static final Calendar JUNE102020 = new Calendar.Builder()
+
+    private static final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 6, 10)
+                                                        .setDate(2020, 7, 10)
+                                                        .build();
+
+    private static final Calendar AUGUST72020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 7, 7)
                                                         .build();
 
     private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
@@ -70,7 +76,7 @@ public final class SchedulingTest {
         when(request.getParameter("start")).thenReturn("480");
         when(request.getParameter("end")).thenReturn("600");
         when(request.getParameter("year")).thenReturn("2020");
-        when(request.getParameter("month")).thenReturn("5");
+        when(request.getParameter("month")).thenReturn("4");
         when(request.getParameter("day")).thenReturn("18");
         when(request.getParameter("studentEmail")).thenReturn("thegoogler@google.com");
         when(request.getParameter("subtopics")).thenReturn("algebra");
@@ -106,7 +112,8 @@ public final class SchedulingTest {
                                             "btrevisan@google.com",
                                             new ArrayList<String> (Arrays.asList("English", "Physics")),
                                             new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
-                                                        TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020))),
+                                                        TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, AUGUST102020),
+                                                        TimeRange.fromStartToEnd(TIME_0100PM, TIME_0300PM, AUGUST72020))),
                                             new ArrayList<TutorSession> (Arrays.asList())));
 
         writer.flush();

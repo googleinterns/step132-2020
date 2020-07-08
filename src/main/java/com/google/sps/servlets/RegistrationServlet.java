@@ -58,7 +58,7 @@ public class RegistrationServlet extends HttpServlet {
     List<String> topicsToStr = topics
                                 .stream()
                                 .filter(t -> t.isPresent())
-                                .map(t -> t.get())
+                                .map(t -> t.get().toLowerCase())
                                 .collect(Collectors.toList());
 
     // Make entity for user with all registration info
@@ -86,9 +86,6 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("name", name);
     entity.setProperty("email", email);
     entity.setProperty("learning", topics);
-    //stores a list of TutorSession entity ids
-    entity.setProperty("scheduledSessions", new ArrayList<Long>());
-    entity.setProperty("topics", topics);
     entity.setProperty("userId", userId);
     ds.put(entity);
   }
@@ -99,11 +96,6 @@ public class RegistrationServlet extends HttpServlet {
   public void createTutorEntityAndPutInDatastore(DatastoreService ds, Entity entity, String name, String email, List<String> topics, String userId) {
     entity.setProperty("name", name);
     entity.setProperty("email", email);
-    entity.setProperty("topics", topics);
-    //stores a list of TimeRange entity ids
-    entity.setProperty("availability", new ArrayList<Long>());
-    //stores a list of TutorSession entity ids
-    entity.setProperty("scheduledSessions", new ArrayList<Long>());
     entity.setProperty("topics", topics);
     entity.setProperty("userId", userId);
     ds.put(entity);

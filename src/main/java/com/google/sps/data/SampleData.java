@@ -33,33 +33,40 @@ public final class SampleData {
     
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 5, 18)
+                                                        .setDate(2020, 4, 18)
                                                         .build();
-    private static final Calendar JUNE102020 = new Calendar.Builder()
+    private static final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 6, 10)
+                                                        .setDate(2020, 7, 10)
                                                         .build();
+
+    private static final Calendar AUGUST72020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 7, 7)
+                                                        .build();
+                                                        
 
     private static ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
         new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, JUNE102020))),
+                            TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
                 new ArrayList<TutorSession> (Arrays.asList())),
         new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
-                             TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, JUNE102020))),
+                             TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, AUGUST102020),
+                             TimeRange.fromStartToEnd(TIME_0100PM, TIME_0300PM, AUGUST72020))),
                 new ArrayList<TutorSession> (Arrays.asList())),
         new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
+                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
                 new ArrayList<TutorSession> (Arrays.asList())),
         new Tutor("Anand Desai", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
+                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
                 new ArrayList<TutorSession> (Arrays.asList())),
         new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
+                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
                 new ArrayList<TutorSession> (Arrays.asList()))
     ));
 

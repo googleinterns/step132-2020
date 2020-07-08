@@ -25,6 +25,8 @@ import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Date;
+import java.util.Calendar;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -53,9 +55,35 @@ public class HistoryServlet extends HttpServlet {
             }
         }
 
-        String json = new Gson().toJson(scheduledSessions);
+        List<TutorSession> previousSessions = new ArrayList<TutorSession>();
+
+        filterPastSessions(scheduledSessions, previousSessions);
+
+        String json = new Gson().toJson(previousSessions);
         response.setContentType("application/json;");
         response.getWriter().println(json);
+        return;
+    }
+
+    private void filterPastSessions(List<TutorSession> allSessions, List<TutorSession> previousSessions) {
+        Date currentDate = new Date();
+
+        for (TutorSession session : allSessions) {
+            Calendar sessionCalendar = session.getTimeslot().getDate();
+            int start = session.getTimeslot().getStart();
+            int hour = start / 60;
+            int minute = start % 60;
+
+            sessionCalendar.set(Calendar.HOUR_OF_DAY, hour);
+            sessionCalendar.set(Calendar.MINUTE, minute);
+
+            Date sessionDate = sessionCalendar.getTime();
+            int comparison = currentDate.compareTo(sessionDate);
+            if (comparison == 0 || comparison == 1) {
+                    previousSessions.add(session);
+            }
+        }
+
         return;
     }
 }
