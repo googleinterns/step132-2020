@@ -14,14 +14,24 @@
 
 package com.google.sps.utilities;
 
-import com.google.sps.data.TutorSession;
+import com.google.sps.data.SampleData;
+import com.google.sps.data.TimeRange;
+import com.google.sps.data.Tutor;
+import javax.servlet.http.HttpServletRequest;
 import java.lang.String;
+import java.util.ArrayList;
+import java.util.List;
 
-/** Interface for accessing datastore to manage tutor sessions. */
-public interface SchedulingDatastoreService {
+/** Mock datastore service class used for scheduling tutor sessions. */
+public final class MockSchedulingDatastore implements SchedulingDatastoreService {
 
     /**
     * Adds a new TutorSession for the tutor and student.
     */
-    public void addTutoringSession(String tutorEmail, String studentEmail, TutorSession session);
+    @Override
+    public void addTutoringSession(String tutorEmail, String studentEmail, TutorSession session) {
+        SampleData.addToTutorScheduledSessionsByEmail(tutorID, tutoringSession);
+        SampleData.addToStudentScheduledSessionsByEmail(studentEmail, tutoringSession);
+    }
+
 }
