@@ -188,7 +188,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 setProfilePathname(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("profile.html/blah");
+                expect(mockWindow.location.href).toEqual("profile.html?userID=blah");
             })
         });
     });
