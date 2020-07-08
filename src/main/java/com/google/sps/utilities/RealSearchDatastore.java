@@ -110,14 +110,16 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     }
 
     /**
-    * Gets all the time range entities corresponding that have the given tutorId.
+    * Gets all the time range entities that have the given tutor's email.
     * @return ArrayList<TimeRange>
     */
-    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Key tutorKey) {
+    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, String email) {
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
         
-        //Use ancestor query to get all time ranges that belong to the tutor
-        Query query = new Query("TimeRange", tutorKey);
+        //get all time ranges with tutor email
+        Filter filter = new FilterPredicate("email", FilterOperator.EQUAL, email.toLowerCase());
+        Query query = new Query("TimeRange").setFilter(filter);
+
         PreparedQuery timeRanges = datastore.prepare(query);
 
         for(Entity time : timeRanges.asIterable()) {
