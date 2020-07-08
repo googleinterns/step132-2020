@@ -41,7 +41,7 @@ public final class RealSchedulingDatastore implements SchedulingDatastoreService
     public void addTutorSession(String tutorEmail, String studentEmail, TutorSession session) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
-        Transaction txn = datastore.beginTransaction();
+        Transaction txn = datastore.beginTransaction(options);
 
         try {
 
