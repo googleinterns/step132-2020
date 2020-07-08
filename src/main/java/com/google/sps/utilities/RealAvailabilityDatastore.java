@@ -61,7 +61,7 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
             //there should only be one result
             Entity tutorEntity = pq.asSingleEntity();
 
-            timeslots = getTimeRanges(datastore, txn, (ArrayList) tutorEntity.getProperty("availability"));
+            timeslots = getTimeRanges(datastore, txn, tutorEntity.getKey());
 
             txn.commit();
 
@@ -77,37 +77,28 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
     }
 
     /**
-    * Gets all the time range entities corresponding to the ids in rangeIds and creates TimeRange objects.
+    * Gets all the time range entities corresponding that have the given tutorId.
     * @return ArrayList<TimeRange>
     */
-    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Transaction txn, List<Long> rangeIds) {
+    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Transaction txn, Key tutorKey) {
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
+        
+        //Use ancestor query to get all time ranges that belong to the tutor
+        Query query = new Query("TimeRange", tutorKey);
+        PreparedQuery timeRanges = datastore.prepare(txn, query);
 
-        //datastore stores empty lists as null values, so if rangeIds is null, there are no available times
-        if(rangeIds == null) {
-            return availability;
-        }
-
-        for(Long id : rangeIds) {
-            try {
-                availability.add(getTimeRange(datastore, txn, id));
-            } catch (EntityNotFoundException e)  {
-                //The time range doesn't exist, skip this id
-            }
+        for(Entity time : timeRanges.asIterable()) {
+            availability.add(createTimeRange(time));
         }
 
         return availability;
     }
 
     /**
-    * Gets the time range entity corresponding to the id and creates a TimeRange object.
+    * Creates a TimeRange object from a given TimeRange entity.
     * @return TimeRange
     */
-    private TimeRange getTimeRange(DatastoreService datastore, Transaction txn, long id) throws EntityNotFoundException{
-
-        Key timeRangeKey = KeyFactory.createKey("TimeRange", id);
-
-        Entity entity = datastore.get(txn, timeRangeKey);
+    private TimeRange createTimeRange(Entity entity) {
         int start = Math.toIntExact((long) entity.getProperty("start"));
         int end = Math.toIntExact((long) entity.getProperty("end"));
         Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
