@@ -57,12 +57,11 @@ public final class RealSearchDatastore implements SearchDatastoreService {
 
         for (Entity tutorEntity : tutorResults.asIterable()) {
             
-            long id = (long) tutorEntity.getKey().getId();
             String name = (String) tutorEntity.getProperty("name");
             String email = (String) tutorEntity.getProperty("email");
             ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
             ArrayList<TimeRange> availability = getTimeRanges(datastore, tutorEntity.getKey());
-            ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, id);
+            ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, email);
 
             Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
 
@@ -75,14 +74,14 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     }
 
     /**
-    * Gets all the tutor session entities with the corresponding tutorId. 
+    * Gets all the tutor session entities with the corresponding tutor email. 
     * @return ArrayList<TutorSession>
     */
-    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, long tutorId) {
+    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, String email) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
-        //get all sessions with tutor id
-        Filter filter = new FilterPredicate("tutorId", FilterOperator.EQUAL, tutorId);
+        //get all sessions with tutor email
+        Filter filter = new FilterPredicate("tutorEmail", FilterOperator.EQUAL, email);
         Query query = new Query("TutorSession").setFilter(filter);
 
         PreparedQuery sessionEntities = datastore.prepare(query);
@@ -138,6 +137,5 @@ public final class RealSearchDatastore implements SearchDatastoreService {
         Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
 
         return TimeRange.fromStartToEnd(start, end, date);
-
     }
 }
