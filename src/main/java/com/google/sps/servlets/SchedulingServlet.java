@@ -18,9 +18,9 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
-import com.google.sps.utilities.SchedulingDatastoreService;
-import com.google.sps.utilities.RealSchedulingDatastore;
-import com.google.sps.utilities.MockSchedulingDatastore;
+import com.google.sps.utilities.TutorSessionDatastoreService;
+import com.google.sps.utilities.RealTutorSessionDatastore;
+import com.google.sps.utilities.MockTutorSessionDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/scheduling")
 public class SchedulingServlet extends HttpServlet {
 
-    private SchedulingDatastoreService datastore;
+    private TutorSessionDatastoreService datastore;
 
     /**
     * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
@@ -45,12 +45,12 @@ public class SchedulingServlet extends HttpServlet {
 
     public SchedulingServlet(boolean test) {
         if(test) {
-            datastore = new MockSchedulingDatastore();
+            datastore = new MockTutorSessionDatastore();
         }
     }
 
     public void init() {
-        datastore = new RealSchedulingDatastore();
+        datastore = new RealTutorSessionDatastore();
     }
 
     @Override

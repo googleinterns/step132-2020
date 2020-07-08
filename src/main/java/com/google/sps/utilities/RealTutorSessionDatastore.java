@@ -38,7 +38,7 @@ import java.util.Calendar;
 import com.google.gson.Gson;
 
 /** Accesses Datastore to manage tutoring sessions. */ 
-public final class RealSchedulingDatastore implements SchedulingDatastoreService {
+public final class RealTutorSessionDatastore implements TutorSessionDatastoreService {
 
     /**
     * Adds a new TutorSession for the tutor and student.

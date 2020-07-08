@@ -14,27 +14,44 @@
 
 package com.google.sps.utilities;
 
+import com.google.sps.data.SampleData;
+import com.google.sps.data.Tutor;
+import com.google.sps.data.Student;
 import com.google.sps.data.TutorSession;
 import java.lang.String;
 import java.util.List;
 
-/** Interface for accessing datastore to manage tutor sessions. */
-public interface SchedulingDatastoreService {
+/** Mock datastore service class used for scheduling tutor sessions. */
+public final class MockTutorSessionDatastore implements TutorSessionDatastoreService {
 
     /**
     * Adds a new TutorSession for the tutor and student.
     */
-    public void addTutorSession(String tutorEmail, String studentEmail, TutorSession session);
+    @Override
+    public void addTutorSession(String tutorEmail, String studentEmail, TutorSession session) {
+        SampleData.addToTutorScheduledSessionsByEmail(tutorEmail, session);
+        SampleData.addToStudentScheduledSessionsByEmail(studentEmail, session);
+        SampleData.deleteAvailabilityByTimeRange(tutorEmail, session.getTimeslot());
+    }
 
     /**
     * Gets a list of all scheduled sessions for a tutor with the given email.
     * @return List<TutorSession>
     */
-    public List<TutorSession> getScheduledSessionForTutor(String email);
+    @Override
+    public List<TutorSession> getScheduledSessionForTutor(String email) {
+        Tutor tutor = SampleData.getTutorByEmail(email);
+        return tutor.getScheduledSessions();
+    }
 
     /**
     * Gets a list of all scheduled sessions for a student with the given email.
     * @return List<TutorSession>
     */
-    public List<TutorSession> getScheduledSessionForStudent(String email);
+    @Override
+    public List<TutorSession> getScheduledSessionForStudent(String email) {
+        Student student = SampleData.getStudentByEmail(email);
+        return student.getScheduledSessions();
+    }
+
 }
