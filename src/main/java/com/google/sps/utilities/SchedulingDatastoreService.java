@@ -23,5 +23,5 @@ public interface SchedulingDatastoreService {
     /**
     * Adds a new TutorSession for the tutor and student.
     */
-    public void addTutoringSession(String tutorEmail, String studentEmail, TutorSession session);
+    public void addTutorSession(String tutorEmail, String studentEmail, TutorSession session);
 }
