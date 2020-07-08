@@ -53,8 +53,8 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
 
             Entity sessionEntity = new Entity("TutorSession");
 
-            sessionEntity.setProperty("tutorEmail", tutorEmail);
-            sessionEntity.setProperty("studentEmail", studentEmail);
+            sessionEntity.setProperty("tutorEmail", tutorEmail.toLowerCase());
+            sessionEntity.setProperty("studentEmail", studentEmail.toLowerCase());
             sessionEntity.setProperty("subtopics", session.getSubtopics());
             sessionEntity.setProperty("questions", session.getQuestions());
             sessionEntity.setProperty("isRated", session.isRated());
@@ -100,7 +100,7 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //get all sessions with given email
-        Filter filter = new FilterPredicate(userType + "Email", FilterOperator.EQUAL, email);
+        Filter filter = new FilterPredicate(userType + "Email", FilterOperator.EQUAL, email.toLowerCase());
         Query query = new Query("TutorSession").setFilter(filter);
 
         PreparedQuery sessionEntities = datastore.prepare(query);
