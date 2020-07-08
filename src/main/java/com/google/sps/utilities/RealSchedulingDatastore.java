@@ -31,7 +31,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.lang.String;
 import com.google.gson.Gson;
 
-/** Accesses Datastore to manage tutoring sessions. */
+/** Accesses Datastore to manage tutoring sessions. */ 
 public final class RealSchedulingDatastore implements SchedulingDatastoreService {
 
     /**
