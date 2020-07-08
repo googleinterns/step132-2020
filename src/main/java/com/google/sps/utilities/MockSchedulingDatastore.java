@@ -15,6 +15,8 @@
 package com.google.sps.utilities;
 
 import com.google.sps.data.SampleData;
+import com.google.sps.data.Tutor;
+import com.google.sps.data.Student;
 import com.google.sps.data.TutorSession;
 import java.lang.String;
 import java.util.List;
