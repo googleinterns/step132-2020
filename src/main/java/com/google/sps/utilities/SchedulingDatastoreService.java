@@ -16,6 +16,7 @@ package com.google.sps.utilities;
 
 import com.google.sps.data.TutorSession;
 import java.lang.String;
+import java.util.List;
 
 /** Interface for accessing datastore to manage tutor sessions. */
 public interface SchedulingDatastoreService {
@@ -24,4 +25,16 @@ public interface SchedulingDatastoreService {
     * Adds a new TutorSession for the tutor and student.
     */
     public void addTutorSession(String tutorEmail, String studentEmail, TutorSession session);
+
+    /**
+    * Gets a list of all scheduled sessions for a tutor with the given email.
+    * @return List<TutorSession>
+    */
+    public List<TutorSession> getScheduledSessionForTutor(String email);
+
+    /**
+    * Gets a list of all scheduled sessions for a student with the given email.
+    * @return List<TutorSession>
+    */
+    public List<TutorSession> getScheduledSessionForStudent(String email);
 }
