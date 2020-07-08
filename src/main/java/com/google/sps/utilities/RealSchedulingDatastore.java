@@ -17,6 +17,9 @@ package com.google.sps.utilities;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.TimeRange;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Transaction;
@@ -29,6 +32,9 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.lang.String;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Calendar;
 import com.google.gson.Gson;
 
 /** Accesses Datastore to manage tutoring sessions. */ 
@@ -64,6 +70,74 @@ public final class RealSchedulingDatastore implements SchedulingDatastoreService
             txn.rollback();
           }
         }
+    }
+
+    /**
+    * Gets a list of all scheduled sessions for a tutor with the given email.
+    * @return List<TutorSession>
+    */
+    @Override
+    public List<TutorSession> getScheduledSessionForTutor(String email) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        return getScheduledSessions(datastore, "tutor", email);
+    }
+
+    /**
+    * Gets a list of all scheduled sessions for a student with the given email.
+    * @return List<TutorSession>
+    */
+    @Override
+    public List<TutorSession> getScheduledSessionForStudent(String email) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        return getScheduledSessions(datastore, "student", email);
+    }
+
+    /**
+    * Gets all the tutor session entities for a userType (tutor or student) with the corresponding email. 
+    * @return ArrayList<TutorSession>
+    */
+    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, String userType, String email) {
+        ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
+
+        //get all sessions with given email
+        Filter filter = new FilterPredicate(userType + "Email", FilterOperator.EQUAL, email);
+        Query query = new Query("TutorSession").setFilter(filter);
+
+        PreparedQuery sessionEntities = datastore.prepare(query);
+
+        for(Entity entity : sessionEntities.asIterable()) {
+            try {
+
+                String studentEmail = (String) entity.getProperty("studentEmail");
+                String tutorEmail = (String) entity.getProperty("tutorEmail");
+                String subtopics = (String) entity.getProperty("subtopics");
+                String questions = (String) entity.getProperty("questions");
+
+                Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
+                Entity timeEntity = datastore.get(timeRangeKey); 
+                TimeRange timeslot = createTimeRange(timeEntity);
+
+                sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot));
+
+            } catch (EntityNotFoundException e) {
+                //timeslot was not found, skip this tutoring session
+            }
+           
+        }
+
+        return sessions;
+    }
+
+     /**
+    * Creates a TimeRange object from a given TimeRange entity.
+    * @return TimeRange
+    */
+    private TimeRange createTimeRange(Entity entity) {
+        int start = Math.toIntExact((long) entity.getProperty("start"));
+        int end = Math.toIntExact((long) entity.getProperty("end"));
+        Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
+
+        return TimeRange.fromStartToEnd(start, end, date);
     }
 
     /**
