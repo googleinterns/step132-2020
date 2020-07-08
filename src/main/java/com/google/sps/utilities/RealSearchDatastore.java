@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Calendar;
 import com.google.gson.Gson;
 
-/** Accesses Datastore to implement the SearchDatastoreService methods. */
+/** Accesses Datastore to implement the SearchDatastoreService methods. */ 
 public final class RealSearchDatastore implements SearchDatastoreService {
 
     /**
