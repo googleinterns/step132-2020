@@ -21,7 +21,7 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Mock datastore service class used for testing getting tutor availability. */
+/** Mock datastore service class used for managing tutor availability. */
 public final class MockAvailabilityDatastore implements AvailabilityDatastoreService {
 
     /**
