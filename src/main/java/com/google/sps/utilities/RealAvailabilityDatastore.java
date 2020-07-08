@@ -81,7 +81,8 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction();
-
+        
+        //get tutor entity by email
         Filter filter = new FilterPredicate("email", FilterOperator.EQUAL, email.toLowerCase());
         Query tutorQuery = new Query("Tutor").setFilter(filter);
 
@@ -90,10 +91,16 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
 
             //there should only be one result
             Entity tutorEntity = pq.asSingleEntity();
+            
+            //make tutor ancestor of time range
+            Entity timeEntity = new Entity("TimeRange", tutorEntity.getKey());
 
-            Entity timeslot = new Entity("TimeRange", tutorEntity.getKey());
+            timeEntity.setProperty("email", email);
+            timeEntity.setProperty("start", time.getStart());
+            timeEntity.setProperty("end", time.getEnd());
+            timeEntity.setProperty("date", new Gson().toJson(time.getDate()));
 
-            datastore.put(txn, timeslot);
+            datastore.put(txn, timeEntity);
 
             txn.commit();
 
