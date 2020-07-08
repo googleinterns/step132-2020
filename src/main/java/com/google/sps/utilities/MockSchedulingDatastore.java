@@ -17,6 +17,7 @@ package com.google.sps.utilities;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.TutorSession;
 import java.lang.String;
+import java.util.List;
 
 /** Mock datastore service class used for scheduling tutor sessions. */
 public final class MockSchedulingDatastore implements SchedulingDatastoreService {
@@ -29,6 +30,26 @@ public final class MockSchedulingDatastore implements SchedulingDatastoreService
         SampleData.addToTutorScheduledSessionsByEmail(tutorEmail, session);
         SampleData.addToStudentScheduledSessionsByEmail(studentEmail, session);
         SampleData.deleteAvailabilityByTimeRange(tutorEmail, session.getTimeslot());
+    }
+
+    /**
+    * Gets a list of all scheduled sessions for a tutor with the given email.
+    * @return List<TutorSession>
+    */
+    @Override
+    public List<TutorSession> getScheduledSessionForTutor(String email) {
+        Tutor tutor = SampleData.getTutorByEmail(email);
+        return tutor.getScheduledSessions();
+    }
+
+    /**
+    * Gets a list of all scheduled sessions for a student with the given email.
+    * @return List<TutorSession>
+    */
+    @Override
+    public List<TutorSession> getScheduledSessionForStudent(String email) {
+        Student student = SampleData.getStudentByEmail(email);
+        return student.getScheduledSessions();
     }
 
 }
