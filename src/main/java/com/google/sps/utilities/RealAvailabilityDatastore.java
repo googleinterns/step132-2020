@@ -80,7 +80,7 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
-        Transaction txn = datastore.beginTransaction();
+        Transaction txn = datastore.beginTransaction(options);
         
         //get tutor entity by email
         Filter filter = new FilterPredicate("email", FilterOperator.EQUAL, email.toLowerCase());
@@ -126,7 +126,7 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
-        Transaction txn = datastore.beginTransaction();
+        Transaction txn = datastore.beginTransaction(options);
 
         //filter by tutor's email and time range properties
         CompositeFilter timeFilter = CompositeFilterOperator.and(FilterOperator.EQUAL.of("email", email),
