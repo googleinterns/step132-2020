@@ -122,7 +122,7 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
         Transaction txn = datastore.beginTransaction();
 
         //filter by tutor's email and time range properties
-        CompositeFilter timeFilter = CompositeFilterOperator.and(FilterOperator.EQUAL.of("tutorId", email),
+        CompositeFilter timeFilter = CompositeFilterOperator.and(FilterOperator.EQUAL.of("email", email),
                                                                  FilterOperator.EQUAL.of("start", time.getStart()), 
                                                                  FilterOperator.EQUAL.of("end", time.getEnd()), 
                                                                  FilterOperator.EQUAL.of("date", new Gson().toJson(time.getDate())));
@@ -175,8 +175,8 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
     * @return TimeRange
     */
     private TimeRange createTimeRange(Entity entity) {
-        int start = (int) entity.getProperty("start");
-        int end = (int) entity.getProperty("end");
+        int start = Math.toIntExact((long) entity.getProperty("start"));
+        int end = Math.toIntExact((long) entity.getProperty("end"));
         Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
 
         return TimeRange.fromStartToEnd(start, end, date);
