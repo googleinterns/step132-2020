@@ -77,24 +77,24 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
     * @return List<TutorSession>
     */
     @Override
-    public List<TutorSession> getScheduledSessionForTutor(String email) {
+    public List<TutorSession> getScheduledSessionsForTutor(String email) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         return getScheduledSessions(datastore, "tutor", email);
     }
 
     /**
     * Gets a list of all scheduled sessions for a student with the given email.
-    * @return List<TutorSession>
+    * @return List<TutorSession>, empty list if the tutor does not exist
     */
     @Override
-    public List<TutorSession> getScheduledSessionForStudent(String email) {
+    public List<TutorSession> getScheduledSessionsForStudent(String email) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         return getScheduledSessions(datastore, "student", email);
     }
 
     /**
     * Gets all the tutor session entities for a userType (tutor or student) with the corresponding email. 
-    * @return ArrayList<TutorSession>
+    * @return ArrayList<TutorSession>, empty list if the student does not exist
     */
     private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, String userType, String email) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();

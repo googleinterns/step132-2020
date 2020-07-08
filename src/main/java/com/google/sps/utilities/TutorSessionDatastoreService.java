@@ -28,13 +28,13 @@ public interface TutorSessionDatastoreService {
 
     /**
     * Gets a list of all scheduled sessions for a tutor with the given email.
-    * @return List<TutorSession>
+    * @return List<TutorSession>, empty list if the tutor does not exist
     */
-    public List<TutorSession> getScheduledSessionForTutor(String email);
+    public List<TutorSession> getScheduledSessionsForTutor(String email);
 
     /**
     * Gets a list of all scheduled sessions for a student with the given email.
-    * @return List<TutorSession>
+    * @return List<TutorSession>, empty list if the student does not exist
     */
-    public List<TutorSession> getScheduledSessionForStudent(String email);
+    public List<TutorSession> getScheduledSessionsForStudent(String email);
 }

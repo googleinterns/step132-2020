@@ -20,6 +20,7 @@ import com.google.sps.data.Student;
 import com.google.sps.data.TutorSession;
 import java.lang.String;
 import java.util.List;
+import java.util.ArrayList;
 
 /** Mock datastore service class used for scheduling tutor sessions. */
 public final class MockTutorSessionDatastore implements TutorSessionDatastoreService {
@@ -36,21 +37,31 @@ public final class MockTutorSessionDatastore implements TutorSessionDatastoreSer
 
     /**
     * Gets a list of all scheduled sessions for a tutor with the given email.
-    * @return List<TutorSession>
+    * @return List<TutorSession>, empty list if the tutor does not exist
     */
     @Override
-    public List<TutorSession> getScheduledSessionForTutor(String email) {
+    public List<TutorSession> getScheduledSessionsForTutor(String email) {
         Tutor tutor = SampleData.getTutorByEmail(email);
+
+        if(tutor == null) {
+            return new ArrayList<TutorSession>();
+        }
+        
         return tutor.getScheduledSessions();
     }
 
     /**
     * Gets a list of all scheduled sessions for a student with the given email.
-    * @return List<TutorSession>
+    * @return List<TutorSession>, empty list if the student does not exist
     */
     @Override
-    public List<TutorSession> getScheduledSessionForStudent(String email) {
+    public List<TutorSession> getScheduledSessionsForStudent(String email) {
         Student student = SampleData.getStudentByEmail(email);
+
+        if(student == null) {
+            return new ArrayList<TutorSession>();
+        }
+
         return student.getScheduledSessions();
     }
 
