@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function getAvailability() {
+function getAvailabilityManage() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);
     const tutorID = queryString["tutorID"];
@@ -44,7 +44,7 @@ function readTutorID(queryString, window) {
     }
 }
 
-function createTimeSlotBox(timeslot, tutorID) {
+function createTimeSlotBoxManage(timeslot, tutorID) {
     var months = [ "January", "February", "March", "April", "May", "June", 
            "July", "August", "September", "October", "November", "December" ];
 

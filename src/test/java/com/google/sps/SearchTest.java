@@ -1,3 +1,4 @@
+
 // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,6 +47,7 @@ public final class SearchTest {
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 5, 18)
+                                                        .set(Calendar.HOUR_OF_DAY, 10)
                                                         .build();
     private static final Calendar JUNE102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")

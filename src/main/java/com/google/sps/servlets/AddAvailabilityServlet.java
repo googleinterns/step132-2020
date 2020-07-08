@@ -40,7 +40,7 @@ public class AddAvailabilityServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tutorID = "btrevisan@google.com";
+        String tutorID = request.getParameter("tutorEmail");
         String startHour = request.getParameter("startHour");
         String startMinute = request.getParameter("startMinute");
         String endHour = request.getParameter("endHour");
