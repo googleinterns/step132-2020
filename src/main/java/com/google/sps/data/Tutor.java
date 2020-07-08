@@ -70,6 +70,11 @@ public final class Tutor {
         this.availability.remove(timeslot);
     }
 
+    /** Adds the given timeslot to the availability list. */
+    public void addAvailabilityByTimeRange(TimeRange timeslot) {
+        this.availability.add(timeslot);
+    }
+
     /** Adds the given Tutor Session to the scheduledSessions array. */
     public void addToScheduledSessions(TutorSession tutoringSession) {
         this.scheduledSessions.add(tutoringSession);
