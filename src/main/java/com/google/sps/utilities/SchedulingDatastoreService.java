@@ -14,9 +14,8 @@
 
 package com.google.sps.utilities;
 
-import javax.servlet.http.HttpServletRequest;
+import com.google.sps.data.TutorSession;
 import java.lang.String;
-import java.util.List;
 
 /** Interface for accessing datastore to manage tutor sessions. */
 public interface SchedulingDatastoreService {
@@ -24,5 +23,5 @@ public interface SchedulingDatastoreService {
     /**
     * Creates a new TutorSession for the tutor and student.
     */
-    public void createNewTutorSession(HttpServletRequest request);
+    public void createNewTutorSession(String tutorEmail, String studentEmail, TutorSession session);
 }
