@@ -107,6 +107,8 @@ public final class SchedulingTest {
                                             TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020)));
         String unexpected = new Gson()
                             .toJson(new Tutor("Bernardo Eilert Trevisan",
+                                            "Bernardo\'s bio",
+                                            "images/pfp.jpg",
                                             "btrevisan@google.com",
                                             new ArrayList<String> (Arrays.asList("English", "Physics")),
                                             new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),

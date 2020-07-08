@@ -140,11 +140,16 @@ public final class LoginStatusTest {
 
     @Test
     public void getNameUserRegistered() {
+        // Add user and student properties to the local datastore so there is data to query in the function
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Entity userEntity = new Entity("User");
-        userEntity.setProperty("name", "Student McKnowledge");
+        userEntity.setProperty("role", "student");
         userEntity.setProperty("userId", USER_ID);
         datastore.put(userEntity);
+        Entity studentEntity = new Entity("Student");
+        studentEntity.setProperty("name", "Student McKnowledge");
+        studentEntity.setProperty("userId", USER_ID);
+        datastore.put(studentEntity);
         
         String actual = servlet.getName(USER_ID, datastore);
         String expected = "Student McKnowledge";
