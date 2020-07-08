@@ -100,8 +100,6 @@ public final class RegistrationTest {
         Entity expectedTutor = new Entity("Tutor");
         expectedTutor.setProperty("name", "Sam F");
         expectedTutor.setProperty("email", USER_EMAIL);
-        expectedTutor.setProperty("availability", new ArrayList<Long>());
-        expectedTutor.setProperty("scheduledSessions", new ArrayList<Long>());
         expectedTutor.setProperty("topics", mockTopics);
         expectedTutor.setProperty("userId", USER_ID);
 
