@@ -27,12 +27,16 @@ import java.util.LinkedList;
 public final class Student {
     
     private String name;
+    private String bio;
+    private String pfp;
     private String email;
     private ArrayList<String> learning;
     private ArrayList<TutorSession> scheduledSessions;
 
-    public Student(String name, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions) {
+    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions) {
         this.name = name;
+        this.bio = bio;
+        this.pfp = pfp;
         this.email = email;
         this.learning = learning;
         this.scheduledSessions = scheduledSessions;
@@ -40,6 +44,14 @@ public final class Student {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getBio() {
+        return this.bio;
+    }
+
+    public String getPfp() {
+        return this.pfp;
     }
 
     public String getEmail() {
