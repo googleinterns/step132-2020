@@ -91,15 +91,13 @@ public final class DeleteAvailabilityTest {
 
         String expected = new Gson()
                             .toJson(new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
-                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                                                TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))),
+                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020))),
                                     new ArrayList<TutorSession> (Arrays.asList())));
 
         String unexpected = new Gson()
                             .toJson(new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
                                     new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                                                TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020),
-                                                TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))),
+                                                TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
                                     new ArrayList<TutorSession> (Arrays.asList())));
 
         writer.flush();

@@ -50,10 +50,10 @@ public final class AddAvailabilityTest {
                                                         .setDate(2020, 7, 10)
                                                         .build();
 
-    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
     private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
     private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
-    private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
+    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
     private static final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
     private static final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
 
@@ -62,7 +62,7 @@ public final class AddAvailabilityTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorEmail")).thenReturn("elian@google.com");
+        when(request.getParameter("tutorEmail")).thenReturn("kashisharora@google.com");
         when(request.getParameter("startHour")).thenReturn("22");
         when(request.getParameter("startMinute")).thenReturn("00");
         when(request.getParameter("endHour")).thenReturn("23");
@@ -94,21 +94,17 @@ public final class AddAvailabilityTest {
                                             .build();
 
         String expected = new Gson()
-                            .toJson(new Tutor("Elian Dumitru",
-                                            "elian@google.com",
-                                            new ArrayList<String> (Arrays.asList("Geology", "Math")),
-                                            new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                                                        TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020),
-                                                        TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))),
-                                            new ArrayList<TutorSession> (Arrays.asList())));
+                            .toJson(new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020), 
+                                                TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))),
+                                    new ArrayList<TutorSession> (Arrays.asList())));
 
         String unexpected = new Gson()
-                            .toJson(new Tutor("Elian Dumitru",
-                                            "elian@google.com",
-                                            new ArrayList<String> (Arrays.asList("Geology", "Math")),
-                                            new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                                                        TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                                            new ArrayList<TutorSession> (Arrays.asList())));
+                            .toJson(new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
+                                    new ArrayList<TutorSession> (Arrays.asList())));
 
         writer.flush();
         System.out.println(stringWriter.toString());
