@@ -105,7 +105,7 @@ async function getTutors(topic) {
         numSearchResults.className = "num-search-results";
 
         tutorContainer.appendChild(numSearchResults);
-
+        
         //if there was an error reported by the servlet, display the error message
         if(results.error) {
             numSearchResults.innerText = results.error;
@@ -160,6 +160,8 @@ function createTutorResult(result) {
 
     container.classList.add("tutor-result");
     container.classList.add("list-group-item");
+
+    skills.style.textTransform = "capitalize";
 
     container.appendChild(name);
     container.appendChild(email);
