@@ -74,11 +74,22 @@ public class LoginStatusServlet extends HttpServlet {
         Query query = new Query("User").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query);
         Entity userEntity = results.asSingleEntity();
-        
 
         // User not registered
         if (userEntity == null) {
             return null;
+        }
+
+        String role = (String) userEntity.getProperty("role"); 
+        // User is a student, get their info
+        if (role.toLowerCase().equals("student")) {
+            query = new Query("Student").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+            results = datastore.prepare(query);
+            userEntity = results.asSingleEntity();
+        } else {   // User is a tutor, get their info
+            query = new Query("Tutor").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+            results = datastore.prepare(query);
+            userEntity = results.asSingleEntity();
         }
 
         // User has already registered, return their name
