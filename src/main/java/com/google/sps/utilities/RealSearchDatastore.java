@@ -57,12 +57,11 @@ public final class RealSearchDatastore implements SearchDatastoreService {
 
         for (Entity tutorEntity : tutorResults.asIterable()) {
             
-            long id = (long) tutorEntity.getKey().getId();
             String name = (String) tutorEntity.getProperty("name");
             String email = (String) tutorEntity.getProperty("email");
             ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
-            ArrayList<TimeRange> availability = getTimeRanges(datastore, tutorEntity.getKey());
-            ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, id);
+            ArrayList<TimeRange> availability = getTimeRanges(datastore, email);
+            ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, email);
 
             Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
 
@@ -75,14 +74,14 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     }
 
     /**
-    * Gets all the tutor session entities with the corresponding tutorId. 
+    * Gets all the tutor session entities with the corresponding tutor email. 
     * @return ArrayList<TutorSession>
     */
-    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, long tutorId) {
+    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, String email) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //get all sessions with tutor id
-        Filter filter = new FilterPredicate("tutorId", FilterOperator.EQUAL, tutorId);
+        Filter filter = new FilterPredicate("tutorEmail", FilterOperator.EQUAL, email.toLowerCase());
         Query query = new Query("TutorSession").setFilter(filter);
 
         PreparedQuery sessionEntities = datastore.prepare(query);
@@ -111,14 +110,16 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     }
 
     /**
-    * Gets all the time range entities corresponding that have the given tutorId.
+    * Gets all the time range entities that have the given tutor's email.
     * @return ArrayList<TimeRange>
     */
-    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Key tutorKey) {
+    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, String email) {
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
         
-        //Use ancestor query to get all time ranges that belong to the tutor
-        Query query = new Query("TimeRange", tutorKey);
+        //get all time ranges with tutor email
+        Filter filter = new FilterPredicate("email", FilterOperator.EQUAL, email.toLowerCase());
+        Query query = new Query("TimeRange").setFilter(filter);
+
         PreparedQuery timeRanges = datastore.prepare(query);
 
         for(Entity time : timeRanges.asIterable()) {
