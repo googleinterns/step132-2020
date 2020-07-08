@@ -29,8 +29,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.TransactionOptions;
 import java.lang.String;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -49,37 +47,27 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     public List<Tutor> getTutorsForTopic(String topic) {
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        TransactionOptions options = TransactionOptions.Builder.withXG(true);
-        Transaction txn = datastore.beginTransaction();
 
         Filter topicFilter = new FilterPredicate("topics", FilterOperator.EQUAL, topic.toLowerCase());
         Query tutorQuery = new Query("Tutor").setFilter(topicFilter);
 
         ArrayList<Tutor> tutors = new ArrayList<Tutor>();
 
-        try {
-            PreparedQuery tutorResults = datastore.prepare(tutorQuery);
+        PreparedQuery tutorResults = datastore.prepare(tutorQuery);
 
-            for (Entity tutorEntity : tutorResults.asIterable()) {
-                
-                long id = (long) tutorEntity.getKey().getId();
-                String name = (String) tutorEntity.getProperty("name");
-                String email = (String) tutorEntity.getProperty("email");
-                ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
-                ArrayList<TimeRange> availability = getTimeRanges(datastore, txn, tutorEntity.getKey());
-                ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, txn, id);
-
-                Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
-
-                tutors.add(tutor);
-                
-            }
+        for (Entity tutorEntity : tutorResults.asIterable()) {
             
-            txn.commit();
-        } finally {
-          if (txn.isActive()) {
-            txn.rollback();
-          }
+            long id = (long) tutorEntity.getKey().getId();
+            String name = (String) tutorEntity.getProperty("name");
+            String email = (String) tutorEntity.getProperty("email");
+            ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
+            ArrayList<TimeRange> availability = getTimeRanges(datastore, tutorEntity.getKey());
+            ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, id);
+
+            Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
+
+            tutors.add(tutor);
+            
         }
 
         return tutors;
@@ -90,7 +78,7 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     * Gets all the tutor session entities with the corresponding tutorId. 
     * @return ArrayList<TutorSession>
     */
-    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, Transaction txn, long tutorId) {
+    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, long tutorId) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //get all sessions with tutor id
@@ -108,7 +96,7 @@ public final class RealSearchDatastore implements SearchDatastoreService {
                 String questions = (String) entity.getProperty("questions");
 
                 Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
-                Entity timeEntity = datastore.get(txn, timeRangeKey); 
+                Entity timeEntity = datastore.get(timeRangeKey); 
                 TimeRange timeslot = createTimeRange(timeEntity);
 
                 sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot));
@@ -126,12 +114,12 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     * Gets all the time range entities corresponding that have the given tutorId.
     * @return ArrayList<TimeRange>
     */
-    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Transaction txn, Key tutorKey) {
+    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, Key tutorKey) {
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
         
         //Use ancestor query to get all time ranges that belong to the tutor
         Query query = new Query("TimeRange", tutorKey);
-        PreparedQuery timeRanges = datastore.prepare(txn, query);
+        PreparedQuery timeRanges = datastore.prepare(query);
 
         for(Entity time : timeRanges.asIterable()) {
             availability.add(createTimeRange(time));
