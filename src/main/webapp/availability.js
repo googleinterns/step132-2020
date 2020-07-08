@@ -98,3 +98,4 @@ function selectTimeSlot(tutorID, window, timeslot) {
                 "&day=" + encodeURIComponent(timeslot.date.dayOfMonth);
     window.location.href = url;
 }
+
