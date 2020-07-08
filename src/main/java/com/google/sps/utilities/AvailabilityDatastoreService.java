@@ -18,7 +18,7 @@ import com.google.sps.data.TimeRange;
 import java.lang.String;
 import java.util.List;
 
-/** Interface for accessing datastore to get tutor availability . */
+/** Interface for accessing datastore to manage tutor availability . */
 public interface AvailabilityDatastoreService {
 
     /**

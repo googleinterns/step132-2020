@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
 
-/** Accesses Datastore to get a tutor's available times. */
+/** Accesses Datastore to manage a tutor's available times. */
 public final class RealAvailabilityDatastore implements AvailabilityDatastoreService {
 
     /**
