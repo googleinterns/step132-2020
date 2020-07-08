@@ -43,11 +43,11 @@ import java.util.Arrays;
 public final class AddAvailabilityTest {
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 5, 18)
+                                                        .setDate(2020, 4, 18)
                                                         .build();
-    private static final Calendar JUNE102020 = new Calendar.Builder()
+    private static final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 6, 10)
+                                                        .setDate(2020, 7, 10)
                                                         .build();
 
     private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
@@ -98,7 +98,7 @@ public final class AddAvailabilityTest {
                                             "elian@google.com",
                                             new ArrayList<String> (Arrays.asList("Geology", "Math")),
                                             new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                                                        TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020),
+                                                        TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020),
                                                         TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))),
                                             new ArrayList<TutorSession> (Arrays.asList())));
 
@@ -107,7 +107,7 @@ public final class AddAvailabilityTest {
                                             "elian@google.com",
                                             new ArrayList<String> (Arrays.asList("Geology", "Math")),
                                             new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                                                        TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
+                                                        TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
                                             new ArrayList<TutorSession> (Arrays.asList())));
 
         writer.flush();

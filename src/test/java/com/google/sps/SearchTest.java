@@ -52,6 +52,7 @@ public final class SearchTest {
     private static final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
+                                                        .set(Calendar.HOUR_OF_DAY, 13)
                                                         .build();
 
     private SearchServlet servlet;

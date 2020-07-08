@@ -23,7 +23,7 @@ function getAvailabilityManage() {
     params.append('tutorID', tutorID);
     fetch('/availability', {method: 'POST', body: params}).then(response => response.json()).then((timeslots) => {
         timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBox(timeslot, tutorID));
+            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot, tutorID));
         })
     });
 }

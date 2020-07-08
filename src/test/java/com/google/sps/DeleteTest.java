@@ -43,30 +43,29 @@ import java.util.Arrays;
 public final class DeleteTest {
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 5, 18)
+                                                        .setDate(2020, 4, 18)
+                                                        .set(Calendar.HOUR_OF_DAY, 10)
                                                         .build();
-    private static final Calendar JUNE102020 = new Calendar.Builder()
+    private static final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 6, 10)
+                                                        .setDate(2020, 7, 10)
                                                         .build();
 
     private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
     private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
     private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
     private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
-    private static final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
-    private static final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
 
     @Test
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn("thegoogler@google.com");
-        when(request.getParameter("start")).thenReturn("600");
-        when(request.getParameter("end")).thenReturn("720");
-        when(request.getParameter("day")).thenReturn("18");
-        when(request.getParameter("month")).thenReturn("5");
+        when(request.getParameter("tutorID")).thenReturn("sfalberg@google.com");
+        when(request.getParameter("start")).thenReturn("780");
+        when(request.getParameter("end")).thenReturn("840");
+        when(request.getParameter("day")).thenReturn("10");
+        when(request.getParameter("month")).thenReturn("7");
         when(request.getParameter("year")).thenReturn("2020");
 
         StringWriter stringWriter = new StringWriter();
@@ -85,21 +84,19 @@ public final class DeleteTest {
         verify(request, times(1)).getParameter("year");
 
         String expected = new Gson()
-                            .toJson(new Tutor("Anand Desai",
-                                            "thegoogler@google.com",
-                                            new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                                            new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
-                                            new ArrayList<TutorSession> (Arrays.asList())));
+                            .toJson(new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020))),
+                                    new ArrayList<TutorSession> (Arrays.asList())));
 
         String unexpected = new Gson()
-                            .toJson(new Tutor("Anand Desai",
-                                            "thegoogler@google.com",
-                                            new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                                            new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                                                        TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, JUNE102020))),
-                                            new ArrayList<TutorSession> (Arrays.asList())));
+                            .toJson(new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
+                                                TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
+                                    new ArrayList<TutorSession> (Arrays.asList())));
 
         writer.flush();
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         // New available timeslot should have been added
         Assert.assertTrue(stringWriter.toString().contains(expected));
         Assert.assertFalse(stringWriter.toString().contains(unexpected));
