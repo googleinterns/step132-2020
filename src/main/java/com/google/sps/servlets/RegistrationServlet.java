@@ -17,10 +17,10 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
+import com.google.sps.data.TimeRange;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +46,9 @@ public class RegistrationServlet extends HttpServlet {
     String lastName = Optional.ofNullable(request.getParameter("last-name"))
             .orElseThrow(() -> new IllegalArgumentException("Must fill out last name"));
     String fullName = firstName + " " + lastName;
+    String bio = Optional.ofNullable(request.getParameter("bio")).orElse(null);
+    // For now, we will automatically set everyone's profile picture to a default avatar
+    String pfp = "images/pfp.jpg";
     
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
@@ -67,12 +70,12 @@ public class RegistrationServlet extends HttpServlet {
 
     if(role.toLowerCase().equals("tutor")) {
         Entity tutorEntity = new Entity("Tutor");
-        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, email, topicsToStr, userId);
+        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, bio, pfp, email, topicsToStr, userId);
     }
 
     if(role.toLowerCase().equals("student")) {
         Entity studentEntity = new Entity("Student");
-        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, email, topicsToStr, userId);
+        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, bio, pfp, email, topicsToStr, userId);
     }
 
     // TODO: Redirect back to page user was at before registration rather than always redirect to homepage, Issue #41
@@ -82,13 +85,14 @@ public class RegistrationServlet extends HttpServlet {
   /**
   * Creates a student entity and puts it in datastore, used for testing
   */
-  public void createStudentEntityAndPutInDatastore(DatastoreService ds, Entity entity, String name, String email, List<String> topics, String userId) {
+  public void createStudentEntityAndPutInDatastore(DatastoreService ds, Entity entity, String name, String bio, String pfp, String email, List<String> topics, String userId) {
     entity.setProperty("name", name);
+    entity.setProperty("bio", bio);
+    entity.setProperty("pfp", pfp);
     entity.setProperty("email", email);
     entity.setProperty("learning", topics);
     //stores a list of TutorSession entity ids
     entity.setProperty("scheduledSessions", new ArrayList<Long>());
-    entity.setProperty("topics", topics);
     entity.setProperty("userId", userId);
     ds.put(entity);
   }
@@ -96,15 +100,16 @@ public class RegistrationServlet extends HttpServlet {
   /**
   * Creates a tutor entity and puts it in datastore, used for testing
   */
-  public void createTutorEntityAndPutInDatastore(DatastoreService ds, Entity entity, String name, String email, List<String> topics, String userId) {
+  public void createTutorEntityAndPutInDatastore(DatastoreService ds, Entity entity, String name, String bio, String pfp, String email, List<String> topics, String userId) {
     entity.setProperty("name", name);
+    entity.setProperty("bio", bio);
+    entity.setProperty("pfp", pfp);
     entity.setProperty("email", email);
     entity.setProperty("topics", topics);
     //stores a list of TimeRange entity ids
     entity.setProperty("availability", new ArrayList<Long>());
     //stores a list of TutorSession entity ids
     entity.setProperty("scheduledSessions", new ArrayList<Long>());
-    entity.setProperty("topics", topics);
     entity.setProperty("userId", userId);
     ds.put(entity);
   }
