@@ -61,7 +61,7 @@ public final class DeleteTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn("sfalberg@google.com");
+        when(request.getParameter("tutorID")).thenReturn("elian@google.com");
         when(request.getParameter("start")).thenReturn("780");
         when(request.getParameter("end")).thenReturn("840");
         when(request.getParameter("day")).thenReturn("10");
@@ -84,12 +84,12 @@ public final class DeleteTest {
         verify(request, times(1)).getParameter("year");
 
         String expected = new Gson()
-                            .toJson(new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                            .toJson(new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
                                     new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020))),
                                     new ArrayList<TutorSession> (Arrays.asList())));
 
         String unexpected = new Gson()
-                            .toJson(new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                            .toJson(new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
                                     new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                                                 TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
                                     new ArrayList<TutorSession> (Arrays.asList())));
