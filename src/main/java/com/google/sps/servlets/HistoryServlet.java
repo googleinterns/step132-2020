@@ -19,6 +19,9 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Student;
+import com.google.sps.utilities.TutorSessionDatastoreService;
+import com.google.sps.utilities.RealTutorSessionDatastore;
+import com.google.sps.utilities.MockTutorSessionDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Optional;
@@ -32,32 +35,36 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet that keeps track of a user's past sessions. */
 @WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
+    private TutorSessionDatastoreService datastore;
+
+    /**
+    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
+    * We need the default one for deployment because the servlet is created without parameters.
+    */
+    public HistoryServlet(){}
+
+    public HistoryServlet(boolean test) {
+        if(test) {
+            datastore = new MockTutorSessionDatastore();
+        }
+    }
+
+    public void init() {
+        datastore = new RealTutorSessionDatastore();
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the student whose tutoring history will be displayed.
         String studentEmail = request.getParameter("studentEmail");
 
-        List<TutorSession> scheduledSessions = new ArrayList<TutorSession>();
+        List<TutorSession> scheduledSessions = datastore.getScheduledSessionsForStudent(studentEmail);
 
-        for (Student student : SampleData.getSampleStudents()) {
-            if (studentEmail.toLowerCase().equals(student.getEmail().toLowerCase())) {
-                scheduledSessions = student.getScheduledSessions();
-                break;
-            }
-        }
-
-        List<TutorSession> previousSessions = new ArrayList<TutorSession>();
-
-        filterPastSessions(scheduledSessions, previousSessions);
+        List<TutorSession> previousSessions = filterPastSessions(scheduledSessions);
 
         String json = new Gson().toJson(previousSessions);
         response.setContentType("application/json;");
@@ -65,7 +72,9 @@ public class HistoryServlet extends HttpServlet {
         return;
     }
 
-    private void filterPastSessions(List<TutorSession> allSessions, List<TutorSession> previousSessions) {
+    private List<TutorSession> filterPastSessions(List<TutorSession> allSessions) {
+        List<TutorSession> previousSessions = new ArrayList<TutorSession>();
+
         Date currentDate = new Date();
 
         for (TutorSession session : allSessions) {
@@ -84,6 +93,6 @@ public class HistoryServlet extends HttpServlet {
             }
         }
 
-        return;
+        return previousSessions;
     }
 }
