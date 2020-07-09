@@ -66,7 +66,7 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.doGet(request, response);
+        servlet.doPost(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
@@ -92,7 +92,7 @@ public final class HistoryTest {
                                                         TimeRange.fromStartToEnd(540, 600, MAY182020), 0);
         SampleData.addToStudentScheduledSessionsByEmail("btrevisan@google.com", tutoringSessionFake);
 
-        servlet.doGet(request, response);
+        servlet.doPost(request, response);
 
         String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(tutoringSessionFake)));
 

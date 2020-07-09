@@ -17,7 +17,9 @@ function getTutoringSessionHistory() {
     window.onload = readStudentEmail(queryString, window);
     const studentEmail = queryString["studentEmail"];
 
-    fetch('/history?studentEmail='+studentEmail).then(response => response.json()).then((tutoringSessions) => {
+    const params = new URLSearchParams();
+    params.append('studentEmail', studentEmail);
+    fetch('/history', {method: 'POST', body: params}).then(response => response.json()).then((tutoringSessions) => {
         //if there was an error
         if(tutoringSessions.error) {
             var container = document.getElementById('tutoringSessionHistory');
