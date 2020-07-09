@@ -65,4 +65,27 @@ public final class MockTutorSessionDatastore implements TutorSessionDatastoreSer
         return student.getScheduledSessions();
     }
 
+    /**
+    * Adds the given rating to a tutor session and updates the tutor's overall rating.
+    * @return boolean, true if session was rated successfully, false otherwise
+    */
+    @Override
+    public boolean rateTutorSession(long sessionId, int rating) {
+
+        List<Tutor> tutors = SampleData.getSampleTutors();
+
+        for(Tutor tutor : tutors) {
+            List<TutorSession> sessions = tutor.getScheduledSessions();
+
+            for(TutorSession session : sessions) {
+                if(session.getId() == sessionId) {
+                    SampleData.rateTutorByEmail(session.getTutorEmail(), session.getStudentEmail(), rating);
+                    break;
+                }
+            }
+        }
+
+        return true;
+    }
+
 }
