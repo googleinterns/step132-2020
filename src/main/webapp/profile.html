@@ -14,14 +14,24 @@ See the License for the specific language governing permissions and
 
  <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Profile</title>
-    <link rel="stylesheet" href="general.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  </head>
-  <body onload="fetchLoginStatus()">
+    <head>
+        <meta charset="UTF-8">
+        <title>Profile</title>
+        <link rel="stylesheet" href="general.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body onload="displayLoginLogoutLink(), displayProfile()">
+        <a href="./homepage.html"><p>Homepage</p></a>
 
-      <script src="profile.js"></script>
-  </body>
+        <div class="top-right">
+            <a id="login-url"><p id="login" style="display:none">Login with Google</p></a>
+            <input type="hidden" id="profile">
+            <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
+        </div>
+
+        <div id="profile-container"></div>
+
+        <script src="profile.js"></script>
+        <script src="registration.js"></script>
+    </body>
 </html>
