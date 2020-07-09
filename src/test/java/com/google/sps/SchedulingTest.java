@@ -72,6 +72,7 @@ public final class SchedulingTest {
     @Before
     public void setUp() {
         servlet = new SchedulingServlet(true);
+        TutorSession.resetIds();
     }
 
     @Test
@@ -111,7 +112,7 @@ public final class SchedulingTest {
                                             "btrevisan@google.com",
                                             "algebra",
                                             "How does it work?",
-                                            TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020)));
+                                            TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), 0));
         String unexpected = new Gson()
                             .toJson(new Tutor("Bernardo Eilert Trevisan",
                                             "btrevisan@google.com",
