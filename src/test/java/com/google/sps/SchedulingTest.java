@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -66,6 +67,13 @@ public final class SchedulingTest {
     private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
     private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
 
+    private SchedulingServlet servlet;
+
+    @Before
+    public void setUp() {
+        servlet = new SchedulingServlet(true);
+    }
+
     @Test
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
@@ -86,7 +94,6 @@ public final class SchedulingTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        SchedulingServlet servlet = new SchedulingServlet();
         servlet.doPost(request, response);
 
         verify(request, times(1)).getParameter("tutorID");
