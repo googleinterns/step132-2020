@@ -80,7 +80,7 @@ public final class RealSearchDatastore implements SearchDatastoreService {
     private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, String email) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
-        //get all sessions with tutor id
+        //get all sessions with tutor email
         Filter filter = new FilterPredicate("tutorEmail", FilterOperator.EQUAL, email.toLowerCase());
         Query query = new Query("TutorSession").setFilter(filter);
 
@@ -139,6 +139,5 @@ public final class RealSearchDatastore implements SearchDatastoreService {
         Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
 
         return TimeRange.fromStartToEnd(start, end, date);
-
     }
 }
