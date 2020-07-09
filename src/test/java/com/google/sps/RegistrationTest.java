@@ -101,6 +101,8 @@ public final class RegistrationTest {
         expectedTutor.setProperty("name", "Sam F");
         expectedTutor.setProperty("email", USER_EMAIL);
         expectedTutor.setProperty("topics", mockTopics);
+        expectedTutor.setProperty("ratingSum", 0);
+        expectedTutor.setProperty("ratingCount", 0);
         expectedTutor.setProperty("userId", USER_ID);
 
         Entity actualUser = new Entity("User");
