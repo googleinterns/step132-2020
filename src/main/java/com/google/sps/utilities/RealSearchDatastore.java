@@ -60,7 +60,7 @@ public final class RealSearchDatastore implements SearchDatastoreService {
             String name = (String) tutorEntity.getProperty("name");
             String email = (String) tutorEntity.getProperty("email");
             ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
-            ArrayList<TimeRange> availability = getTimeRanges(datastore, tutorEntity.getKey());
+            ArrayList<TimeRange> availability = getTimeRanges(datastore, email);
             ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, email);
 
             Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
@@ -81,7 +81,7 @@ public final class RealSearchDatastore implements SearchDatastoreService {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //get all sessions with tutor email
-        Filter filter = new FilterPredicate("tutorEmail", FilterOperator.EQUAL, email);
+        Filter filter = new FilterPredicate("tutorEmail", FilterOperator.EQUAL, email.toLowerCase());
         Query query = new Query("TutorSession").setFilter(filter);
 
         PreparedQuery sessionEntities = datastore.prepare(query);
