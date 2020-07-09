@@ -102,8 +102,6 @@ public final class RegistrationTest {
         expectedTutor.setProperty("bio", "blah");
         expectedTutor.setProperty("pfp", "images/pfp.jpg");
         expectedTutor.setProperty("email", USER_EMAIL);
-        expectedTutor.setProperty("availability", new ArrayList<Long>());
-        expectedTutor.setProperty("scheduledSessions", new ArrayList<Long>());
         expectedTutor.setProperty("topics", mockTopics);
         expectedTutor.setProperty("userId", USER_ID);
 
