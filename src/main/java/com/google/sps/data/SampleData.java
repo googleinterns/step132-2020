@@ -183,13 +183,9 @@ public final class SampleData {
         Tutor tutor = getTutorByEmail(tutorEmail);
         Student student = getStudentByEmail(studentEmail);
 
-        tutors.remove(tutor);
         tutor.rateTutor(newRating);
-        tutors.add(tutor);
 
-        students.remove(student);
         student.markTutoringSessionAsRatedByTutorEmail(tutorEmail, newRating);
-        students.add(student);
      }
 
 }
