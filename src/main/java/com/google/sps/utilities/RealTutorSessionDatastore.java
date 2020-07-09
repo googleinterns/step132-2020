@@ -57,7 +57,7 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
             sessionEntity.setProperty("studentEmail", studentEmail.toLowerCase());
             sessionEntity.setProperty("subtopics", session.getSubtopics());
             sessionEntity.setProperty("questions", session.getQuestions());
-            sessionEntity.setProperty("isRated", session.isRated());
+            sessionEntity.setProperty("rated", session.isRated());
             sessionEntity.setProperty("rating", session.getRating());
             sessionEntity.setProperty("timeslot", updateTimeRange(tutorEmail, session.getTimeslot(), datastore, txn));
 
@@ -105,20 +105,22 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
 
-        try {
+        Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
 
-            Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
+        try {
 
             Entity sessionEntity = datastore.get(txn, sessionKey); 
 
             sessionEntity.setProperty("rated", true);
-            sessionEntity.setProperty("rating", true);
+            sessionEntity.setProperty("rating", rating);
+
+            datastore.put(txn, sessionEntity);
 
             String tutorEmail = (String) sessionEntity.getProperty("tutorEmail");
 
             updateTutorRating(datastore, txn, tutorEmail, rating);
 
-            datastore.put(txn, sessionEntity);
+            txn.commit();
             
         } catch (EntityNotFoundException e) {
             success = false;
@@ -146,7 +148,7 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
         int ratingCount = Math.toIntExact((long) tutorEntity.getProperty("ratingCount"));
 
         tutorEntity.setProperty("ratingSum", ratingSum + rating);
-        tutorEntity.setProperty("ratingSum", ratingCount + 1);
+        tutorEntity.setProperty("ratingCount", ratingCount + 1);
 
         datastore.put(txn, tutorEntity);
 
@@ -173,12 +175,13 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
                 String tutorEmail = (String) entity.getProperty("tutorEmail");
                 String subtopics = (String) entity.getProperty("subtopics");
                 String questions = (String) entity.getProperty("questions");
+                int rating = Math.toIntExact((long) entity.getProperty("rating"));
 
                 Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
                 Entity timeEntity = datastore.get(timeRangeKey); 
                 TimeRange timeslot = createTimeRange(timeEntity);
 
-                sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot, id));
+                sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot, rating, id));
 
             } catch (EntityNotFoundException e) {
                 //timeslot was not found, skip this tutoring session
