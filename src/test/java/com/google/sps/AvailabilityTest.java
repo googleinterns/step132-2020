@@ -20,6 +20,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -34,6 +35,12 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class AvailabilityTest {
+    private AvailabilityServlet servlet;
+
+    @Before
+    public void setUp() {		        
+        servlet = new AvailabilityServlet(true);
+    }
   
     @Test
     public void testDoGet() throws Exception {
@@ -46,7 +53,7 @@ public final class AvailabilityTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
-
+      
         AvailabilityServlet servlet = new AvailabilityServlet();
         servlet.doGet(request, response);
 
