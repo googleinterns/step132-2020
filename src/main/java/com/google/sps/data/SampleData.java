@@ -57,7 +57,7 @@ public final class SampleData {
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                              TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, AUGUST102020),
                              TimeRange.fromStartToEnd(TIME_0100PM, TIME_0300PM, AUGUST72020))),
-                new ArrayList<TutorSession> (Arrays.asList())),
+                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020))))),
         new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
@@ -76,7 +76,7 @@ public final class SampleData {
         new Student("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
                 new ArrayList<TutorSession> (Arrays.asList())),
         new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                new ArrayList<TutorSession> (Arrays.asList())),
+                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020))))),
         new Student("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
                  new ArrayList<TutorSession> (Arrays.asList(new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020))))),
         new Student("Anand Desai", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
@@ -126,6 +126,7 @@ public final class SampleData {
     *  @return Tutor
     */
     public Tutor getTutorByEmail(String email) {
+        System.out.println("got to the sample data function");
         for(Tutor tutor : tutors) {
             if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 return tutor;
