@@ -54,7 +54,6 @@ public final class AvailabilityTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
       
-        AvailabilityServlet servlet = new AvailabilityServlet();
         servlet.doGet(request, response);
 
         String expected = new Gson().toJson(SampleData.getTutorByEmail("kashisharora@google.com").getAvailability());
