@@ -17,9 +17,7 @@ function getTutoringSessionHistory() {
     window.onload = readStudentEmail(queryString, window);
     const studentEmail = queryString["studentEmail"];
 
-    const params = new URLSearchParams();
-    params.append('studentEmail', studentEmail);
-    fetch('/history', {method: 'POST', body: params}).then(response => response.json()).then((tutoringSessions) => {
+    fetch('/history?studentEmail='+studentEmail).then(response => response.json()).then((tutoringSessions) => {
         tutoringSessions.forEach((tutoringSession) => {
             document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
         })
@@ -104,6 +102,7 @@ function rateTutor(tutoringSession, rating) {
     const params = new URLSearchParams();
     params.append('studentEmail', tutoringSession.studentEmail);
     params.append('tutorEmail', tutoringSession.tutorEmail);
+    params.append('sessionId', tutoringSession.id);
     params.append('rating', rating);
     fetch('/rating', {method: 'POST', body: params});
 }
