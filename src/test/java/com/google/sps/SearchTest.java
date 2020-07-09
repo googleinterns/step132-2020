@@ -42,7 +42,6 @@ public final class SearchTest {
     private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
     private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
     private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
-    
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
@@ -52,7 +51,6 @@ public final class SearchTest {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
                                                         .build();
-
     private SearchServlet servlet;
 
     @Before
@@ -84,7 +82,6 @@ public final class SearchTest {
                                                             new ArrayList<TutorSession> (Arrays.asList())));
         String expected = new Gson().toJson(expectedTutorList);
         Assert.assertTrue(stringWriter.toString().contains(expected));
-
     }
 
     @Test
@@ -108,7 +105,6 @@ public final class SearchTest {
         //there are no tutors for business, so it should return an empty string
         String expected = "[]";
         Assert.assertTrue(stringWriter.toString().contains(expected));
-
     }
 
     @Test
@@ -132,9 +128,7 @@ public final class SearchTest {
         //there are no tutors for business, so it should return an empty string
         String expected = "{\"error\": \"Invalid search request.\"}";
         Assert.assertTrue(stringWriter.toString().contains(expected));
-
     }
-
 
     /**
     * This method converts a list of tutors to a JSON string.
