@@ -37,4 +37,10 @@ public interface TutorSessionDatastoreService {
     * @return List<TutorSession>, empty list if the student does not exist
     */
     public List<TutorSession> getScheduledSessionsForStudent(String email);
+
+    /**
+    * Adds the given rating to a tutor session and updates the tutor's overall rating.
+    * @return boolean, true if session was rated successfully, false otherwise
+    */
+    public boolean rateTutorSession(long sessionId, int rating);
 }
