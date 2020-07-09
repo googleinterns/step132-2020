@@ -1,4 +1,3 @@
-
 // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,40 +15,43 @@
 package com.google.sps.utilities;
 
 import com.google.sps.data.SampleData;
+import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
+import com.google.sps.data.Student;
 import java.lang.String;
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/** Mock datastore service class used for search testing. */
-public final class MockSearchDatastore implements SearchDatastoreService {
+/** Mock datastore service class used for managing ratings. */
+public final class MockRatingDatastore implements RatingDatastoreService {
     private SampleData sample;
 
-    public MockSearchDatastore() {
+    public MockRatingDatastore() {
         sample = new SampleData();
     }
 
     /**
-    * Gets a list of tutors that have the specified topic as a skill.
-    * @return List<Tutor>
+    * Rates a tutor session given the tutor's email, the student's email, and the rating.
+    * @return void
     */
-    @Override
-    public List<Tutor> getTutorsForTopic(String topic) {
-        ArrayList<Tutor> results = new ArrayList<Tutor>();
+    public void rateTutor(String tutorEmail, String studentEmail, int rating) {
+        sample.rateTutorByEmail(tutorEmail, studentEmail, rating);
+        return;
+    }
 
-        for(Tutor tutor : sample.getSampleTutors()) {
-            List<String> skills = tutor.getSkills();
+    /**
+    * Retrieves all the tutors.
+    * @return a list of Tutor
+    */
+    public ArrayList<Tutor> getTutors() {
+        return sample.getSampleTutors();
+    }
 
-            for(String skill : skills) {
-                if(skill.toLowerCase().equals(topic.toLowerCase())) {
-                    results.add(tutor);
-                    break;
-                }
-            }
-        }
-
-        return results;
+    /**
+    * Gets all the students
+    * @return a list of Student
+    */
+    public ArrayList<Student> getStudents() {
+        return sample.getSampleStudents();
     }
 }

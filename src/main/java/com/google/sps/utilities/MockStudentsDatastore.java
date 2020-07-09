@@ -1,4 +1,3 @@
-
 // Copyright 2019 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,40 +15,26 @@
 package com.google.sps.utilities;
 
 import com.google.sps.data.SampleData;
+import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
+import com.google.sps.data.Student;
 import java.lang.String;
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/** Mock datastore service class used for search testing. */
-public final class MockSearchDatastore implements SearchDatastoreService {
+/** Mock datastore service class used for managing students. */
+public final class MockStudentsDatastore implements StudentsDatastoreService {
     private SampleData sample;
 
-    public MockSearchDatastore() {
+    public MockStudentsDatastore() {
         sample = new SampleData();
     }
-
+    
     /**
-    * Gets a list of tutors that have the specified topic as a skill.
-    * @return List<Tutor>
+    * Gets all the students
+    * @return a list of Student
     */
-    @Override
-    public List<Tutor> getTutorsForTopic(String topic) {
-        ArrayList<Tutor> results = new ArrayList<Tutor>();
-
-        for(Tutor tutor : sample.getSampleTutors()) {
-            List<String> skills = tutor.getSkills();
-
-            for(String skill : skills) {
-                if(skill.toLowerCase().equals(topic.toLowerCase())) {
-                    results.add(tutor);
-                    break;
-                }
-            }
-        }
-
-        return results;
+    public ArrayList<Student> getStudents() {
+        return sample.getSampleStudents();
     }
 }

@@ -23,9 +23,9 @@ import java.util.List;
 
 /** Mock datastore service class used for managing tutor availability. */
 public final class MockAvailabilityDatastore implements AvailabilityDatastoreService {
-    SampleData sample;
+    private SampleData sample;
 
-    public void init() {
+    public MockAvailabilityDatastore() {
         sample = new SampleData();
     }
 
