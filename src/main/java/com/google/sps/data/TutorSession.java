@@ -84,6 +84,28 @@ public final class TutorSession {
         this.rating = 0;
     }
 
+    /**
+     * Creates a new tutoring session with rating and id.
+     *
+     * @param studentEmail The student's email. Must be non-null.
+     * @param tutorEmail The the tutor's email. Must be non-null.
+     * @param subtopics The subtopics the student wishes to cover during the tutoring session. Can be null.
+     * @param questions The questions the student would like answers to. Can be null.
+     * @param timeslot The time range during which the tutoring session will take place. Must be non-null.
+     * @param rating The rating the student of the tutoring session selected
+     * @param id A unique id for the tutoring session
+     */
+    public TutorSession(String studentEmail, String tutorEmail, String subtopics, String questions, TimeRange timeslot, int rating, long id) {
+        this.studentEmail = studentEmail;
+        this.tutorEmail = tutorEmail;
+        this.subtopics = subtopics;
+        this.questions = questions;
+        this.timeslot = timeslot;
+        this.id = id;
+        this.rated = rating == 0 ? false : true;
+        this.rating = rating;
+    }
+
     public String getStudentEmail() {
         return this.studentEmail;
     }
