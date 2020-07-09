@@ -43,19 +43,43 @@ function readTutorID(queryString, window) {
 }
 
 function createScheduledSessionBox(scheduledSession, studentEmail) {
+    var months = [ "January", "February", "March", "April", "May", "June", 
+           "July", "August", "September", "October", "November", "December" ];
+
     const scheduledSessionElement = document.createElement('li');
     scheduledSessionElement.className = 'list-group-item';
+
+    const tutorElement = document.createElement('h3');
+    tutorElement.style.textAlign = 'left';
+    tutorElement.style.display = 'inline';
+    tutorElement.innerHTML = "Tutoring Session with " + scheduledSession.tutorEmail;
+
+    const tutorLineElement = document.createElement('div');
+    tutorLineElement.className = 'd-flex w-100 justify-content-between';
+    tutorLineElement.appendChild(tutorElement);
 
     const dateElement = document.createElement('h3');
     dateElement.style.textAlign = 'left';
     dateElement.style.display = 'inline';
-    dateElement.innerHTML = scheduledSession.timeslot.start;
+    var hour = parseInt(scheduledSession.timeslot.start) / 60;
+    var amOrPm = "am";
+    if (hour > 12) {
+        hour = hour - 12;
+        amOrPm = "pm"
+    }
+    var minute = parseInt(scheduledSession.timeslot.start) % 60;
+    if (minute == 0) {
+        minute = "00";
+    }
+    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
+                             " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
 
 
-    const mainLineElement = document.createElement('div');
-    mainLineElement.className = 'd-flex w-100 justify-content-between';
-    mainLineElement.appendChild(dateElement);
+    const dateLineElement = document.createElement('div');
+    dateLineElement.className = 'd-flex w-100 justify-content-between';
+    dateLineElement.appendChild(dateElement);
 
-    scheduledSessionElement.appendChild(mainLineElement);
+    scheduledSessionElement.appendChild(tutorLineElement);
+    scheduledSessionElement.appendChild(dateLineElement);
     return scheduledSessionElement;
 }

@@ -49,28 +49,49 @@ function readStudentEmail(queryString, window) {
 }
 
 function createTutoringSessionBox(tutoringSession) {
+    var months = [ "January", "February", "March", "April", "May", "June", 
+           "July", "August", "September", "October", "November", "December" ];
+
     const tutoringSessionElement = document.createElement('li');
     tutoringSessionElement.className = 'list-group-item';
+
+    const tutorElement = document.createElement('h3');
+    tutorElement.style.textAlign = 'left';
+    tutorElement.style.display = 'inline';
+    tutorElement.innerHTML = "Tutoring Session with " + tutoringSession.tutorEmail;
+
+    const tutorLineElement = document.createElement('div');
+    tutorLineElement.className = 'd-flex w-100 justify-content-between';
+    tutorLineElement.appendChild(tutorElement);
 
     const dateElement = document.createElement('h3');
     dateElement.style.textAlign = 'left';
     dateElement.style.display = 'inline';
-    dateElement.innerHTML = tutoringSession.timeslot.start;
+    var hour = parseInt(tutoringSession.timeslot.start) / 60;
+    var amOrPm = "am";
+    if (hour > 12) {
+        hour = hour - 12;
+        amOrPm = "pm"
+    }
+    var minute = parseInt(tutoringSession.timeslot.start) % 60;
+    if (minute == 0) {
+        minute = "00";
+    }
+    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
+                             " " + tutoringSession.timeslot.date.dayOfMonth + ", " + tutoringSession.timeslot.date.year;
 
-    const tutorNameElement = document.createElement('h3');
-    tutorNameElement.style.textAlign = 'left';
-    tutorNameElement.style.display = 'inline';
-    tutorNameElement.innerHTML = tutoringSession.tutorEmail;
-
-    const mainLineElement = document.createElement('div');
-    mainLineElement.className = 'd-flex w-100 justify-content-between';
-    mainLineElement.appendChild(dateElement);
-    mainLineElement.appendChild(tutorNameElement);
+    const dateLineElement = document.createElement('div');
+    dateLineElement.className = 'd-flex w-100 justify-content-between';
+    dateLineElement.appendChild(dateElement); 
 
     const starsElement = document.createElement('div');
-    mainLineElement.appendChild(loadStars(starsElement, tutoringSession));
+    const starsLineElement = document.createElement('div');
+    starsLineElement.className = 'd-flex w-100 justify-content-between';
+    starsLineElement.appendChild(loadStars(starsElement, tutoringSession));
 
-    tutoringSessionElement.appendChild(mainLineElement);
+    tutoringSessionElement.appendChild(tutorLineElement);
+    tutoringSessionElement.appendChild(dateLineElement);
+    tutoringSessionElement.appendChild(starsLineElement);
     return tutoringSessionElement;
 }
 
