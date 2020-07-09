@@ -11,3 +11,52 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+// Fetch info about the spceific user logged in 
+function displayProfile() {
+    // Get the userID parameter from the URL
+    var params = new URL(location.href).searchParams;
+    var userID = params.get('userID');
+    console.log(userID);
+
+    fetch('/profile?user-id='+userID).then(response => response.json()).then((user) => {
+        console.log(user);
+        document.getElementById('profile-container').appendChild(createProfileDiv(user));
+    });
+}
+
+// Create elements and fill their inner HTML with user info
+function createProfileDiv(user) {
+    const profileDiv = document.createElement('div');
+    
+    const profileName = document.createElement('h3');
+    profileName.innerHTML = user.name;
+
+    const profileBio = document.createElement('p');
+    profileBio.innerHTML = "About me: " + user.bio;
+
+    const profilePfp = document.createElement('img');
+    profilePfp.src = user.pfp;
+    profilePfp.width = 100;
+    profilePfp.height = 100;
+
+    const profileEmail = document.createElement('p');
+    profileEmail.innerHTML = user.email;
+
+    const profileTopics = document.createElement('p');
+    // Students and tutors have different properties, check to see what kind of profile we're displaying
+    if (user.learning != undefined) {   // User is a student
+        profileTopics.innerHTML = "I am learning: " + user.learning;
+    }
+    else {   // User is a tutor
+        profileTopics.innerHTML = "I am tutoring in: " + user.skills;
+    }
+
+    profileDiv.appendChild(profilePfp);
+    profileDiv.appendChild(profileName);
+    profileDiv.appendChild(profileBio);
+    profileDiv.appendChild(profileEmail);
+    profileDiv.appendChild(profileTopics);
+
+    return profileDiv;
+}
