@@ -93,6 +93,66 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
     }
 
     /**
+    * Adds the given rating to a tutor session and updates the tutor's overall rating.
+    * @return boolean, true if session was rated successfully, false otherwise
+    */
+    @Override
+    public boolean rateTutorSession(long sessionId, int rating) {
+
+        boolean success = true;
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        try {
+
+            Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
+
+            Entity sessionEntity = datastore.get(txn, sessionKey); 
+
+            sessionEntity.setProperty("rated", true);
+            sessionEntity.setProperty("rating", true);
+
+            String tutorEmail = (String) sessionEntity.getProperty("tutorEmail");
+
+            updateTutorRating(datastore, txn, tutorEmail, rating);
+
+            datastore.put(txn, sessionEntity);
+            
+        } catch (EntityNotFoundException e) {
+            success = false;
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
+
+        return success;
+
+    }
+
+    private void updateTutorRating(DatastoreService datastore, Transaction txn, String email, int rating) {
+
+        //get tutor with email
+        Filter filter = new FilterPredicate("email", FilterOperator.EQUAL, email.toLowerCase());
+        Query query = new Query("Tutor").setFilter(filter);
+
+        PreparedQuery pq = datastore.prepare(query);
+
+        Entity tutorEntity = pq.asSingleEntity();
+
+        int ratingSum = Math.toIntExact((long) tutorEntity.getProperty("ratingSum"));
+        int ratingCount = Math.toIntExact((long) tutorEntity.getProperty("ratingCount"));
+
+        tutorEntity.setProperty("ratingSum", ratingSum + rating);
+        tutorEntity.setProperty("ratingSum", ratingCount + 1);
+
+        datastore.put(txn, tutorEntity);
+
+    }
+
+    /**
     * Gets all the tutor session entities for a userType (tutor or student) with the corresponding email. 
     * @return ArrayList<TutorSession>, empty list if the student does not exist
     */
@@ -108,6 +168,7 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
         for(Entity entity : sessionEntities.asIterable()) {
             try {
 
+                long id = (long) entity.getKey().getId();
                 String studentEmail = (String) entity.getProperty("studentEmail");
                 String tutorEmail = (String) entity.getProperty("tutorEmail");
                 String subtopics = (String) entity.getProperty("subtopics");
@@ -117,7 +178,7 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
                 Entity timeEntity = datastore.get(timeRangeKey); 
                 TimeRange timeslot = createTimeRange(timeEntity);
 
-                sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot));
+                sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot, id));
 
             } catch (EntityNotFoundException e) {
                 //timeslot was not found, skip this tutoring session
