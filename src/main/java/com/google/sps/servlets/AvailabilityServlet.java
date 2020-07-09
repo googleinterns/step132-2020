@@ -32,7 +32,7 @@ import com.google.sps.utilities.RealAvailabilityDatastore;
 import com.google.sps.utilities.MockAvailabilityDatastore;
 import com.google.sps.utilities.AvailabilityDatastoreService;
 
-/** Servlet that getting and adding availability for a tutor. */
+/** Servlet that manages availability of a tutor. */
 @WebServlet("/availability")
 public class AvailabilityServlet extends HttpServlet {
 
