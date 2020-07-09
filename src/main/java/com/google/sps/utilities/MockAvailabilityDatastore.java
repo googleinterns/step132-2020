@@ -23,6 +23,11 @@ import java.util.List;
 
 /** Mock datastore service class used for managing tutor availability. */
 public final class MockAvailabilityDatastore implements AvailabilityDatastoreService {
+    SampleData sample;
+
+    public void init() {
+        sample = new SampleData();
+    }
 
     /**
     * Gets the availability of a tutor with the given email.
@@ -30,8 +35,7 @@ public final class MockAvailabilityDatastore implements AvailabilityDatastoreSer
     */
     @Override
     public List<TimeRange> getAvailabilityForTutor(String email) {
-
-        Tutor tutor = SampleData.getTutorByEmail(email);
+        Tutor tutor = sample.getTutorByEmail(email);
         return tutor.getAvailability();
     }
 
@@ -41,7 +45,7 @@ public final class MockAvailabilityDatastore implements AvailabilityDatastoreSer
     */
     @Override
     public boolean addAvailability(String email, TimeRange time) {
-        Tutor tutor = SampleData.getTutorByEmail(email);
+        Tutor tutor = sample.getTutorByEmail(email);
         tutor.addAvailabilityByTimeRange(time);
         return true;
     }
@@ -52,7 +56,7 @@ public final class MockAvailabilityDatastore implements AvailabilityDatastoreSer
     */
     @Override
     public boolean deleteAvailability(String email, TimeRange time) {
-        SampleData.deleteAvailabilityByTimeRange(email, time);
+        sample.deleteAvailabilityByTimeRange(email, time);
         return true;
     }
 }
