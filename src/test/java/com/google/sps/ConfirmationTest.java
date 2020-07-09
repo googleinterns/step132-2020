@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -40,6 +41,13 @@ import javax.servlet.*;
 @RunWith(JUnit4.class)
 public final class ConfirmationTest {
 
+    private ConfirmationServlet servlet;
+
+    @Before
+    public void setUp() {
+        servlet = new ConfirmationServlet(true);
+    }
+
     @Test
     public void testDoPostNoSession() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
@@ -52,7 +60,6 @@ public final class ConfirmationTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        ConfirmationServlet servlet = new ConfirmationServlet();
         servlet.doPost(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
@@ -78,7 +85,6 @@ public final class ConfirmationTest {
         TutorSession tutoringSessionFake = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, date));
         SampleData.addToStudentScheduledSessionsByEmail("sfalberg@google.com", tutoringSessionFake);
 
-        ConfirmationServlet servlet = new ConfirmationServlet();
         servlet.doPost(request, response);
 
         String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(tutoringSessionFake)));
