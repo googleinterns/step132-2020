@@ -37,7 +37,7 @@ describe("Confirmation", function() {
     });
 
     describe("when a scheduled session box is created", function() {
-        var scheduledSession = {timeslot: {start: 480}};
+        var scheduledSession = {tutorEmail: "tester@gmail.com", timeslot: {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}}};
         var studentEmail = "test@gmail.com";
         var actual = createScheduledSessionBox(scheduledSession, studentEmail);
 
@@ -45,16 +45,25 @@ describe("Confirmation", function() {
             expect(actual.tagName).toEqual("LI");
         });
 
-        it("should have a div element as the child of each list item element", function() {
+        it("should have div elements as the children of each list item element", function() {
             expect(actual.childNodes[0].tagName).toEqual("DIV");
+            expect(actual.childNodes[1].tagName).toEqual("DIV");
         });
 
-        it("should have an h3 element as the child of each div element inside each list item element", function() {
+        it("should have an h3 element as the child of the first div element inside each list item element", function() {
             expect(actual.childNodes[0].childNodes[0].tagName).toEqual("H3");
         });
 
-        it("should have the inner HTML of the h3 tag equal to the start of the time slot for that tutoring session", function() {
-            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("480");
+        it("should have an h3 element as the child of the second div element inside each list item element", function() {
+            expect(actual.childNodes[1].childNodes[0].tagName).toEqual("H3");
+        });
+
+        it("should have the inner HTML of the h3 tag equal to to the email of the tutor", function() {
+            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("Tutoring Session with tester@gmail.com");
+        });
+
+        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
+            expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:00am on May 18, 2020");
         });
     });
 
