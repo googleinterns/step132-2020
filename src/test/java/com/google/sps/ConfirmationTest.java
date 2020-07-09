@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -39,6 +40,13 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class ConfirmationTest {
+
+    private ConfirmationServlet servlet;
+
+    @Before
+    public void setUp() {
+        servlet = new ConfirmationServlet(true);
+    }
 
     @Test
     public void testDoGetNoSession() throws Exception {
