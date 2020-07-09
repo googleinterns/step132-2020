@@ -36,7 +36,7 @@ import javax.servlet.*;
 public final class AvailabilityTest {
   
     @Test
-    public void testDoPost() throws Exception {
+    public void testDoGet() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -48,7 +48,7 @@ public final class AvailabilityTest {
         when(request.getContentType()).thenReturn("application/json");
 
         AvailabilityServlet servlet = new AvailabilityServlet();
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         String expected = new Gson().toJson(SampleData.getTutorByEmail("kashisharora@google.com").getAvailability());
 

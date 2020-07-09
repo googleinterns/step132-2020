@@ -17,9 +17,7 @@ function getAvailability() {
     window.onload = readTutorID(queryString, window);
     const tutorID = queryString["tutorID"];
 
-    const params = new URLSearchParams();
-    params.append('tutorID', tutorID);
-    fetch('/availability', {method: 'POST', body: params}).then(response => response.json()).then((timeslots) => {
+    fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
         timeslots.forEach((timeslot) => {
             document.getElementById('timeslots').appendChild(createTimeSlotBox(timeslot, tutorID));
         })
