@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.*;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -47,6 +48,14 @@ public final class RatingTest {
                                                         .setDate(2020, 4, 18)
                                                         .build();
 
+    private RatingServlet servlet;
+
+    @Before
+    public void setUp() {
+        servlet = new RatingServlet(true);
+        TutorSession.resetIds();
+    }
+
     @Test
     public void testDoPost() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
@@ -54,12 +63,14 @@ public final class RatingTest {
 
         when(request.getParameter("tutorEmail")).thenReturn("sfalberg@google.com");
         when(request.getParameter("studentEmail")).thenReturn("elian@google.com");
+        when(request.getParameter("sessionId")).thenReturn("0");
         when(request.getParameter("rating")).thenReturn("5");
 
         TutorSession tutoringSessionFake = new TutorSession("elian@google.com",
                                                         "sfalberg@google.com",
                                                         null, null,
-                                                        TimeRange.fromStartToEnd(540, 600, MAY182020));
+                                                        TimeRange.fromStartToEnd(540, 600, MAY182020), 0);
+        SampleData.addToTutorScheduledSessionsByEmail("sfalberg@google.com", tutoringSessionFake);
         SampleData.addToStudentScheduledSessionsByEmail("elian@google.com", tutoringSessionFake);
 
         StringWriter stringWriter = new StringWriter();
@@ -67,7 +78,6 @@ public final class RatingTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        RatingServlet servlet = new RatingServlet();
         servlet.doPost(request, response);
 
         float actualTutorRating = SampleData.getTutorByEmail("sfalberg@google.com").getRating();

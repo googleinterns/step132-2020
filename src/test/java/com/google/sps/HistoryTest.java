@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -45,8 +46,16 @@ public final class HistoryTest {
                                                         .setDate(2020, 4, 18)
                                                         .build();
 
+    private HistoryServlet servlet;
+
+    @Before
+    public void setUp() {
+        servlet = new HistoryServlet(true);
+        TutorSession.resetIds();
+    }
+
     @Test
-    public void testDoPostNoHistory() throws Exception {
+    public void testDoGetNoHistory() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -57,8 +66,7 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        HistoryServlet servlet = new HistoryServlet();
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
@@ -67,7 +75,7 @@ public final class HistoryTest {
     }
 
     @Test
-    public void testDoPostWithHistory() throws Exception {
+    public void testDoGetWithHistory() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -81,11 +89,10 @@ public final class HistoryTest {
         TutorSession tutoringSessionFake = new TutorSession("btrevisan@google.com",
                                                         "btrevisan@google.com",
                                                         null, null,
-                                                        TimeRange.fromStartToEnd(540, 600, MAY182020));
+                                                        TimeRange.fromStartToEnd(540, 600, MAY182020), 0);
         SampleData.addToStudentScheduledSessionsByEmail("btrevisan@google.com", tutoringSessionFake);
 
-        HistoryServlet servlet = new HistoryServlet();
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(tutoringSessionFake)));
 
