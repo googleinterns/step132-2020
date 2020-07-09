@@ -46,7 +46,7 @@ public final class HistoryTest {
                                                         .build();
 
     @Test
-    public void testDoPostNoHistory() throws Exception {
+    public void testDoGetNoHistory() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -58,7 +58,7 @@ public final class HistoryTest {
         when(request.getContentType()).thenReturn("application/json");
 
         HistoryServlet servlet = new HistoryServlet();
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
@@ -67,7 +67,7 @@ public final class HistoryTest {
     }
 
     @Test
-    public void testDoPostWithHistory() throws Exception {
+    public void testDoGetWithHistory() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -85,7 +85,7 @@ public final class HistoryTest {
         SampleData.addToStudentScheduledSessionsByEmail("btrevisan@google.com", tutoringSessionFake);
 
         HistoryServlet servlet = new HistoryServlet();
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(tutoringSessionFake)));
 

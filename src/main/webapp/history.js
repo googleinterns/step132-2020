@@ -17,9 +17,7 @@ function getTutoringSessionHistory() {
     window.onload = readStudentEmail(queryString, window);
     const studentEmail = queryString["studentEmail"];
 
-    const params = new URLSearchParams();
-    params.append('studentEmail', studentEmail);
-    fetch('/history', {method: 'POST', body: params}).then(response => response.json()).then((tutoringSessions) => {
+    fetch('/history?studentEmail=' + studentEmail, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
         tutoringSessions.forEach((tutoringSession) => {
             document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
         })

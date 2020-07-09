@@ -22,6 +22,7 @@ describe("History", function() {
             });
             spyOn(window, 'fetch').and.callThrough();
             getTutoringSessionHistory(mockWindow);
+            expect(window.fetch).toHaveBeenCalledWith('/history?studentEmail=undefined', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });
