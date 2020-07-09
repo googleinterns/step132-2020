@@ -18,6 +18,9 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
+import com.google.sps.utilities.RatingDatastoreService;
+import com.google.sps.utilities.RealRatingDatastore;
+import com.google.sps.utilities.MockRatingDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +33,23 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/rating")
 public class RatingServlet extends HttpServlet {
+    private RatingDatastoreService datastore;
+
+    /**
+    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
+    * We need the default one for deployment because the servlet is created without parameters.
+    */
+    public RatingServlet(){}
+
+    public RatingServlet(boolean test) {
+        if(test) {
+            datastore = new MockRatingDatastore();
+        }
+    }
+
+    public void init() {
+        datastore = new RealRatingDatastore();
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,10 +64,10 @@ public class RatingServlet extends HttpServlet {
         int rating = Integer.parseInt(request.getParameter("rating"));
 
         // Update tutor's rating
-        SampleData.rateTutorByEmail(tutorEmail, studentEmail, rating);
+        datastore.rateTutor(tutorEmail, studentEmail, rating);
 
-        String jsonTutors = new Gson().toJson(SampleData.getSampleTutors());
-        String jsonStudents = new Gson().toJson(SampleData.getSampleStudents());
+        String jsonTutors = new Gson().toJson(datastore.getTutors());
+        String jsonStudents = new Gson().toJson(datastore.getStudents());
 
         String json = new Gson().toJson(new String[]{jsonTutors, jsonStudents}); 
         response.setContentType("application/json;");
