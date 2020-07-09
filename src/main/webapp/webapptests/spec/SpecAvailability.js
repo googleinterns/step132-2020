@@ -38,7 +38,7 @@ describe("Availability", function() {
     });
 
     describe("when a time slot box is created", function() {
-        var timeslot = {duration: 60, end: 540, start: 480};
+        var timeslot = {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}};
         var tutorID = "test@gmail.com";
         var actual = createTimeSlotBox(timeslot, tutorID);
 
@@ -46,24 +46,25 @@ describe("Availability", function() {
             expect(actual.tagName).toEqual("LI");
         });
 
-        it("should have a div element as the child of each list item element", function() {
+        it("should have div elements as the children of each list item element", function() {
             expect(actual.childNodes[0].tagName).toEqual("DIV");
+            expect(actual.childNodes[1].tagName).toEqual("DIV");
         });
 
-        it("should have an h3 element as the child of each div element inside each list item element", function() {
+        it("should have an h3 element as the child of the first div element inside each list item element", function() {
             expect(actual.childNodes[0].childNodes[0].tagName).toEqual("H3");
         });
 
-        it("should have the inner HTML of the h3 tag equal to the start of the time slot", function() {
-            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("480");
+        it("should have a button element as the child of the second div element inside each list item element", function() {
+            expect(actual.childNodes[1].childNodes[0].tagName).toEqual("BUTTON");
         });
 
-        it("should have a button element as the child of each div element inside each list item element", function() {
-            expect(actual.childNodes[0].childNodes[1].tagName).toEqual("BUTTON");
-        });
+        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
+            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("8:00am on May 18, 2020");
+        })
 
         it("should have the inner text of the button equal to Select", function() {
-            expect(actual.childNodes[0].childNodes[1].innerText).toEqual("Select");
+            expect(actual.childNodes[1].childNodes[0].innerText).toEqual("Select");
         });
     });
 
