@@ -23,6 +23,7 @@ describe("Availability", function() {
             });
             spyOn(window, 'fetch').and.callThrough();
             getAvailability(mockWindow);
+            expect(window.fetch).toHaveBeenCalledWith('/availability?tutorID=undefined', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });

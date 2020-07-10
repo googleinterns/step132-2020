@@ -53,7 +53,7 @@ public final class ConfirmationTest {
     }
 
     @Test
-    public void testDoPostNoSession() throws Exception {
+    public void testDoGetNoSession() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -64,7 +64,7 @@ public final class ConfirmationTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
@@ -73,7 +73,7 @@ public final class ConfirmationTest {
     }
 
     @Test
-    public void testDoPostWithSessions() throws Exception {
+    public void testDoGetWithSessions() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -84,7 +84,7 @@ public final class ConfirmationTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         String expected = new Gson().toJson(Arrays.asList(new TutorSession("sfalberg@google.com",
                                                                         "sfalberg@google.com", null, null,
