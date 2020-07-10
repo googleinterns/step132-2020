@@ -40,8 +40,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(JUnit4.class)
 public final class LoginStatusTest {
-    private static final String USER_EMAIL = "tutorguy@gmail.com";
-    private static final String USER_ID = "awesomeID";
+    private final String USER_EMAIL = "tutorguy@gmail.com";
+    private final String USER_ID = "awesomeID";
 
     private final LocalServiceTestHelper helper = 
         new LocalServiceTestHelper(new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())

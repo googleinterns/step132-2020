@@ -42,7 +42,7 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class RatingTest {
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();

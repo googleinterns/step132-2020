@@ -42,9 +42,9 @@ import java.util.Arrays;
 
 @RunWith(JUnit4.class)
 public final class SchedulingTest {
-    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
-    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
+    private final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
