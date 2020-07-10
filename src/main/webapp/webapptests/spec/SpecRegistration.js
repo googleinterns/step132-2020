@@ -186,7 +186,7 @@ describe("Registration", function() {
             it("adds event listener that redirects the user to their profile", function() {
                 mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'blah'};
                 var mockWindow = {location: {href: "homepage.html"}};
-                setProfilePathname(mockWindow, mockLoginStatus);
+                setProfileQueryString(mockWindow, mockLoginStatus);
 
                 expect(mockWindow.location.href).toEqual("profile.html?userID=blah");
             })
