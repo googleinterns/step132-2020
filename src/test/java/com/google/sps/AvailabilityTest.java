@@ -27,6 +27,7 @@ import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.SampleData;
+import com.google.sps.data.TutorSession;
 import com.google.sps.servlets.AvailabilityServlet;
 import com.google.gson.Gson;
 import javax.servlet.http.HttpServlet;
@@ -53,6 +54,7 @@ public final class AvailabilityTest {
     @Before
     public void setUp() {		        
         servlet = new AvailabilityServlet(true);
+        TutorSession.resetIds();
     }
   
     @Test

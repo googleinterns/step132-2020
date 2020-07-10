@@ -91,16 +91,18 @@ public final class RealSearchDatastore implements SearchDatastoreService {
         for(Entity entity : sessionEntities.asIterable()) {
             try {
 
+                long id = (long) entity.getKey().getId();
                 String studentEmail = (String) entity.getProperty("studentEmail");
                 String tutorEmail = (String) entity.getProperty("tutorEmail");
                 String subtopics = (String) entity.getProperty("subtopics");
                 String questions = (String) entity.getProperty("questions");
+                int rating = Math.toIntExact((long) entity.getProperty("rating"));
 
                 Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
                 Entity timeEntity = datastore.get(timeRangeKey); 
                 TimeRange timeslot = createTimeRange(timeEntity);
 
-                sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot));
+                sessions.add(new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot, rating, id));
 
             } catch (EntityNotFoundException e) {
                 //timeslot was not found, skip this tutoring session

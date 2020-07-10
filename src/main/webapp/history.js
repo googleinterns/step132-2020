@@ -17,7 +17,18 @@ function getTutoringSessionHistory() {
     window.onload = readStudentEmail(queryString, window);
     const studentEmail = queryString["studentEmail"];
 
+    const params = new URLSearchParams();
+    params.append('studentEmail', studentEmail);
     fetch('/history?studentEmail=' + studentEmail, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+        //if there was an error
+        if(tutoringSessions.error) {
+            var container = document.getElementById('tutoringSessionHistory');
+            var errorMessage = document.createElement("p");
+            p.innerText = tutoringSessions.error;
+            container.appendChild(errorMessage);
+            return;
+        }
+
         tutoringSessions.forEach((tutoringSession) => {
             document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
         })
@@ -99,8 +110,10 @@ function loadStars(starsElement, tutoringSession) {
         stars[i].className = 'glyphicon glyphicon-star';
         const rating = i + 1;
         stars[i].addEventListener('click', () => {
-            rateTutor(tutoringSession, rating);
-            location.reload();
+            if(!tutoringSession.rated) {
+                rateTutor(tutoringSession, rating);
+                location.reload();
+            }
         });
         starsElement.appendChild(stars[i])
     }
@@ -110,8 +123,10 @@ function loadStars(starsElement, tutoringSession) {
         stars[i].className = 'glyphicon glyphicon-star-empty';
         const rating = i + 1;
         stars[i].addEventListener('click', () => {
-            rateTutor(tutoringSession, rating);
-            location.reload();
+            if(!tutoringSession.rated) {
+                rateTutor(tutoringSession, rating);
+                location.reload();
+            }
         });
         starsElement.appendChild(stars[i])
     }
@@ -123,6 +138,7 @@ function rateTutor(tutoringSession, rating) {
     const params = new URLSearchParams();
     params.append('studentEmail', tutoringSession.studentEmail);
     params.append('tutorEmail', tutoringSession.tutorEmail);
+    params.append('sessionId', tutoringSession.id);
     params.append('rating', rating);
     fetch('/rating', {method: 'POST', body: params});
 }

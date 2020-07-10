@@ -23,6 +23,10 @@ package com.google.sps.data;
  */
 public final class TutorSession {
 
+    //an ID counter used for creating IDs for tutor sessions
+    //used for testing only
+    private static long testId = 0;
+
     private String studentEmail;
     private String tutorEmail;
     private String subtopics;
@@ -30,9 +34,10 @@ public final class TutorSession {
     private TimeRange timeslot;
     private boolean rated;
     private int rating;
+    private long id;
 
     /**
-     * Creates a new tutoring session.
+     * Creates a new tutoring session. (This constructor is used for testing.)
      *
      * @param studentEmail The student's email. Must be non-null.
      * @param tutorEmail The the tutor's email. Must be non-null.
@@ -50,6 +55,55 @@ public final class TutorSession {
         this.rated = false;
         // Rating is initially set to 0 by default
         this.rating = 0;
+        //assign an id using the id counter
+        this.id = testId;
+        //increment the counter
+        testId++;
+    }
+
+    /**
+     * Creates a new tutoring session with an id.
+     *
+     * @param studentEmail The student's email. Must be non-null.
+     * @param tutorEmail The the tutor's email. Must be non-null.
+     * @param subtopics The subtopics the student wishes to cover during the tutoring session. Can be null.
+     * @param questions The questions the student would like answers to. Can be null.
+     * @param timeslot The time range during which the tutoring session will take place. Must be non-null.
+     * @param id A unique id for the tutoring session
+     */
+    public TutorSession(String studentEmail, String tutorEmail, String subtopics, String questions, TimeRange timeslot, long id) {
+        this.studentEmail = studentEmail;
+        this.tutorEmail = tutorEmail;
+        this.subtopics = subtopics;
+        this.questions = questions;
+        this.timeslot = timeslot;
+        this.id = id;
+        // Rated is initially set to false by default
+        this.rated = false;
+        // Rating is initially set to 0 by default
+        this.rating = 0;
+    }
+
+    /**
+     * Creates a new tutoring session with rating and id.
+     *
+     * @param studentEmail The student's email. Must be non-null.
+     * @param tutorEmail The the tutor's email. Must be non-null.
+     * @param subtopics The subtopics the student wishes to cover during the tutoring session. Can be null.
+     * @param questions The questions the student would like answers to. Can be null.
+     * @param timeslot The time range during which the tutoring session will take place. Must be non-null.
+     * @param rating The rating the student of the tutoring session selected
+     * @param id A unique id for the tutoring session
+     */
+    public TutorSession(String studentEmail, String tutorEmail, String subtopics, String questions, TimeRange timeslot, int rating, long id) {
+        this.studentEmail = studentEmail;
+        this.tutorEmail = tutorEmail;
+        this.subtopics = subtopics;
+        this.questions = questions;
+        this.timeslot = timeslot;
+        this.id = id;
+        this.rated = rating == 0 ? false : true;
+        this.rating = rating;
     }
 
     public String getStudentEmail() {
@@ -72,6 +126,10 @@ public final class TutorSession {
         return this.timeslot;
     }
 
+    public long getId(){
+        return this.id;
+    }
+
     public boolean isRated() {
         return this.rated;
     }
@@ -84,6 +142,11 @@ public final class TutorSession {
         this.rated = true;
         this.rating = newRating;
         return;
+    }
+
+    //Temporary: used for testing until we make sample data non-static
+    public static void resetIds() {
+        testId = 0;
     }
 
 }

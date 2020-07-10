@@ -62,6 +62,7 @@ public final class AddAvailabilityTest {
     @Before
     public void setUp() {		        
         servlet = new AddAvailabilityServlet(true);
+        TutorSession.resetIds();
     }
 
     @Test
@@ -100,18 +101,14 @@ public final class AddAvailabilityTest {
                                             .build();
 
         String expected = new Gson()
-                            .toJson(new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                            .toJson(new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                                                 TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020), 
-                                                TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))),
-                                    new ArrayList<TutorSession> (Arrays.asList())));
+                                                TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))));
 
         String unexpected = new Gson()
-                            .toJson(new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
-                                    new ArrayList<TutorSession> (Arrays.asList())));
-
+                            .toJson(new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))));
+      
         writer.flush();
         // New available timeslot should have been added
         Assert.assertTrue(stringWriter.toString().contains(expected));

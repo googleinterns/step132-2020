@@ -46,13 +46,14 @@ public final class RatingTest {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
+    
     private RatingServlet servlet;
 
     @Before
-    public void setUp() {		        
+    public void setUp() {
         servlet = new RatingServlet(true);
+        TutorSession.resetIds();
     }
-    
 
     @Test
     public void testDoPost() throws IOException {
@@ -61,6 +62,8 @@ public final class RatingTest {
 
         when(request.getParameter("tutorEmail")).thenReturn("sfalberg@google.com");
         when(request.getParameter("studentEmail")).thenReturn("sfalberg@google.com");
+        //id of the second hard coded tutor session
+        when(request.getParameter("sessionId")).thenReturn("1");
         when(request.getParameter("rating")).thenReturn("5");
 
         StringWriter stringWriter = new StringWriter();
@@ -72,9 +75,10 @@ public final class RatingTest {
 
         verify(request, atLeast(1)).getParameter("tutorEmail");
         verify(request, atLeast(1)).getParameter("studentEmail");
+        verify(request, atLeast(1)).getParameter("sessionId");
         verify(request, atLeast(1)).getParameter("rating");
         writer.flush();
-        //System.out.println(stringWriter.toString());
+        System.out.println(stringWriter.toString());
         // Rating should be 5
         Assert.assertTrue(stringWriter.toString().contains("5"));
         // Tutor session should be rated
