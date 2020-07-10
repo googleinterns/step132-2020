@@ -20,10 +20,12 @@ public class LoginStatus {
     private boolean isLoggedIn;
     private boolean needsToRegister;
     private String url;
+    private String userId;
 
-    public LoginStatus(boolean isLoggedIn, boolean needsToRegister, String url) {
+    public LoginStatus(boolean isLoggedIn, boolean needsToRegister, String url, String userId) {
         this.isLoggedIn = isLoggedIn;
         this.needsToRegister = needsToRegister;
         this.url = url;
+        this.userId = userId;
     }
 }
