@@ -82,7 +82,7 @@ public class SchedulingServlet extends HttpServlet {
 
         datastore.addTutorSession(tutorID, studentEmail, tutoringSession);
 
-        String json = new Gson().toJson(SampleData.getSampleTutors());
+        String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;

@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.io.*;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -41,11 +42,17 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class RatingTest {
-
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
+    private RatingServlet servlet;
+
+    @Before
+    public void setUp() {		        
+        servlet = new RatingServlet(true);
+    }
+    
 
     @Test
     public void testDoPost() throws IOException {
@@ -53,37 +60,24 @@ public final class RatingTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         when(request.getParameter("tutorEmail")).thenReturn("sfalberg@google.com");
-        when(request.getParameter("studentEmail")).thenReturn("elian@google.com");
+        when(request.getParameter("studentEmail")).thenReturn("sfalberg@google.com");
         when(request.getParameter("rating")).thenReturn("5");
-
-        TutorSession tutoringSessionFake = new TutorSession("elian@google.com",
-                                                        "sfalberg@google.com",
-                                                        null, null,
-                                                        TimeRange.fromStartToEnd(540, 600, MAY182020));
-        SampleData.addToStudentScheduledSessionsByEmail("elian@google.com", tutoringSessionFake);
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        RatingServlet servlet = new RatingServlet();
         servlet.doPost(request, response);
-
-        float actualTutorRating = SampleData.getTutorByEmail("sfalberg@google.com").getRating();
-        float expectedTutorRating = 5;
-
-        TutorSession actualScheduledSession = SampleData.getStudentByEmail("elian@google.com").getScheduledSessions().get(0);
-        boolean actualSessionRated = actualScheduledSession.isRated();
-        int actualSessionRating = actualScheduledSession.getRating();
-        int expectedSessionRating = 5;
 
         verify(request, atLeast(1)).getParameter("tutorEmail");
         verify(request, atLeast(1)).getParameter("studentEmail");
         verify(request, atLeast(1)).getParameter("rating");
         writer.flush();
-        Assert.assertTrue(actualTutorRating == expectedTutorRating);
-        Assert.assertTrue(actualSessionRated);
-        Assert.assertTrue(actualSessionRating == expectedSessionRating);
+        //System.out.println(stringWriter.toString());
+        // Rating should be 5
+        Assert.assertTrue(stringWriter.toString().contains("5"));
+        // Tutor session should be rated
+        Assert.assertTrue(stringWriter.toString().contains("true"));
     }
 }

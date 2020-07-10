@@ -24,15 +24,20 @@ import java.util.ArrayList;
 
 /** Mock datastore service class used for scheduling tutor sessions. */
 public final class MockTutorSessionDatastore implements TutorSessionDatastoreService {
+    private SampleData sample;
+
+    public MockTutorSessionDatastore() {
+        sample = new SampleData();
+    }
 
     /**
     * Adds a new TutorSession for the tutor and student.
     */
     @Override
     public void addTutorSession(String tutorEmail, String studentEmail, TutorSession session) {
-        SampleData.addToTutorScheduledSessionsByEmail(tutorEmail, session);
-        SampleData.addToStudentScheduledSessionsByEmail(studentEmail, session);
-        SampleData.deleteAvailabilityByTimeRange(tutorEmail, session.getTimeslot());
+        sample.addToTutorScheduledSessionsByEmail(tutorEmail, session);
+        sample.addToStudentScheduledSessionsByEmail(studentEmail, session);
+        sample.deleteAvailabilityByTimeRange(tutorEmail, session.getTimeslot());
     }
 
     /**
@@ -41,7 +46,7 @@ public final class MockTutorSessionDatastore implements TutorSessionDatastoreSer
     */
     @Override
     public List<TutorSession> getScheduledSessionsForTutor(String email) {
-        Tutor tutor = SampleData.getTutorByEmail(email);
+        Tutor tutor = sample.getTutorByEmail(email);
 
         if(tutor == null) {
             return new ArrayList<TutorSession>();
@@ -56,7 +61,7 @@ public final class MockTutorSessionDatastore implements TutorSessionDatastoreSer
     */
     @Override
     public List<TutorSession> getScheduledSessionsForStudent(String email) {
-        Student student = SampleData.getStudentByEmail(email);
+        Student student = sample.getStudentByEmail(email);
 
         if(student == null) {
             return new ArrayList<TutorSession>();
