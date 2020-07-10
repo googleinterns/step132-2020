@@ -58,7 +58,7 @@ public final class AvailabilityTest {
     }
   
     @Test
-    public void testDoPost() throws Exception {
+    public void testDoGet() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -68,8 +68,8 @@ public final class AvailabilityTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
-
-        servlet.doPost(request, response);
+      
+        servlet.doGet(request, response);
 
         String expected = new Gson().toJson(Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                                                     TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020)));

@@ -17,9 +17,7 @@ function getScheduledSessions() {
     window.onload = readTutorID(queryString, window);
     const studentEmail = queryString["studentEmail"];
 
-    const params = new URLSearchParams();
-    params.append('studentEmail', studentEmail);
-    fetch('/confirmation', {method: 'POST', body: params}).then(response => response.json()).then((scheduledSessions) => {
+    fetch('/confirmation?studentEmail=' + studentEmail, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
         scheduledSessions.forEach((scheduledSession) => {
             document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession, studentEmail));
         })

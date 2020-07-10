@@ -22,6 +22,7 @@ describe("Confirmation", function() {
             });
             spyOn(window, 'fetch').and.callThrough();
             getScheduledSessions(mockWindow);
+            expect(window.fetch).toHaveBeenCalledWith('/confirmation?studentEmail=undefined', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });

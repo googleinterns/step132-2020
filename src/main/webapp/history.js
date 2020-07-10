@@ -19,7 +19,7 @@ function getTutoringSessionHistory() {
 
     const params = new URLSearchParams();
     params.append('studentEmail', studentEmail);
-    fetch('/history', {method: 'POST', body: params}).then(response => response.json()).then((tutoringSessions) => {
+    fetch('/history?studentEmail=' + studentEmail, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
         //if there was an error
         if(tutoringSessions.error) {
             var container = document.getElementById('tutoringSessionHistory');
@@ -28,6 +28,7 @@ function getTutoringSessionHistory() {
             container.appendChild(errorMessage);
             return;
         }
+
         tutoringSessions.forEach((tutoringSession) => {
             document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
         })
