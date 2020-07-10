@@ -40,6 +40,10 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class ConfirmationTest {
+    private final Calendar AUGUST182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 7, 18)
+                                                        .build();  
 
     private ConfirmationServlet servlet;
 
@@ -80,14 +84,11 @@ public final class ConfirmationTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        Calendar date = new Calendar.Builder().setCalendarType("iso8601").setDate(2020, 7, 18).build();
-
-        TutorSession tutoringSessionFake = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, date));
-        SampleData.addToStudentScheduledSessionsByEmail("sfalberg@google.com", tutoringSessionFake);
-
         servlet.doGet(request, response);
 
-        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(tutoringSessionFake)));
+        String expected = new Gson().toJson(Arrays.asList(new TutorSession("sfalberg@google.com",
+                                                                        "sfalberg@google.com", null, null,
+                                                                        TimeRange.fromStartToEnd(540, 600, AUGUST182020))));
 
         verify(request, times(1)).getParameter("studentEmail");
         writer.flush();

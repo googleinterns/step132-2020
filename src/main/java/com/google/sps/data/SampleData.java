@@ -20,86 +20,89 @@ import java.util.Calendar;
 
 /** Class that stores sample Tutor objects for testing. */
 public final class SampleData {
-    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
-    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
-    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
-    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
-    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
-    private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
-    private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
-    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
-    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
+    private final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
+    private final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
+    private final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
+    private final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+    private final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+    private final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+    private final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
+    private final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
     
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
-    private static final Calendar AUGUST102020 = new Calendar.Builder()
+    private final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
                                                         .build();
 
-    private static final Calendar AUGUST72020 = new Calendar.Builder()
+    private final Calendar AUGUST72020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 7)
                                                         .build();
-                                                        
+    private final Calendar AUGUST182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 7, 18)
+                                                        .build();                                                        
 
-    private static ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
-        new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+    private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
+        new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
                 new ArrayList<TutorSession> (Arrays.asList())),
-        new Tutor("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
+        new Tutor("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                              TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, AUGUST102020),
                              TimeRange.fromStartToEnd(TIME_0100PM, TIME_0300PM, AUGUST72020))),
-                new ArrayList<TutorSession> (Arrays.asList())),
-        new Tutor("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020))))),
+        new Tutor("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
+                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
+                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020))))),
+        new Tutor("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
                 new ArrayList<TutorSession> (Arrays.asList())),
-        new Tutor("Anand Desai", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList())),
-        new Tutor("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
+        new Tutor("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
                 new ArrayList<TutorSession> (Arrays.asList()))
     ));
 
-    private static ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
-        new Student("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
+    private ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
+        new Student("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
                 new ArrayList<TutorSession> (Arrays.asList())),
-        new Student("Bernardo Eilert Trevisan", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+        new Student("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020))))),
+        new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020))))),
+        new Student("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
                 new ArrayList<TutorSession> (Arrays.asList())),
-        new Student("Sam Falberg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                 new ArrayList<TutorSession> (Arrays.asList())),
-        new Student("Anand Desai", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
-                new ArrayList<TutorSession> (Arrays.asList())),
-        new Student("Elian Dumitru", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+        new Student("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
                 new ArrayList<TutorSession> (Arrays.asList()))
     ));
 
-    public static ArrayList<Tutor> getSampleTutors() {
+    public ArrayList<Tutor> getSampleTutors() {
         return tutors;
     }
 
-    public static ArrayList<Student> getSampleStudents() {
+    public ArrayList<Student> getSampleStudents() {
         return students;
     }
 
-    public static void addTutor(Tutor tutor) {
+    public void addTutor(Tutor tutor) {
         tutors.add(tutor);
     }
 
-    public static void addStudent(Student student) {
+    public void addStudent(Student student) {
         students.add(student);
     }
 
     /** Finds and deletes a tutor with given email. */
-    public static void deleteTutorByEmail(String email) {
+    public void deleteTutorByEmail(String email) {
         for(Tutor tutor : tutors) {
             if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 tutors.remove(tutor);
@@ -109,7 +112,7 @@ public final class SampleData {
     }
 
     /** Finds and deletes a student with given email. */
-    public static void deleteStudentByEmail(String email) {
+    public void deleteStudentByEmail(String email) {
         for(Student student : students) {
             if(student.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 students.remove(student);
@@ -122,7 +125,8 @@ public final class SampleData {
     *  Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
     *  @return Tutor
     */
-    public static Tutor getTutorByEmail(String email) {
+    public Tutor getTutorByEmail(String email) {
+        System.out.println("got to the sample data function");
         for(Tutor tutor : tutors) {
             if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 return tutor;
@@ -136,7 +140,7 @@ public final class SampleData {
     *  Finds and returns a student that has the given email. If no such student is found, returns null.
     *  @return Student
     */
-    public static Student getStudentByEmail(String email) {
+    public Student getStudentByEmail(String email) {
         for(Student student : students) {
             if(student.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 return student;
@@ -147,22 +151,29 @@ public final class SampleData {
     }
 
     /** Deletes the given timeslot from the given tutor's availability array. */
-    public static void deleteAvailabilityByTimeRange(String email, TimeRange delete) {
+    public void deleteAvailabilityByTimeRange(String email, TimeRange delete) {
         Tutor tutor = getTutorByEmail(email);
 
         for(TimeRange timeslot : tutor.getAvailability()) {
 
             if(timeslot.getStart() == delete.getStart() && timeslot.getEnd() == delete.getEnd()) {
-                tutors.remove(tutor);
-                tutor.deleteAvailabilityByTimeRange(timeslot);
-                tutors.add(tutor);
-                break;
+                int comparison = timeslot.getDate().compareTo(delete.getDate());
+                if (comparison == 0) {
+                    tutor.deleteAvailabilityByTimeRange(timeslot);
+                    break;
+                }
             }
         }
     }
 
+    /** Adds the given timeslot to the given tutor's availability list. */
+    public void addAvailabilityByTutorEmail(String email, TimeRange timeslot) {
+        Tutor tutor = getTutorByEmail(email);
+        tutor.addAvailabilityByTimeRange(timeslot);
+    }
+
     /** Adds the given TutorSession to the scheduled sessions array of the given tutor. */
-    public static void addToTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
+    public void addToTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Tutor tutor = getTutorByEmail(email);
 
         tutors.remove(tutor);
@@ -171,7 +182,7 @@ public final class SampleData {
     }
 
     /** Adds the given TutorSession to the scheduled sessions array of the given student. */
-    public static void addToStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
+    public void addToStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Student student = getStudentByEmail(email);
 
         students.remove(student);
@@ -179,7 +190,7 @@ public final class SampleData {
         students.add(student);
     }
 
-     public static void rateTutorByEmail(String tutorEmail, String studentEmail, int newRating) {
+     public void rateTutorByEmail(String tutorEmail, String studentEmail, int newRating) {
         Tutor tutor = getTutorByEmail(tutorEmail);
         Student student = getStudentByEmail(studentEmail);
 

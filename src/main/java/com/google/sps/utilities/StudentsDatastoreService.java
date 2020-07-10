@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 //     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.sps.data;
+package com.google.sps.utilities;
 
-/* LoginStatus class for Sullivan users */
-public class LoginStatus {
-    
-    private boolean isLoggedIn;
-    private boolean needsToRegister;
-    private String url;
-    private String userId;
+import com.google.sps.data.TimeRange;
+import com.google.sps.data.Student;
+import com.google.sps.data.Tutor;
+import java.lang.String;
+import java.util.List;
+import java.util.ArrayList;
 
-    public LoginStatus(boolean isLoggedIn, boolean needsToRegister, String url, String userId) {
-        this.isLoggedIn = isLoggedIn;
-        this.needsToRegister = needsToRegister;
-        this.url = url;
-        this.userId = userId;
-    }
+/** Interface for accessing datastore to manage students. */
+public interface StudentsDatastoreService {
+    /**
+    * Gets all the students
+    * @return a list of Student
+    */
+    public ArrayList<Student> getStudents();
 }

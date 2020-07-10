@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function getAvailability() {
+function getAvailabilityManage() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);
     const tutorID = queryString["tutorID"];
 
-    fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
+    document.getElementById("tutorEmail").value = tutorID;
+
+    const params = new URLSearchParams();
+    params.append('tutorID', tutorID);
+    fetch('/availability', {method: 'POST', body: params}).then(response => response.json()).then((timeslots) => {
         timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBox(timeslot, tutorID));
+            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot, tutorID));
         })
     });
 }
@@ -40,7 +44,7 @@ function readTutorID(queryString, window) {
     }
 }
 
-function createTimeSlotBox(timeslot, tutorID) {
+function createTimeSlotBoxManage(timeslot, tutorID) {
     var months = [ "January", "February", "March", "April", "May", "June", 
            "July", "August", "September", "October", "November", "December" ];
 
@@ -50,6 +54,7 @@ function createTimeSlotBox(timeslot, tutorID) {
     const dateElement = document.createElement('h3');
     dateElement.style.textAlign = 'left';
     dateElement.style.display = 'inline';
+
     var hour = parseInt(timeslot.start) / 60;
     var amOrPm = "am";
     if (hour > 12) {
@@ -67,32 +72,35 @@ function createTimeSlotBox(timeslot, tutorID) {
     dateLineElement.style.padding = '10px';
     dateLineElement.appendChild(dateElement);
 
-    const selectButtonElement = document.createElement('button');
-    selectButtonElement.innerText = 'Select';
-    selectButtonElement.style.textAlign = 'right';
-    selectButtonElement.style.display = 'inline';
-    selectButtonElement.className = 'btn btn-default btn-lg';
-    selectButtonElement.addEventListener('click', () => {
-        selectTimeSlot(tutorID, window, timeslot);
+    const deleteButtonElement = document.createElement('button');
+    deleteButtonElement.innerText = 'Delete';
+    deleteButtonElement.style.textAlign = 'right';
+    deleteButtonElement.style.display = 'inline';
+    deleteButtonElement.className = 'btn btn-default btn-lg';
+    deleteButtonElement.addEventListener('click', () => {
+        deleteTimeSlot(tutorID, window, timeslot);
+
+        timeslotElement.remove();
     });
 
     const buttonLineElement = document.createElement('div');
     buttonLineElement.className = 'd-flex w-100 justify-content-between';
     buttonLineElement.style.padding = '10px';
-    buttonLineElement.appendChild(selectButtonElement);
+    buttonLineElement.appendChild(deleteButtonElement);
 
     timeslotElement.appendChild(dateLineElement);
     timeslotElement.appendChild(buttonLineElement);
     return timeslotElement;
 }
 
-// Redirects the user to the scheduling page and passes down the tutor ID along with the selected time range for the session.
-function selectTimeSlot(tutorID, window, timeslot) {
-    var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID) +
-                "&start=" + encodeURIComponent(timeslot.start) +
-                "&end=" + encodeURIComponent(timeslot.end) +
-                "&year=" + encodeURIComponent(timeslot.date.year) +
-                "&month=" + encodeURIComponent(timeslot.date.month) +
-                "&day=" + encodeURIComponent(timeslot.date.dayOfMonth);
-    window.location.href = url;
+function deleteTimeSlot(tutorID, window, timeslot) {
+    const params = new URLSearchParams();
+    params.append('tutorID', tutorID);
+    params.append('year', timeslot.date.year);
+    params.append('month', timeslot.date.month);
+    params.append('day', timeslot.date.dayOfMonth);
+    params.append('start', timeslot.start);
+    params.append('end', timeslot.end);
+
+    fetch('/delete-availability', {method: 'POST', body: params});
 }

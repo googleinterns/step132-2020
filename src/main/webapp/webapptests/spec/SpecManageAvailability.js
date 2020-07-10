@@ -12,24 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-describe("Availability", function() {
+describe("Manage Availability", function() {
 
-    describe("when the user requests to see a tutor's availability", function() {
-        var mockWindow = {location: {href: "availability.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
+    describe("when the tutor requests to see a their availability", function() {
+        var mockWindow = {location: {href: "manage-availability.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
 
         it("should trigger the fetch function", function() {
             spyOn(window, "onload").and.callFake(function() {
                 readTutorID(queryString, window);
             });
+            spyOn(document, 'getElementById').and.returnValue("test@gmail.com");
             spyOn(window, 'fetch').and.callThrough();
-            getAvailability(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/availability?tutorID=undefined', {method: 'GET'});
+            getAvailabilityManage(mockWindow);
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
     describe("when the tutor ID is read", function() {
-        var mockWindow = {location: {href: "availability.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
+        var mockWindow = {location: {href: "manage-availability.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
         var queryString = new Array();
         readTutorID(queryString, mockWindow);
 
@@ -41,7 +41,7 @@ describe("Availability", function() {
     describe("when a time slot box is created", function() {
         var timeslot = {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}};
         var tutorID = "test@gmail.com";
-        var actual = createTimeSlotBox(timeslot, tutorID);
+        var actual = createTimeSlotBoxManage(timeslot, tutorID);
 
         it("should return a list item element", function() {
             expect(actual.tagName).toEqual("LI");
@@ -65,17 +65,26 @@ describe("Availability", function() {
         })
 
         it("should have the inner text of the button equal to Select", function() {
-            expect(actual.childNodes[1].childNodes[0].innerText).toEqual("Select");
+            expect(actual.childNodes[1].childNodes[0].innerText).toEqual("Delete");
         });
     });
 
-    describe("when a user selects an available time slot", function() {
-        var mockWindow = {location: {href: "availability.html"}};
+    describe("when a user deletes a time slot", function() {
+        var mockWindow = {location: {href: "manage-availability.html"}};
         var timeslot = {duration: 60, end: 540, start: 480, date: {year: 2020, month: 5, dayOfMonth: 18}};
+        var params = new URLSearchParams();
+        params.append('tutorID', "test@gmail.com");
+        params.append('year', 2020);
+        params.append('month', 5);
+        params.append('day', 18);
+        params.append('start', 480);
+        params.append('end', 540);
 
-        it("should redirect the user to scheduling.html and pass tutorID as an URI component", function() {
-            selectTimeSlot("test@gmail.com", mockWindow, timeslot);
-            expect(mockWindow.location.href).toEqual("scheduling.html?tutorID=test%40gmail.com&start=480&end=540&year=2020&month=5&day=18");
+        it("should trigger the fetch function", function() {
+            spyOn(window, 'fetch').and.callThrough();
+            deleteTimeSlot("test@gmail.com", mockWindow, timeslot);
+            expect(window.fetch).toHaveBeenCalledWith('/delete-availability', {method: 'POST', body: params})
+            expect(window.fetch).toHaveBeenCalled();
         });
     });
 

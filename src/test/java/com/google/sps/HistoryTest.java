@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -40,10 +41,16 @@ import javax.servlet.*;
 @RunWith(JUnit4.class)
 public final class HistoryTest {
 
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
+    private HistoryServlet servlet;
+
+    @Before
+    public void setUp() {		        
+        servlet = new HistoryServlet(true);
+    }
 
     @Test
     public void testDoGetNoHistory() throws Exception {
@@ -57,7 +64,6 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        HistoryServlet servlet = new HistoryServlet();
         servlet.doGet(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
@@ -78,16 +84,10 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        TutorSession tutoringSessionFake = new TutorSession("btrevisan@google.com",
-                                                        "btrevisan@google.com",
-                                                        null, null,
-                                                        TimeRange.fromStartToEnd(540, 600, MAY182020));
-        SampleData.addToStudentScheduledSessionsByEmail("btrevisan@google.com", tutoringSessionFake);
-
-        HistoryServlet servlet = new HistoryServlet();
         servlet.doGet(request, response);
 
-        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(tutoringSessionFake)));
+
+        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020)))));
 
         verify(request, times(1)).getParameter("studentEmail");
         writer.flush();

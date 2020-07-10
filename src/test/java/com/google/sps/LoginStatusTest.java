@@ -40,8 +40,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(JUnit4.class)
 public final class LoginStatusTest {
-    private static final String USER_EMAIL = "tutorguy@gmail.com";
-    private static final String USER_ID = "awesomeID";
+    private final String USER_EMAIL = "tutorguy@gmail.com";
+    private final String USER_ID = "awesomeID";
 
     private final LocalServiceTestHelper helper = 
         new LocalServiceTestHelper(new LocalUserServiceTestConfig(), new LocalDatastoreServiceTestConfig())
@@ -84,7 +84,7 @@ public final class LoginStatusTest {
         writer.flush();
         //Remove new line at the end to compare to expected String
         String actual = stringWriter.toString().replace("\n", "");
-        LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html");
+        LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html", null);
         String expected = new Gson().toJson(expectedStatus);
         Assert.assertEquals(expected, actual);
     }
@@ -108,10 +108,8 @@ public final class LoginStatusTest {
         writer.flush();
         //Remove new line at the end to compare to expected String
         String actual = stringWriter.toString().replace("\n", "");
-        LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html");
+        LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID");
         String expected = new Gson().toJson(expectedStatus);
-        System.out.println("Actual: " + actual);
-        System.out.println("Expected: " + expected);
         Assert.assertEquals(expected, actual);
     }
 
@@ -133,18 +131,23 @@ public final class LoginStatusTest {
         writer.flush();
         //Remove new line at the end to compare to expected String
         String actual = stringWriter.toString().replace("\n", "");
-        LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html");
+        LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID");
         String expected = new Gson().toJson(expectedStatus);
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void getNameUserRegistered() {
+        // Add user and student properties to the local datastore so there is data to query in the function
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Entity userEntity = new Entity("User");
-        userEntity.setProperty("name", "Student McKnowledge");
+        userEntity.setProperty("role", "student");
         userEntity.setProperty("userId", USER_ID);
         datastore.put(userEntity);
+        Entity studentEntity = new Entity("Student");
+        studentEntity.setProperty("name", "Student McKnowledge");
+        studentEntity.setProperty("userId", USER_ID);
+        datastore.put(studentEntity);
         
         String actual = servlet.getName(USER_ID, datastore);
         String expected = "Student McKnowledge";

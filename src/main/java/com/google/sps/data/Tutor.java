@@ -23,6 +23,8 @@ import java.util.LinkedList;
 public final class Tutor {
     
     private String name;
+    private String bio;
+    private String pfp;
     private String email;
     private ArrayList<String>  skills;
     private ArrayList<TimeRange> availability;
@@ -30,8 +32,10 @@ public final class Tutor {
     private int ratingSum;
     private int ratingCount;
 
-    public Tutor(String name, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions) {
+    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions) {
         this.name = name;
+        this.bio = bio;
+        this.pfp = pfp;
         this.email = email;
         this.skills = skills;
         this.availability = availability;
@@ -43,6 +47,14 @@ public final class Tutor {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getBio() {
+        return this.bio;
+    }
+
+    public String getPfp() {
+        return this.pfp;
     }
 
     public String getEmail() {
@@ -65,13 +77,14 @@ public final class Tutor {
         return (float) this.ratingSum / this.ratingCount;
     }
 
-    public void addAvailabilityByTimeRange(TimeRange timeslot) {
-        this.availability.add(timeslot);
-    }
-
     /** Deletes the given timeslot from the availability array. */
     public void deleteAvailabilityByTimeRange(TimeRange timeslot) {
         this.availability.remove(timeslot);
+    }
+    
+    /** Adds the given timeslot to the availability list. */
+    public void addAvailabilityByTimeRange(TimeRange timeslot) {
+        this.availability.add(timeslot);
     }
 
     /** Adds the given Tutor Session to the scheduledSessions array. */

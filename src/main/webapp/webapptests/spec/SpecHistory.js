@@ -38,55 +38,57 @@ describe("History", function() {
     });
 
     describe("when a tutoring session box is created", function() {
-        var tutoringSession = {tutorEmail: "tester@gmail.com", timeslot: {start: 480}};
+        var tutoringSession = {tutorEmail: "tester@gmail.com", timeslot: {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}}};
         var actual = createTutoringSessionBox(tutoringSession);
 
         it("should return a list item element", function() {
             expect(actual.tagName).toEqual("LI");
         });
 
-        it("should have a div element as the child of each list item element", function() {
+        it("should have div elements as the children of each list item element", function() {
             expect(actual.childNodes[0].tagName).toEqual("DIV");
+            expect(actual.childNodes[1].tagName).toEqual("DIV");
+            expect(actual.childNodes[2].tagName).toEqual("DIV");
         });
 
         it("should have an h3 element as the child of the first div element inside each list item element", function() {
             expect(actual.childNodes[0].childNodes[0].tagName).toEqual("H3");
         });
 
-        it("should have an h3 element as the second child of the first div element inside each list item element", function() {
-            expect(actual.childNodes[0].childNodes[1].tagName).toEqual("H3");
+        it("should have an h3 element as the child of the second div element inside each list item element", function() {
+            expect(actual.childNodes[1].childNodes[0].tagName).toEqual("H3");
         });
 
-        it("should have a div element as the third child of each div element", function() {
-            expect(actual.childNodes[0].childNodes[2].tagName).toEqual("DIV");
+        it("should have a div element as the child of each third div element", function() {
+            expect(actual.childNodes[2].childNodes[0].tagName).toEqual("DIV");
         });
 
-        it("should have the inner HTML of the h3 tag equal to the start of the time slot for that tutoring session", function() {
-            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("480");
+        it("should have the inner HTML of the h3 tag equal to to the email of the tutor", function() {
+            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("Tutoring Session with tester@gmail.com");
         });
 
-        it("should have the inner HTML of the second h3 tag equal to the email of the tutor", function() {
-            expect(actual.childNodes[0].childNodes[1].innerHTML).toEqual("tester@gmail.com");
+        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
+            expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:00am on May 18, 2020");
         });
 
-        it("should have 5 stars inside the second div element", function() {
-            expect(actual.childNodes[0].childNodes[2].childNodes.length).toEqual(5);
+        it("should have 5 stars inside the third div element", function() {
+            expect(actual.childNodes[2].childNodes[0].childNodes.length).toEqual(5);
         });
 
-        it("should have all stars inside the second div element of tag SPAN", function() {
-            expect(actual.childNodes[0].childNodes[2].childNodes[0].tagName).toEqual("SPAN");
-            expect(actual.childNodes[0].childNodes[2].childNodes[1].tagName).toEqual("SPAN");
-            expect(actual.childNodes[0].childNodes[2].childNodes[2].tagName).toEqual("SPAN");
-            expect(actual.childNodes[0].childNodes[2].childNodes[3].tagName).toEqual("SPAN");
-            expect(actual.childNodes[0].childNodes[2].childNodes[4].tagName).toEqual("SPAN");
+        it("should have all stars inside the third div element of tag SPAN", function() {
+            expect(actual.childNodes[2].childNodes[0].childNodes[0].tagName).toEqual("SPAN");
+            expect(actual.childNodes[2].childNodes[0].childNodes[1].tagName).toEqual("SPAN");
+            expect(actual.childNodes[2].childNodes[0].childNodes[2].tagName).toEqual("SPAN");
+            expect(actual.childNodes[2].childNodes[0].childNodes[3].tagName).toEqual("SPAN");
+            expect(actual.childNodes[2].childNodes[0].childNodes[4].tagName).toEqual("SPAN");
         });
 
-        it("should have all stars inside the second div element of class glyphicon glyphicon-star", function() {
-            expect(actual.childNodes[0].childNodes[2].childNodes[0].className).toContain("glyphicon glyphicon-star");
-            expect(actual.childNodes[0].childNodes[2].childNodes[1].className).toContain("glyphicon glyphicon-star");
-            expect(actual.childNodes[0].childNodes[2].childNodes[2].className).toContain("glyphicon glyphicon-star");
-            expect(actual.childNodes[0].childNodes[2].childNodes[3].className).toContain("glyphicon glyphicon-star");
-            expect(actual.childNodes[0].childNodes[2].childNodes[4].className).toContain("glyphicon glyphicon-star");
+        it("should have all stars inside the third div element of class glyphicon glyphicon-star", function() {
+            expect(actual.childNodes[2].childNodes[0].childNodes[0].className).toContain("glyphicon glyphicon-star");
+            expect(actual.childNodes[2].childNodes[0].childNodes[1].className).toContain("glyphicon glyphicon-star");
+            expect(actual.childNodes[2].childNodes[0].childNodes[2].className).toContain("glyphicon glyphicon-star");
+            expect(actual.childNodes[2].childNodes[0].childNodes[3].className).toContain("glyphicon glyphicon-star");
+            expect(actual.childNodes[2].childNodes[0].childNodes[4].className).toContain("glyphicon glyphicon-star");
         });
     });
 
