@@ -42,6 +42,8 @@ public final class SearchTest {
     private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
     private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
     private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
+    private static final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
+    private static final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
@@ -81,6 +83,8 @@ public final class SearchTest {
                                                                         TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
                                                             new ArrayList<TutorSession> (Arrays.asList())));
         String expected = new Gson().toJson(expectedTutorList);
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
