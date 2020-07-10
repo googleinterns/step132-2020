@@ -45,7 +45,6 @@ public final class AddAvailabilityTest {
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
-                                                        .set(Calendar.HOUR_OF_DAY, 9)
                                                         .build();
     private static final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
