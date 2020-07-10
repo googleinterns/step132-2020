@@ -189,7 +189,7 @@ describe("Registration", function() {
                 setProfileQueryString(mockWindow, mockLoginStatus);
 
                 expect(mockWindow.location.href).toEqual("profile.html?userID=blah");
-            })
+            });
         });
     });
 });
