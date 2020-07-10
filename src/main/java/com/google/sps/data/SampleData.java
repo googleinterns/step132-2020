@@ -157,12 +157,19 @@ public final class SampleData {
         for(TimeRange timeslot : tutor.getAvailability()) {
 
             if(timeslot.getStart() == delete.getStart() && timeslot.getEnd() == delete.getEnd()) {
-                tutors.remove(tutor);
-                tutor.deleteAvailabilityByTimeRange(timeslot);
-                tutors.add(tutor);
-                break;
+                int comparison = timeslot.getDate().compareTo(delete.getDate());
+                if (comparison == 0) {
+                    tutor.deleteAvailabilityByTimeRange(timeslot);
+                    break;
+                }
             }
         }
+    }
+
+    /** Adds the given timeslot to the given tutor's availability list. */
+    public static void addAvailabilityByTutorEmail(String email, TimeRange timeslot) {
+        Tutor tutor = getTutorByEmail(email);
+        tutor.addAvailabilityByTimeRange(timeslot);
     }
 
     /** Adds the given TutorSession to the scheduled sessions array of the given tutor. */
