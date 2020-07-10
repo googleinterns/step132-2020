@@ -25,7 +25,7 @@ public final class TutorSession {
 
     //an ID counter used for creating IDs for tutor sessions
     //used for testing only
-    private static long test_id = 0;
+    private static long testId = 0;
 
     private String studentEmail;
     private String tutorEmail;
@@ -56,9 +56,9 @@ public final class TutorSession {
         // Rating is initially set to 0 by default
         this.rating = 0;
         //assign an id using the id counter
-        this.id = test_id;
+        this.id = testId;
         //increment the counter
-        test_id++;
+        testId++;
     }
 
     /**
@@ -146,7 +146,7 @@ public final class TutorSession {
 
     //Temporary: used for testing until we make sample data non-static
     public static void resetIds() {
-        test_id = 0;
+        testId = 0;
     }
 
 }
