@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -56,6 +57,12 @@ public final class AddAvailabilityTest {
     private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
     private static final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
     private static final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
+    private AddAvailabilityServlet servlet;
+
+    @Before
+    public void setUp() {		        
+        servlet = new AddAvailabilityServlet(true);
+    }
 
     @Test
     public void testDoPost() throws Exception {
@@ -76,7 +83,6 @@ public final class AddAvailabilityTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        AddAvailabilityServlet servlet = new AddAvailabilityServlet();
         servlet.doPost(request, response);
 
         verify(request, times(1)).getParameter("tutorEmail");
@@ -107,8 +113,8 @@ public final class AddAvailabilityTest {
                                     new ArrayList<TutorSession> (Arrays.asList())));
 
         writer.flush();
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
+        //System.out.println(stringWriter.toString());
+        //System.out.println(expected);
         // New available timeslot should have been added
         Assert.assertTrue(stringWriter.toString().contains(expected));
         Assert.assertFalse(stringWriter.toString().contains(unexpected));

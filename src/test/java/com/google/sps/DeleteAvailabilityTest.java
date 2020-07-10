@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -56,6 +57,12 @@ public final class DeleteAvailabilityTest {
     private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
     private static final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
     private static final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
+    private DeleteAvailabilityServlet servlet;
+
+    @Before
+    public void setUp() {		        
+        servlet = new DeleteAvailabilityServlet(true);
+    }
 
     @Test
     public void testDoPost() throws Exception {
@@ -74,7 +81,6 @@ public final class DeleteAvailabilityTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        DeleteAvailabilityServlet servlet = new DeleteAvailabilityServlet();
         servlet.doPost(request, response);
 
         verify(request, times(1)).getParameter("tutorID");

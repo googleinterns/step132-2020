@@ -167,7 +167,7 @@ public final class SampleData {
     }
 
     /** Adds the given timeslot to the given tutor's availability list. */
-    public static void addAvailabilityByTutorEmail(String email, TimeRange timeslot) {
+    public void addAvailabilityByTutorEmail(String email, TimeRange timeslot) {
         Tutor tutor = getTutorByEmail(email);
         tutor.addAvailabilityByTimeRange(timeslot);
     }

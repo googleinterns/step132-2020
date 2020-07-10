@@ -18,6 +18,9 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
+import com.google.sps.utilities.TutorDatastoreService;
+import com.google.sps.utilities.RealTutorDatastore;
+import com.google.sps.utilities.MockTutorDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,6 +34,23 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/delete-availability")
 public class DeleteAvailabilityServlet extends HttpServlet {
+    private TutorDatastoreService datastore;
+
+    /**
+    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
+    * We need the default one for deployment because the servlet is created without parameters.
+    */
+    public DeleteAvailabilityServlet(){}
+
+    public DeleteAvailabilityServlet(boolean test) {
+        if(test) {
+            datastore = new MockTutorDatastore();
+        }
+    }
+
+    public void init() {
+        datastore = new RealTutorDatastore();
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -55,9 +75,9 @@ public class DeleteAvailabilityServlet extends HttpServlet {
         TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end), date);
 
         // Remove available timeslot
-        SampleData.deleteAvailabilityByTimeRange(tutorID, timeslot);
+        datastore.deleteAvailabilityByTimeRange(tutorID, timeslot);
 
-        String json = new Gson().toJson(SampleData.getSampleTutors());
+        String json = new Gson().toJson(datastore.getTutors());
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
