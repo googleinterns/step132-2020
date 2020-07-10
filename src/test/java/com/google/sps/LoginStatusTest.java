@@ -110,8 +110,6 @@ public final class LoginStatusTest {
         String actual = stringWriter.toString().replace("\n", "");
         LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID");
         String expected = new Gson().toJson(expectedStatus);
-        System.out.println("Actual: " + actual);
-        System.out.println("Expected: " + expected);
         Assert.assertEquals(expected, actual);
     }
 
