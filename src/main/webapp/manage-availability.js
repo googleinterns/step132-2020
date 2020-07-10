@@ -15,15 +15,13 @@
 function getAvailabilityManage() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);
-    const tutorID = queryString["tutorID"];
+    const userID = queryString["userID"];
 
-    document.getElementById("tutorEmail").value = tutorID;
+    document.getElementById("tutorEmail").value = userID;
 
-    const params = new URLSearchParams();
-    params.append('tutorID', tutorID);
-    fetch('/availability', {method: 'POST', body: params}).then(response => response.json()).then((timeslots) => {
+    fetch('/availability?tutorID=' + userID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
         timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot, tutorID));
+            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot, userID));
         })
     });
 }

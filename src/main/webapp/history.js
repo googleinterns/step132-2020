@@ -15,7 +15,7 @@
 function getTutoringSessionHistory() {
     var queryString = new Array();
     window.onload = readStudentEmail(queryString, window);
-    const studentEmail = queryString["studentEmail"];
+    const studentEmail = queryString["userID"];
 
     const params = new URLSearchParams();
     params.append('studentEmail', studentEmail);
