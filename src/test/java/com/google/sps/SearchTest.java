@@ -33,23 +33,23 @@ import javax.servlet.http.*;
 
 @RunWith(JUnit4.class)
 public final class SearchTest {
-    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
-    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
-    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
-    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
-    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
-    private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
-    private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
-    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
-    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
-    private static final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
-    private static final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
+    private final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
+    private final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
+    private final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+    private final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+    private final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+    private final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
+    private final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
+    private final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
+    private final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
 
-    private static final Calendar AUGUST102020 = new Calendar.Builder()
+    private final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
                                                         .build();
@@ -83,8 +83,6 @@ public final class SearchTest {
                                                                         TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
                                                             new ArrayList<TutorSession> (Arrays.asList())));
         String expected = new Gson().toJson(expectedTutorList);
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
