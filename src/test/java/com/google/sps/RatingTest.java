@@ -46,14 +46,7 @@ public final class RatingTest {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
-    private RatingServlet servlet;
-
-    @Before
-    public void setUp() {		        
-        servlet = new RatingServlet(true);
-    }
     
-
     private RatingServlet servlet;
 
     @Before
@@ -68,16 +61,10 @@ public final class RatingTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         when(request.getParameter("tutorEmail")).thenReturn("sfalberg@google.com");
-        when(request.getParameter("studentEmail")).thenReturn("elian@google.com");
-        when(request.getParameter("sessionId")).thenReturn("0");
+        when(request.getParameter("studentEmail")).thenReturn("sfalberg@google.com");
+        //id of the second hard coded tutor session
+        when(request.getParameter("sessionId")).thenReturn("1");
         when(request.getParameter("rating")).thenReturn("5");
-
-        TutorSession tutoringSessionFake = new TutorSession("elian@google.com",
-                                                        "sfalberg@google.com",
-                                                        null, null,
-                                                        TimeRange.fromStartToEnd(540, 600, MAY182020), 0);
-        SampleData.addToTutorScheduledSessionsByEmail("sfalberg@google.com", tutoringSessionFake);
-        SampleData.addToStudentScheduledSessionsByEmail("elian@google.com", tutoringSessionFake);
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -88,9 +75,10 @@ public final class RatingTest {
 
         verify(request, atLeast(1)).getParameter("tutorEmail");
         verify(request, atLeast(1)).getParameter("studentEmail");
+        verify(request, atLeast(1)).getParameter("sessionId");
         verify(request, atLeast(1)).getParameter("rating");
         writer.flush();
-        //System.out.println(stringWriter.toString());
+        System.out.println(stringWriter.toString());
         // Rating should be 5
         Assert.assertTrue(stringWriter.toString().contains("5"));
         // Tutor session should be rated

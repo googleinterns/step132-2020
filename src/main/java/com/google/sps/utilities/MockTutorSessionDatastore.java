@@ -77,14 +77,14 @@ public final class MockTutorSessionDatastore implements TutorSessionDatastoreSer
     @Override
     public boolean rateTutorSession(long sessionId, int rating) {
 
-        List<Tutor> tutors = SampleData.getSampleTutors();
+        List<Tutor> tutors = sample.getSampleTutors();
 
         for(Tutor tutor : tutors) {
             List<TutorSession> sessions = tutor.getScheduledSessions();
 
             for(TutorSession session : sessions) {
                 if(session.getId() == sessionId) {
-                    SampleData.rateTutorByEmail(session.getTutorEmail(), session.getStudentEmail(), rating);
+                    sample.rateTutorByEmail(session.getTutorEmail(), session.getStudentEmail(), rating);
                     break;
                 }
             }

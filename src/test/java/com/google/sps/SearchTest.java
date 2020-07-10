@@ -58,6 +58,7 @@ public final class SearchTest {
     @Before
     public void setUp() {
         servlet = new SearchServlet(true);
+        TutorSession.resetIds();
     }
 
     @Test

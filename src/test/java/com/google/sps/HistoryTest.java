@@ -46,12 +46,6 @@ public final class HistoryTest {
                                                         .setDate(2020, 4, 18)
                                                         .set(Calendar.HOUR_OF_DAY, 9)
                                                         .build();
-    private HistoryServlet servlet;
-
-    @Before
-    public void setUp() {		        
-        servlet = new HistoryServlet(true);
-    }
 
     private HistoryServlet servlet;
 
@@ -93,18 +87,14 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        TutorSession tutoringSessionFake = new TutorSession("btrevisan@google.com",
-                                                        "btrevisan@google.com",
-                                                        null, null,
-                                                        TimeRange.fromStartToEnd(540, 600, MAY182020), 0);
-        SampleData.addToStudentScheduledSessionsByEmail("btrevisan@google.com", tutoringSessionFake);
-
         servlet.doPost(request, response);
 
-        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020)))));
+        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 0))));
 
         verify(request, times(1)).getParameter("studentEmail");
         writer.flush();
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         // If the user has a tutoring session history, the return json string should reflect that history
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }

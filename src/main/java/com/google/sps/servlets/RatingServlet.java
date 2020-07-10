@@ -73,6 +73,12 @@ public class RatingServlet extends HttpServlet {
             response.getWriter().println("{\"error\": \"There was an error rating this session.\"}");
         }
         
+        String jsonTutors = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorEmail));
+        String jsonStudents = new Gson().toJson(datastore.getScheduledSessionsForStudent(studentEmail));
+
+        String json = new Gson().toJson(new String[]{jsonTutors, jsonStudents}); 
+        response.setContentType("application/json;");
+        response.getWriter().println(json);
         response.sendRedirect("/history.html");
         return;
     }

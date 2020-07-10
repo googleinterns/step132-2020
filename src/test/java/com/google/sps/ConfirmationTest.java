@@ -51,6 +51,7 @@ public final class ConfirmationTest {
     @Before
     public void setUp() {
         servlet = new ConfirmationServlet(true);
+        TutorSession.resetIds();
     }
 
     @Test
@@ -84,12 +85,13 @@ public final class ConfirmationTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
-
+        
         servlet.doPost(request, response);
-
+        
+        //id is 1 because this is the second hard coded tutor session
         String expected = new Gson().toJson(Arrays.asList(new TutorSession("sfalberg@google.com",
                                                                         "sfalberg@google.com", null, null,
-                                                                        TimeRange.fromStartToEnd(540, 600, AUGUST182020))));
+                                                                        TimeRange.fromStartToEnd(540, 600, AUGUST182020), 1)));
 
         verify(request, times(1)).getParameter("studentEmail");
         writer.flush();

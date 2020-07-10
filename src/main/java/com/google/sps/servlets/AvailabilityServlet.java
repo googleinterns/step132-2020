@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -70,6 +71,6 @@ public class AvailabilityServlet extends HttpServlet {
         String json = new Gson().toJson(timeslots);
         response.setContentType("application/json;");
         response.getWriter().println(json);
-        return;
+        return; 
     }
 }

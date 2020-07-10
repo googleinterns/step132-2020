@@ -45,7 +45,7 @@ public final class AddAvailabilityTest {
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
-                                                        .set(Calendar.HOUR_OF_DAY, 9)
+                                                        .set(Calendar.HOUR_OF_DAY, 0)
                                                         .build();
     private static final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
@@ -63,6 +63,7 @@ public final class AddAvailabilityTest {
     @Before
     public void setUp() {		        
         servlet = new AddAvailabilityServlet(true);
+        TutorSession.resetIds();
     }
 
     @Test
@@ -101,21 +102,15 @@ public final class AddAvailabilityTest {
                                             .build();
 
         String expected = new Gson()
-                            .toJson(new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                            .toJson(new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                                                 TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020), 
-                                                TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))),
-                                    new ArrayList<TutorSession> (Arrays.asList())));
+                                                TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))));
 
         String unexpected = new Gson()
-                            .toJson(new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                                    new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
-                                    new ArrayList<TutorSession> (Arrays.asList())));
+                            .toJson(new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))));
 
         writer.flush();
-        //System.out.println(stringWriter.toString());
-        //System.out.println(expected);
         // New available timeslot should have been added
         Assert.assertTrue(stringWriter.toString().contains(expected));
         Assert.assertFalse(stringWriter.toString().contains(unexpected));
