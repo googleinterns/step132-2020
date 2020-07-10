@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that keeps track of a user's past sessions. */
 @WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
-
+  
     private TutorSessionDatastoreService datastore;
 
     /**

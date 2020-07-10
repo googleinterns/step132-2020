@@ -44,7 +44,14 @@ public final class HistoryTest {
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
+                                                        .set(Calendar.HOUR_OF_DAY, 9)
                                                         .build();
+    private HistoryServlet servlet;
+
+    @Before
+    public void setUp() {		        
+        servlet = new HistoryServlet(true);
+    }
 
     private HistoryServlet servlet;
 
@@ -94,7 +101,7 @@ public final class HistoryTest {
 
         servlet.doPost(request, response);
 
-        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(tutoringSessionFake)));
+        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020)))));
 
         verify(request, times(1)).getParameter("studentEmail");
         writer.flush();

@@ -65,13 +65,14 @@ public final class Tutor {
         return (float) this.ratingSum / this.ratingCount;
     }
 
-    public void addAvailabilityByTimeRange(TimeRange timeslot) {
-        this.availability.add(timeslot);
-    }
-
     /** Deletes the given timeslot from the availability array. */
     public void deleteAvailabilityByTimeRange(TimeRange timeslot) {
         this.availability.remove(timeslot);
+    }
+    
+    /** Adds the given timeslot to the availability list. */
+    public void addAvailabilityByTimeRange(TimeRange timeslot) {
+        this.availability.add(timeslot);
     }
 
     /** Adds the given Tutor Session to the scheduledSessions array. */

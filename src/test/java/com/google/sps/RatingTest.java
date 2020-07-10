@@ -42,11 +42,17 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class RatingTest {
-
     private static final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
+    private RatingServlet servlet;
+
+    @Before
+    public void setUp() {		        
+        servlet = new RatingServlet(true);
+    }
+    
 
     private RatingServlet servlet;
 
@@ -80,20 +86,14 @@ public final class RatingTest {
 
         servlet.doPost(request, response);
 
-        float actualTutorRating = SampleData.getTutorByEmail("sfalberg@google.com").getRating();
-        float expectedTutorRating = 5;
-
-        TutorSession actualScheduledSession = SampleData.getStudentByEmail("elian@google.com").getScheduledSessions().get(0);
-        boolean actualSessionRated = actualScheduledSession.isRated();
-        int actualSessionRating = actualScheduledSession.getRating();
-        int expectedSessionRating = 5;
-
         verify(request, atLeast(1)).getParameter("tutorEmail");
         verify(request, atLeast(1)).getParameter("studentEmail");
         verify(request, atLeast(1)).getParameter("rating");
         writer.flush();
-        Assert.assertTrue(actualTutorRating == expectedTutorRating);
-        Assert.assertTrue(actualSessionRated);
-        Assert.assertTrue(actualSessionRating == expectedSessionRating);
+        //System.out.println(stringWriter.toString());
+        // Rating should be 5
+        Assert.assertTrue(stringWriter.toString().contains("5"));
+        // Tutor session should be rated
+        Assert.assertTrue(stringWriter.toString().contains("true"));
     }
 }

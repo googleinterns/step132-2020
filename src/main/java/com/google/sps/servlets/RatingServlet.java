@@ -33,7 +33,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/rating")
 public class RatingServlet extends HttpServlet {
-
+  
     private TutorSessionDatastoreService datastore;
 
     /**
