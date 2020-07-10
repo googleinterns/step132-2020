@@ -39,7 +39,7 @@ public class LoginStatusServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // If user not logged in, show login form
         if (!userService.isUserLoggedIn()) {
-            LoginStatus loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"));
+            LoginStatus loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"), null);
             String json = new Gson().toJson(loginStatus);
             response.setContentType("application/json");
             response.getWriter().println(json);
@@ -58,9 +58,9 @@ public class LoginStatusServlet extends HttpServlet {
 
         // Name is null if user hasn't registered, set needsToRegister to 'true' and make logout URL
         if (name == null) {
-            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer));
+            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId());
         } else {  // User is logged in and registered, make logout URL
-            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer));
+            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId());
         }
 
         String json = new Gson().toJson(loginStatus);
@@ -74,11 +74,22 @@ public class LoginStatusServlet extends HttpServlet {
         Query query = new Query("User").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query);
         Entity userEntity = results.asSingleEntity();
-        
 
         // User not registered
         if (userEntity == null) {
             return null;
+        }
+
+        String role = (String) userEntity.getProperty("role"); 
+        // User is a student, get their info
+        if (role.toLowerCase().equals("student")) {
+            query = new Query("Student").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+            results = datastore.prepare(query);
+            userEntity = results.asSingleEntity();
+        } else {   // User is a tutor, get their info
+            query = new Query("Tutor").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+            results = datastore.prepare(query);
+            userEntity = results.asSingleEntity();
         }
 
         // User has already registered, return their name

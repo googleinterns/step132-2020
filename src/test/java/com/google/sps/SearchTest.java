@@ -78,7 +78,7 @@ public final class SearchTest {
         //verify that getParameter was called
         verify(request, times(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
-        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "kashisharora@google.com", 
+        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", 
                                                             new ArrayList<String> (Arrays.asList("Math", "History")),
                                                             new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                                                                         TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),

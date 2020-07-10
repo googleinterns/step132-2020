@@ -101,6 +101,8 @@ public final class RegistrationTest {
 
         Entity expectedTutor = new Entity("Tutor");
         expectedTutor.setProperty("name", "Sam F");
+        expectedTutor.setProperty("bio", "blah");
+        expectedTutor.setProperty("pfp", "images/pfp.jpg");
         expectedTutor.setProperty("email", USER_EMAIL);
         expectedTutor.setProperty("topics", mockTopics);
         expectedTutor.setProperty("ratingSum", 0);
@@ -111,7 +113,7 @@ public final class RegistrationTest {
         servlet.createUserEntityAndPutInDatastore(datastore, actualUser, "tutor", USER_ID);
 
         Entity actualTutor = new Entity("Tutor");
-        servlet.createTutorEntityAndPutInDatastore(datastore, actualTutor, "Sam F", USER_EMAIL, mockTopics, USER_ID);
+        servlet.createTutorEntityAndPutInDatastore(datastore, actualTutor, "Sam F", "blah", "images/pfp.jpg", USER_EMAIL, mockTopics, USER_ID);
 
         // Entity was put in datastore
         verify(datastore).put(actualUser);

@@ -58,12 +58,14 @@ public final class RealSearchDatastore implements SearchDatastoreService {
         for (Entity tutorEntity : tutorResults.asIterable()) {
             
             String name = (String) tutorEntity.getProperty("name");
+            String bio = (String) tutorEntity.getProperty("bio");
+            String pfp = (String) tutorEntity.getProperty("pfp");
             String email = (String) tutorEntity.getProperty("email");
             ArrayList skills = (ArrayList) tutorEntity.getProperty("topics");
             ArrayList<TimeRange> availability = getTimeRanges(datastore, email);
             ArrayList<TutorSession> scheduledSessions = getScheduledSessions(datastore, email);
 
-            Tutor tutor = new Tutor(name, email, skills, availability, scheduledSessions);
+            Tutor tutor = new Tutor(name, bio, pfp, email, skills, availability, scheduledSessions);
 
             tutors.add(tutor);
             
