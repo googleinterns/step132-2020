@@ -39,8 +39,8 @@ import static org.mockito.Mockito.*;
 
 @RunWith(JUnit4.class)
 public final class RegistrationTest {
-    private static final String USER_EMAIL = "tutorguy@gmail.com";
-    private static final String USER_ID = "blahblahid";
+    private final String USER_EMAIL = "tutorguy@gmail.com";
+    private final String USER_ID = "blahblahid";
 
     private final LocalServiceTestHelper helper =
       new LocalServiceTestHelper(new LocalUserServiceTestConfig())

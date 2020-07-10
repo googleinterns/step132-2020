@@ -81,23 +81,16 @@ public class HistoryServlet extends HttpServlet {
     private List<TutorSession> filterPastSessions(List<TutorSession> allSessions) {
         List<TutorSession> previousSessions = new ArrayList<TutorSession>();
 
-        Date currentDate = new Date();
+        Calendar currentCalendar = Calendar.getInstance();
 
         for (TutorSession session : allSessions) {
             Calendar sessionCalendar = session.getTimeslot().getDate();
-            int start = session.getTimeslot().getStart();
-            int hour = start / 60;
-            int minute = start % 60;
-
-            sessionCalendar.set(Calendar.HOUR_OF_DAY, hour);
-            sessionCalendar.set(Calendar.MINUTE, minute);
-
-            Date sessionDate = sessionCalendar.getTime();
-            int comparison = currentDate.compareTo(sessionDate);
+            int comparison = currentCalendar.compareTo(sessionCalendar);
             if (comparison == 0 || comparison == 1) {
                     previousSessions.add(session);
             }
         }
+
 
         return previousSessions;
     }

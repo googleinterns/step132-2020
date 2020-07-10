@@ -42,22 +42,21 @@ import java.util.Arrays;
 
 @RunWith(JUnit4.class)
 public final class AddAvailabilityTest {
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
-                                                        .set(Calendar.HOUR_OF_DAY, 0)
                                                         .build();
-    private static final Calendar AUGUST102020 = new Calendar.Builder()
+    private final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
                                                         .build();
 
-    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
-    private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
-    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
-    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
-    private static final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
-    private static final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
+    private final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+    private final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+    private final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
+    private final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
+    private final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
     private AddAvailabilityServlet servlet;
 
     @Before

@@ -42,7 +42,7 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class RatingTest {
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
@@ -63,7 +63,7 @@ public final class RatingTest {
         when(request.getParameter("tutorEmail")).thenReturn("sfalberg@google.com");
         when(request.getParameter("studentEmail")).thenReturn("sfalberg@google.com");
         //id of the second hard coded tutor session
-        when(request.getParameter("sessionId")).thenReturn("1");
+        when(request.getParameter("sessionId")).thenReturn("2");
         when(request.getParameter("rating")).thenReturn("5");
 
         StringWriter stringWriter = new StringWriter();

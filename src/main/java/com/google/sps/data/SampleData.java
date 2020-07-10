@@ -20,35 +20,35 @@ import java.util.Calendar;
 
 /** Class that stores sample Tutor objects for testing. */
 public final class SampleData {
-    private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
-    private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
-    private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
-    private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
-    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
-    private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
-    private static final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
-    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
-    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
+    private final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
+    private final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 00);
+    private final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
+    private final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+    private final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+    private final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+    private final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
+    private final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
     
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
-    private static final Calendar AUGUST102020 = new Calendar.Builder()
+    private final Calendar AUGUST102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
                                                         .build();
 
-    private static final Calendar AUGUST72020 = new Calendar.Builder()
+    private final Calendar AUGUST72020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 7)
                                                         .build();
-    private static final Calendar AUGUST182020 = new Calendar.Builder()
+    private final Calendar AUGUST182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 18)
                                                         .build();
-    private static final TutorSession bernardoSession = new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020)); 
-    private static final TutorSession samSession = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020));                                         
+    private final TutorSession bernardoSession = new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020)); 
+    private final TutorSession samSession = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020));                                         
 
     private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
         new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
