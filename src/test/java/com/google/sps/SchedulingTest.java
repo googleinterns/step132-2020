@@ -94,17 +94,6 @@ public final class SchedulingTest {
                                             "How does it work?",
                                             TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020)));
 
-        String unexpected = new Gson()
-                            .toJson(new Tutor("Bernardo Eilert Trevisan",
-                                            "Bernardo\'s bio",
-                                            "images/pfp.jpg",
-                                            "btrevisan@google.com",
-                                            new ArrayList<String> (Arrays.asList("English", "Physics")),
-                                            new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
-                                                        TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, AUGUST102020),
-                                                        TimeRange.fromStartToEnd(TIME_0100PM, TIME_0300PM, AUGUST72020))),
-                                            new ArrayList<TutorSession> (Arrays.asList())));
-
         writer.flush();
         // Tutoring session should have been scheduled
         System.out.println(stringWriter.toString());
