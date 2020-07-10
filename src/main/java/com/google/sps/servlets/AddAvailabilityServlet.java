@@ -45,6 +45,7 @@ public class AddAvailabilityServlet extends HttpServlet {
     public AddAvailabilityServlet(boolean test) {
         if(test) {
             datastore = new MockTutorDatastore();
+            System.out.println(new Gson().toJson(datastore.getTutors()));
         }
     }
 
