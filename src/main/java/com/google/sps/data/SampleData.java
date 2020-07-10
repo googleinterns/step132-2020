@@ -47,8 +47,8 @@ public final class SampleData {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 18)
                                                         .build();
-    private final TutorSession bernardoSession = new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020)); 
-    private final TutorSession samSession = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020));                                         
+    private final TutorSession bernardoSession = new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 0); 
+    private final TutorSession samSession = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 1);                                         
 
     private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
         new Tutor("Kashish Arora", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
