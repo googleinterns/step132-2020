@@ -16,6 +16,7 @@ package com.google.sps;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import org.junit.Assert;
@@ -35,6 +36,19 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class AvailabilityTest {
+    private static final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
+    private static final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
+    private static final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
+    private static final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
+    private static final Calendar MAY182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 4, 18)
+                                                        .set(Calendar.HOUR_OF_DAY, 9)
+                                                        .build();
+    private static final Calendar AUGUST102020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 7, 10)
+                                                        .build();
     private AvailabilityServlet servlet;
 
     @Before
@@ -56,10 +70,13 @@ public final class AvailabilityTest {
 
         servlet.doPost(request, response);
 
-        String expected = new Gson().toJson(SampleData.getTutorByEmail("kashisharora@google.com").getAvailability());
+        String expected = new Gson().toJson(Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                                                    TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020)));
 
         verify(request, times(1)).getParameter("tutorID");
         writer.flush();
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 }

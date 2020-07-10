@@ -19,6 +19,9 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Student;
+import com.google.sps.utilities.StudentsDatastoreService;
+import com.google.sps.utilities.RealStudentsDatastore;
+import com.google.sps.utilities.MockStudentsDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Optional;
@@ -34,6 +37,23 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/history")
 public class HistoryServlet extends HttpServlet {
+    private StudentsDatastoreService datastore;
+
+    /**
+    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
+    * We need the default one for deployment because the servlet is created without parameters.
+    */
+    public HistoryServlet(){}
+
+    public HistoryServlet(boolean test) {
+        if(test) {
+            datastore = new MockStudentsDatastore();
+        }
+    }
+
+    public void init() {
+        datastore = new RealStudentsDatastore();
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -48,7 +68,7 @@ public class HistoryServlet extends HttpServlet {
 
         List<TutorSession> scheduledSessions = new ArrayList<TutorSession>();
 
-        for (Student student : SampleData.getSampleStudents()) {
+        for (Student student : datastore.getStudents()) {
             if (studentEmail.toLowerCase().equals(student.getEmail().toLowerCase())) {
                 scheduledSessions = student.getScheduledSessions();
                 break;
