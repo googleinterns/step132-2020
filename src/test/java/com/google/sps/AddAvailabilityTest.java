@@ -22,10 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
-<<<<<<< HEAD
 import org.junit.Before;
-=======
->>>>>>> 2033208773e7ca6e4954f3edb7a15bad07d2f49e
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
