@@ -46,7 +46,7 @@ public class RegistrationServlet extends HttpServlet {
     String lastName = Optional.ofNullable(request.getParameter("last-name"))
             .orElseThrow(() -> new IllegalArgumentException("Must fill out last name"));
     String fullName = firstName + " " + lastName;
-    String bio = Optional.ofNullable(request.getParameter("bio")).orElse(null);
+    String bio = Optional.ofNullable(request.getParameter("bio")).orElse("");
     // For now, we will automatically set everyone's profile picture to a default avatar
     String pfp = "images/pfp.jpg";
     
