@@ -72,9 +72,9 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
 }
 
 /**
- * Sets the URL pathname for the user's profile to their user ID
+ * Sets the URL's query string for the user's profile to their user ID
  */
-function setProfilePathname(window, loginStatus) {
+function setProfileQueryString(window, loginStatus) {
     var url = "profile.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }

@@ -17,7 +17,6 @@ function displayProfile() {
     // Get the userID parameter from the URL
     var params = new URL(location.href).searchParams;
     var userID = params.get('userID');
-    console.log(userID);
 
     fetch('/profile?user-id='+userID).then(response => response.json()).then((user) => {
         console.log(user);
