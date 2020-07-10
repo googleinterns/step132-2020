@@ -41,10 +41,9 @@ import javax.servlet.*;
 @RunWith(JUnit4.class)
 public final class HistoryTest {
 
-    private static final Calendar MAY182020 = new Calendar.Builder()
+    private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
-                                                        .set(Calendar.HOUR_OF_DAY, 9)
                                                         .build();
     private HistoryServlet servlet;
 

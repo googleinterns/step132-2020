@@ -40,10 +40,9 @@ import javax.servlet.*;
 
 @RunWith(JUnit4.class)
 public final class ConfirmationTest {
-    private static final Calendar AUGUST182020 = new Calendar.Builder()
+    private final Calendar AUGUST182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 18)
-                                                        .set(Calendar.HOUR_OF_DAY, 9)
                                                         .build();  
 
     private ConfirmationServlet servlet;
@@ -93,8 +92,6 @@ public final class ConfirmationTest {
 
         verify(request, times(1)).getParameter("studentEmail");
         writer.flush();
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 }
