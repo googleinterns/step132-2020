@@ -60,7 +60,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = loginStatus.url;
         document.getElementById('profile').addEventListener('click', () => {
-            setProfilePathname(window, loginStatus);
+            setProfileQueryString(window, loginStatus);
         });
     }
     else {   // Display login link
