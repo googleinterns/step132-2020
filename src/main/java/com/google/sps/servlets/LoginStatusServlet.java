@@ -39,7 +39,7 @@ public class LoginStatusServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // If user not logged in, show login form
         if (!userService.isUserLoggedIn()) {
-            LoginStatus loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"), null);
+            LoginStatus loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"), null, null);
             String json = new Gson().toJson(loginStatus);
             response.setContentType("application/json");
             response.getWriter().println(json);
@@ -58,9 +58,9 @@ public class LoginStatusServlet extends HttpServlet {
 
         // Name is null if user hasn't registered, set needsToRegister to 'true' and make logout URL
         if (name == null) {
-            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId());
+            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail());
         } else {  // User is logged in and registered, make logout URL
-            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId());
+            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail());
         }
 
         String json = new Gson().toJson(loginStatus);
