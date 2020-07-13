@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -56,12 +57,6 @@ public class AvailabilityServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
-    }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the tutor whose availability will be displayed.
         String tutorID = request.getParameter("tutorID");
 
@@ -70,6 +65,6 @@ public class AvailabilityServlet extends HttpServlet {
         String json = new Gson().toJson(timeslots);
         response.setContentType("application/json;");
         response.getWriter().println(json);
-        return;
+        return; 
     }
 }

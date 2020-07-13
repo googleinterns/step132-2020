@@ -46,7 +46,9 @@ public final class SampleData {
     private final Calendar AUGUST182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 18)
-                                                        .build();                                                        
+                                                        .build();
+    private final TutorSession bernardoSession = new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 0); 
+    private final TutorSession samSession = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 1);                                         
 
     private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
         new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
@@ -57,11 +59,11 @@ public final class SampleData {
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                              TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, AUGUST102020),
                              TimeRange.fromStartToEnd(TIME_0100PM, TIME_0300PM, AUGUST72020))),
-                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020))))),
+                new ArrayList<TutorSession> (Arrays.asList(bernardoSession))),
         new Tutor("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020))))),
+                new ArrayList<TutorSession> (Arrays.asList(samSession))),
         new Tutor("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
@@ -76,9 +78,9 @@ public final class SampleData {
         new Student("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
                 new ArrayList<TutorSession> (Arrays.asList())),
         new Student("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020))))),
+                new ArrayList<TutorSession> (Arrays.asList(bernardoSession))),
         new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession> (Arrays.asList(new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020))))),
+                new ArrayList<TutorSession> (Arrays.asList(samSession))),
         new Student("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
                 new ArrayList<TutorSession> (Arrays.asList())),
         new Student("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
@@ -176,31 +178,27 @@ public final class SampleData {
     public void addToTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Tutor tutor = getTutorByEmail(email);
 
-        tutors.remove(tutor);
+        // tutors.remove(tutor);
         tutor.addToScheduledSessions(tutoringSession);
-        tutors.add(tutor);
+        // tutors.add(tutor);
     }
 
     /** Adds the given TutorSession to the scheduled sessions array of the given student. */
     public void addToStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Student student = getStudentByEmail(email);
 
-        students.remove(student);
+        // students.remove(student);
         student.addToScheduledSessions(tutoringSession);
-        students.add(student);
+        // students.add(student);
     }
 
      public void rateTutorByEmail(String tutorEmail, String studentEmail, int newRating) {
         Tutor tutor = getTutorByEmail(tutorEmail);
         Student student = getStudentByEmail(studentEmail);
 
-        tutors.remove(tutor);
         tutor.rateTutor(newRating);
-        tutors.add(tutor);
 
-        students.remove(student);
         student.markTutoringSessionAsRatedByTutorEmail(tutorEmail, newRating);
-        students.add(student);
      }
 
 }

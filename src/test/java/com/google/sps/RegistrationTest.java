@@ -21,6 +21,7 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.sps.servlets.RegistrationServlet;
+import com.google.sps.data.TutorSession;
 import java.io.*;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -64,6 +65,7 @@ public final class RegistrationTest {
         response = mock(HttpServletResponse.class);
         datastore = mock(DatastoreService.class);
         servlet = new RegistrationServlet();
+        TutorSession.resetIds();
     }
 
     @After
@@ -103,6 +105,8 @@ public final class RegistrationTest {
         expectedTutor.setProperty("pfp", "images/pfp.jpg");
         expectedTutor.setProperty("email", USER_EMAIL);
         expectedTutor.setProperty("topics", mockTopics);
+        expectedTutor.setProperty("ratingSum", 0);
+        expectedTutor.setProperty("ratingCount", 0);
         expectedTutor.setProperty("userId", USER_ID);
 
         Entity actualUser = new Entity("User");

@@ -45,15 +45,17 @@ public final class HistoryTest {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
+
     private HistoryServlet servlet;
 
     @Before
-    public void setUp() {		        
+    public void setUp() {
         servlet = new HistoryServlet(true);
+        TutorSession.resetIds();
     }
 
     @Test
-    public void testDoPostNoHistory() throws Exception {
+    public void testDoGetNoHistory() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -64,7 +66,7 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
         verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
@@ -73,7 +75,7 @@ public final class HistoryTest {
     }
 
     @Test
-    public void testDoPostWithHistory() throws Exception {
+    public void testDoGetWithHistory() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
@@ -84,12 +86,15 @@ public final class HistoryTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
-        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020)))));
+
+        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 0))));
 
         verify(request, times(1)).getParameter("studentEmail");
         writer.flush();
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         // If the user has a tutoring session history, the return json string should reflect that history
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
