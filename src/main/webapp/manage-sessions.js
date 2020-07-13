@@ -16,7 +16,6 @@ function getTutorSessionsManage() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);
     const userID = queryString["userID"];
-    console.log(userID);
 
     fetch('/confirmation?studentEmail=' + userID, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
         scheduledSessions.forEach((scheduledSession) => {
