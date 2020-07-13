@@ -275,8 +275,7 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
         //there should only be one result
         Entity timeEntity = pq.asSingleEntity();
 
-        //change the email property from the tutor's email to "scheduled"
-        //instead of deleting the TimeRange entity, we can just set the email property to "scheduled" to indicate that it is a scheduled session 
+        //change the email property from "scheduled" to the tutor's email
         timeEntity.setProperty("email", email);
 
         //update in datastore
