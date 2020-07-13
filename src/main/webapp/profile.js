@@ -59,3 +59,4 @@ function createProfileDiv(user) {
 
     return profileDiv;
 }
+
