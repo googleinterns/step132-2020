@@ -41,6 +41,16 @@ public final class MockTutorSessionDatastore implements TutorSessionDatastoreSer
     }
 
     /**
+    * Deletes a TutorSession for the tutor and student.
+    */
+    @Override
+    public void deleteTutorSession(TutorSession session) {
+        sample.deleteFromTutorScheduledSessionsByEmail(session.getTutorEmail(), session);
+        sample.deleteFromStudentScheduledSessionsByEmail(session.getStudentEmail(), session);
+        sample.addAvailabilityByTutorEmail(session.getTutorEmail(), session.getTimeslot());
+    }
+
+    /**
     * Gets a list of all scheduled sessions for a tutor with the given email.
     * @return List<TutorSession>, empty list if the tutor does not exist
     */

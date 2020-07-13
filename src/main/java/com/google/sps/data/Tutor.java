@@ -92,6 +92,11 @@ public final class Tutor {
         this.scheduledSessions.add(tutoringSession);
     }
 
+    /** Deletes the given Tutor Session from the scheduledSessions array. */
+    public void deleteFromScheduledSessions(TutorSession tutoringSession) {
+        this.scheduledSessions.remove(tutoringSession);
+    }
+
     public void rateTutor(int newRating) {
         this.ratingSum = this.ratingSum + newRating;
         this.ratingCount++;

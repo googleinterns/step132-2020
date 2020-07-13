@@ -71,6 +71,11 @@ public final class Student {
         this.scheduledSessions.add(tutoringSession);
     }
 
+    /** Deletes the given Tutor Session from the scheduledSessions array. */
+    public void deleteFromScheduledSessions(TutorSession tutoringSession) {
+        this.scheduledSessions.remove(tutoringSession);
+    }
+
     /** Marks the tutoring session that has the given tutor's email as rated.*/
     public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail, int newRating) {
         for(TutorSession tutorSession : this.scheduledSessions) {
