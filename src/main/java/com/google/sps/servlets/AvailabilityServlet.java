@@ -58,10 +58,10 @@ public class AvailabilityServlet extends HttpServlet {
     }
 
     /**
-    * Gets the availability of a tutor with the given email.
+    * Gets the availability of a tutor with the given user id.
     * @return List<TimeRange>
     */
-    public List<TimeRange> getAvailabilityForTutor(long id) {
+    private List<TimeRange> getAvailabilityForTutor(long id) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
