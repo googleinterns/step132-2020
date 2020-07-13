@@ -70,7 +70,7 @@ function createTutoringSessionBox(tutoringSession) {
     const dateElement = document.createElement('h3');
     dateElement.style.textAlign = 'left';
     dateElement.style.display = 'inline';
-    var hour = parseInt(tutoringSession.timeslot.start) / 60;
+    var hour = Math.floor(parseInt(tutoringSession.timeslot.start) / 60);
     var amOrPm = "am";
     if (hour > 12) {
         hour = hour - 12;
