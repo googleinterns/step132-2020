@@ -73,6 +73,31 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
     }
 
     /**
+    * Deletes a TutorSession for the tutor and student.
+    */
+    @Override
+    public void deleteTutorSession(TutorSession session) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        long sessionId = session.getId();
+        Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
+
+        try {            
+            updateTimeRangeToAvailable(session.getTutorEmail().toLowerCase(), session.getTimeslot(), datastore, txn);
+
+            datastore.delete(txn, sessionKey);
+
+            txn.commit();
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
+    }
+
+    /**
     * Gets a list of all scheduled sessions for a tutor with the given email.
     * @return List<TutorSession>
     */
@@ -225,6 +250,34 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
         //change the email property from the tutor's email to "scheduled"
         //instead of deleting the TimeRange entity, we can just set the email property to "scheduled" to indicate that it is a scheduled session 
         timeEntity.setProperty("email", "scheduled");
+
+        //update in datastore
+        datastore.put(txn, timeEntity);
+
+        return timeEntity.getKey().getId();
+    }
+
+    /**
+    * Updates the TimeRange entity that the student canceled to reflect that it is now available and not scheduled.
+    * @return long, the id of the TimeRange entity
+    */
+    private long updateTimeRangeToAvailable(String email, TimeRange time, DatastoreService datastore, Transaction txn) {
+        //filter by tutor's email and time range properties
+        CompositeFilter timeFilter = CompositeFilterOperator.and(FilterOperator.EQUAL.of("email", "scheduled"),
+                                                                 FilterOperator.EQUAL.of("start", time.getStart()), 
+                                                                 FilterOperator.EQUAL.of("end", time.getEnd()), 
+                                                                 FilterOperator.EQUAL.of("date", new Gson().toJson(time.getDate())));
+
+        Query query = new Query("TimeRange").setFilter(timeFilter);
+
+        PreparedQuery pq = datastore.prepare(query);
+
+        //there should only be one result
+        Entity timeEntity = pq.asSingleEntity();
+
+        //change the email property from the tutor's email to "scheduled"
+        //instead of deleting the TimeRange entity, we can just set the email property to "scheduled" to indicate that it is a scheduled session 
+        timeEntity.setProperty("email", email);
 
         //update in datastore
         datastore.put(txn, timeEntity);
