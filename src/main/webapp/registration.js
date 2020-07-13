@@ -74,6 +74,8 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
     else {   // Display login link
         document.getElementById('logout').style.display = "none";
         document.getElementById('profile').style.display = "none";
+        document.getElementById('availability-settings').style.display = "none";
+        document.getElementById('history').style.display = "none";
         document.getElementById('login').style.display = "block";
         document.getElementById('login-url').href = loginStatus.url;
     }
