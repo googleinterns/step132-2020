@@ -183,6 +183,7 @@ public final class SampleData {
     /** Deletes the given TutorSession from the scheduled sessions array of the given tutor. */
     public void deleteFromTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Tutor tutor = getTutorByEmail(email);
+        System.out.println(email);
         tutor.deleteFromScheduledSessions(tutoringSession);
     }
 
@@ -195,6 +196,7 @@ public final class SampleData {
     /** Deletes the given TutorSession from the scheduled sessions array of the given student. */
     public void deleteFromStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Student student = getStudentByEmail(email);
+        System.out.println(email);
         student.deleteFromScheduledSessions(tutoringSession);
     }
 

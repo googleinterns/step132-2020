@@ -75,11 +75,14 @@ public class DeleteTutorSessionServlet extends HttpServlet {
 
         TutorSession session = new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot, Integer.parseInt(rating), Long.parseLong(id));
 
+        
+
         // Remove tutor session
         datastore.deleteTutorSession(session);
 
+        String json = new Gson().toJson(datastore.getScheduledSessionsForStudent(studentEmail));
         response.setContentType("application/json;");
-        response.getWriter().println("");
+        response.getWriter().println(json);
         return;
     }
 }

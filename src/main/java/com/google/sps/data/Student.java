@@ -73,7 +73,18 @@ public final class Student {
 
     /** Deletes the given Tutor Session from the scheduledSessions array. */
     public void deleteFromScheduledSessions(TutorSession tutoringSession) {
-        this.scheduledSessions.remove(tutoringSession);
+        TutorSession tutorSession = getSessionById(tutoringSession.getId());
+        this.scheduledSessions.remove(tutorSession);
+    }
+
+    public TutorSession getSessionById(long id) {
+        for (TutorSession tutorSession : this.scheduledSessions) {
+            if (tutorSession.getId() == id) {
+                return tutorSession;
+            }
+        }
+
+        return null;
     }
 
     /** Marks the tutoring session that has the given tutor's email as rated.*/
