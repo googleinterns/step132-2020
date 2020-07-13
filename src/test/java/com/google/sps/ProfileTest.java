@@ -22,15 +22,12 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.gson.Gson;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Student;
-import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
-import com.google.sps.data.TutorSession;
 import com.google.sps.servlets.ProfileServlet;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import org.junit.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -44,11 +41,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @RunWith(JUnit4.class)
 public final class ProfileTest {
-
-    private final Calendar MAY182020 = new Calendar.Builder()
-                                                        .setCalendarType("iso8601")
-                                                        .setDate(2020, 4, 18)
-                                                        .build();
 
     private final LocalServiceTestHelper helper = 
         new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
