@@ -19,8 +19,6 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.sps.utilities.AvailabilityDatastoreService;
-import com.google.sps.utilities.RealAvailabilityDatastore;
-import com.google.sps.utilities.MockAvailabilityDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,20 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 public class AddAvailabilityServlet extends HttpServlet {
     private AvailabilityDatastoreService datastore;
 
-    /**
-    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
-    * We need the default one for deployment because the servlet is created without parameters.
-    */
-    public AddAvailabilityServlet(){}
-
-    public AddAvailabilityServlet(boolean test) {
-        if(test) {
-            datastore = new MockAvailabilityDatastore();
-        }
-    }
-
     public void init() {
-        datastore = new RealAvailabilityDatastore();
+        datastore = new AvailabilityDatastoreService();
     }
 
     @Override
@@ -60,7 +46,7 @@ public class AddAvailabilityServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tutorID = request.getParameter("tutorEmail");
+        long tutorID = Long.parseLong(request.getParameter("tutorID"));
         String startHour = request.getParameter("startHour");
         String startMinute = request.getParameter("startMinute");
         String endHour = request.getParameter("endHour");
@@ -85,7 +71,7 @@ public class AddAvailabilityServlet extends HttpServlet {
         String json = new Gson().toJson(datastore.getAvailabilityForTutor(tutorID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
-        response.sendRedirect("/manage-availability.html?userID=" + tutorID.replace("@", "%40"));
+        response.sendRedirect("/manage-availability.html?userID=" + tutorID);
         return;
     }
 }

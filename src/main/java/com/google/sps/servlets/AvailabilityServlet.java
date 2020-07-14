@@ -38,10 +38,16 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
+import com.google.sps.utilities.AvailabilityDatastoreService;
 
 /** Servlet that manages availability of a tutor. */
 @WebServlet("/availability")
 public class AvailabilityServlet extends HttpServlet {
+    private AvailabilityDatastoreService datastore;
+
+    public void init() {
+        datastore = new AvailabilityDatastoreService();
+    }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -49,47 +55,11 @@ public class AvailabilityServlet extends HttpServlet {
         //if id is null, use default id 0 (no tutor has id -1, so no availability will be displayed)
         long tutorID = Long.parseLong(Optional.ofNullable(request.getParameter("tutorID")).orElse("-1"));
 
-        List<TimeRange> timeslots = getAvailabilityForTutor(tutorID);
+        List<TimeRange> timeslots = datastore.getAvailabilityForTutor(tutorID);
 
         String json = new Gson().toJson(timeslots);
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return; 
-    }
-
-    /**
-    * Gets the availability of a tutor with the given user id.
-    * @return List<TimeRange>
-    */
-    private List<TimeRange> getAvailabilityForTutor(long id) {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-        ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
-        
-        //get all time ranges with user id
-        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, id);
-        Query query = new Query("TimeRange").setFilter(filter);
-
-        PreparedQuery timeRanges = datastore.prepare(query);
-
-        for(Entity time : timeRanges.asIterable()) {
-            System.out.println("Sdfs");
-            availability.add(createTimeRange(time));
-        }
-
-        return availability;
-    }
-
-    /**
-    * Creates a TimeRange object from a given TimeRange entity.
-    * @return TimeRange
-    */
-    private TimeRange createTimeRange(Entity entity) {
-        int start = Math.toIntExact((long) entity.getProperty("start"));
-        int end = Math.toIntExact((long) entity.getProperty("end"));
-        Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
-
-        return TimeRange.fromStartToEnd(start, end, date);
-
     }
 }
