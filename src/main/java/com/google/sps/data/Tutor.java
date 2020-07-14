@@ -92,6 +92,23 @@ public final class Tutor {
         this.scheduledSessions.add(tutoringSession);
     }
 
+    /** Deletes the given Tutor Session from the scheduledSessions array. */
+    public void deleteFromScheduledSessions(TutorSession tutoringSession) {
+        TutorSession tutorSession = getSessionById(tutoringSession.getId());
+        this.scheduledSessions.remove(tutorSession);
+        return;
+    }
+
+    public TutorSession getSessionById(long id) {
+        for (TutorSession tutorSession : this.scheduledSessions) {
+            if (tutorSession.getId() == id) {
+                return tutorSession;
+            }
+        }
+
+        return null;
+    }
+
     public void rateTutor(int newRating) {
         this.ratingSum = this.ratingSum + newRating;
         this.ratingCount++;
