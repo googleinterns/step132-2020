@@ -31,8 +31,9 @@ public final class Tutor {
     private ArrayList<TutorSession> scheduledSessions;
     private int ratingSum;
     private int ratingCount;
+    private long userId;
 
-    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions) {
+    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions, long id) {
         this.name = name;
         this.bio = bio;
         this.pfp = pfp;
@@ -43,6 +44,20 @@ public final class Tutor {
         // Rating count and sum are both initially set to 0 by default
         this.ratingCount = 0;
         this.ratingSum = 0;
+        this.userId = id;
+    }
+
+    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions, int ratingCount, int ratingSum, long id) {
+        this.name = name;
+        this.bio = bio;
+        this.pfp = pfp;
+        this.email = email;
+        this.skills = skills;
+        this.availability = availability;
+        this.scheduledSessions = scheduledSessions;
+        this.ratingCount = ratingCount;
+        this.ratingSum = ratingSum;
+        this.userId = id;
     }
 
     public String getName() {
@@ -75,6 +90,10 @@ public final class Tutor {
 
     public Float getRating() {
         return (float) this.ratingSum / this.ratingCount;
+    }
+
+    public long getUserId() {
+        return this.userId;
     }
 
     /** Deletes the given timeslot from the availability array. */

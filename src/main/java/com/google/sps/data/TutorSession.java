@@ -27,8 +27,8 @@ public final class TutorSession {
     //used for testing only
     private static long testId = 0;
 
-    private String studentEmail;
-    private String tutorEmail;
+    private long studentID;
+    private long tutorID;
     private String subtopics;
     private String questions;
     private TimeRange timeslot;
@@ -39,15 +39,15 @@ public final class TutorSession {
     /**
      * Creates a new tutoring session. (This constructor is used for testing.)
      *
-     * @param studentEmail The student's email. Must be non-null.
-     * @param tutorEmail The the tutor's email. Must be non-null.
+     * @param studentID The student's ID. Must be non-null.
+     * @param tutorID The the tutor's ID. Must be non-null.
      * @param subtopics The subtopics the student wishes to cover during the tutoring session. Can be null.
      * @param questions The questions the student would like answers to. Can be null.
      * @param timeslot The time range during which the tutoring session will take place. Must be non-null.
      */
-    public TutorSession(String studentEmail, String tutorEmail, String subtopics, String questions, TimeRange timeslot) {
-        this.studentEmail = studentEmail;
-        this.tutorEmail = tutorEmail;
+    public TutorSession(long studentID, long tutorID, String subtopics, String questions, TimeRange timeslot) {
+        this.studentID = studentID;
+        this.tutorID = tutorID;
         this.subtopics = subtopics;
         this.questions = questions;
         this.timeslot = timeslot;
@@ -55,25 +55,25 @@ public final class TutorSession {
         this.rated = false;
         // Rating is initially set to 0 by default
         this.rating = 0;
-        //assign an id using the id counter
-        this.id = testId;
-        //increment the counter
-        testId++;
+        // //assign an id using the id counter
+        // this.id = testId;
+        // //increment the counter
+        // testId++;
     }
 
     /**
      * Creates a new tutoring session with an id.
      *
-     * @param studentEmail The student's email. Must be non-null.
-     * @param tutorEmail The the tutor's email. Must be non-null.
+     * @param studentID The student's ID. Must be non-null.
+     * @param tutorID The the tutor's ID. Must be non-null.
      * @param subtopics The subtopics the student wishes to cover during the tutoring session. Can be null.
      * @param questions The questions the student would like answers to. Can be null.
      * @param timeslot The time range during which the tutoring session will take place. Must be non-null.
      * @param id A unique id for the tutoring session
      */
-    public TutorSession(String studentEmail, String tutorEmail, String subtopics, String questions, TimeRange timeslot, long id) {
-        this.studentEmail = studentEmail;
-        this.tutorEmail = tutorEmail;
+    public TutorSession(long studentID, long tutorID, String subtopics, String questions, TimeRange timeslot, long id) {
+        this.studentID = studentID;
+        this.tutorID = tutorID;
         this.subtopics = subtopics;
         this.questions = questions;
         this.timeslot = timeslot;
@@ -87,17 +87,17 @@ public final class TutorSession {
     /**
      * Creates a new tutoring session with rating and id.
      *
-     * @param studentEmail The student's email. Must be non-null.
-     * @param tutorEmail The the tutor's email. Must be non-null.
+     * @param studentID The student's ID. Must be non-null.
+     * @param tutorID The the tutor's ID. Must be non-null.
      * @param subtopics The subtopics the student wishes to cover during the tutoring session. Can be null.
      * @param questions The questions the student would like answers to. Can be null.
      * @param timeslot The time range during which the tutoring session will take place. Must be non-null.
      * @param rating The rating the student of the tutoring session selected
      * @param id A unique id for the tutoring session
      */
-    public TutorSession(String studentEmail, String tutorEmail, String subtopics, String questions, TimeRange timeslot, int rating, long id) {
-        this.studentEmail = studentEmail;
-        this.tutorEmail = tutorEmail;
+    public TutorSession(long studentID, long tutorID, String subtopics, String questions, TimeRange timeslot, int rating, long id) {
+        this.studentID = studentID;
+        this.tutorID = tutorID;
         this.subtopics = subtopics;
         this.questions = questions;
         this.timeslot = timeslot;
@@ -106,12 +106,12 @@ public final class TutorSession {
         this.rating = rating;
     }
 
-    public String getStudentEmail() {
-        return this.studentEmail;
+    public long getStudentID() {
+        return this.studentID;
     }
 
-    public String getTutorEmail() {
-        return this.tutorEmail;
+    public long getTutorID() {
+        return this.tutorID;
     }
 
     public String getSubtopics() {

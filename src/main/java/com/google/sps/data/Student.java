@@ -32,14 +32,16 @@ public final class Student {
     private String email;
     private ArrayList<String> learning;
     private ArrayList<TutorSession> scheduledSessions;
+    private long userId;
 
-    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions) {
+    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions, long id) {
         this.name = name;
         this.bio = bio;
         this.pfp = pfp;
         this.email = email;
         this.learning = learning;
         this.scheduledSessions = scheduledSessions;
+        this.userId = id;
     }
 
     public String getName() {
@@ -66,18 +68,13 @@ public final class Student {
         return this.scheduledSessions;
     }
 
+    public long getUserId() {
+        return this.userId;
+    }
+
     /** Adds the given Tutor Session to the scheduledSessions array. */
     public void addToScheduledSessions(TutorSession tutoringSession) {
         this.scheduledSessions.add(tutoringSession);
-    }
-
-    /** Marks the tutoring session that has the given tutor's email as rated.*/
-    public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail, int newRating) {
-        for(TutorSession tutorSession : this.scheduledSessions) {
-            if(tutorEmail.toLowerCase().equals(tutorSession.getTutorEmail().toLowerCase())) {
-                tutorSession.rateSession(newRating);
-            }
-        }
     }
 
 }
