@@ -55,6 +55,11 @@ function createProfileDiv(user) {
         profileTopics.innerHTML = "I am tutoring in: " + user.skills;
     }
 
+    document.getElementById('edit-profile').style.display = 'block';
+    document.getElementById('edit-profile').addEventListener('click', () => {
+       editProfile(); 
+    });
+
     profileDiv.appendChild(profilePfp);
     profileDiv.appendChild(profileName);
     profileDiv.appendChild(profileBio);
@@ -64,3 +69,6 @@ function createProfileDiv(user) {
     return profileDiv;
 }
 
+function editProfile() {
+    console.log("editProfile was called");
+}
