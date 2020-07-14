@@ -31,6 +31,12 @@ function getIdParameter(window) {
 /** Gets information about the given user from the server. */
 function getUser(userID) {
     return fetch('/profile?userId='+userID).then(response => response.json()).then((user) => {
+        if(user.error) {
+            var message = document.createElement("p");
+            p.innerText = user.error;
+            document.body.appendChild(message);
+            return;
+        }
         return user;
     });
 }

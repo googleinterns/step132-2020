@@ -50,6 +50,12 @@ public class ConfirmationServlet extends HttpServlet {
         // if the parameter is null, make the default id -1, so 0 sessions are returned
         String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
 
+        if(studentID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error getting sessions.\"}");
+            return;
+        }
+
         List<TutorSession> scheduledSessions = datastore.getScheduledSessionsForStudent(studentID);
 
         List<TutorSession> upcomingSessions = filterUpcomingSessions(scheduledSessions);

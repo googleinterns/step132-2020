@@ -26,6 +26,12 @@ function getAvailabilityManage() {
     const userID = queryString["userID"];
 
     fetch('/availability?tutorID=' + userID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
+        if(timeslots.error) {
+            var message = document.createElement("p");
+            p.innerText = timeslots.error;
+            document.getElementById('timeslots').appendChild(message);
+            return;
+        }
         timeslots.forEach((timeslot) => {
             document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot, userID));
         })

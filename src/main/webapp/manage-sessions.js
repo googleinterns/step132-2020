@@ -18,6 +18,12 @@ function getTutorSessionsManage() {
     const userID = queryString["userID"];
 
     fetch('/confirmation?studentID=' + userID, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+        if(scheduledSessions.error) {
+            var message = document.createElement("p");
+            p.innerText = scheduledSessions.error;
+            document.getElementById('timeslots').appendChild(message);
+            return;
+        }
         scheduledSessions.forEach((scheduledSession) => {
             document.getElementById('scheduledSessions').appendChild(createScheduledSessionBoxManage(scheduledSession, userID));
         })

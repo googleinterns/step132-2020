@@ -55,6 +55,11 @@ public class AvailabilityServlet extends HttpServlet {
         //if id is null, use default id -1 (no tutor has id -1, so no availability will be displayed)
         String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
 
+        if(tutorID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error getting tutor's availability.\"}");
+        }
+
         List<TimeRange> timeslots = datastore.getAvailabilityForTutor(tutorID);
 
         String json = new Gson().toJson(timeslots);

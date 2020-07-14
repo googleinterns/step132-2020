@@ -53,6 +53,12 @@ public class ProfileServlet extends HttpServlet {
         response.setContentType("application/json");
         //if the user id is null, the default value will be -1 because no tutor or student will have id = -1
         String userId = Optional.ofNullable(request.getParameter("userId")).orElse("-1");
+
+        if(userId.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error getting profile.\"}");
+            return;
+        }
         
         // Find out whether the user is a student or a tutor
         Query query = new Query("User").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));

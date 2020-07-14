@@ -55,6 +55,12 @@ public class DeleteAvailabilityServlet extends HttpServlet {
         String start = request.getParameter("start");
         String end = request.getParameter("end");
 
+        if(tutorID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error deleting availability.\"}");
+            return;
+        }
+
         Calendar date = new Calendar.Builder()
                                 .setCalendarType("iso8601")
                                 .setDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day))

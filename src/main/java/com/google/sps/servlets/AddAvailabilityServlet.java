@@ -60,6 +60,12 @@ public class AddAvailabilityServlet extends HttpServlet {
         int start = Integer.parseInt(startHour) * 60 + Integer.parseInt(startMinute);
         int end = Integer.parseInt(endHour) * 60 + Integer.parseInt(endMinute);
 
+        if(tutorID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error adding availability.\"}");
+            return;
+        }
+
         Calendar date = new Calendar.Builder()
                                 .setCalendarType("iso8601")
                                 .setDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day))
