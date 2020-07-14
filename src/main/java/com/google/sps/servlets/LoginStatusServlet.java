@@ -112,12 +112,12 @@ public class LoginStatusServlet extends HttpServlet {
         Query query = new Query("User").setFilter(filter);
         PreparedQuery results = datastore.prepare(query);
 
-        Entity tutorEntity = results.asSingleEntity();
+        Entity userEntity = results.asSingleEntity();
 
-        if (tutorEntity == null) {
+        if (userEntity == null) {
             return null;
         } else{
-            return (String) tutorEntity.getProperty("role");
+            return (String) userEntity.getProperty("role");
         }
     }
 }
