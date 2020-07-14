@@ -25,12 +25,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/addAvailability")
+@WebServlet("/add-availability")
 public class AddAvailabilityServlet extends HttpServlet {
     private AvailabilityDatastoreService datastore;
 
@@ -46,7 +47,8 @@ public class AddAvailabilityServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        long tutorID = Long.parseLong(request.getParameter("tutorID"));
+        //Set default value to -1 
+        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
         String startHour = request.getParameter("startHour");
         String startMinute = request.getParameter("startMinute");
         String endHour = request.getParameter("endHour");

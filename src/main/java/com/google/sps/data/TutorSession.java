@@ -23,8 +23,8 @@ package com.google.sps.data;
  */
 public final class TutorSession {
 
-    private long studentID;
-    private long tutorID;
+    private String studentID;
+    private String tutorID;
     private String subtopics;
     private String questions;
     private TimeRange timeslot;
@@ -41,7 +41,7 @@ public final class TutorSession {
      * @param questions The questions the student would like answers to. Can be null.
      * @param timeslot The time range during which the tutoring session will take place. Must be non-null.
      */
-    public TutorSession(long studentID, long tutorID, String subtopics, String questions, TimeRange timeslot) {
+    public TutorSession(String studentID, String tutorID, String subtopics, String questions, TimeRange timeslot) {
         this.studentID = studentID;
         this.tutorID = tutorID;
         this.subtopics = subtopics;
@@ -63,7 +63,7 @@ public final class TutorSession {
      * @param timeslot The time range during which the tutoring session will take place. Must be non-null.
      * @param id A unique id for the tutoring session
      */
-    public TutorSession(long studentID, long tutorID, String subtopics, String questions, TimeRange timeslot, long id) {
+    public TutorSession(String studentID, String tutorID, String subtopics, String questions, TimeRange timeslot, long id) {
         this.studentID = studentID;
         this.tutorID = tutorID;
         this.subtopics = subtopics;
@@ -87,7 +87,7 @@ public final class TutorSession {
      * @param rating The rating the student of the tutoring session selected
      * @param id A unique id for the tutoring session
      */
-    public TutorSession(long studentID, long tutorID, String subtopics, String questions, TimeRange timeslot, int rating, long id) {
+    public TutorSession(String studentID, String tutorID, String subtopics, String questions, TimeRange timeslot, int rating, long id) {
         this.studentID = studentID;
         this.tutorID = tutorID;
         this.subtopics = subtopics;
@@ -98,11 +98,11 @@ public final class TutorSession {
         this.rating = rating;
     }
 
-    public long getStudentID() {
+    public String getStudentID() {
         return this.studentID;
     }
 
-    public long getTutorID() {
+    public String getTutorID() {
         return this.tutorID;
     }
 

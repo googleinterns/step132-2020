@@ -59,7 +59,7 @@ public final class ConfirmationTest {
 
         servlet = new ConfirmationServlet();
         servlet.init();
-        
+
         SampleData sample  = new SampleData();
         sample.addTutorsToDatastore();
     }
@@ -104,7 +104,7 @@ public final class ConfirmationTest {
       
         servlet.doGet(request, response);
 
-        String expected = new Gson().toJson(Arrays.asList(new TutorSession(2,2, null, null,
+        String expected = new Gson().toJson(Arrays.asList(new TutorSession("2","2", null, null,
                                                                         TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14)));
 
         verify(request, times(1)).getParameter("studentID");

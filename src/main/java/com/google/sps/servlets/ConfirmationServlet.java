@@ -48,7 +48,7 @@ public class ConfirmationServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the student whose availability will be displayed.
         // if the parameter is null, make the default id -1, so 0 sessions are returned
-        long studentID = Long.parseLong(Optional.ofNullable(request.getParameter("studentID")).orElse("-1"));
+        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
 
         List<TutorSession> scheduledSessions = datastore.getScheduledSessionsForStudent(studentID);
 

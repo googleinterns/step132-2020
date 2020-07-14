@@ -99,7 +99,7 @@ public final class SearchTest {
                                                             new ArrayList<String> (Arrays.asList("math", "history")),
                                                             new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                                                                         TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
-                                                            new ArrayList<TutorSession> (Arrays.asList()), 0, 0, 0));
+                                                            new ArrayList<TutorSession> (Arrays.asList()), 0, 0, "0"));
         String expected = new Gson().toJson(expectedTutorList);
         System.out.println(stringWriter.toString());
         System.out.println(expected);

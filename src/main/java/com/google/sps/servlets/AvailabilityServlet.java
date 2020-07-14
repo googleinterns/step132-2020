@@ -52,8 +52,8 @@ public class AvailabilityServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the tutor whose availability will be displayed
-        //if id is null, use default id 0 (no tutor has id -1, so no availability will be displayed)
-        long tutorID = Long.parseLong(Optional.ofNullable(request.getParameter("tutorID")).orElse("-1"));
+        //if id is null, use default id -1 (no tutor has id -1, so no availability will be displayed)
+        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
 
         List<TimeRange> timeslots = datastore.getAvailabilityForTutor(tutorID);
 

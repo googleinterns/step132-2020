@@ -104,7 +104,7 @@ public final class HistoryTest {
         servlet.doGet(request, response);
 
         //id of tutor and student is 1
-        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession(1, 1, null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9))));
+        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9))));
 
         verify(request, times(1)).getParameter("studentID");
         writer.flush();

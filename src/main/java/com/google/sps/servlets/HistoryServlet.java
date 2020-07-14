@@ -47,7 +47,7 @@ public class HistoryServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the student whose tutoring history will be displayed.
         // Make the default id -1 if the parameter is null, so an empty list will be returned
-       long studentID = Long.parseLong(Optional.ofNullable(request.getParameter("studentID")).orElse("-1"));
+       String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
 
         List<TutorSession> scheduledSessions = datastore.getScheduledSessionsForStudent(studentID);
 

@@ -53,44 +53,44 @@ public final class SampleData {
                                                         .setDate(2020, 7, 18)
                                                         .build();
     //9 and 14 are the ids local datastore gives to these entities
-    private final TutorSession bernardoSession = new TutorSession(1, 1, null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9); 
-    private final TutorSession samSession = new TutorSession(2, 2, null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14);                                         
+    private final TutorSession bernardoSession = new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9); 
+    private final TutorSession samSession = new TutorSession("2", "2", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14);                                         
 
     private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
         new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("math", "history")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList()), 0),
+                new ArrayList<TutorSession> (Arrays.asList()), "0"),
         new Tutor("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("english", "physics")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                              TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, AUGUST102020),
                              TimeRange.fromStartToEnd(TIME_0100PM, TIME_0300PM, AUGUST72020))),
-                new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), 1),
+                new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), "1"),
         new Tutor("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("geology", "english")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList(samSession)), 2),
+                new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
         new Tutor("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("finance", "chemistry")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList()), 3),
+                new ArrayList<TutorSession> (Arrays.asList()), "3"),
         new Tutor("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("geology", "math")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList()), 4)
+                new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
 
     private ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
         new Student("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
-                new ArrayList<TutorSession> (Arrays.asList()), 0),
+                new ArrayList<TutorSession> (Arrays.asList()), "0"),
         new Student("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), 1),
+                new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), "1"),
         new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession> (Arrays.asList(samSession)), 2),
+                new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
         new Student("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
-                new ArrayList<TutorSession> (Arrays.asList()), 3),
+                new ArrayList<TutorSession> (Arrays.asList()), "3"),
         new Student("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession> (Arrays.asList()), 4)
+                new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
 
     public ArrayList<Tutor> getSampleTutors() {
@@ -178,7 +178,7 @@ public final class SampleData {
         }
     }
 
-    private void addTutorAvailabilityToDatastore(DatastoreService datastore, ArrayList<TimeRange> times, long userId) {
+    private void addTutorAvailabilityToDatastore(DatastoreService datastore, ArrayList<TimeRange> times, String userId) {
 
         for(TimeRange time : times) {
             addTimeRangeToDatastore(datastore, time, userId);
@@ -199,7 +199,7 @@ public final class SampleData {
             sessionEntity.setProperty("rated", session.isRated());
             sessionEntity.setProperty("rating", session.getRating());
             //userId = 0 for tutoring sessions
-            sessionEntity.setProperty("timeslot", addTimeRangeToDatastore(datastore, session.getTimeslot(), session.getId()));
+            sessionEntity.setProperty("timeslot", addTimeRangeToDatastore(datastore, session.getTimeslot(), String.valueOf(session.getId())));
 
             datastore.put(sessionEntity);
 
@@ -207,7 +207,7 @@ public final class SampleData {
 
     }
 
-    private long addTimeRangeToDatastore(DatastoreService datastore, TimeRange time, long userId) {
+    private long addTimeRangeToDatastore(DatastoreService datastore, TimeRange time, String userId) {
         Entity timeEntity = new Entity("TimeRange");
 
         timeEntity.setProperty("tutorID", userId);

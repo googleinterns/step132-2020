@@ -104,7 +104,7 @@ public final class SchedulingTest {
         verify(request, times(1)).getParameter("questions");
 
         String expected = new Gson()
-                            .toJson(new TutorSession(3, 1,
+                            .toJson(new TutorSession("3", "1",
                                             "algebra",
                                             "How does it work?",
                                             TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), 21)); //21 is the id the local datastore gives to this new session

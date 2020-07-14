@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -50,8 +51,8 @@ public class SchedulingServlet extends HttpServlet {
         response.setContentType("application/json;");
 
         //make the default value -1 if ids were null
-        long tutorID = Long.parseLong(Optional.ofNullable(request.getParameter("tutorID")).orElse("-1"));
-        long studentID = Long.parseLong(Optional.ofNullable(request.getParameter("studentID")).orElse("-1"));
+        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
+        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
         String start = request.getParameter("start");
         String end = request.getParameter("end");
         String year = request.getParameter("year");
@@ -61,7 +62,7 @@ public class SchedulingServlet extends HttpServlet {
         String questions = request.getParameter("questions");
 
         //if the tutor or student id was null
-        if(tutorID == -1 || studentId == -1) {
+        if(tutorID.equals("-1") || studentID.equals("-1")) {
             response.getWriter().println("{\"error\": \"There was an error scheduling your session.\"}");
         }
 

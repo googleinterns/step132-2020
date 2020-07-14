@@ -45,7 +45,7 @@ public final class AvailabilityDatastoreService {
     * Gets the availability of a tutor with the given user id.
     * @return List<TimeRange>
     */
-    public List<TimeRange> getAvailabilityForTutor(long id) {
+    public List<TimeRange> getAvailabilityForTutor(String id) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
@@ -67,7 +67,7 @@ public final class AvailabilityDatastoreService {
     * Adds a new time range to a tutor's availability.
     * @return boolean, true if time was added, false if there was a problem adding it
     */
-    public boolean addAvailability(long userId, TimeRange time) {
+    public boolean addAvailability(String userId, TimeRange time) {
         boolean added = true;
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -103,7 +103,7 @@ public final class AvailabilityDatastoreService {
     * Deletes a time range from a tutor's availability.
     * @return boolean, true if time was deleted, false if there was a problem deleting it
     */
-    public boolean deleteAvailability(long userId, TimeRange time) {
+    public boolean deleteAvailability(String userId, TimeRange time) {
         boolean deleted = true;
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

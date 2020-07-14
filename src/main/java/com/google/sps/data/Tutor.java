@@ -31,9 +31,9 @@ public final class Tutor {
     private ArrayList<TutorSession> scheduledSessions;
     private int ratingSum;
     private int ratingCount;
-    private long userId;
+    private String userId;
 
-    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions, long id) {
+    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions, String id) {
         this.name = name;
         this.bio = bio;
         this.pfp = pfp;
@@ -47,7 +47,7 @@ public final class Tutor {
         this.userId = id;
     }
 
-    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions, int ratingCount, int ratingSum, long id) {
+    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions, int ratingCount, int ratingSum, String id) {
         this.name = name;
         this.bio = bio;
         this.pfp = pfp;
@@ -92,7 +92,7 @@ public final class Tutor {
         return (float) this.ratingSum / this.ratingCount;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return this.userId;
     }
 

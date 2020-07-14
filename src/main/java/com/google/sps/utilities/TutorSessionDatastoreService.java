@@ -75,7 +75,7 @@ public final class TutorSessionDatastoreService {
     * Gets a list of all scheduled sessions for a tutor with the given user id.
     * @return List<TutorSession>, empty list if the tutor does not exist
     */
-    public List<TutorSession> getScheduledSessionsForTutor(long userId) {
+    public List<TutorSession> getScheduledSessionsForTutor(String userId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         return getScheduledSessions(datastore, "tutor", userId);
     }
@@ -84,7 +84,7 @@ public final class TutorSessionDatastoreService {
     * Gets a list of all scheduled sessions for a student with the given user id.
     * @return List<TutorSession>, empty list if the student does not exist
     */
-    public List<TutorSession> getScheduledSessionsForStudent(long userId) {
+    public List<TutorSession> getScheduledSessionsForStudent(String userId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         return getScheduledSessions(datastore, "student", userId);
     }
@@ -112,7 +112,7 @@ public final class TutorSessionDatastoreService {
 
             datastore.put(txn, sessionEntity);
 
-            long tutorID = (long) sessionEntity.getProperty("tutorID");
+            String tutorID = (String) sessionEntity.getProperty("tutorID");
 
             updateTutorRating(datastore, txn, tutorID, rating);
 
@@ -133,7 +133,7 @@ public final class TutorSessionDatastoreService {
     /**
     * Updates a tutor's rating by adding the rating to the tutor's current rating. 
     */
-    private void updateTutorRating(DatastoreService datastore, Transaction txn, long userId, int rating) {
+    private void updateTutorRating(DatastoreService datastore, Transaction txn, String userId, int rating) {
 
         //get tutor with user id
         Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
@@ -157,7 +157,7 @@ public final class TutorSessionDatastoreService {
     * Gets all the tutor session entities for a userType (tutor or student) with the corresponding user id. 
     * @return ArrayList<TutorSession>, empty list if the student does not exist
     */
-    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, String userType, long userId) {
+    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, String userType, String userId) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //get all sessions with given user id
@@ -169,8 +169,8 @@ public final class TutorSessionDatastoreService {
         for(Entity entity : sessionEntities.asIterable()) {
             try {
                 long id = (long) entity.getKey().getId();
-                long studentID = (long) entity.getProperty("studentID");
-                long tutorID = (long) entity.getProperty("tutorID");
+                String studentID = (String) entity.getProperty("studentID");
+                String tutorID = (String) entity.getProperty("tutorID");
                 String subtopics = (String) entity.getProperty("subtopics");
                 String questions = (String) entity.getProperty("questions");
                 int rating = Math.toIntExact((long) entity.getProperty("rating"));
@@ -206,7 +206,7 @@ public final class TutorSessionDatastoreService {
     * Updates the TimeRange entity that the student selected to reflect that it is now scheduled and not available.
     * @return long, the id of the TimeRange entity
     */
-    private long updateTimeRange(long userId, TimeRange time, long sessionId, DatastoreService datastore, Transaction txn) {
+    private long updateTimeRange(String userId, TimeRange time, long sessionId, DatastoreService datastore, Transaction txn) {
         //filter by tutor's email and time range properties
         CompositeFilter timeFilter = CompositeFilterOperator.and(FilterOperator.EQUAL.of("tutorID", userId),
                                                                  FilterOperator.EQUAL.of("start", time.getStart()), 

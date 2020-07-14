@@ -55,7 +55,7 @@ public final class SearchDatastoreService {
 
         for (Entity tutorEntity : tutorResults.asIterable()) {
             
-            long userId = (long) tutorEntity.getProperty("userId");
+            String userId = (String) tutorEntity.getProperty("userId");
             String name = (String) tutorEntity.getProperty("name");
             String bio = (String) tutorEntity.getProperty("bio");
             String pfp = (String) tutorEntity.getProperty("pfp");
@@ -80,7 +80,7 @@ public final class SearchDatastoreService {
     * Gets all the tutor session entities with the corresponding user id. 
     * @return ArrayList<TutorSession>
     */
-    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, long userId) {
+    private ArrayList<TutorSession> getScheduledSessions(DatastoreService datastore, String userId) {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //get all sessions with user id
@@ -93,8 +93,8 @@ public final class SearchDatastoreService {
             try {
 
                 long id = (long) entity.getKey().getId();
-                long studentID = (long) entity.getProperty("studentID");
-                long tutorID = (long) entity.getProperty("tutorID");
+                String studentID = (String) entity.getProperty("studentID");
+                String tutorID = (String) entity.getProperty("tutorID");
                 String subtopics = (String) entity.getProperty("subtopics");
                 String questions = (String) entity.getProperty("questions");
                 int rating = Math.toIntExact((long) entity.getProperty("rating"));
@@ -118,7 +118,7 @@ public final class SearchDatastoreService {
     * Gets all the time range entities that have the given user id.
     * @return ArrayList<TimeRange>
     */
-    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, long userId) {
+    private ArrayList<TimeRange> getTimeRanges(DatastoreService datastore, String userId) {
         ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
         
         //get all time ranges with tutor id

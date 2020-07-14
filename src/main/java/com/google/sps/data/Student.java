@@ -32,9 +32,9 @@ public final class Student {
     private String email;
     private ArrayList<String> learning;
     private ArrayList<TutorSession> scheduledSessions;
-    private long userId;
+    private String userId;
 
-    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions, long id) {
+    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions, String id) {
         this.name = name;
         this.bio = bio;
         this.pfp = pfp;
@@ -68,7 +68,7 @@ public final class Student {
         return this.scheduledSessions;
     }
 
-    public long getUserId() {
+    public String getUserId() {
         return this.userId;
     }
 
