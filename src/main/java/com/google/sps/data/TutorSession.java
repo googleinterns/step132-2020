@@ -23,10 +23,6 @@ package com.google.sps.data;
  */
 public final class TutorSession {
 
-    //an ID counter used for creating IDs for tutor sessions
-    //used for testing only
-    private static long testId = 0;
-
     private long studentID;
     private long tutorID;
     private String subtopics;
@@ -55,10 +51,6 @@ public final class TutorSession {
         this.rated = false;
         // Rating is initially set to 0 by default
         this.rating = 0;
-        // //assign an id using the id counter
-        // this.id = testId;
-        // //increment the counter
-        // testId++;
     }
 
     /**
@@ -142,11 +134,6 @@ public final class TutorSession {
         this.rated = true;
         this.rating = newRating;
         return;
-    }
-
-    //Temporary: used for testing until we make sample data non-static
-    public static void resetIds() {
-        testId = 0;
     }
 
 }
