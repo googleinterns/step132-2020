@@ -86,7 +86,7 @@
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html", null, null, false, false);
+         LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html", null, null, null);
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
      }
@@ -112,7 +112,7 @@
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID", USER_EMAIL, false, false);
+         LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID", USER_EMAIL, null);
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
      }
@@ -146,7 +146,7 @@
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID", USER_EMAIL, false, true);
+         LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID", USER_EMAIL, "student");
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
      }
@@ -180,57 +180,40 @@
      }
 
      @Test
-     public void isTutorTrue() {
+     public void getRoleTutor() {
+         // Add user and tutor properties to the local datastore so there is data to query in the function
+         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+         Entity userEntity = new Entity("User");
+         userEntity.setProperty("role", "tutor");
+         userEntity.setProperty("userId", USER_ID);
+         datastore.put(userEntity);
+        
+         String actual = servlet.getRole(USER_ID, datastore);
+         String expected = "tutor";
+
+         Assert.assertEquals(expected, actual);
+     }
+
+     @Test
+     public void getRoleNull() {
+         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+         String actual = servlet.getRole(USER_ID, datastore);
+         String expected = null;
+
+         Assert.assertEquals(expected, actual);
+     }
+
+     @Test
+     public void getRoleStudent() {
          // Add user and tutor properties to the local datastore so there is data to query in the function
          DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
          Entity userEntity = new Entity("User");
          userEntity.setProperty("role", "student");
          userEntity.setProperty("userId", USER_ID);
          datastore.put(userEntity);
-         Entity studentEntity = new Entity("Tutor");
-         studentEntity.setProperty("name", "Student McKnowledge");
-         studentEntity.setProperty("userId", USER_ID);
-         datastore.put(studentEntity);
         
-         boolean actual = servlet.isTutor(USER_ID, datastore);
-         boolean expected = true;
-
-         Assert.assertEquals(expected, actual);
-     }
-
-     @Test
-     public void isTutorFalse() {
-         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-         boolean actual = servlet.isTutor(USER_ID, datastore);
-         boolean expected = false;
-
-         Assert.assertEquals(expected, actual);
-     }
-
-     @Test
-     public void isStudentTrue() {
-         // Add user and tutor properties to the local datastore so there is data to query in the function
-         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-         Entity userEntity = new Entity("User");
-         userEntity.setProperty("role", "student");
-         userEntity.setProperty("userId", USER_ID);
-         datastore.put(userEntity);
-         Entity studentEntity = new Entity("Student");
-         studentEntity.setProperty("name", "Student McKnowledge");
-         studentEntity.setProperty("userId", USER_ID);
-         datastore.put(studentEntity);
-        
-         boolean actual = servlet.isStudent(USER_ID, datastore);
-         boolean expected = true;
-
-         Assert.assertEquals(expected, actual);
-     }
-
-     @Test
-     public void isStudentFalse() {
-         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-         boolean actual = servlet.isStudent(USER_ID, datastore);
-         boolean expected = false;
+         String actual = servlet.getRole(USER_ID, datastore);
+         String expected = "student";
 
          Assert.assertEquals(expected, actual);
      }

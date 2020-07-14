@@ -48,7 +48,7 @@ public class LoginStatusServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // If user not logged in, show login form
         if (!userService.isUserLoggedIn()) {
-            LoginStatus loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"), null, null, false, false);
+            LoginStatus loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"), null, null, null);
             String json = new Gson().toJson(loginStatus);
             response.setContentType("application/json");
             response.getWriter().println(json);
@@ -67,11 +67,10 @@ public class LoginStatusServlet extends HttpServlet {
 
         // Name is null if user hasn't registered, set needsToRegister to 'true' and make logout URL
         if (name == null) {
-            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail(), false, false);
+            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail(), null);
         } else {  // User is logged in and registered, make logout URL
-            boolean tutor = isTutor(userService.getCurrentUser().getUserId(), datastore);
-            boolean student = isStudent(userService.getCurrentUser().getUserId(), datastore);
-            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail(), tutor, student);
+            String role = getRole(userService.getCurrentUser().getUserId(), datastore);
+            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail(), role);
         }
 
         String json = new Gson().toJson(loginStatus);
@@ -108,23 +107,17 @@ public class LoginStatusServlet extends HttpServlet {
         return name;
     }
 
-    public boolean isTutor(String userId, DatastoreService datastore) {
+    public String getRole(String userId, DatastoreService datastore) {
         Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
-        Query query = new Query("Tutor").setFilter(filter);
+        Query query = new Query("User").setFilter(filter);
         PreparedQuery results = datastore.prepare(query);
 
         Entity tutorEntity = results.asSingleEntity();
 
-        return tutorEntity != null;
-    }
-
-    public boolean isStudent(String userId, DatastoreService datastore) {
-        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
-        Query query = new Query("Student").setFilter(filter);
-        PreparedQuery results = datastore.prepare(query);
-
-        Entity tutorEntity = results.asSingleEntity();
-
-        return tutorEntity != null;
+        if (tutorEntity == null) {
+            return null;
+        } else{
+            return (String) tutorEntity.getProperty("role");
+        }
     }
 }

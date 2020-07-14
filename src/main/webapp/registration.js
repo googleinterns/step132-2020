@@ -64,7 +64,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         });
 
         // If the user is a tutor, display availability settings
-        if (loginStatus.tutor) {
+        if (loginStatus.role == "tutor") {
             document.getElementById('availability-settings').style.display = "block";
             document.getElementById('tutor-session-settings').style.display = "none";
             document.getElementById('history').style.display = "none";
@@ -72,7 +72,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
                 redirectToManageAvailability(window, loginStatus);
             });
         // Display tutor session settings and history if the user is a student
-        } else if (loginStatus.student) {
+        } else if (loginStatus.role == "student") {
             document.getElementById('availability-settings').style.display = "none";
             document.getElementById('tutor-session-settings').style.display = "block";
             document.getElementById('history').style.display = "block";
