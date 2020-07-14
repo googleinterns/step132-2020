@@ -32,6 +32,8 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.TransactionOptions;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.util.Calendar;
 import java.lang.String;
 import java.util.ArrayList;
@@ -70,6 +72,14 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
     */
     @Override
     public boolean addAvailability(String email, TimeRange time) {
+        UserService userService = UserServiceFactory.getUserService();
+        // If the email of the currently logged in user does not match the email of the user whose
+        // availability will be altered, stop the request.
+        if (userService.getCurrentUser().getEmail().toLowerCase() != email.toLowerCase()) {
+            System.out.println("The current user does not have permission to add availability");
+            return false;
+        }
+
         boolean added = true;
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -106,6 +116,14 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
     */
     @Override
     public boolean deleteAvailability(String email, TimeRange time) {
+        UserService userService = UserServiceFactory.getUserService();
+        // If the email of the currently logged in user does not match the email of the user whose
+        // availability will be altered, stop the request.
+        if (userService.getCurrentUser().getEmail().toLowerCase() != email.toLowerCase()) {
+            System.out.println("The current user does not have permission to delete availability");
+            return false;
+        }
+
         boolean deleted = true;
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
