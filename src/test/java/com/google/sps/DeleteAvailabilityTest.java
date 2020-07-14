@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -34,10 +35,11 @@ import com.google.sps.servlets.DeleteAvailabilityServlet;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
-import com.google.sps.data.TutorSession;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 
 @RunWith(JUnit4.class)
@@ -57,12 +59,25 @@ public final class DeleteAvailabilityTest {
     private final int TIME_0200PM = TimeRange.getTimeInMinutes(14, 00);
     private final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
     private final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
+
+    private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
+
     private DeleteAvailabilityServlet servlet;
 
     @Before
-    public void setUp() {		        
-        servlet = new DeleteAvailabilityServlet(true);
-        TutorSession.resetIds();
+    public void setUp() {
+        helper.setUp();
+
+        servlet = new DeleteAvailabilityServlet();
+        servlet.init();
+
+        SampleData sample  = new SampleData();
+        sample.addTutorsToDatastore();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
 
     @Test
@@ -70,7 +85,7 @@ public final class DeleteAvailabilityTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn("elian@google.com");
+        when(request.getParameter("tutorID")).thenReturn("4");
         when(request.getParameter("start")).thenReturn("780");
         when(request.getParameter("end")).thenReturn("840");
         when(request.getParameter("day")).thenReturn("10");

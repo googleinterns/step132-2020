@@ -24,7 +24,6 @@
  import com.google.gson.Gson;
  import com.google.sps.data.LoginStatus;
  import com.google.sps.servlets.LoginStatusServlet;
- import com.google.sps.data.TutorSession;
  import java.io.*;
  import java.util.Arrays;
  import java.util.HashMap;
@@ -64,7 +63,6 @@
          request = mock(HttpServletRequest.class);       
          response = mock(HttpServletResponse.class);
          servlet = new LoginStatusServlet();
-         TutorSession.resetIds();
      }
 
      @After

@@ -28,19 +28,13 @@ import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.SampleData;
-import com.google.sps.data.TutorSession;
 import com.google.sps.servlets.AvailabilityServlet;
 import com.google.gson.Gson;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
-import static com.google.appengine.api.datastore.FetchOptions.Builder.withLimit;
-import com.google.appengine.api.datastore.Query;
 
 import javax.servlet.*;
 
@@ -59,8 +53,6 @@ public final class AvailabilityTest {
                                                         .setDate(2020, 7, 10)
                                                         .build();
     
-    private final String USER_ID = "123";
-
     private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
     
     private AvailabilityServlet servlet;
@@ -70,7 +62,11 @@ public final class AvailabilityTest {
         helper.setUp();	        
 
         servlet = new AvailabilityServlet();
-        TutorSession.resetIds();
+        servlet.init();
+
+        SampleData sample  = new SampleData();
+        sample.addTutorsToDatastore();
+
     }
 
     @After
@@ -80,12 +76,11 @@ public final class AvailabilityTest {
   
     @Test
     public void testDoGetWithValidId() throws Exception {
-        addAvailabilityToTestDatastore();
 
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn(USER_ID);
+        when(request.getParameter("tutorID")).thenReturn("0");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -121,33 +116,5 @@ public final class AvailabilityTest {
 
         writer.flush();
         Assert.assertTrue(stringWriter.toString().contains(expected));
-    }
-
-    /**
-    * Adds sample availabilities to local datastore for testing.
-    */
-    private void addAvailabilityToTestDatastore() {
-        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-        Assert.assertEquals(0, datastore.prepare(new Query("TimeRange")).countEntities(withLimit(10)));
-
-        Entity timeEntity1 = new Entity("TimeRange");
-
-        timeEntity1.setProperty("userId", Long.parseLong(USER_ID));
-        timeEntity1.setProperty("start", TIME_1200AM);
-        timeEntity1.setProperty("end", TIME_0100PM);
-        timeEntity1.setProperty("date", new Gson().toJson(MAY182020));
-
-        datastore.put(timeEntity1);
-
-        Entity timeEntity2 = new Entity("TimeRange");
-
-        timeEntity2.setProperty("userId", Long.parseLong(USER_ID));
-        timeEntity2.setProperty("start", TIME_0300PM);
-        timeEntity2.setProperty("end", TIME_0500PM);
-        timeEntity2.setProperty("date", new Gson().toJson(AUGUST102020));
-
-        datastore.put(timeEntity2);
-
-        Assert.assertEquals(2, datastore.prepare(new Query("TimeRange")).countEntities(withLimit(10)));
     }
 }
