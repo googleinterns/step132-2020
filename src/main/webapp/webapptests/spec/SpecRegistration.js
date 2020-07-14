@@ -144,11 +144,19 @@ describe("Registration", function() {
                 var mockProfileLink = document.createElement('button');
                 mockProfileLink.id = 'profile';
 
+                var mockAvailabilitySettingsLink = document.createElement('button');
+                mockAvailabilitySettingsLink.id = 'availability-settings';
+
+                var mockHistoryLink = document.createElement('button');
+                mockHistoryLink.id = 'history';
+
                 document.body.appendChild(mockLoginForm);
                 document.body.appendChild(mockLoginUrl);
                 document.body.appendChild(mockLogoutForm);
                 document.body.appendChild(mockLogoutUrl);
                 document.body.appendChild(mockProfileLink);
+                document.body.appendChild(mockAvailabilitySettingsLink);
+                document.body.appendChild(mockHistoryLink);
             })
 
             it("displays login link when user logged out", function() {
@@ -158,6 +166,8 @@ describe("Registration", function() {
                 expect(document.getElementById('login').style.display).toBe('block');
                 expect(document.getElementById('logout').style.display).toBe('none');
                 expect(document.getElementById('profile').style.display).toBe('none');
+                expect(document.getElementById('availability-settings').style.display).toBe('none');
+                expect(document.getElementById('history').style.display).toBe('none');
             });
 
             it("displays logout link when user logged in", function() {
@@ -167,6 +177,8 @@ describe("Registration", function() {
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
                 expect(document.getElementById('profile').style.display).toBe('block');
+                expect(document.getElementById('availability-settings').style.display).toBe('block');
+                expect(document.getElementById('history').style.display).toBe('block');
             });
 
             it("sets logout link correctly", function() {
@@ -190,6 +202,21 @@ describe("Registration", function() {
 
                 expect(mockWindow.location.href).toEqual("profile.html?userID=blah");
             });
+            it("adds event listener that redirects the user to their availability settings", function() {
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah'};
+                var mockWindow = {location: {href: "homepage.html"}};
+                redirectToManageAvailability(mockWindow, mockLoginStatus);
+
+                expect(mockWindow.location.href).toEqual("manage-availability.html?userID=blah");
+            })
+
+            it("adds event listener that redirects the user to their history", function() {
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah'};
+                var mockWindow = {location: {href: "homepage.html"}};
+                redirectToHistory(mockWindow, mockLoginStatus);
+
+                expect(mockWindow.location.href).toEqual("history.html?userID=blah");
+            })
         });
     });
 });

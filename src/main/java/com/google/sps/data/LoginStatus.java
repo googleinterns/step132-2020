@@ -21,11 +21,13 @@ public class LoginStatus {
     private boolean needsToRegister;
     private String url;
     private String userId;
+    private String userEmail;
 
-    public LoginStatus(boolean isLoggedIn, boolean needsToRegister, String url, String userId) {
+    public LoginStatus(boolean isLoggedIn, boolean needsToRegister, String url, String userId, String userEmail) {
         this.isLoggedIn = isLoggedIn;
         this.needsToRegister = needsToRegister;
         this.url = url;
         this.userId = userId;
+        this.userEmail = userEmail;
     }
 }

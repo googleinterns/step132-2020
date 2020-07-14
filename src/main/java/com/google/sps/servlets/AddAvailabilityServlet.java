@@ -85,7 +85,7 @@ public class AddAvailabilityServlet extends HttpServlet {
         String json = new Gson().toJson(datastore.getAvailabilityForTutor(tutorID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
-        response.sendRedirect("/manage-availability.html?tutorID=" + tutorID);
+        response.sendRedirect("/manage-availability.html?userID=" + tutorID.replace("@", "%40"));
         return;
     }
 }
