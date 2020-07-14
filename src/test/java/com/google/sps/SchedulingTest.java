@@ -97,11 +97,9 @@
 //                                             "How does it work?",
 //                                             TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), 0));
 
-//         writer.flush();
-//         // Tutoring session should have been scheduled
-//         System.out.println(stringWriter.toString());
-//         System.out.println(expected);
-//         Assert.assertTrue(stringWriter.toString().contains(expected));
-//     }
+    //     writer.flush();
+    //     // Tutoring session should have been scheduled
+    //     Assert.assertTrue(stringWriter.toString().contains(expected));
+    // }
 
 // }

@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function getScheduledSessions() {
+function getTutorSessionsManage() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);
-    const studentEmail = queryString["studentEmail"];
+    const userID = queryString["userID"];
 
-    fetch('/confirmation?studentEmail=' + studentEmail, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+    fetch('/confirmation?studentEmail=' + userID, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
         scheduledSessions.forEach((scheduledSession) => {
-            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession, studentEmail));
+            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBoxManage(scheduledSession, userID));
         })
     });
 }
@@ -40,7 +40,7 @@ function readTutorID(queryString, window) {
     }
 }
 
-function createScheduledSessionBox(scheduledSession, studentEmail) {
+function createScheduledSessionBoxManage(scheduledSession, userID) {
     var months = [ "January", "February", "March", "April", "May", "June", 
            "July", "August", "September", "October", "November", "December" ];
 
@@ -59,7 +59,7 @@ function createScheduledSessionBox(scheduledSession, studentEmail) {
     const dateElement = document.createElement('h3');
     dateElement.style.textAlign = 'left';
     dateElement.style.display = 'inline';
-    var hour = Math.floor(parseInt(scheduledSession.timeslot.start) / 60);
+    var hour = parseInt(scheduledSession.timeslot.start) / 60;
     var amOrPm = "am";
     if (hour > 12) {
         hour = hour - 12;
@@ -72,12 +72,45 @@ function createScheduledSessionBox(scheduledSession, studentEmail) {
     dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
                              " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
 
-
     const dateLineElement = document.createElement('div');
     dateLineElement.className = 'd-flex w-100 justify-content-between';
     dateLineElement.appendChild(dateElement);
+    
+    const cancelButtonElement = document.createElement('button');
+    cancelButtonElement.innerText = 'Cancel';
+    cancelButtonElement.style.textAlign = 'right';
+    cancelButtonElement.style.display = 'inline';
+    cancelButtonElement.className = 'btn btn-default btn-lg';
+    cancelButtonElement.addEventListener('click', () => {
+        cancelTutorSession(userID, window, scheduledSession);
+
+        scheduledSessionElement.remove();
+    });
+
+    const buttonLineElement = document.createElement('div');
+    buttonLineElement.className = 'd-flex w-100 justify-content-between';
+    buttonLineElement.style.padding = '10px';
+    buttonLineElement.appendChild(cancelButtonElement);
 
     scheduledSessionElement.appendChild(tutorLineElement);
     scheduledSessionElement.appendChild(dateLineElement);
+    scheduledSessionElement.appendChild(buttonLineElement);
     return scheduledSessionElement;
+}
+
+function cancelTutorSession(userID, window, scheduledSession) {
+    const params = new URLSearchParams();
+    params.append('tutorEmail', scheduledSession.tutorEmail);
+    params.append('studentEmail', scheduledSession.studentEmail);
+    params.append('year', scheduledSession.timeslot.date.year);
+    params.append('month', scheduledSession.timeslot.date.month);
+    params.append('day', scheduledSession.timeslot.date.dayOfMonth);
+    params.append('start', scheduledSession.timeslot.start);
+    params.append('end', scheduledSession.timeslot.end);
+    params.append('subtopics', scheduledSession.subtopics);
+    params.append('questions', scheduledSession.questions);
+    params.append('rating', scheduledSession.rating);
+    params.append('id', scheduledSession.id);
+
+    fetch('/delete-tutor-session', {method: 'POST', body: params});
 }
