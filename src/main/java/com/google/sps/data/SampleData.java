@@ -54,7 +54,7 @@ public final class SampleData {
                                                         .build();
     //9 and 14 are the ids local datastore gives to these entities
     private final TutorSession bernardoSession = new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9); 
-    private final TutorSession samSession = new TutorSession("2", "2", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14);                                         
+    private final TutorSession samSession = new TutorSession("2", "2", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14);
 
     private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
         new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("math", "history")),
@@ -134,7 +134,6 @@ public final class SampleData {
     *  @return Tutor
     */
     public Tutor getTutorByEmail(String email) {
-        System.out.println("got to the sample data function");
         for(Tutor tutor : tutors) {
             if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 return tutor;
@@ -204,13 +203,12 @@ public final class SampleData {
             datastore.put(sessionEntity);
 
         }
-
     }
 
-    private long addTimeRangeToDatastore(DatastoreService datastore, TimeRange time, String userId) {
+    private long addTimeRangeToDatastore(DatastoreService datastore, TimeRange time, String id) {
         Entity timeEntity = new Entity("TimeRange");
 
-        timeEntity.setProperty("tutorID", userId);
+        timeEntity.setProperty("tutorID", id);
         timeEntity.setProperty("start", time.getStart());
         timeEntity.setProperty("end", time.getEnd());
         timeEntity.setProperty("date", new Gson().toJson(time.getDate()));

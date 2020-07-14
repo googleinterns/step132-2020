@@ -58,7 +58,7 @@ public final class TutorSessionDatastoreService {
             sessionEntity.setProperty("questions", session.getQuestions());
             sessionEntity.setProperty("rated", session.isRated());
             sessionEntity.setProperty("rating", session.getRating());
-            sessionEntity.setProperty("timeslot", updateTimeRange(session.getTutorID(), session.getTimeslot(), (long) sessionEntity.getKey().getId(), datastore, txn));
+            sessionEntity.setProperty("timeslot", updateTimeRangeToScheduled(session.getTutorID(), session.getTimeslot(), (long) sessionEntity.getKey().getId(), datastore, txn));
 
             datastore.put(txn, sessionEntity);
 
@@ -72,7 +72,31 @@ public final class TutorSessionDatastoreService {
     }
 
     /**
-    * Gets a list of all scheduled sessions for a tutor with the given user id.
+    * Deletes a TutorSession for the tutor and student.
+    */
+    public void deleteTutorSession(TutorSession session) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        long sessionId = session.getId();
+        Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
+
+        try {
+            updateTimeRangeToAvailable(session.getId(), session.getTutorID(), datastore, txn);
+
+            datastore.delete(txn, sessionKey);
+
+            txn.commit();
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
+    }
+
+    /**
+    * Gets a list of all scheduled sessions for a tutor with the given email.
     * @return List<TutorSession>, empty list if the tutor does not exist
     */
     public List<TutorSession> getScheduledSessionsForTutor(String userId) {
@@ -206,7 +230,7 @@ public final class TutorSessionDatastoreService {
     * Updates the TimeRange entity that the student selected to reflect that it is now scheduled and not available.
     * @return long, the id of the TimeRange entity
     */
-    private long updateTimeRange(String userId, TimeRange time, long sessionId, DatastoreService datastore, Transaction txn) {
+    private long updateTimeRangeToScheduled(String userId, TimeRange time, long sessionId, DatastoreService datastore, Transaction txn) {
         //filter by tutor's email and time range properties
         CompositeFilter timeFilter = CompositeFilterOperator.and(FilterOperator.EQUAL.of("tutorID", userId),
                                                                  FilterOperator.EQUAL.of("start", time.getStart()), 
@@ -223,6 +247,30 @@ public final class TutorSessionDatastoreService {
         //change the tutorID property to the sessionId
         //instead of deleting the TimeRange entity, we can just set the tutorID property to the sessionId to indicate that it is a scheduled session 
         timeEntity.setProperty("tutorID", sessionId);
+
+        //update in datastore
+        datastore.put(txn, timeEntity);
+
+        return timeEntity.getKey().getId();
+    }
+
+    /**
+    * Updates the TimeRange entity that the student canceled to reflect that it is now available and not scheduled.
+    * @return long, the id of the TimeRange entity
+    */
+    private long updateTimeRangeToAvailable(long sessionId, String tutorID, DatastoreService datastore, Transaction txn) {
+        //filter by tutor's email and time range properties
+        Filter timeFilter = new FilterPredicate("tutorID", FilterOperator.EQUAL, String.valueOf(sessionId));
+
+        Query query = new Query("TimeRange").setFilter(timeFilter);
+
+        PreparedQuery pq = datastore.prepare(query);
+
+        //there should only be one result
+        Entity timeEntity = pq.asSingleEntity();
+
+        //change the email property from "scheduled" to the tutor's email
+        timeEntity.setProperty("tutorID", tutorID);
 
         //update in datastore
         datastore.put(txn, timeEntity);

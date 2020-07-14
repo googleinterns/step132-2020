@@ -111,8 +111,6 @@ public final class SchedulingTest {
 
         writer.flush();
         // Tutoring session should have been scheduled
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
