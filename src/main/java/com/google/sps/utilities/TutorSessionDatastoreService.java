@@ -27,6 +27,11 @@ public interface TutorSessionDatastoreService {
     public void addTutorSession(String tutorEmail, String studentEmail, TutorSession session);
 
     /**
+    * Deletes a TutorSession for the tutor and student.
+    */
+    public void deleteTutorSession(TutorSession session);
+
+    /**
     * Gets a list of all scheduled sessions for a tutor with the given email.
     * @return List<TutorSession>, empty list if the tutor does not exist
     */

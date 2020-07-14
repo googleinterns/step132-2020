@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.*;
-import com.google.sps.servlets.SchedulingServlet;
+import com.google.sps.servlets.DeleteTutorSessionServlet;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
@@ -41,18 +41,12 @@ import java.util.Arrays;
 
 
 @RunWith(JUnit4.class)
-public final class SchedulingTest {
-    private final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 00);
-    private final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 00);
-    private final Calendar MAY182020 = new Calendar.Builder()
-                                                        .setCalendarType("iso8601")
-                                                        .setDate(2020, 4, 18)
-                                                        .build();
-    private SchedulingServlet servlet;
+public final class DeleteTutorSessionTest {
+    private DeleteTutorSessionServlet servlet;
 
     @Before
-    public void setUp() {
-        servlet = new SchedulingServlet(true);
+    public void setUp() {		        
+        servlet = new DeleteTutorSessionServlet(true);
         TutorSession.resetIds();
     }
 
@@ -61,15 +55,17 @@ public final class SchedulingTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn("btrevisan@google.com");
-        when(request.getParameter("start")).thenReturn("480");
+        when(request.getParameter("tutorEmail")).thenReturn("sfalberg@google.com");
+        when(request.getParameter("studentEmail")).thenReturn("sfalberg@google.com");
+        when(request.getParameter("start")).thenReturn("540");
         when(request.getParameter("end")).thenReturn("600");
-        when(request.getParameter("year")).thenReturn("2020");
-        when(request.getParameter("month")).thenReturn("4");
         when(request.getParameter("day")).thenReturn("18");
-        when(request.getParameter("studentEmail")).thenReturn("thegoogler@google.com");
-        when(request.getParameter("subtopics")).thenReturn("algebra");
-        when(request.getParameter("questions")).thenReturn("How does it work?");
+        when(request.getParameter("month")).thenReturn("7");
+        when(request.getParameter("year")).thenReturn("2020");
+        when(request.getParameter("subtopics")).thenReturn(null);
+        when(request.getParameter("questions")).thenReturn(null);
+        when(request.getParameter("rating")).thenReturn("5");
+        when(request.getParameter("id")).thenReturn("1");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -78,26 +74,33 @@ public final class SchedulingTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("tutorID");
+        verify(request, times(1)).getParameter("tutorEmail");
+        verify(request, times(1)).getParameter("studentEmail");
         verify(request, times(1)).getParameter("start");
         verify(request, times(1)).getParameter("end");
-        verify(request, times(1)).getParameter("year");
-        verify(request, times(1)).getParameter("month");
         verify(request, times(1)).getParameter("day");
-        verify(request, times(1)).getParameter("studentEmail");
+        verify(request, times(1)).getParameter("month");
+        verify(request, times(1)).getParameter("year");
         verify(request, times(1)).getParameter("subtopics");
         verify(request, times(1)).getParameter("questions");
+        verify(request, times(1)).getParameter("rating");
+        verify(request, times(1)).getParameter("id");
 
-        String expected = new Gson()
-                            .toJson(new TutorSession("thegoogler@google.com",
-                                            "btrevisan@google.com",
-                                            "algebra",
-                                            "How does it work?",
-                                            TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), 0));
+        Calendar date = new Calendar.Builder()
+                                            .setCalendarType("iso8601")
+                                            .setDate(2020, 7, 18)
+                                            .build();
+
+        String unexpected = new Gson()
+                            .toJson(Arrays.asList( new TutorSession("sfalberg@google.com",
+                                            "sfalberg@google.com",
+                                            null,
+                                            null,
+                                            TimeRange.fromStartToEnd(540, 600, date), 1)));
 
         writer.flush();
-        // Tutoring session should have been scheduled
-        Assert.assertTrue(stringWriter.toString().contains(expected));
+        // Tutor session should no longer be scheduled
+        Assert.assertFalse(stringWriter.toString().contains(unexpected));
     }
 
 }

@@ -128,7 +128,6 @@ public final class SampleData {
     *  @return Tutor
     */
     public Tutor getTutorByEmail(String email) {
-        System.out.println("got to the sample data function");
         for(Tutor tutor : tutors) {
             if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
                 return tutor;
@@ -177,19 +176,25 @@ public final class SampleData {
     /** Adds the given TutorSession to the scheduled sessions array of the given tutor. */
     public void addToTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Tutor tutor = getTutorByEmail(email);
-
-        // tutors.remove(tutor);
         tutor.addToScheduledSessions(tutoringSession);
-        // tutors.add(tutor);
+    }
+
+    /** Deletes the given TutorSession from the scheduled sessions array of the given tutor. */
+    public void deleteFromTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
+        Tutor tutor = getTutorByEmail(email);
+        tutor.deleteFromScheduledSessions(tutoringSession);
     }
 
     /** Adds the given TutorSession to the scheduled sessions array of the given student. */
     public void addToStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
         Student student = getStudentByEmail(email);
-
-        // students.remove(student);
         student.addToScheduledSessions(tutoringSession);
-        // students.add(student);
+    }
+
+    /** Deletes the given TutorSession from the scheduled sessions array of the given student. */
+    public void deleteFromStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
+        Student student = getStudentByEmail(email);
+        student.deleteFromScheduledSessions(tutoringSession);
     }
 
      public void rateTutorByEmail(String tutorEmail, String studentEmail, int newRating) {
