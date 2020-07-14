@@ -73,7 +73,7 @@ public final class TutorSessionDatastoreService {
 
     /**
     * Gets a list of all scheduled sessions for a tutor with the given user id.
-    * @return List<TutorSession>
+    * @return List<TutorSession>, empty list if the tutor does not exist
     */
     public List<TutorSession> getScheduledSessionsForTutor(long userId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -82,7 +82,7 @@ public final class TutorSessionDatastoreService {
 
     /**
     * Gets a list of all scheduled sessions for a student with the given user id.
-    * @return List<TutorSession>, empty list if the tutor does not exist
+    * @return List<TutorSession>, empty list if the student does not exist
     */
     public List<TutorSession> getScheduledSessionsForStudent(long userId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

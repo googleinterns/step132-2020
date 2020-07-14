@@ -47,15 +47,23 @@ public class SchedulingServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        long tutorID = Long.parseLong(request.getParameter("tutorID"));
+        response.setContentType("application/json;");
+
+        //make the default value -1 if ids were null
+        long tutorID = Long.parseLong(Optional.ofNullable(request.getParameter("tutorID")).orElse("-1"));
+        long studentID = Long.parseLong(Optional.ofNullable(request.getParameter("studentID")).orElse("-1"));
         String start = request.getParameter("start");
         String end = request.getParameter("end");
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         String day = request.getParameter("day");
-        long studentID = Long.parseLong(request.getParameter("studentID"));
         String subtopics = request.getParameter("subtopics");
         String questions = request.getParameter("questions");
+
+        //if the tutor or student id was null
+        if(tutorID == -1 || studentId == -1) {
+            response.getWriter().println("{\"error\": \"There was an error scheduling your session.\"}");
+        }
 
         Calendar date = new Calendar.Builder()
                                 .setCalendarType("iso8601")
@@ -69,7 +77,6 @@ public class SchedulingServlet extends HttpServlet {
         datastore.addTutorSession(tutoringSession);
 
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
-        response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
     }

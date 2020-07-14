@@ -47,6 +47,7 @@ public class DeleteAvailabilityServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //if parameter is null, make the default id -1 so nothing gets deleted because there is no tutor with id = -1
         long tutorID = Long.parseLong(Optional.ofNullable(request.getParameter("tutorID")).orElse("-1"));
         String year = request.getParameter("year");
         String month = request.getParameter("month");
