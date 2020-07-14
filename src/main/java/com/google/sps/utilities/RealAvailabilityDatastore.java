@@ -75,8 +75,6 @@ public final class RealAvailabilityDatastore implements AvailabilityDatastoreSer
         UserService userService = UserServiceFactory.getUserService();
         // If the email of the currently logged in user does not match the email of the user whose
         // availability will be altered, stop the request.
-        System.out.println(userService.getCurrentUser().getEmail().toLowerCase());
-        System.out.println(email.toLowerCase());
         if (!userService.getCurrentUser().getEmail().toLowerCase().equals(email.toLowerCase())) {
             System.out.println("The current user does not have permission to add availability");
             return false;
