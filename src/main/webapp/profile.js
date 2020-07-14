@@ -14,14 +14,18 @@
 
 // Fetch info about the spceific user logged in 
 function displayProfile() {
-    // Get the userID parameter from the URL
-    var params = new URL(location.href).searchParams;
-    var userID = params.get('userID');
+    var userID = getIdParameter(window);
 
     fetch('/profile?user-id='+userID).then(response => response.json()).then((user) => {
         console.log(user);
         document.getElementById('profile-container').appendChild(createProfileDiv(user));
     });
+}
+
+// Get the userID parameter from the URL, created as helper function for testing
+function getIdParameter(window) {
+    var url = new URL(window.location.href);
+    return url.searchParams.get('userID');
 }
 
 // Create elements and fill their inner HTML with user info
