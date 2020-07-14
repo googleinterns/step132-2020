@@ -18,6 +18,7 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
+import com.google.sps.data.RatingEmailTask;
 import com.google.sps.utilities.TutorSessionDatastoreService;
 import com.google.sps.utilities.RealTutorSessionDatastore;
 import com.google.sps.utilities.MockTutorSessionDatastore;
@@ -27,6 +28,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Timer; 
+import java.util.TimerTask;
+import java.lang.Math;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -82,9 +86,34 @@ public class SchedulingServlet extends HttpServlet {
 
         datastore.addTutorSession(tutorID, studentEmail, tutoringSession);
 
+        scheduleRatingEmail(tutoringSession);
+
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
+    }
+
+    // Schedules an email to prompt the user to rate their tutoring session
+    // to be sent out after the tutoring session is over.
+    public void scheduleRatingEmail(TutorSession tutoringSession) {
+        Timer timer = new Timer();
+        TimerTask sendEmail = new RatingEmailTask(tutoringSession);
+
+        int year = tutoringSession.getTimeslot().getDate().get(Calendar.YEAR);
+        int month = tutoringSession.getTimeslot().getDate().get(Calendar.MONTH);
+        int day = tutoringSession.getTimeslot().getDate().get(Calendar.DAY_OF_MONTH);
+        int hour = (int) Math.floor(tutoringSession.getTimeslot().getEnd() / 60);
+        int min = tutoringSession.getTimeslot().getEnd() % 60;
+
+        Calendar scheduledDate = Calendar.getInstance();
+        scheduledDate.set(Calendar.YEAR, year);
+        scheduledDate.set(Calendar.MONTH, month);
+        scheduledDate.set(Calendar.DAY_OF_MONTH, day);
+        scheduledDate.set(Calendar.HOUR_OF_DAY, hour);
+        scheduledDate.set(Calendar.MINUTE, min);
+
+        // The run method in RatingEmailTask will be triggered after the end of the tutoring session
+        timer.schedule(sendEmail, scheduledDate.getTime());
     }
 }
