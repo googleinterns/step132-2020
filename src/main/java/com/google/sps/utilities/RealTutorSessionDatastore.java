@@ -31,6 +31,8 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import java.lang.String;
 import java.util.List;
 import java.util.ArrayList;
@@ -45,6 +47,14 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
     */
     @Override
     public void addTutorSession(String tutorEmail, String studentEmail, TutorSession session) {
+        UserService userService = UserServiceFactory.getUserService();
+        // If the email of the currently logged in user does not match the email of the student who
+        // wants to schedule the tutoring session, stop the request.
+        if (!userService.getCurrentUser().getEmail().toLowerCase().equals(studentEmail.toLowerCase())) {
+            System.out.println("The current user does not have permission to schedule this tutoring session");
+            return;
+        }
+
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
@@ -77,6 +87,14 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
     */
     @Override
     public void deleteTutorSession(TutorSession session) {
+        UserService userService = UserServiceFactory.getUserService();
+        // If the email of the currently logged in user does not match the email of the student who
+        // wants to cancel the tutoring session, stop the request.
+        if (!userService.getCurrentUser().getEmail().toLowerCase().equals(session.getStudentEmail().toLowerCase())) {
+            System.out.println("The current user does not have permission to cancel this tutoring session");
+            return;
+        }
+
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
@@ -123,7 +141,6 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
     */
     @Override
     public boolean rateTutorSession(long sessionId, int rating) {
-
         boolean success = true;
 
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -135,6 +152,14 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
         try {
 
             Entity sessionEntity = datastore.get(txn, sessionKey); 
+
+            UserService userService = UserServiceFactory.getUserService();
+            // If the email of the currently logged in user does not match the email of the student who
+            // took the tutoring session, stop the request.
+            if (!userService.getCurrentUser().getEmail().toLowerCase().equals(sessionEntity.getProperty("studentEmail"))) {
+                System.out.println("The current user does not have permission to rate this tutoring session");
+                return false;
+            }
 
             sessionEntity.setProperty("rated", true);
             sessionEntity.setProperty("rating", rating);
