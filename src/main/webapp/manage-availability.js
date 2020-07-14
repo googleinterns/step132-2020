@@ -12,10 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-document.getElementById("timeslot-form").addEventListener('submit', event => {
-    event.preventDefault();
-    addTimeSlot();
-});
+/** A function that adds event listeners to a DOM objects. */
+function addEventListeners() {
+    document.getElementById("timeslot-form").addEventListener('submit', event => {
+        event.preventDefault();
+        addTimeSlot();
+    });
+}
+
 function getAvailabilityManage() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);

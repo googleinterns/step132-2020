@@ -14,31 +14,31 @@
 
 describe("History", function() {
     describe("when the history of tutoring sessions is loaded", function() {
-        var mockWindow = {location: {href: "history.html?studentEmail=test%40gmail.com", search: "?studentEmail=test%40gmail.com"}};
+        var mockWindow = {location: {href: "history.html?studentID=123", search: "?studentID=123"}};
 
         it("should trigger the fetch function", function() {
             spyOn(window, "onload").and.callFake(function() {
-                readStudentEmail(queryString, window);
+                readStudentID(queryString, window);
             });
             spyOn(window, 'fetch').and.callThrough();
             getTutoringSessionHistory(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/history?studentEmail=undefined', {method: 'GET'});
+            expect(window.fetch).toHaveBeenCalledWith('/history?studentID=undefined', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
-    describe("when the student email is read", function() {
-        var mockWindow = {location: {href: "history.html?studentEmail=test%40gmail.com", search: "?studentEmail=test%40gmail.com"}};
+    describe("when the student ID is read", function() {
+        var mockWindow = {location: {href: "history.html?studentID=123", search: "?studentID=123"}};
         var queryString = new Array();
-        readStudentEmail(queryString, mockWindow);
+        readStudentID(queryString, mockWindow);
 
-        it("should set studentEmail inside queryString as the studentEmail passed down", function() {
-            expect(queryString["studentEmail"]).toEqual("test@gmail.com");
+        it("should set studentID inside queryString as the studentID passed down", function() {
+            expect(queryString["studentID"]).toEqual("123");
         });
     });
 
     describe("when a tutoring session box is created", function() {
-        var tutoringSession = {tutorEmail: "tester@gmail.com", timeslot: {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}}};
+        var tutoringSession = {tutorID: "123", timeslot: {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}}};
         var actual = createTutoringSessionBox(tutoringSession);
 
         it("should return a list item element", function() {
@@ -64,7 +64,13 @@ describe("History", function() {
         });
 
         it("should have the inner HTML of the h3 tag equal to to the email of the tutor", function() {
-            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("Tutoring Session with tester@gmail.com");
+            var tutor = {email: "tester@gmail.com"};
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(user)}), Promise.resolve({json: () => Promise.resolve(tutor)}));
+
+            const tutorElement = document.createElement('h3');
+            setTutorEmail(tutorElement, "123").then(() => {
+                expect(tutorElement.innerHTML).toEqual("Tutoring Session with tester@gmail.com");
+            });
         });
 
         it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
@@ -93,7 +99,7 @@ describe("History", function() {
     });
 
     describe("when loadStars is called and the tutoring session has been rated", function() {
-        var fakeTutoringSession = {tutorEmail: "tester@gmail.com", rated: true, rating: 3, timeslot: {start: 480}};
+        var fakeTutoringSession = {tutorID: "123", rated: true, rating: 3, timeslot: {start: 480}};
         var fakeStarsElement = document.createElement('div');
         var actual = loadStars(fakeStarsElement, fakeTutoringSession);
 
@@ -111,7 +117,7 @@ describe("History", function() {
     });
 
     describe("when loadStars is called and the tutoring session has not been rated", function() {
-        var fakeTutoringSession = {tutorEmail: "tester@gmail.com", rated: false, rating: 3, timeslot: {start: 480}};
+        var fakeTutoringSession = {tutorID: "123", rated: false, rating: 3, timeslot: {start: 480}};
         var fakeStarsElement = document.createElement('div');
         var actual = loadStars(fakeStarsElement, fakeTutoringSession);
 
@@ -126,7 +132,7 @@ describe("History", function() {
     });
 
     describe("when rateTutor is called", function() {
-        var fakeTutoringSession = {tutorEmail: "tester@gmail.com", studentEmail: "test@gmail.com"};
+        var fakeTutoringSession = {tutorID: "123", studentID: "123"};
         var fakeRating = 5;
 
         it("should trigger the fetch function", function() {

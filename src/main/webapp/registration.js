@@ -113,7 +113,7 @@ function redirectToManageAvailability(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to manage-sessions.html
  */
 function redirectToManageSessions(window, loginStatus) {
-    var url = "manage-sessions.html?userID=" + encodeURIComponent(loginStatus.userEmail);
+    var url = "manage-sessions.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 

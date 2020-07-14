@@ -52,11 +52,7 @@ function createScheduledSessionBox(scheduledSession, studentID) {
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
 
-    var tutor;
-    
-    getUser(scheduledSession.tutorID).then(user => tutor = user).then(function() {
-        tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
-    });
+    setTutorEmail(tutorElement, scheduledSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';
@@ -86,4 +82,13 @@ function createScheduledSessionBox(scheduledSession, studentID) {
     scheduledSessionElement.appendChild(tutorLineElement);
     scheduledSessionElement.appendChild(dateLineElement);
     return scheduledSessionElement;
+}
+
+//Helper function for testing purposes
+//Sets the tutor element's email field to the tutor email
+function setTutorEmail(tutorElement, tutorID) {
+    var tutor;
+    return getUser(tutorID).then(user => tutor = user).then(() => {
+        tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
+    });
 }
