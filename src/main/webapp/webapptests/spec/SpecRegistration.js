@@ -219,8 +219,7 @@ describe("Registration", function() {
                 setProfileQueryString(mockWindow, mockLoginStatus);
 
                 expect(mockWindow.location.href).toEqual("profile.html?userID=blah");
-            })
-
+            });
             it("adds event listener that redirects the user to their availability settings", function() {
                 mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah', role: "tutor"};
                 var mockWindow = {location: {href: "homepage.html"}};
