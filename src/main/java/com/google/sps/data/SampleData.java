@@ -197,7 +197,6 @@ public final class SampleData {
             sessionEntity.setProperty("questions", session.getQuestions());
             sessionEntity.setProperty("rated", session.isRated());
             sessionEntity.setProperty("rating", session.getRating());
-            //userId = 0 for tutoring sessions
             sessionEntity.setProperty("timeslot", addTimeRangeToDatastore(datastore, session.getTimeslot(), String.valueOf(session.getId())));
 
             datastore.put(sessionEntity);
