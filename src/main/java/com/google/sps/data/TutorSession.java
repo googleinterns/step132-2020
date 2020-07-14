@@ -129,11 +129,4 @@ public final class TutorSession {
     public int getRating() {
         return this.rating;
     }
-
-    public void rateSession(int newRating) {
-        this.rated = true;
-        this.rating = newRating;
-        return;
-    }
-
 }

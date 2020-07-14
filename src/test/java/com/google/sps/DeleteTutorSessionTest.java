@@ -126,18 +126,4 @@ public final class DeleteTutorSessionTest {
         Assert.assertFalse(stringWriter.toString().contains(unexpected));
     }
 
-    // private void addScheduledTimeRange(TimeRange time) {
-    //     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-
-    //     Entity timeEntity = new Entity("TimeRange");
-
-    //     //the id of the session we are testing
-    //     timeEntity.setProperty("tutorID", "14");
-    //     timeEntity.setProperty("start", time.getStart());
-    //     timeEntity.setProperty("end", time.getEnd());
-    //     timeEntity.setProperty("date", new Gson().toJson(time.getDate()));
-
-    //     datastore.put(timeEntity);
-    // }
-
 }

@@ -95,42 +95,4 @@ public final class Tutor {
     public String getUserId() {
         return this.userId;
     }
-
-    /** Deletes the given timeslot from the availability array. */
-    public void deleteAvailabilityByTimeRange(TimeRange timeslot) {
-        this.availability.remove(timeslot);
-    }
-    
-    /** Adds the given timeslot to the availability list. */
-    public void addAvailabilityByTimeRange(TimeRange timeslot) {
-        this.availability.add(timeslot);
-    }
-
-    /** Adds the given Tutor Session to the scheduledSessions array. */
-    public void addToScheduledSessions(TutorSession tutoringSession) {
-        this.scheduledSessions.add(tutoringSession);
-    }
-
-    /** Deletes the given Tutor Session from the scheduledSessions array. */
-    public void deleteFromScheduledSessions(TutorSession tutoringSession) {
-        TutorSession tutorSession = getSessionById(tutoringSession.getId());
-        this.scheduledSessions.remove(tutorSession);
-        return;
-    }
-
-    public TutorSession getSessionById(long id) {
-        for (TutorSession tutorSession : this.scheduledSessions) {
-            if (tutorSession.getId() == id) {
-                return tutorSession;
-            }
-        }
-
-        return null;
-    }
-
-    public void rateTutor(int newRating) {
-        this.ratingSum = this.ratingSum + newRating;
-        this.ratingCount++;
-    }
-
 }

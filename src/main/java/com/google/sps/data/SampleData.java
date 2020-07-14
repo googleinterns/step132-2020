@@ -93,42 +93,6 @@ public final class SampleData {
                 new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
 
-    public ArrayList<Tutor> getSampleTutors() {
-        return tutors;
-    }
-
-    public ArrayList<Student> getSampleStudents() {
-        return students;
-    }
-
-    public void addTutor(Tutor tutor) {
-        tutors.add(tutor);
-    }
-
-    public void addStudent(Student student) {
-        students.add(student);
-    }
-
-    /** Finds and deletes a tutor with given email. */
-    public void deleteTutorByEmail(String email) {
-        for(Tutor tutor : tutors) {
-            if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
-                tutors.remove(tutor);
-                break;
-            }
-        }
-    }
-
-    /** Finds and deletes a student with given email. */
-    public void deleteStudentByEmail(String email) {
-        for(Student student : students) {
-            if(student.getEmail().toLowerCase().equals(email.toLowerCase())) {
-                students.remove(student);
-                break;
-            }
-        }
-    }
-
    /** 
     *  Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
     *  @return Tutor

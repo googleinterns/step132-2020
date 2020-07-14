@@ -71,9 +71,4 @@ public final class Student {
     public String getUserId() {
         return this.userId;
     }
-
-    /** Adds the given Tutor Session to the scheduledSessions array. */
-    public void addToScheduledSessions(TutorSession tutoringSession) {
-        this.scheduledSessions.add(tutoringSession);
-    }
 }
