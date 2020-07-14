@@ -53,7 +53,7 @@ function createTimeSlotBoxManage(timeslot, tutorID) {
     dateElement.style.textAlign = 'left';
     dateElement.style.display = 'inline';
 
-    var hour = parseInt(timeslot.start) / 60;
+    var hour = Math.floor(parseInt(timeslot.start) / 60);
     var amOrPm = "am";
     if (hour > 12) {
         hour = hour - 12;
