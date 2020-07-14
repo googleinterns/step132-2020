@@ -69,11 +69,8 @@ public class LoginStatusServlet extends HttpServlet {
         if (name == null) {
             loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail(), false, false);
         } else {  // User is logged in and registered, make logout URL
-            System.out.println(userService.getCurrentUser().getUserId());
             boolean tutor = isTutor(userService.getCurrentUser().getUserId(), datastore);
             boolean student = isStudent(userService.getCurrentUser().getUserId(), datastore);
-            System.out.println(tutor);
-            System.out.println(student);
             loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail(), tutor, student);
         }
 

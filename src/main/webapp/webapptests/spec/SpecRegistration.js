@@ -175,34 +175,46 @@ describe("Registration", function() {
                 expect(document.getElementById('history').style.display).toBe('none');
             });
 
-            it("displays logout link when user logged in", function() {
-                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:''};
+            it("displays logout link when user logged in and the user is a student", function() {
+                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'', tutor: false, student: true};
+                displayLoginLogoutLinkHelper(document, mockLoginStatus);
+
+                expect(document.getElementById('login').style.display).toBe('none');
+                expect(document.getElementById('logout').style.display).toBe('block');
+                expect(document.getElementById('profile').style.display).toBe('block');
+                expect(document.getElementById('availability-settings').style.display).toBe('none');
+                expect(document.getElementById('tutor-session-settings').style.display).toBe('block');
+                expect(document.getElementById('history').style.display).toBe('block');
+            });
+
+            it("displays logout link when user logged in and the user is a tutor", function() {
+                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'', tutor: true, student: false};
                 displayLoginLogoutLinkHelper(document, mockLoginStatus);
 
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
                 expect(document.getElementById('profile').style.display).toBe('block');
                 expect(document.getElementById('availability-settings').style.display).toBe('block');
-                expect(document.getElementById('tutor-session-settings').style.display).toBe('block');
-                expect(document.getElementById('history').style.display).toBe('block');
+                expect(document.getElementById('tutor-session-settings').style.display).toBe('none');
+                expect(document.getElementById('history').style.display).toBe('none');
             });
 
             it("sets logout link correctly", function() {
-                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'/_ah/logout?continue=%2Fhomepage.html', userId:'abc123'};
+                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'/_ah/logout?continue=%2Fhomepage.html', userId:'abc123', tutor: true, student: false};
                 displayLoginLogoutLinkHelper(document, mockLoginStatus);
 
                 expect(document.getElementById('logout-url').href).toBe('http://localhost:8080/_ah/logout?continue=%2Fhomepage.html');
             });
 
             it("sets login link correctly", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:null};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:null, tutor: true, student: false};
                 displayLoginLogoutLinkHelper(document, mockLoginStatus);
 
                 expect(document.getElementById('login-url').href).toBe('http://localhost:8080/_ah/login?continue=%2Fregistration.html');
             });
 
             it("adds event listener that redirects the user to their profile", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'blah'};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'blah', tutor: true, student: false};
                 var mockWindow = {location: {href: "homepage.html"}};
                 setProfileQueryString(mockWindow, mockLoginStatus);
 
@@ -210,7 +222,7 @@ describe("Registration", function() {
             })
 
             it("adds event listener that redirects the user to their availability settings", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah'};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah', tutor: true, student: false};
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToManageAvailability(mockWindow, mockLoginStatus);
 
@@ -218,7 +230,7 @@ describe("Registration", function() {
             })
 
             it("adds event listener that redirects the user to their tutor session settings", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah'};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah', tutor: false, student: true};
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToManageSessions(mockWindow, mockLoginStatus);
 
@@ -226,7 +238,7 @@ describe("Registration", function() {
             })
 
             it("adds event listener that redirects the user to their history", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah'};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah', tutor: false, student: true};
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToHistory(mockWindow, mockLoginStatus);
 
