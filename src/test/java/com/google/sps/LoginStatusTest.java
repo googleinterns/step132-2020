@@ -84,7 +84,7 @@
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html", null, null);
+         LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html", null);
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
      }
@@ -108,7 +108,7 @@
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID", USER_EMAIL);
+         LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID");
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
      }
@@ -131,7 +131,7 @@
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID", USER_EMAIL);
+         LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID");
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
      }
