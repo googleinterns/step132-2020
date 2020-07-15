@@ -28,6 +28,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /** Servlet that gets the login status of the user and displays appropriate form */
 @WebServlet("/login-status")
@@ -39,12 +40,20 @@ public class LoginStatusServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // If user not logged in, show login form
         if (!userService.isUserLoggedIn()) {
+            if(request.getSession(false) != null) {
+                request.getSession(false).invalidate();
+            }
             LoginStatus loginStatus = new LoginStatus(false, false, userService.createLoginURL("/registration.html"), null);
             String json = new Gson().toJson(loginStatus);
             response.setContentType("application/json");
             response.getWriter().println(json);
             return;
         } 
+
+        if(request.getSession(false) == null) {
+            HttpSession session = request.getSession(true);
+            session.setAttribute("userId", userService.getCurrentUser().getUserId());
+        }
         
         String name = getName(userService.getCurrentUser().getUserId(), datastore);
         setRegistered(request, response, name);

@@ -37,6 +37,9 @@
  import org.junit.runners.JUnit4;
  import org.mockito.ArgumentCaptor;
  import static org.mockito.Mockito.*;
+ import javax.servlet.http.HttpSession;
+ import org.mockito.invocation.InvocationOnMock;
+ import org.mockito.stubbing.Answer;
 
  @RunWith(JUnit4.class)
  public final class LoginStatusTest {
@@ -76,9 +79,17 @@
 
          StringWriter stringWriter = new StringWriter();
          PrintWriter writer = new PrintWriter(stringWriter);
+         HttpSession session = mock(HttpSession.class);
          when(response.getWriter()).thenReturn(writer);
          when(request.getContentType()).thenReturn("application/json");
-
+         when(request.getSession(false)).thenReturn(session);
+        
+        //mock the invalidate method for session
+         doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) {
+            when(request.getSession(false)).thenReturn(null);
+            return null;
+        }}).when(session).invalidate();
          servlet.doGet(request, response);
 
          writer.flush();
@@ -87,6 +98,7 @@
          LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html", null);
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
+         Assert.assertNull(request.getSession(false));
      }
 
      @Test
@@ -134,6 +146,40 @@
          LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID");
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
+     }
+
+     @Test
+     public void userLoggedInAndSessionIsCreated() throws IOException {
+         helper.setEnvIsLoggedIn(true);
+
+         String name = "Sam Falberg";
+         when(request.getHeader("referer")).thenReturn("/homepage.html");
+
+         HttpSession session = mock(HttpSession.class);
+
+         when(request.getSession(false)).thenReturn(null);
+         when(request.getSession(true)).thenReturn(session);
+
+        //mock the getSession method for request with parameter true
+         doAnswer(new Answer() {
+            public Object answer(InvocationOnMock invocation) {
+            //getSession with parameter false should return the session now too
+            when(request.getSession(false)).thenReturn(session);
+            return session;
+        }}).when(request).getSession(true);
+
+         StringWriter stringWriter = new StringWriter();
+         PrintWriter writer = new PrintWriter(stringWriter);
+         when(response.getWriter()).thenReturn(writer);
+         when(request.getContentType()).thenReturn("application/json");
+
+        
+        //so we don't have to create a new user entity
+         servlet.setRegistered(request, response, name);
+
+         servlet.doGet(request, response);
+
+         Assert.assertEquals(session, request.getSession(false));
      }
 
      @Test
