@@ -23,17 +23,33 @@ See the License for the specific language governing permissions and
     <body onload="displayLoginLogoutLink(), displayProfile()">
         <a href="./homepage.html"><p>Homepage</p></a>
 
-        <div class="top-right">
+        <div class="top-right" id="top-right-buttons" style="display:block">
             <a id="login-url"><p id="login" style="display:none">Login with Google</p></a>
             <input type="hidden" id="profile" style="display:none">
             <button type="button" id="availability-settings" style="display:none">Manage your availability</button>
             <button type="button" id="tutor-session-settings" style="display:none">Manage your tutoring sessions</button>
             <button type="button" id="history" style="display:none">Tutoring session history</button>
-            <button type="button" id="edit-profile" style="display:none">Edit Profile</button>
+            <button type="button" id="edit-profile-btn" style="display:none">Edit Profile</button>
             <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
         </div>
 
-        <div id="profile-container"></div>
+        <div id="profile-container" style="display:block"></div>
+
+        <form id="edit-profile-form" action="/profile" method="POST" style="display:none">
+            <label for="bio">Biography:</label><br>
+            <textarea name="bio" id="bio"></textarea><br>
+            <p id="student-topics" style="display:none">What topic(s) would you like to learn?</p>
+            <p id="tutor-topics" style="display:none">What topic(s) would you like to tutor in?</p>
+                <input type="checkbox" id="math" name="math" value="Math">
+                <label for="math"> Math</label><br>
+                <input type="checkbox" id="english" name="english" value="English">
+                <label for="english"> English</label><br>
+                <input type="checkbox" id="other-subject" name="other" value="Other">
+                <label for="other-subject"> Other</label><br><br>
+
+            <input type="submit" name="submit" value="Submit">
+            <input type="submit" name="submit" value="Cancel">
+        </form>
 
         <script src="profile.js"></script>
         <script src="registration.js"></script>
