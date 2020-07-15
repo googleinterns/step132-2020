@@ -15,12 +15,13 @@
     <head>
         <meta charset="UTF-8">
         <title>Student's Progress</title>
+        <link rel="stylesheet" type="text/css" href="progress.css">
         <link rel="stylesheet" type="text/css" href="general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body onload="displayLoginLogoutLink()">
+    <body onload="displayLoginLogoutLink(), getPastSessionsAndTopics(), getAchievements(), getGoals(), getPastClasses()">
         <a href="./homepage.html"><p>Homepage</p></a>
 
         <div class="top-right">
@@ -35,7 +36,7 @@
 
         <div class="container-fluid">
             <h1>Previous Experiences</h1>
-            <h3>Past Classes</h3>
+            <h3>Classes</h3>
             <ul class="list-group" id="past-classes"></ul>
         </div>
 
