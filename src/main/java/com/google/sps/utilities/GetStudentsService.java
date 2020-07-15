@@ -38,13 +38,13 @@ import java.util.Calendar;
 import com.google.gson.Gson;
 
 /** Accesses datastore to get students that have had a tutoring session with the given tutor. */ 
-public final class GetStudentsSerice {
+public final class GetStudentsService {
 
     /**
     * Gets all students that the given userId was or will be a tutor for.
     * @return ArrayList<Student>, empty list if no students
     */
-    public ArrayList<Student> getStudentsForTutor(String userId) {
+    public ArrayList<Student> getStudentsForTutor(String tutorId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Query studentQuery = new Query("Student");
         PreparedQuery studentResults = datastore.prepare(studentQuery);
@@ -52,18 +52,21 @@ public final class GetStudentsSerice {
         ArrayList<Student> students = new ArrayList<Student>();
 
         for (Entity studentEntity : studentResults.asIterable()) {
+            ArrayList<String> tutors = (ArrayList<String>) studentEntity.getProperty("tutors");
 
-            if ((ArrayList) studentEntity.getProperty("tutors").contains(userId)) {
-                String name = (String) studentEntity.getProperty("name");
-                String userId = (String) studentEntity.getProperty("userId");
-                String bio = (String) studentEntity.getProperty("bio");
-                String pfp = (String) studentEntity.getProperty("pfp");
-                String email = (String) studentEntity.getProperty("email");
-                ArrayList learning = (ArrayList) studentEntity.getProperty("learning");
+            if (tutors != null) {
+                if (tutors.contains(tutorId)) {
+                    String name = (String) studentEntity.getProperty("name");
+                    String studentId = (String) studentEntity.getProperty("userId");
+                    String bio = (String) studentEntity.getProperty("bio");
+                    String pfp = (String) studentEntity.getProperty("pfp");
+                    String email = (String) studentEntity.getProperty("email");
+                    ArrayList learning = (ArrayList) studentEntity.getProperty("learning");
 
-                Student student = new Student(name, userId, bio, pfp, email, learning);
+                    Student student = new Student(name, studentId, bio, pfp, email, learning);
 
-                students.add(student);
+                    students.add(student);
+                }
             }
         }
 

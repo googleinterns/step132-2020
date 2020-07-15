@@ -63,6 +63,8 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
 
             datastore.put(txn, sessionEntity);
 
+            updateTutorsForStudent(datastore, txn, studentEmail.toLowerCase(), tutorEmail.toLowerCase());
+
             txn.commit();
 
         } finally {
@@ -179,18 +181,23 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
 
     }
 
-    private void updateTutorForStudent(DatastoreService datastore, Transaction txn, String studentId, String tutorId) {
+    private void updateTutorsForStudent(DatastoreService datastore, Transaction txn, String studentId, String tutorId) {
         //get student with id
-        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, studentId);
+        Filter filter = new FilterPredicate("email", FilterOperator.EQUAL, studentId);
         Query query = new Query("Student").setFilter(filter);
 
         PreparedQuery pq = datastore.prepare(query);
 
         Entity studentEntity = pq.asSingleEntity();
 
-        ArrayList<String> tutors = (ArratList<String>) studentEntity.getProperty("tutors"));
+        List<String> tutors = (List<String>) studentEntity.getProperty("tutors");
+        if (tutors == null) {
+            tutors = new ArrayList<String>();
+        }
 
-        studentEntity.setProperty("tutors", tutors.add(tutorId));
+        tutors.add(tutorId);
+
+        studentEntity.setProperty("tutors", tutors);
 
         datastore.put(txn, studentEntity);
     }
