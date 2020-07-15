@@ -58,9 +58,15 @@ function createProfileDiv(user) {
         isStudent = false;
     }
 
-    document.getElementById('edit-profile-btn').style.display = 'block';
-    document.getElementById('edit-profile-btn').addEventListener('click', () => {
-       editProfile(user, isStudent); 
+    // Check if profile belongs to user currently logged in
+    // If not, don't allow them to edit the profile
+    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        if (loginStatus.userId == getIdParameter(window)) {
+            document.getElementById('edit-profile-btn').style.display = 'block';
+            document.getElementById('edit-profile-btn').addEventListener('click', () => {
+                editProfile(user, isStudent, document); 
+            });
+        }
     });
 
     profileDiv.appendChild(profilePfp);
@@ -73,7 +79,7 @@ function createProfileDiv(user) {
 }
 
 // Displays a form that will allow the user to edit the info on their profile
-function editProfile(user, isStudent) {
+function editProfile(user, isStudent, document) {
     document.getElementById('profile-container').style.display = 'none';
     document.getElementById('top-right-buttons').style.display = 'none';
     document.getElementById('edit-profile-form').style.display = 'block';
@@ -84,7 +90,7 @@ function editProfile(user, isStudent) {
 
     if (isStudent) {
         document.getElementById('student-topics').style.display = 'block';
-        // Atuomatically check boxes of topics user has already selected
+        // Automatically check boxes of topics user has already selected
         if (user.learning.indexOf('math') > -1) {
             document.getElementById('math').checked = true;
         }
