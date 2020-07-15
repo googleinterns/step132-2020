@@ -179,6 +179,22 @@ public final class RealTutorSessionDatastore implements TutorSessionDatastoreSer
 
     }
 
+    private void updateTutorForStudent(DatastoreService datastore, Transaction txn, String studentId, String tutorId) {
+        //get student with id
+        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, studentId);
+        Query query = new Query("Student").setFilter(filter);
+
+        PreparedQuery pq = datastore.prepare(query);
+
+        Entity studentEntity = pq.asSingleEntity();
+
+        ArrayList<String> tutors = (ArratList<String>) studentEntity.getProperty("tutors"));
+
+        studentEntity.setProperty("tutors", tutors.add(tutorId));
+
+        datastore.put(txn, studentEntity);
+    }
+
     /**
     * Gets all the tutor session entities for a userType (tutor or student) with the corresponding email. 
     * @return ArrayList<TutorSession>, empty list if the student does not exist

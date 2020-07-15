@@ -27,14 +27,38 @@ import java.util.LinkedList;
 public final class Student {
     
     private String name;
+    private String id;
     private String bio;
     private String pfp;
     private String email;
     private ArrayList<String> learning;
     private ArrayList<TutorSession> scheduledSessions;
 
+    /**
+     * Creates a new student with no scheduled sessions field but with id.
+     *
+     * @param name The student's name. Must be non-null.
+     * @param id The student's id. Must be non-null.
+     * @param bio The student's bio.
+     * @param pfp The student's prfile picture.
+     * @param email The student's email. Must be non-null.
+     * @param learning The list of topics the student is learning.
+     */
+    public Student(String name, String id, String bio, String pfp, String email, ArrayList<String> learning) {
+        this.name = name;
+        this.id = id;
+        this.bio = bio;
+        this.pfp = pfp;
+        this.email = email;
+        this.learning = learning;
+        // Empty array of scheduled sessions (not necessary)
+        this.scheduledSessions = new ArrayList<TutorSession>();
+    }
+
     public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions) {
         this.name = name;
+        // Id not necessary
+        this.id = null;
         this.bio = bio;
         this.pfp = pfp;
         this.email = email;
@@ -44,6 +68,10 @@ public final class Student {
 
     public String getName() {
         return this.name;
+    }
+
+    public String getId() {
+        return this.id;
     }
 
     public String getBio() {
