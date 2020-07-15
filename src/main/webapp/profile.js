@@ -14,7 +14,7 @@
 
 // Fetch info about the spceific user logged in 
 function displayProfile() {
-    var userID = getIdParameter(window);
+    const userID = getIdParameter(window);
 
     fetch('/profile?user-id='+userID).then(response => response.json()).then((user) => {
         console.log(user);
@@ -47,17 +47,20 @@ function createProfileDiv(user) {
     profileEmail.innerHTML = user.email;
 
     const profileTopics = document.createElement('p');
+    var isStudent;
     // Students and tutors have different properties, check to see what kind of profile we're displaying
     if (user.learning != undefined) {   // User is a student
         profileTopics.innerHTML = "I am learning: " + user.learning;
+        isStudent = true;
     }
     else {   // User is a tutor
         profileTopics.innerHTML = "I am tutoring in: " + user.skills;
+        isStudent = false;
     }
 
-    document.getElementById('edit-profile').style.display = 'block';
-    document.getElementById('edit-profile').addEventListener('click', () => {
-       editProfile(); 
+    document.getElementById('edit-profile-btn').style.display = 'block';
+    document.getElementById('edit-profile-btn').addEventListener('click', () => {
+       editProfile(user, isStudent); 
     });
 
     profileDiv.appendChild(profilePfp);
@@ -69,6 +72,39 @@ function createProfileDiv(user) {
     return profileDiv;
 }
 
-function editProfile() {
-    console.log("editProfile was called");
+// Displays a form that will allow the user to edit the info on their profile
+function editProfile(user, isStudent) {
+    document.getElementById('profile-container').style.display = 'none';
+    document.getElementById('top-right-buttons').style.display = 'none';
+    document.getElementById('edit-profile-form').style.display = 'block';
+
+    // Set default value of bio to what user previously had
+    // This will prevent this data from being lost if the user decides not change this field
+    document.getElementById('bio').value = user.bio;
+
+    if (isStudent) {
+        document.getElementById('student-topics').style.display = 'block';
+        // Atuomatically check boxes of topics user has already selected
+        if (user.learning.indexOf('math') > -1) {
+            document.getElementById('math').checked = true;
+        }
+        if (user.learning.indexOf('english') > -1) {
+            document.getElementById('english').checked = true;
+        }
+        if (user.learning.indexOf('other') > -1) {
+            document.getElementById('other-subject').checked = true;
+        }
+    } else {
+        document.getElementById('tutor-topics').style.display = 'block';
+        // Atuomatically check boxes of topics user has already selected
+        if (user.skills.indexOf('math') > -1) {
+            document.getElementById('math').checked = true;
+        }
+        if (user.skills.indexOf('english') > -1) {
+            document.getElementById('english').checked = true;
+        }
+        if (user.skills.indexOf('other') > -1) {
+            document.getElementById('other-subject').checked = true;
+        }
+    }
 }
