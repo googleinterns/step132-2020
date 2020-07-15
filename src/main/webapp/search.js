@@ -156,7 +156,7 @@ function createTutorResult(result) {
     skills.innerText = "Skills: " + result.skills.join(", ");
     availabilityLink.innerText = "Availability";
 
-    availabilityLink.href = "/availability.html?tutorID=" + result.email;
+    availabilityLink.href = "/availability.html?tutorID=" + result.userId;
 
     container.classList.add("tutor-result");
     container.classList.add("list-group-item");
