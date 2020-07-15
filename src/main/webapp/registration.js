@@ -64,23 +64,32 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
     if (loginStatus.isLoggedIn) {
         document.getElementById('login').style.display = "none";
         document.getElementById('profile').style.display = "block";
-        document.getElementById('availability-settings').style.display = "block";
-        document.getElementById('tutor-session-settings').style.display = "block";
-        document.getElementById('history').style.display = "block";
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = loginStatus.url;
         document.getElementById('profile').addEventListener('click', () => {
             setProfileQueryString(window, loginStatus);
         });
-        document.getElementById('availability-settings').addEventListener('click', () => {
-            redirectToManageAvailability(window, loginStatus);
-        });
-        document.getElementById('tutor-session-settings').addEventListener('click', () => {
-            redirectToManageSessions(window, loginStatus);
-        });
-        document.getElementById('history').addEventListener('click', () => {
-            redirectToHistory(window, loginStatus);
-        });
+
+        // If the user is a tutor, display availability settings
+        if (loginStatus.role == "tutor") {
+            document.getElementById('availability-settings').style.display = "block";
+            document.getElementById('tutor-session-settings').style.display = "none";
+            document.getElementById('history').style.display = "none";
+            document.getElementById('availability-settings').addEventListener('click', () => {
+                redirectToManageAvailability(window, loginStatus);
+            });
+        // Display tutor session settings and history if the user is a student
+        } else if (loginStatus.role == "student") {
+            document.getElementById('availability-settings').style.display = "none";
+            document.getElementById('tutor-session-settings').style.display = "block";
+            document.getElementById('history').style.display = "block";
+            document.getElementById('tutor-session-settings').addEventListener('click', () => {
+                redirectToManageSessions(window, loginStatus);
+            });
+            document.getElementById('history').addEventListener('click', () => {
+                redirectToHistory(window, loginStatus);
+            });
+        }
     }
     else {   // Display login link
         document.getElementById('logout').style.display = "none";
