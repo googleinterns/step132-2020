@@ -18,7 +18,6 @@ function getMyStudents() {
     const userID = queryString["userID"];
 
     fetch('/my-students?tutorID=' + userID, {method: 'GET'}).then(response => response.json()).then((students) => {
-        console.log(students);
         if(students.error) {
             var message = document.createElement("p");
             p.innerText = students.error;
