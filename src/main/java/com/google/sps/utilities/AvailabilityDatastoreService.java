@@ -3,7 +3,7 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-// 
+//
 //     https://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
@@ -14,28 +14,143 @@
 
 package com.google.sps.utilities;
 
+import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
+import com.google.sps.data.Tutor;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Transaction;
+import com.google.appengine.api.datastore.TransactionOptions;
+import java.util.Calendar;
 import java.lang.String;
+import java.util.ArrayList;
 import java.util.List;
+import com.google.gson.Gson;
 
-/** Interface for accessing datastore to manage tutor availability . */
-public interface AvailabilityDatastoreService {
+/** Accesses Datastore to manage a tutor's available times. */
+public final class AvailabilityDatastoreService {
 
     /**
-    * Gets the availability of a tutor with the given email.
+    * Gets the availability of a tutor with the given user id.
     * @return List<TimeRange>
     */
-    public List<TimeRange> getAvailabilityForTutor(String email);
+    public List<TimeRange> getAvailabilityForTutor(String id) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        ArrayList<TimeRange> availability = new ArrayList<TimeRange>();
+        
+        //get all time ranges with user id
+        Filter filter = new FilterPredicate("tutorID", FilterOperator.EQUAL, id);
+        Query query = new Query("TimeRange").setFilter(filter);
+
+        PreparedQuery timeRanges = datastore.prepare(query);
+
+        for(Entity time : timeRanges.asIterable()) {
+            availability.add(createTimeRange(time));
+        }
+
+        return availability;
+    }
 
     /**
     * Adds a new time range to a tutor's availability.
     * @return boolean, true if time was added, false if there was a problem adding it
     */
-    public boolean addAvailability(String email, TimeRange time);
+    public boolean addAvailability(String userId, TimeRange time) {
+        boolean added = true;
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        try {
+            
+            Entity timeEntity = new Entity("TimeRange");
+
+            timeEntity.setProperty("tutorID", userId);
+            timeEntity.setProperty("start", time.getStart());
+            timeEntity.setProperty("end", time.getEnd());
+            timeEntity.setProperty("date", new Gson().toJson(time.getDate()));
+
+            datastore.put(txn, timeEntity);
+
+            txn.commit();
+
+        } catch(NullPointerException e) {
+            //the tutor entity does not exist, return false
+            added = false;
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
+
+        return added;
+    }
 
     /**
     * Deletes a time range from a tutor's availability.
     * @return boolean, true if time was deleted, false if there was a problem deleting it
     */
-    public boolean deleteAvailability(String email, TimeRange time);
+    public boolean deleteAvailability(String userId, TimeRange time) {
+        boolean deleted = true;
+
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        //filter by tutor's id and time range properties
+        CompositeFilter timeFilter = CompositeFilterOperator.and(FilterOperator.EQUAL.of("tutorID", userId),
+                                                                 FilterOperator.EQUAL.of("start", time.getStart()), 
+                                                                 FilterOperator.EQUAL.of("end", time.getEnd()), 
+                                                                 FilterOperator.EQUAL.of("date", new Gson().toJson(time.getDate())));
+
+        Query query = new Query("TimeRange").setFilter(timeFilter);
+
+        try {
+            PreparedQuery pq = datastore.prepare(query);
+
+            //there should only be one result
+            Entity timeEntity = pq.asSingleEntity();
+
+            //delete from datastore
+            datastore.delete(txn, timeEntity.getKey());
+
+            txn.commit();
+
+        } catch(NullPointerException e) {
+            //the entity does not exist, return false
+            deleted = false;
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
+
+        return deleted;
+    }
+
+    /**
+    * Creates a TimeRange object from a given TimeRange entity.
+    * @return TimeRange
+    */
+    private TimeRange createTimeRange(Entity entity) {
+        int start = Math.toIntExact((long) entity.getProperty("start"));
+        int end = Math.toIntExact((long) entity.getProperty("end"));
+        Calendar date = new Gson().fromJson((String) entity.getProperty("date"), Calendar.class);
+
+        return TimeRange.fromStartToEnd(start, end, date);
+
+    }
 }

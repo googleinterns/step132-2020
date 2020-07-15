@@ -63,7 +63,7 @@ public final class GetStudentsService {
                     String email = (String) studentEntity.getProperty("email");
                     ArrayList learning = (ArrayList) studentEntity.getProperty("learning");
 
-                    Student student = new Student(name, studentId, bio, pfp, email, learning);
+                    Student student = new Student(name, bio, pfp, email, learning, tutors, studentId);
 
                     students.add(student);
                 }

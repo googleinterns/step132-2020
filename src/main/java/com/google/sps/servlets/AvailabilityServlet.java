@@ -25,40 +25,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.utilities.RealAvailabilityDatastore;
-import com.google.sps.utilities.MockAvailabilityDatastore;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.Filter;
 import com.google.sps.utilities.AvailabilityDatastoreService;
 
 /** Servlet that manages availability of a tutor. */
 @WebServlet("/availability")
 public class AvailabilityServlet extends HttpServlet {
-
     private AvailabilityDatastoreService datastore;
 
-    /**
-    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
-    * We need the default one for deployment because the servlet is created without parameters.
-    */
-    public AvailabilityServlet(){}
-
-    public AvailabilityServlet(boolean test) {
-        if(test) {
-            datastore = new MockAvailabilityDatastore();
-        }
-    }
-
     public void init() {
-        datastore = new RealAvailabilityDatastore();
+        datastore = new AvailabilityDatastoreService();
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Get the id of the tutor whose availability will be displayed.
-        String tutorID = request.getParameter("tutorID");
+        // Get the id of the tutor whose availability will be displayed
+        //if id is null, use default id -1 (no tutor has id -1, so no availability will be displayed)
+        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
+
+        if(tutorID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error getting tutor's availability.\"}");
+        }
 
         List<TimeRange> timeslots = datastore.getAvailabilityForTutor(tutorID);
 

@@ -57,7 +57,10 @@ public final class ProfileTest {
 
         request = mock(HttpServletRequest.class);       
         response = mock(HttpServletResponse.class);
-        servlet = new ProfileServlet(true);
+        servlet = new ProfileServlet();
+        servlet.init();
+        sample.addTutorsToDatastore();
+        sample.addStudentsToDatastore();
     }
 
     @After
@@ -70,20 +73,10 @@ public final class ProfileTest {
         // Add student user entity to the local datastore so there is data to query in the function
         Entity userEntity = new Entity("User");
         userEntity.setProperty("role", "student");
-        userEntity.setProperty("userId", "123");
+        userEntity.setProperty("userId", "1");
         datastore.put(userEntity);
-
-        // Add student entity that matches sample data
-        Entity studentEntity = new Entity("Student");
-        studentEntity.setProperty("name", "Bernardo Eilert Trevisan");
-        studentEntity.setProperty("bio", "Bernardo\'s bio");
-        studentEntity.setProperty("pfp", "images/pfp.jpg");
-        studentEntity.setProperty("email", "btrevisan@google.com");
-        studentEntity.setProperty("learning", new ArrayList<String> (Arrays.asList("Math", "History")));
-        studentEntity.setProperty("userId", "123");
-        datastore.put(studentEntity);
         
-        when(request.getParameter("user-id")).thenReturn("123");
+        when(request.getParameter("userId")).thenReturn("1");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -93,6 +86,8 @@ public final class ProfileTest {
 
         Student expectedStudent = sample.getStudentByEmail("btrevisan@google.com");
         String expected = new Gson().toJson(expectedStudent);
+        System.out.println(expected);
+        System.out.println(stringWriter.toString());
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
@@ -101,20 +96,10 @@ public final class ProfileTest {
         // Add tutor user entity to the local datastore so there is data to query in the function
         Entity userEntity = new Entity("User");
         userEntity.setProperty("role", "tutor");
-        userEntity.setProperty("userId", "123");
+        userEntity.setProperty("userId", "0");
         datastore.put(userEntity);
 
-        // Add tutor entity that matches sample data
-        Entity tutorEntity = new Entity("Tutor");
-        tutorEntity.setProperty("name", "Kashish Arora");
-        tutorEntity.setProperty("bio", "Kashish\'s bio");
-        tutorEntity.setProperty("pfp", "images/pfp.jpg");
-        tutorEntity.setProperty("email", "kashisharora@google.com");
-        tutorEntity.setProperty("topics", new ArrayList<String> (Arrays.asList("Math", "History")));
-        tutorEntity.setProperty("userId", "123");
-        datastore.put(tutorEntity);
-
-        when(request.getParameter("user-id")).thenReturn("123");
+        when(request.getParameter("userId")).thenReturn("0");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);

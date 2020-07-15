@@ -20,7 +20,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body onload="getAvailabilityManage(), displayLoginLogoutLink()">
+    <body onload="getAvailabilityManage(), displayLoginLogoutLink(), addEventListeners()">
         <a href="./homepage.html"><p>Homepage</p></a>
 
         <div class="top-right">
@@ -45,9 +45,7 @@
         <div class="container-fluid">
             <h2>Add a new available timeslot.</h2>
 
-            <form class="form-inline" action="/addAvailability" method="POST">
-                <textarea class="form-control" name="tutorEmail" id="tutorEmail" style="display: none;"></textarea>
-
+            <form class="form-inline" id="timeslot-form">
                 <label class="my-1 mr-2" for="startHour startMinute">From:</label>
                 <select class="custom-select form-control my-1 mr-sm-2" name="startHour" id="startHour" required>
                     <option value="">select</option>

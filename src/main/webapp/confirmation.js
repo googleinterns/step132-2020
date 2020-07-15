@@ -15,11 +15,17 @@
 function getScheduledSessions() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);
-    const studentEmail = queryString["studentEmail"];
+    const studentID = queryString["studentID"];
 
-    fetch('/confirmation?studentEmail=' + studentEmail, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+    fetch('/confirmation?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+        if(scheduledSessions.error) {
+            var message = document.createElement("p");
+            p.innerText = scheduledSessions.error;
+            document.getElementById('timeslots').appendChild(message);
+            return;
+        }
         scheduledSessions.forEach((scheduledSession) => {
-            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession, studentEmail));
+            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession, studentID));
         })
     });
 }
@@ -40,7 +46,8 @@ function readTutorID(queryString, window) {
     }
 }
 
-function createScheduledSessionBox(scheduledSession, studentEmail) {
+function createScheduledSessionBox(scheduledSession, studentID) {
+
     var months = [ "January", "February", "March", "April", "May", "June", 
            "July", "August", "September", "October", "November", "December" ];
 
@@ -50,7 +57,8 @@ function createScheduledSessionBox(scheduledSession, studentEmail) {
     const tutorElement = document.createElement('h3');
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
-    tutorElement.innerHTML = "Tutoring Session with " + scheduledSession.tutorEmail;
+
+    setTutorEmail(tutorElement, scheduledSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';
@@ -80,4 +88,13 @@ function createScheduledSessionBox(scheduledSession, studentEmail) {
     scheduledSessionElement.appendChild(tutorLineElement);
     scheduledSessionElement.appendChild(dateLineElement);
     return scheduledSessionElement;
+}
+
+//Helper function for testing purposes
+//Sets the tutor element's email field to the tutor email
+function setTutorEmail(tutorElement, tutorID) {
+    var tutor;
+    return getUser(tutorID).then(user => tutor = user).then(() => {
+        tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
+    });
 }

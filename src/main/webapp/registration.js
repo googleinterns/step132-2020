@@ -12,6 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function getUserId() {
+    return fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        return loginStatus.userId;
+    });
+}
+
+
 /**
  * Function for registration.html, checks if user needs to register, if not display registration page
  */
@@ -103,7 +110,7 @@ function setProfileQueryString(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to manage-availability.html
  */
 function redirectToManageAvailability(window, loginStatus) {
-    var url = "manage-availability.html?userID=" + encodeURIComponent(loginStatus.userEmail);
+    var url = "manage-availability.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 
@@ -111,7 +118,7 @@ function redirectToManageAvailability(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to my-students.html
  */
 function redirectToMyStudents(window, loginStatus) {
-    var url = "my-students.html?userID=" + encodeURIComponent(loginStatus.userEmail);
+    var url = "my-students.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 
@@ -119,7 +126,7 @@ function redirectToMyStudents(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to manage-sessions.html
  */
 function redirectToManageSessions(window, loginStatus) {
-    var url = "manage-sessions.html?userID=" + encodeURIComponent(loginStatus.userEmail);
+    var url = "manage-sessions.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 
@@ -127,7 +134,7 @@ function redirectToManageSessions(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to history.html
  */
 function redirectToHistory(window, loginStatus) {
-    var url = "history.html?userID=" + encodeURIComponent(loginStatus.userEmail);
+    var url = "history.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 
