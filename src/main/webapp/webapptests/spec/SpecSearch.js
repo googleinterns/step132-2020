@@ -31,8 +31,8 @@ describe("Search", function() {
     });
 
     describe("when search results page is loaded", function() {
-        var tutors = [{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"]}, 
-                            {"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"]}];
+        var tutors = [{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId":"1"}, 
+                            {"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"], "userId":"2"}];
 
         var books = [{"title": "Book 1", "author": "Author 1", "subject": "Math", "thumbnail": ""},
                     {"title": "Book 2", "author": "Author 2", "subject": "Math", "thumbnail": ""}]
@@ -165,7 +165,7 @@ describe("Search", function() {
     });
 
     describe("when a tutor result is created", function() {
-        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"]};
+        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId": "123"};
         var element = createTutorResult(result);
 
         it("should create div for result element", function() {
@@ -190,7 +190,7 @@ describe("Search", function() {
         it("should create anchor element inside result element for availability link", function() {
             expect(element.childNodes[3].tagName).toEqual("A");
             expect(element.childNodes[3].innerText).toContain("Availability");
-            expect(element.childNodes[3].href).toContain("/availability.html?tutorID=tutor1@gmail.com");
+            expect(element.childNodes[3].href).toContain("/availability.html?tutorID=123");
         });
 
     });

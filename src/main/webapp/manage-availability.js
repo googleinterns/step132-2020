@@ -12,14 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** A function that adds event listeners to a DOM objects. */
+function addEventListeners() {
+    document.getElementById("timeslot-form").addEventListener('submit', event => {
+        event.preventDefault();
+        addTimeSlot();
+    });
+}
+
 function getAvailabilityManage() {
     var queryString = new Array();
     window.onload = readTutorID(queryString, window);
     const userID = queryString["userID"];
 
-    document.getElementById("tutorEmail").value = userID;
-
     fetch('/availability?tutorID=' + userID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
+        if(timeslots.error) {
+            var message = document.createElement("p");
+            p.innerText = timeslots.error;
+            document.getElementById('timeslots').appendChild(message);
+            return;
+        }
         timeslots.forEach((timeslot) => {
             document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot, userID));
         })
@@ -89,6 +101,28 @@ function createTimeSlotBoxManage(timeslot, tutorID) {
     timeslotElement.appendChild(dateLineElement);
     timeslotElement.appendChild(buttonLineElement);
     return timeslotElement;
+}
+
+function addTimeSlot() {
+    var queryString = new Array();
+    window.onload = readTutorID(queryString, window);
+    const userID = queryString["userID"];
+
+    const params = new URLSearchParams();
+
+    params.append('startHour', document.getElementById('startHour').value);
+    params.append('startMinute', document.getElementById('startMinute').value);
+    params.append('endHour', document.getElementById('endHour').value);
+    params.append('endMinute', document.getElementById('endMinute').value);
+    params.append('day', document.getElementById('day').value);
+    params.append('month', document.getElementById('month').value);
+    params.append('year', document.getElementById('year').value);
+    params.append('tutorID', userID);
+
+    fetch('/add-availability', {method: 'POST', body: params}).then(() => {
+        window.location.href = "/manage-availability.html?userID=" + userID;
+    });
+
 }
 
 function deleteTimeSlot(tutorID, window, timeslot) {

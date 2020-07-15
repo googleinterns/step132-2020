@@ -31,8 +31,9 @@ public final class Tutor {
     private ArrayList<TutorSession> scheduledSessions;
     private int ratingSum;
     private int ratingCount;
+    private String userId;
 
-    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions) {
+    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions, String id) {
         this.name = name;
         this.bio = bio;
         this.pfp = pfp;
@@ -43,6 +44,20 @@ public final class Tutor {
         // Rating count and sum are both initially set to 0 by default
         this.ratingCount = 0;
         this.ratingSum = 0;
+        this.userId = id;
+    }
+
+    public Tutor(String name, String bio, String pfp, String email, ArrayList<String>  skills, ArrayList<TimeRange> availability, ArrayList<TutorSession> scheduledSessions, int ratingCount, int ratingSum, String id) {
+        this.name = name;
+        this.bio = bio;
+        this.pfp = pfp;
+        this.email = email;
+        this.skills = skills;
+        this.availability = availability;
+        this.scheduledSessions = scheduledSessions;
+        this.ratingCount = ratingCount;
+        this.ratingSum = ratingSum;
+        this.userId = id;
     }
 
     public String getName() {
@@ -77,41 +92,7 @@ public final class Tutor {
         return (float) this.ratingSum / this.ratingCount;
     }
 
-    /** Deletes the given timeslot from the availability array. */
-    public void deleteAvailabilityByTimeRange(TimeRange timeslot) {
-        this.availability.remove(timeslot);
+    public String getUserId() {
+        return this.userId;
     }
-    
-    /** Adds the given timeslot to the availability list. */
-    public void addAvailabilityByTimeRange(TimeRange timeslot) {
-        this.availability.add(timeslot);
-    }
-
-    /** Adds the given Tutor Session to the scheduledSessions array. */
-    public void addToScheduledSessions(TutorSession tutoringSession) {
-        this.scheduledSessions.add(tutoringSession);
-    }
-
-    /** Deletes the given Tutor Session from the scheduledSessions array. */
-    public void deleteFromScheduledSessions(TutorSession tutoringSession) {
-        TutorSession tutorSession = getSessionById(tutoringSession.getId());
-        this.scheduledSessions.remove(tutorSession);
-        return;
-    }
-
-    public TutorSession getSessionById(long id) {
-        for (TutorSession tutorSession : this.scheduledSessions) {
-            if (tutorSession.getId() == id) {
-                return tutorSession;
-            }
-        }
-
-        return null;
-    }
-
-    public void rateTutor(int newRating) {
-        this.ratingSum = this.ratingSum + newRating;
-        this.ratingCount++;
-    }
-
 }

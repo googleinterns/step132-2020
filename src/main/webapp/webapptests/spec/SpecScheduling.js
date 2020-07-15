@@ -45,8 +45,8 @@ describe("Scheduling", function() {
         var mockWindow = {location: {href: "scheduling.html"}};
 
         it("should redirect the user to confirmation.html and pass tutorID as an URI component", function() {
-            redirectToConfirmation("test@gmail.com", mockWindow);
-            expect(mockWindow.location.href).toEqual("confirmation.html?studentEmail=test%40gmail.com");
+            redirectToConfirmation("123", mockWindow);
+            expect(mockWindow.location.href).toEqual("confirmation.html?studentID=123");
         });
     });
 

@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -38,6 +39,8 @@ import com.google.sps.data.TutorSession;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 
 @RunWith(JUnit4.class)
@@ -48,12 +51,24 @@ public final class SchedulingTest {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
                                                         .build();
+    private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
+
     private SchedulingServlet servlet;
 
     @Before
     public void setUp() {
-        servlet = new SchedulingServlet(true);
-        TutorSession.resetIds();
+        helper.setUp();
+
+        servlet = new SchedulingServlet();
+        servlet.init();
+
+        SampleData sample  = new SampleData();
+        sample.addTutorsToDatastore();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
 
     @Test
@@ -61,13 +76,13 @@ public final class SchedulingTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn("btrevisan@google.com");
+        when(request.getParameter("tutorID")).thenReturn("1");
         when(request.getParameter("start")).thenReturn("480");
         when(request.getParameter("end")).thenReturn("600");
         when(request.getParameter("year")).thenReturn("2020");
         when(request.getParameter("month")).thenReturn("4");
         when(request.getParameter("day")).thenReturn("18");
-        when(request.getParameter("studentEmail")).thenReturn("thegoogler@google.com");
+        when(request.getParameter("studentID")).thenReturn("3");
         when(request.getParameter("subtopics")).thenReturn("algebra");
         when(request.getParameter("questions")).thenReturn("How does it work?");
 
@@ -84,16 +99,15 @@ public final class SchedulingTest {
         verify(request, times(1)).getParameter("year");
         verify(request, times(1)).getParameter("month");
         verify(request, times(1)).getParameter("day");
-        verify(request, times(1)).getParameter("studentEmail");
+        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("subtopics");
         verify(request, times(1)).getParameter("questions");
 
         String expected = new Gson()
-                            .toJson(new TutorSession("thegoogler@google.com",
-                                            "btrevisan@google.com",
+                            .toJson(new TutorSession("3", "1",
                                             "algebra",
                                             "How does it work?",
-                                            TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), 0));
+                                            TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), 21)); //21 is the id the local datastore gives to this new session
 
         writer.flush();
         // Tutoring session should have been scheduled

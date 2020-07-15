@@ -28,11 +28,7 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TutorSession;
 import com.google.sps.utilities.TutorSessionDatastoreService;
-import com.google.sps.utilities.RealTutorSessionDatastore;
-import com.google.sps.utilities.MockTutorSessionDatastore;
 import com.google.sps.utilities.AvailabilityDatastoreService;
-import com.google.sps.utilities.MockAvailabilityDatastore;
-import com.google.sps.utilities.RealAvailabilityDatastore;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,29 +48,22 @@ public class ProfileServlet extends HttpServlet {
     private TutorSessionDatastoreService sessionDatastore;
     private AvailabilityDatastoreService availabilityDatastore;
 
-    /**
-    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
-    * We need the default one for deployment because the servlet is created without parameters.
-    */
-    public ProfileServlet(){}
-
-    public ProfileServlet(boolean test) {
-        if(test) {
-            sessionDatastore = new MockTutorSessionDatastore();
-            availabilityDatastore = new MockAvailabilityDatastore();
-        }
-    }
-
     public void init() {
-        sessionDatastore = new RealTutorSessionDatastore();
-        availabilityDatastore = new RealAvailabilityDatastore();
+        sessionDatastore = new TutorSessionDatastoreService();
+        availabilityDatastore = new AvailabilityDatastoreService();
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        
-        String userId = Optional.ofNullable(request.getParameter("user-id")).orElse("");
+        //if the user id is null, the default value will be -1 because no tutor or student will have id = -1
+        String userId = Optional.ofNullable(request.getParameter("userId")).orElse("-1");
+
+        if(userId.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error getting profile.\"}");
+            return;
+        }
         
         // Find out whether the user is a student or a tutor
         Query query = new Query("User").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
@@ -93,9 +82,9 @@ public class ProfileServlet extends HttpServlet {
             String pfp = (String) entity.getProperty("pfp");
             String email = (String) entity.getProperty("email");
             ArrayList<String> learning = (ArrayList) entity.getProperty("learning");
-            ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForStudent(email);
+            ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForStudent(userId);
 
-            Student student = new Student(name, bio, pfp, email, learning, scheduledSessions);
+            Student student = new Student(name, bio, pfp, email, learning, scheduledSessions, userId);
 
             String json = new Gson().toJson(student);
             response.getWriter().println(json);
@@ -109,10 +98,12 @@ public class ProfileServlet extends HttpServlet {
             String pfp = (String) entity.getProperty("pfp");
             String email = (String) entity.getProperty("email");
             ArrayList<String> skills = (ArrayList) entity.getProperty("topics");
-            ArrayList<TimeRange> availability = (ArrayList) availabilityDatastore.getAvailabilityForTutor(email);
-            ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForTutor(email);
+            ArrayList<TimeRange> availability = (ArrayList) availabilityDatastore.getAvailabilityForTutor(userId);
+            ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForTutor(userId);
+            int ratingCount = Math.toIntExact((long) entity.getProperty("ratingCount"));
+            int ratingSum = Math.toIntExact((long) entity.getProperty("ratingSum"));
 
-            Tutor tutor = new Tutor(name, bio, pfp, email, skills, availability, scheduledSessions);
+            Tutor tutor = new Tutor(name, bio, pfp, email, skills, availability, scheduledSessions, ratingCount, ratingSum, userId);
 
             String json = new Gson().toJson(tutor);
             response.getWriter().println(json);

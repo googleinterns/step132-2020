@@ -32,14 +32,16 @@ public final class Student {
     private String email;
     private ArrayList<String> learning;
     private ArrayList<TutorSession> scheduledSessions;
+    private String userId;
 
-    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions) {
+    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions, String id) {
         this.name = name;
         this.bio = bio;
         this.pfp = pfp;
         this.email = email;
         this.learning = learning;
         this.scheduledSessions = scheduledSessions;
+        this.userId = id;
     }
 
     public String getName() {
@@ -66,35 +68,7 @@ public final class Student {
         return this.scheduledSessions;
     }
 
-    /** Adds the given Tutor Session to the scheduledSessions array. */
-    public void addToScheduledSessions(TutorSession tutoringSession) {
-        this.scheduledSessions.add(tutoringSession);
+    public String getUserId() {
+        return this.userId;
     }
-
-    /** Deletes the given Tutor Session from the scheduledSessions array. */
-    public void deleteFromScheduledSessions(TutorSession tutoringSession) {
-        TutorSession tutorSession = getSessionById(tutoringSession.getId());
-        this.scheduledSessions.remove(tutorSession);
-    }
-
-    public TutorSession getSessionById(long id) {
-        for (TutorSession tutorSession : this.scheduledSessions) {
-            if (tutorSession.getId() == id) {
-                return tutorSession;
-            }
-        }
-
-        return null;
-    }
-
-    /** Marks the tutoring session that has the given tutor's email as rated.*/
-    public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail, int newRating) {
-        for(TutorSession tutorSession : this.scheduledSessions) {
-            if(tutorEmail.toLowerCase().equals(tutorSession.getTutorEmail().toLowerCase())) {
-                tutorSession.rateSession(newRating);
-            }
-        }
-    }
-
 }
-
