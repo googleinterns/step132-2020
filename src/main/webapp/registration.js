@@ -111,7 +111,7 @@ function redirectToManageAvailability(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to my-students.html
  */
 function redirectToMyStudents(window, loginStatus) {
-    var url = "my-students.html?userID=" + encodeURIComponent(loginStatus.userId);
+    var url = "my-students.html?userID=" + encodeURIComponent(loginStatus.userEmail);
     window.location.href = url;
 }
 

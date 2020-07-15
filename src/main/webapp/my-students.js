@@ -18,9 +18,10 @@ function getMyStudents() {
     const userID = queryString["userID"];
 
     fetch('/my-students?tutorID=' + userID, {method: 'GET'}).then(response => response.json()).then((students) => {
+        console.log(students);
         if(students.error) {
             var message = document.createElement("p");
-            p.innerText = timeslots.error;
+            p.innerText = students.error;
             document.getElementById('students').appendChild(message);
             return;
         }
@@ -54,7 +55,7 @@ function createStudentBox(student) {
     const progressLink = document.createElement("a");
     name.innerText = student.name;
     email.innerText = student.email;
-    skills.innerText = "Learning: " + student.learning.join(", ");
+    learning.innerText = "Learning: " + student.learning.join(", ");
     progressLink.innerText = "Track Progress";
 
     progressLink.href = "/progress.html?studentID=" + student.userId;
