@@ -15,6 +15,7 @@
     <head>
         <meta charset="UTF-8">
         <title>Your Students</title>
+        <link rel="stylesheet" type="text/css" href="my-students.css">
         <link rel="stylesheet" type="text/css" href="general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -38,8 +39,8 @@
             <h2>Click a student to see their past experiences and progress.</h2>
         </div>
 
-        <div class="container-fluid">
-            <ul class="list-group" id="students"></ul>
+        <div id="result-container" class="list-group">
+            <div id="students" class="list-group active-container"></div>
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
