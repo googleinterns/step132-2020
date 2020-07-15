@@ -14,12 +14,14 @@
 
 package com.google.sps;
 
+import com.google.sps.data.SampleData;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -30,6 +32,8 @@ import java.util.Calendar;
 import com.google.gson.Gson;
 import java.io.*;
 import javax.servlet.http.*;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 @RunWith(JUnit4.class)
 public final class SearchTest {
@@ -53,12 +57,25 @@ public final class SearchTest {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
                                                         .build();
+
+    private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+
     private SearchServlet servlet;
 
     @Before
     public void setUp() {
-        servlet = new SearchServlet(true);
-        TutorSession.resetIds();
+        helper.setUp();	  
+
+        SampleData sample = new SampleData();
+        sample.addTutorsToDatastore();
+
+        servlet = new SearchServlet();
+        servlet.init();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
 
     @Test
@@ -79,11 +96,13 @@ public final class SearchTest {
         verify(request, times(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
         List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", 
-                                                            new ArrayList<String> (Arrays.asList("Math", "History")),
+                                                            new ArrayList<String> (Arrays.asList("math", "history")),
                                                             new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                                                                         TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
-                                                            new ArrayList<TutorSession> (Arrays.asList())));
+                                                            new ArrayList<TutorSession> (Arrays.asList()), 0, 0, "0"));
         String expected = new Gson().toJson(expectedTutorList);
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
@@ -131,22 +150,6 @@ public final class SearchTest {
         //there are no tutors for business, so it should return an empty string
         String expected = "{\"error\": \"Invalid search request.\"}";
         Assert.assertTrue(stringWriter.toString().contains(expected));
-    }
-
-    /**
-    * This method converts a list of tutors to a JSON string.
-    * @return String, the list of tutors as a JSON string
-    */
-    private String convertListToJson(List<Tutor> tutors) {
-        ArrayList<String> jsonTutors = new ArrayList<String>();
-        Gson gson = new Gson();
-        //convert all Tutor objects to JSON
-        for(Tutor t : tutors) {
-            jsonTutors.add(gson.toJson(t));
-        }
-
-        //convert list to JSON
-        return gson.toJson(jsonTutors);
     }
 
 }

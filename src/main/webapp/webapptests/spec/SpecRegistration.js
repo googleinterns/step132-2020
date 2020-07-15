@@ -214,34 +214,34 @@ describe("Registration", function() {
             });
 
             it("adds event listener that redirects the user to their profile", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'blah', role: "tutor"};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'123', role: "tutor"};
                 var mockWindow = {location: {href: "homepage.html"}};
                 setProfileQueryString(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("profile.html?userID=blah");
+                expect(mockWindow.location.href).toEqual("profile.html?userID=123");
             });
             it("adds event listener that redirects the user to their availability settings", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah', role: "tutor"};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'123', role: "tutor"};
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToManageAvailability(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("manage-availability.html?userID=blah");
+                expect(mockWindow.location.href).toEqual("manage-availability.html?userID=123");
             })
 
             it("adds event listener that redirects the user to their tutor session settings", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah', role: "student"};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'123', role: "student"};
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToManageSessions(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("manage-sessions.html?userID=blah");
+                expect(mockWindow.location.href).toEqual("manage-sessions.html?userID=123");
             })
 
             it("adds event listener that redirects the user to their history", function() {
-                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userEmail:'blah', role: "student"};
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'123', role: "student"};
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToHistory(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("history.html?userID=blah");
+                expect(mockWindow.location.href).toEqual("history.html?userID=123");
             })
         });
     });
