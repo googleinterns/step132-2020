@@ -88,9 +88,9 @@ public final class SampleData {
         new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
                 new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
         new Student("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
-                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList()), "3"),
+                new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "3"),
         new Student("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList()), "4")
+                new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
 
    /** 
