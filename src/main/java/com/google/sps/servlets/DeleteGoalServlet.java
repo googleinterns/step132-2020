@@ -55,7 +55,7 @@ public class DeleteGoalServlet extends HttpServlet {
         // Delete goal
         datastore.deleteGoal(id);
 
-        String json = "{}";
+        String json = new Gson().toJson(datastore.getGoalsByStudent(studentID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
         response.sendRedirect("/progress.html?studentID=" + studentID);
