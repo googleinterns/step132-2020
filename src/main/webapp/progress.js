@@ -33,12 +33,12 @@ function loadProgressHelper(document, loginStatus) {
 function addEventListeners() {
     document.getElementById("experiences-form").addEventListener('submit', event => {
         event.preventDefault();
-        addExperience();
+        addExperience(window);
     });
 
     document.getElementById("goals-form").addEventListener('submit', event => {
         event.preventDefault();
-        addGoal();
+        addGoal(window);
     });
 }
 
@@ -50,25 +50,7 @@ function getExperiences(document, loginStatus) {
     const params = new URLSearchParams();
     params.append('studentID', studentID);
     fetch('/add-experience?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((experiences) => {
-        //if there was an error
-        if(experiences.error) {
-            var experienceContainer = document.getElementById('experiences');
-            var errorMessage = document.createElement("p");
-            errorMessage.innerText = experiences.error;
-            experienceContainer.appendChild(errorMessage);
-            return;
-        }
-        if (Object.keys(experiences).length != 0) {
-            experiences.forEach((experience) => {
-                document.getElementById('experiences').appendChild(createExperienceBox(experience, loginStatus));
-            })
-        } else {
-            var experienceContainer = document.getElementById('experiences');
-            var errorMessage = document.createElement("p");
-            errorMessage.innerText = "This user has not set any past experiences";
-            experienceContainer.appendChild(errorMessage);
-            return;
-        }
+        getExperiencesHelper(document, experiences);
     });
 
     // If the user is a student, allow them to add experiences
@@ -76,6 +58,28 @@ function getExperiences(document, loginStatus) {
         document.getElementById('experiences-form').style.display = "block";
     } else {
         document.getElementById('experiences-form').style.display = "none";
+    }
+}
+
+function getExperiencesHelper(document, experiences) {
+    //if there was an error
+    if(experiences.error) {
+        var experienceContainer = document.getElementById('experiences');
+        var errorMessage = document.createElement("p");
+        errorMessage.innerText = experiences.error;
+        experienceContainer.appendChild(errorMessage);
+        return;
+    }
+    if (Object.keys(experiences).length != 0) {
+        experiences.forEach((experience) => {
+            document.getElementById('experiences').appendChild(createExperienceBox(experience, loginStatus));
+        })
+    } else {
+        var experienceContainer = document.getElementById('experiences');
+        var errorMessage = document.createElement("p");
+        errorMessage.innerText = "This user has not set any past experiences";
+        experienceContainer.appendChild(errorMessage);
+        return;
     }
 }
 
@@ -87,25 +91,7 @@ function getGoals(document, loginStatus) {
     const params = new URLSearchParams();
     params.append('studentID', studentID);
     fetch('/add-goal?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((goals) => {
-        //if there was an error
-        if(goals.error) {
-            var goalContainer = document.getElementById('goals');
-            var errorMessage = document.createElement("p");
-            errorMessage.innerText = goals.error;
-            goalContainer.appendChild(errorMessage);
-            return;
-        }
-        if (Object.keys(goals).length != 0) {
-            goals.forEach((goal) => {
-                document.getElementById('goals').appendChild(createGoalBox(goal, loginStatus));
-            })
-        } else {
-            var goalContainer = document.getElementById('goals');
-            var errorMessage = document.createElement("p");
-            errorMessage.innerText = "This user has not set any goals";
-            goalContainer.appendChild(errorMessage);
-            return;
-        }
+        getGoalsHelper(document, goals);
     });
 
     // If the user is a student, allow them to add goals
@@ -113,6 +99,28 @@ function getGoals(document, loginStatus) {
         document.getElementById('goals-form').style.display = "block";
     } else {
         document.getElementById('goals-form').style.display = "none";
+    }
+}
+
+function getGoalsHelper(document, goals) {
+    //if there was an error
+    if(goals.error) {
+        var goalContainer = document.getElementById('goals');
+        var errorMessage = document.createElement("p");
+        errorMessage.innerText = goals.error;
+        goalContainer.appendChild(errorMessage);
+        return;
+    }
+    if (Object.keys(goals).length != 0) {
+        goals.forEach((goal) => {
+            document.getElementById('goals').appendChild(createGoalBox(goal, loginStatus));
+        })
+    } else {
+        var goalContainer = document.getElementById('goals');
+        var errorMessage = document.createElement("p");
+        errorMessage.innerText = "This user has not set any goals";
+        goalContainer.appendChild(errorMessage);
+        return;
     }
 }
 
@@ -132,36 +140,40 @@ function getPastSessionsAndTopics(document, loginStatus) {
     const params = new URLSearchParams();
     params.append('studentID', studentID);
     fetch('/history?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
-        //if there was an error
-        if(tutoringSessions.error) {
-            var pastSessions = document.getElementById('past-sessions');
-            var pastTopics = document.getElementById('past-topics');
-            var errorMessage1 = document.createElement("p");
-            var errorMessage2 = document.createElement("p");
-            errorMessage1.innerText = tutoringSessions.error;
-            errorMessage2.innerText = tutoringSessions.error;
-            pastSessions.appendChild(errorMessage1);
-            pastTopics.appendChild(errorMessage2);
-            return;
-        }
-
-        if (Object.keys(tutoringSessions).length != 0) {
-            tutoringSessions.forEach((tutoringSession) => {
-                document.getElementById('past-sessions').appendChild(createPastSessionBox(tutoringSession));
-                document.getElementById('past-topics').appendChild(createPastTopicBox(tutoringSession));
-            })
-        } else {
-            var pastSessions = document.getElementById('past-sessions');
-            var pastTopics = document.getElementById('past-topics');
-            var errorMessage1 = document.createElement("p");
-            var errorMessage2 = document.createElement("p");
-            errorMessage1.innerText = "This user has not had any tutoring sessions yet.";
-            errorMessage2.innerText = "This user has not had any tutoring sessions yet.";
-            pastSessions.appendChild(errorMessage1);
-            pastTopics.appendChild(errorMessage2);
-            return;
-        }
+        getPastSessionsAndTopicsHelper(document, tutoringSessions);
     });
+}
+
+function getPastSessionsAndTopicsHelper(document, tutoringSessions) {
+    //if there was an error
+    if(tutoringSessions.error) {
+        var pastSessions = document.getElementById('past-sessions');
+        var pastTopics = document.getElementById('past-topics');
+        var errorMessage1 = document.createElement("p");
+        var errorMessage2 = document.createElement("p");
+        errorMessage1.innerText = tutoringSessions.error;
+        errorMessage2.innerText = tutoringSessions.error;
+        pastSessions.appendChild(errorMessage1);
+        pastTopics.appendChild(errorMessage2);
+        return;
+    }
+
+    if (Object.keys(tutoringSessions).length != 0) {
+        tutoringSessions.forEach((tutoringSession) => {
+            document.getElementById('past-sessions').appendChild(createPastSessionBox(tutoringSession));
+            document.getElementById('past-topics').appendChild(createPastTopicBox(tutoringSession));
+        })
+    } else {
+        var pastSessions = document.getElementById('past-sessions');
+        var pastTopics = document.getElementById('past-topics');
+        var errorMessage1 = document.createElement("p");
+        var errorMessage2 = document.createElement("p");
+        errorMessage1.innerText = "This user has not had any tutoring sessions yet.";
+        errorMessage2.innerText = "This user has not had any tutoring sessions yet.";
+        pastSessions.appendChild(errorMessage1);
+        pastTopics.appendChild(errorMessage2);
+        return;
+    }
 }
 
 // Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
@@ -306,7 +318,7 @@ function createExperienceBox(experience, loginStatus) {
     return experienceContainer;
 }
 
-function addGoal() {
+function addGoal(window) {
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
     const studentID = queryString["studentID"];
@@ -330,7 +342,7 @@ function deleteGoal(goal, studentID, window) {
     fetch('/delete-goal', {method: 'POST', body: params});
 }
 
-function addExperience() {
+function addExperience(window) {
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
     const studentID = queryString["studentID"];
