@@ -117,7 +117,7 @@ public final class TutorSessionDatastoreService {
     * Adds the given rating to a tutor session and updates the tutor's overall rating.
     * @return boolean, true if session was rated successfully, false otherwise
     */
-    public boolean rateTutorSession(long sessionId, int rating) {
+    public boolean rateTutorSession(long sessionId, String studentID, int rating) {
 
         boolean success = true;
 
@@ -130,6 +130,11 @@ public final class TutorSessionDatastoreService {
         try {
 
             Entity sessionEntity = datastore.get(txn, sessionKey); 
+
+            //if the user trying to rate this session is not the student, return false
+            if(!((String) sessionEntity.getProperty("studentID")).equals(studentID)) {
+                return false;
+            }
 
             sessionEntity.setProperty("rated", true);
             sessionEntity.setProperty("rating", rating);
@@ -152,6 +157,21 @@ public final class TutorSessionDatastoreService {
 
         return success;
 
+    }
+    
+    /**
+    * Gets a TutorSession with the given session id. Used for testing.
+    * @return TutorSession
+    */
+    public TutorSession getScheduledSession(long sessionId) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
+        try {
+            Entity sessionEntity = datastore.get(sessionKey); 
+            return createTutorSession(datastore, sessionEntity);
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
     }
 
     /**
@@ -191,27 +211,37 @@ public final class TutorSessionDatastoreService {
         PreparedQuery sessionEntities = datastore.prepare(query);
 
         for(Entity entity : sessionEntities.asIterable()) {
-            try {
-                long id = (long) entity.getKey().getId();
-                String studentID = (String) entity.getProperty("studentID");
-                String tutorID = (String) entity.getProperty("tutorID");
-                String subtopics = (String) entity.getProperty("subtopics");
-                String questions = (String) entity.getProperty("questions");
-                int rating = Math.toIntExact((long) entity.getProperty("rating"));
-
-                Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
-                Entity timeEntity = datastore.get(timeRangeKey); 
-                TimeRange timeslot = createTimeRange(timeEntity);
-
-                sessions.add(new TutorSession(studentID, tutorID, subtopics, questions, timeslot, rating, id));
-
-            } catch (EntityNotFoundException e) {
-                //timeslot was not found, skip this tutoring session
+            TutorSession session = createTutorSession(datastore, entity);
+            if(session != null) {
+                sessions.add(session);
             }
-           
         }
 
         return sessions;
+    }
+
+    /**
+    * Creates a new TutorSession object from a given TutorSession entity.
+    * @return TutorSession
+    */
+    private TutorSession createTutorSession(DatastoreService datastore, Entity entity) {
+        try {
+            long id = (long) entity.getKey().getId();
+            String studentID = (String) entity.getProperty("studentID");
+            String tutorID = (String) entity.getProperty("tutorID");
+            String subtopics = (String) entity.getProperty("subtopics");
+            String questions = (String) entity.getProperty("questions");
+            int rating = Math.toIntExact((long) entity.getProperty("rating"));
+
+            Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
+            Entity timeEntity = datastore.get(timeRangeKey); 
+            TimeRange timeslot = createTimeRange(timeEntity);
+
+            return new TutorSession(studentID, tutorID, subtopics, questions, timeslot, rating, id);
+
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
     }
 
      /**

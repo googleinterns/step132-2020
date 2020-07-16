@@ -76,7 +76,6 @@ public final class RatingTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         TestUtilities.setSessionId(request, "2");
 
-        when(request.getParameter("tutorID")).thenReturn("2");
         //id of the second hard coded tutor session
         when(request.getParameter("sessionId")).thenReturn("14");
         when(request.getParameter("rating")).thenReturn("5");
@@ -88,7 +87,6 @@ public final class RatingTest {
 
         servlet.doPost(request, response);
 
-        verify(request, atLeast(1)).getParameter("tutorID");
         verify(request, atLeast(1)).getParameter("sessionId");
         verify(request, atLeast(1)).getParameter("rating");
         writer.flush();
