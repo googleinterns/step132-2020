@@ -21,18 +21,50 @@ function addEventListeners() {
 }
 
 function getAvailabilityManage() {
-    fetch('/availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {
-        if(timeslots.error) {
-            var message = document.createElement("p");
-            p.innerText = timeslots.error;
-            document.getElementById('timeslots').appendChild(message);
+    return getAvailabilityManageHelper(window);
+}
+
+async function getAvailabilityManageHelper(window) {
+    await getUserId().then((userId) => {
+        var queryString = new Array();
+        window.onload = readTutorID(queryString, window);
+        const tutorID = queryString["userID"];
+
+        //if user is trying to access someone else's availability
+        if(userId !== tutorID) {
+            window.location.href = "/homepage.html";
             return;
         }
-        timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
+
+        fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
+            if(timeslots.error) {
+                var message = document.createElement("p");
+                p.innerText = timeslots.error;
+                document.getElementById('timeslots').appendChild(message);
+                return;
+            }
+
+            timeslots.forEach((timeslot) => {
+                document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
+            });
         });
     });
+}
 
+// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
+// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
+// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
+function readTutorID(queryString, window) {
+    if (queryString.length == 0) {
+        if (window.location.search.split('?').length > 1) {
+            var params = window.location.search.split('?')[1].split('&');
+            for (var i = 0; i < params.length; i++) {
+                var key = params[i].split('=')[0];
+                var value = decodeURIComponent(params[i].split('=')[1]);
+                queryString[key] = value;
+            }
+        }
+    }
 }
 
 function createTimeSlotBoxManage(timeslot) {
@@ -91,6 +123,10 @@ function addTimeSlot() {
 
 //Helper function for addTimeSlot, used for testing.
 function addTimeSlotHelper(window) {
+    var queryString = new Array();
+    window.onload = readTutorID(queryString, window);
+    const tutorID = queryString["userID"];
+
     const params = new URLSearchParams();
 
     params.append('startHour', document.getElementById('startHour').value);
@@ -102,13 +138,12 @@ function addTimeSlotHelper(window) {
     params.append('year', document.getElementById('year').value);
 
     fetch('/add-availability', {method: 'POST', body: params}).then((response) => {
-        console.log(response);
         //if the tutor id is not the id of the current user
         if(response.redirected) {
             window.location.href = response.url
             return;
         }
-        window.location.href = "/manage-availability.html";
+        window.location.href = "/manage-availability.html?userID=" + tutorID;
     });
 }
 

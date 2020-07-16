@@ -15,12 +15,23 @@
 describe("Manage Availability", function() {
 
     describe("when the tutor requests to see a their availability", function() {
-        var mockWindow = {location: {href: "manage-availability.html"}};
+        var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
 
-        it("should trigger the fetch function", function() {
+        it("should trigger the fetch function", async function() {
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
-            getAvailabilityManage(mockWindow);
+            getAvailabilityManageHelper(mockWindow);
             expect(window.fetch).toHaveBeenCalled();
+        });
+    });
+
+    describe("when user tries to access someone else's manage availability page", function() {
+        var loginStatus = {userId: "000"};
+        var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(loginStatus)}));
+            await getAvailabilityManageHelper(mockWindow);
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
     
@@ -81,13 +92,14 @@ describe("Manage Availability", function() {
         params.append('year', 2020);
 
         it("should trigger the fetch function", function() {
+            var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
             spyOn(document, "getElementById").and.returnValues(startHour, startMinute, endHour, endMinute, day, month, year);
 
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             addTimeSlotHelper(mockWindow);
             expect(window.fetch).toHaveBeenCalledWith('/add-availability', {method: 'POST', body: params})
             expect(window.fetch).toHaveBeenCalled();
-            expect(mockWindow.location.href).toBe("manage-availability.html");
+            expect(mockWindow.location.href).toBe("manage-availability.html?tutorID=123");
         });
     });
 

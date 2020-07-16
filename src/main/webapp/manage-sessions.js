@@ -82,7 +82,7 @@ function createScheduledSessionBoxManage(scheduledSession) {
     cancelButtonElement.style.display = 'inline';
     cancelButtonElement.className = 'btn btn-default btn-lg';
     cancelButtonElement.addEventListener('click', () => {
-        cancelTutorSession(userID, window, scheduledSession);
+        cancelTutorSession(window, scheduledSession);
 
         scheduledSessionElement.remove();
     });
