@@ -27,9 +27,10 @@ public final class Goal {
     
     private String studentID;
     private String goal;
+    private long id;
 
     /**
-     * Creates a new Goal.
+     * Creates a new Goal. (This constructor is used for testing.)
      *
      * @param studentID The student's id. Must be non-null.
      * @param goal The student's goal.
@@ -39,11 +40,28 @@ public final class Goal {
         this.goal = goal;
     }
 
+    /**
+     * Creates a new Goal with an id.
+     *
+     * @param studentID The student's id. Must be non-null.
+     * @param goal The student's goal.
+     * @param id A unique id for the goal
+     */
+    public Goal(String studentID, String goal, long id) {
+        this.studentID = studentID;
+        this.goal = goal;
+        this.id = id;
+    }
+
     public String getStudentID() {
         return this.studentID;
     }
 
     public String getGoal() {
         return this.goal;
+    }
+
+    public long getId(){
+        return this.id;
     }
 }

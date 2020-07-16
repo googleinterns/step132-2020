@@ -42,6 +42,27 @@ import com.google.gson.Gson;
 public final class GoalDatastoreService {
 
     /**
+    * Retrieves a list of goals for the student whose id was passsed to the function.
+    */
+    public List<Goal> getGoalsByStudent(String studentID) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        List<Goal> goals = new ArrayList<Goal>();
+        
+        //get all goals with student id
+        Filter filter = new FilterPredicate("studentID", FilterOperator.EQUAL, studentID);
+        Query query = new Query("Goal").setFilter(filter);
+
+        PreparedQuery results = datastore.prepare(query);
+
+        for(Entity result : results.asIterable()) {
+            goals.add(createGoal(result));
+        }
+
+        return goals;
+    }
+
+    /**
     * Adds a new goal.
     */
     public void addGoal(Goal goal) {
@@ -63,6 +84,38 @@ public final class GoalDatastoreService {
             txn.rollback();
           }
         }
+    }
+
+    /**
+    * Deletes a goal.
+    */
+    public void deleteGoal(long id) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        Key goalKey = KeyFactory.createKey("Goal", id);
+
+        try {
+            datastore.delete(txn, goalKey);
+
+            txn.commit();
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
+    }
+
+    /**
+    * Creates a Goal object from a given Goal entity.
+    */
+    private Goal createGoal(Entity entity) {
+        String studentID = (String) entity.getProperty("studentID");
+        String goal = (String) entity.getProperty("goal");
+        long id = (long) entity.getKey().getId();
+
+        return new Goal(studentID, goal, id);
     }
 
 }

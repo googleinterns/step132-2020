@@ -41,6 +41,25 @@ public class AddGoalServlet extends HttpServlet {
     }
 
     @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
+
+        if(studentID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error getting goals.\"}");
+            return;
+        }
+
+        // Get student's goals
+        List<Goal> goals = datastore.getGoalsByStudent(studentID);
+
+        String json = new Gson().toJson(goals);
+        response.setContentType("application/json;");
+        response.getWriter().println(json);
+        return;
+    }
+
+    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //Set default value to -1 
         String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");

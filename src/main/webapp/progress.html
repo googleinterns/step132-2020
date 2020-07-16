@@ -37,8 +37,14 @@
 
         <div class="container-fluid">
             <h1>Previous Experiences</h1>
-            <h3>Classes</h3>
-            <ul class="list-group" id="past-classes"></ul>
+            <ul class="list-group" id="experiences"></ul>
+
+            <form class="form-inline result" id="experiences-form" display="none">
+                <label class="my-1 mr-2 sr-only" for="newExperience">Add a new experience</label>
+                <input type="text" class="form-control my-1 mr-sm-2" id="newExperience" placeholder="Add a new experience" required>
+
+                <button type="submit" class="btn btn-primary mb-2">Add</button>
+            </form>
         </div>
 
         <div class="container-fluid">
