@@ -73,21 +73,31 @@ public final class TutorSessionDatastoreService {
 
     /**
     * Deletes a TutorSession for the tutor and student.
+    * @return boolean, true if successfully deleted, false otherwise
     */
-    public void deleteTutorSession(TutorSession session) {
+    public void deleteTutorSession(String studentID, long sessionId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
 
-        long sessionId = session.getId();
         Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
 
         try {
-            updateTimeRangeToAvailable(session.getId(), session.getTutorID(), datastore, txn);
+            Entity sessionEntity = datastore.get(sessionKey); 
+            
+            //if the person trying to delete the session is not the person who scheduled it
+            if(!((String)sessionEntity.getProperty("studentID")).equals(studentID)) {
+                return;
+            }
+
+            updateTimeRangeToAvailable(sessionId, (String) sessionEntity.getProperty("tutorID"), datastore, txn);
 
             datastore.delete(txn, sessionKey);
 
             txn.commit();
+
+        } catch (EntityNotFoundException e) {
+            //entity doesn't exist, we can't delete it
         } finally {
           if (txn.isActive()) {
             txn.rollback();

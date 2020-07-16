@@ -84,15 +84,6 @@ public final class DeleteTutorSessionTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         TestUtilities.setSessionId(request, "2");
 
-        when(request.getParameter("tutorID")).thenReturn("2");
-        when(request.getParameter("start")).thenReturn("540");
-        when(request.getParameter("end")).thenReturn("600");
-        when(request.getParameter("day")).thenReturn("18");
-        when(request.getParameter("month")).thenReturn("7");
-        when(request.getParameter("year")).thenReturn("2020");
-        when(request.getParameter("subtopics")).thenReturn(null);
-        when(request.getParameter("questions")).thenReturn(null);
-        when(request.getParameter("rating")).thenReturn("5");
         when(request.getParameter("id")).thenReturn("14");
 
         StringWriter stringWriter = new StringWriter();
@@ -102,15 +93,6 @@ public final class DeleteTutorSessionTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("tutorID");
-        verify(request, times(1)).getParameter("start");
-        verify(request, times(1)).getParameter("end");
-        verify(request, times(1)).getParameter("day");
-        verify(request, times(1)).getParameter("month");
-        verify(request, times(1)).getParameter("year");
-        verify(request, times(1)).getParameter("subtopics");
-        verify(request, times(1)).getParameter("questions");
-        verify(request, times(1)).getParameter("rating");
         verify(request, times(1)).getParameter("id");
 
         String unexpected = new Gson()
