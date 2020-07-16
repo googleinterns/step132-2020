@@ -91,8 +91,6 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("pfp", pfp);
     entity.setProperty("email", email);
     entity.setProperty("learning", topics);
-    List<String> tutors = new ArrayList<String>();
-    entity.setProperty("tutors", tutors);
     entity.setProperty("userId", userId);
     ds.put(entity);
   }
