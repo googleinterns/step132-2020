@@ -27,9 +27,10 @@ public final class Experience {
     
     private String studentID;
     private String experience;
+    private long id;
 
     /**
-     * Creates a new Experience.
+     * Creates a new Experience.(This constructor is used for testing.)
      *
      * @param studentID The student's id. Must be non-null.
      * @param experience The student's experience.
@@ -39,11 +40,28 @@ public final class Experience {
         this.experience = experience;
     }
 
+    /**
+     * Creates a new Experience.
+     *
+     * @param studentID The student's id. Must be non-null.
+     * @param experience The student's experience.
+     * @param id A unique id for the experience.
+     */
+    public Experience(String studentID, String experience, long id) {
+        this.studentID = studentID;
+        this.experience = experience;
+        this.id = id;
+    }
+
     public String getStudentID() {
         return this.studentID;
     }
 
     public String getExperience() {
         return this.experience;
+    }
+
+    public long getId(){
+        return this.id;
     }
 }

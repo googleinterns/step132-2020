@@ -60,7 +60,7 @@ function getExperiences(document, loginStatus) {
         }
         if (Object.keys(experiences).length != 0) {
             experiences.forEach((experience) => {
-                document.getElementById('experiences').appendChild(createExperienceBox(experience));
+                document.getElementById('experiences').appendChild(createExperienceBox(experience, loginStatus));
             })
         } else {
             var experienceContainer = document.getElementById('experiences');
@@ -255,6 +255,7 @@ function createGoalBox(goal, loginStatus) {
     description.style.textTransform = "capitalize";
     description.style.display = 'inline';
     description.style.padding = '0px 15px 0px 0px';
+
     goalContainer.classList.add("result");
     goalContainer.classList.add("list-group-item");
     goalContainer.appendChild(description);
@@ -276,16 +277,32 @@ function createGoalBox(goal, loginStatus) {
 }
 
 /** Creates a div element containing information about an experience. */
-function createExperienceBox(experience) {
+function createExperienceBox(experience, loginStatus) {
     const experienceContainer = document.createElement("div");
     const description = document.createElement("h3");
 
     description.innerHTML = experience.experience;
     description.style.textTransform = "capitalize";
+    description.style.display = 'inline';
+    description.style.padding = '0px 15px 0px 0px';
 
     experienceContainer.classList.add("result");
     experienceContainer.classList.add("list-group-item");
     experienceContainer.appendChild(description);
+
+    // Only create the delete button if the user has the student role
+    if (loginStatus.role == "student") {
+        const deleteExperienceButton = document.createElement('button');
+        deleteExperienceButton.innerText = 'Delete';
+        deleteExperienceButton.className = 'btn btn-default btn-lg';
+        deleteExperienceButton.addEventListener('click', () => {
+            deleteExperience(experience, loginStatus.userId, window);
+
+            experienceContainer.remove();
+        });
+        experienceContainer.appendChild(deleteExperienceButton);
+    }
+
     return experienceContainer;
 }
 
@@ -326,5 +343,14 @@ function addExperience() {
     fetch('/add-experience', {method: 'POST', body: params}).then(() => {
         window.location.href = "/progress.html?studentID=" + studentID;
     });
+}
+
+function deleteExperience(experience, studentID, window) {
+    const params = new URLSearchParams();
+
+    params.append('studentID', studentID);
+    params.append('id', experience.id);
+
+    fetch('/delete-experience', {method: 'POST', body: params});
 }
 

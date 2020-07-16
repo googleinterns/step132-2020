@@ -87,13 +87,35 @@ public final class ExperienceDatastoreService {
     }
 
     /**
+    * Deletes a experience.
+    */
+    public void deleteExperience(long id) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        Key experienceKey = KeyFactory.createKey("Experience", id);
+
+        try {
+            datastore.delete(txn, experienceKey);
+
+            txn.commit();
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
+    }
+
+    /**
     * Creates a Experience object from a given Experience entity.
     */
     private Experience createExperience(Entity entity) {
         String studentID = (String) entity.getProperty("studentID");
         String experience = (String) entity.getProperty("experience");
+        long id = (long) entity.getKey().getId();
 
-        return new Experience(studentID, experience);
+        return new Experience(studentID, experience, id);
     }
 
 }
