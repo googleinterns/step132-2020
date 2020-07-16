@@ -62,7 +62,6 @@ public class SessionFilter implements Filter {
 
         //user has not logged in, no cookies have been created
         if(cookies == null) {
-            System.out.println("wrong 1");
             this.context.log("Unauthorized access request");
             return false;
         }
@@ -80,7 +79,6 @@ public class SessionFilter implements Filter {
 
         //The sessionId from the cookie has ".node0" as a suffix
         if(session == null || !(session.getId()+".node0").equals(sessionId)) {
-            System.out.println("wrong 2");
             this.context.log("Unauthorized access request");
 			
             return false;

@@ -58,7 +58,11 @@ public final class TutorSessionDatastoreService {
             sessionEntity.setProperty("questions", session.getQuestions());
             sessionEntity.setProperty("rated", session.isRated());
             sessionEntity.setProperty("rating", session.getRating());
-            sessionEntity.setProperty("timeslot", updateTimeRangeToScheduled(session.getTutorID(), session.getTimeslot(), (long) sessionEntity.getKey().getId(), datastore, txn));
+    
+            datastore.put(txn, sessionEntity);
+
+            long timeslotId = updateTimeRangeToScheduled(session.getTutorID(), session.getTimeslot(), (long) sessionEntity.getKey().getId(), datastore, txn);
+            sessionEntity.setProperty("timeslot", timeslotId);
 
             datastore.put(txn, sessionEntity);
 
@@ -242,7 +246,6 @@ public final class TutorSessionDatastoreService {
             String subtopics = (String) entity.getProperty("subtopics");
             String questions = (String) entity.getProperty("questions");
             int rating = Math.toIntExact((long) entity.getProperty("rating"));
-
             Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
             Entity timeEntity = datastore.get(timeRangeKey); 
             TimeRange timeslot = createTimeRange(timeEntity);
@@ -283,7 +286,6 @@ public final class TutorSessionDatastoreService {
 
         //there should only be one result
         Entity timeEntity = pq.asSingleEntity();
-
         //change the tutorID property to the sessionId
         //instead of deleting the TimeRange entity, we can just set the tutorID property to the sessionId to indicate that it is a scheduled session 
         timeEntity.setProperty("tutorID", sessionId);
@@ -291,7 +293,7 @@ public final class TutorSessionDatastoreService {
         //update in datastore
         datastore.put(txn, timeEntity);
 
-        return timeEntity.getKey().getId();
+        return (long) timeEntity.getKey().getId();
     }
 
     /**
@@ -308,6 +310,7 @@ public final class TutorSessionDatastoreService {
 
         //there should only be one result
         Entity timeEntity = pq.asSingleEntity();
+        System.out.println(timeEntity);
 
         //change the email property from "scheduled" to the tutor's email
         timeEntity.setProperty("tutorID", tutorID);
