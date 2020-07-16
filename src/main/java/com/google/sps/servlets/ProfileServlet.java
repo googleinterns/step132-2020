@@ -30,6 +30,7 @@ import com.google.sps.utilities.AvailabilityDatastoreService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.Arrays;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -77,9 +78,13 @@ public class ProfileServlet extends HttpServlet {
             String pfp = (String) entity.getProperty("pfp");
             String email = (String) entity.getProperty("email");
             ArrayList<String> learning = (ArrayList) entity.getProperty("learning");
+            ArrayList<String> tutors = (ArrayList) entity.getProperty("tutors");
+            if (tutors == null) {
+                tutors = new ArrayList<String> (Arrays.asList());
+            }
             ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForStudent(userId);
 
-            Student student = new Student(name, bio, pfp, email, learning, scheduledSessions, userId);
+            Student student = new Student(name, bio, pfp, email, learning, tutors, scheduledSessions, userId);
 
             String json = new Gson().toJson(student);
             response.getWriter().println(json);

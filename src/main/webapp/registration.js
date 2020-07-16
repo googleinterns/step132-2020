@@ -73,14 +73,19 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         // If the user is a tutor, display availability settings
         if (loginStatus.role == "tutor") {
             document.getElementById('availability-settings').style.display = "block";
+            document.getElementById('my-students').style.display = "block";
             document.getElementById('tutor-session-settings').style.display = "none";
             document.getElementById('history').style.display = "none";
             document.getElementById('availability-settings').addEventListener('click', () => {
                 redirectToManageAvailability(window, loginStatus);
             });
+            document.getElementById('my-students').addEventListener('click', () => {
+                redirectToMyStudents(window, loginStatus);
+            });
         // Display tutor session settings and history if the user is a student
         } else if (loginStatus.role == "student") {
             document.getElementById('availability-settings').style.display = "none";
+            document.getElementById('my-students').style.display = "none";
             document.getElementById('tutor-session-settings').style.display = "block";
             document.getElementById('history').style.display = "block";
             document.getElementById('tutor-session-settings').addEventListener('click', () => {
@@ -95,6 +100,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('logout').style.display = "none";
         document.getElementById('profile').style.display = "none";
         document.getElementById('availability-settings').style.display = "none";
+        document.getElementById('my-students').style.display = "none";
         document.getElementById('tutor-session-settings').style.display = "none";
         document.getElementById('history').style.display = "none";
         document.getElementById('login').style.display = "block";
@@ -115,6 +121,14 @@ function setProfileQueryString(window, loginStatus) {
  */
 function redirectToManageAvailability(window, loginStatus) {
     var url = "manage-availability.html?userID=" + encodeURIComponent(loginStatus.userId);
+    window.location.href = url;
+}
+
+/**
+ * Sets the URL's query string for the user's profile to their user ID and redirect them to my-students.html
+ */
+function redirectToMyStudents(window, loginStatus) {
+    var url = "my-students.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 

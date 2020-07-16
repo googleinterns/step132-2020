@@ -62,6 +62,8 @@ public final class TutorSessionDatastoreService {
 
             datastore.put(txn, sessionEntity);
 
+            updateTutorsForStudent(datastore, txn, session.getStudentID(), session.getTutorID());
+
             txn.commit();
 
         } finally {
@@ -152,6 +154,30 @@ public final class TutorSessionDatastoreService {
 
         return success;
 
+    }
+
+    private void updateTutorsForStudent(DatastoreService datastore, Transaction txn, String studentId, String tutorId) {
+        //get student with id
+        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, studentId);
+        Query query = new Query("Student").setFilter(filter);
+
+        PreparedQuery pq = datastore.prepare(query);
+
+        Entity studentEntity = pq.asSingleEntity();
+
+        System.out.println(studentEntity);
+        System.out.println(studentId);
+
+        List<String> tutors = (List<String>) studentEntity.getProperty("tutors");
+        if (tutors == null) {
+            tutors = new ArrayList<String>();
+        }
+
+        tutors.add(tutorId);
+
+        studentEntity.setProperty("tutors", tutors);
+
+        datastore.put(txn, studentEntity);
     }
 
     /**

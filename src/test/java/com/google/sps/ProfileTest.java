@@ -60,6 +60,7 @@ public final class ProfileTest {
         servlet = new ProfileServlet();
         servlet.init();
         sample.addTutorsToDatastore();
+        sample.addStudentsToDatastore();
     }
 
     @After
@@ -74,16 +75,6 @@ public final class ProfileTest {
         userEntity.setProperty("role", "student");
         userEntity.setProperty("userId", "1");
         datastore.put(userEntity);
-
-        // Add student entity that matches sample data
-        Entity studentEntity = new Entity("Student");
-        studentEntity.setProperty("name", "Bernardo Eilert Trevisan");
-        studentEntity.setProperty("bio", "Bernardo\'s bio");
-        studentEntity.setProperty("pfp", "images/pfp.jpg");
-        studentEntity.setProperty("email", "btrevisan@google.com");
-        studentEntity.setProperty("learning", new ArrayList<String> (Arrays.asList("Math", "History")));
-        studentEntity.setProperty("userId", "1");
-        datastore.put(studentEntity);
         
         when(request.getParameter("userId")).thenReturn("1");
 
