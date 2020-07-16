@@ -26,15 +26,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.lang.String;
 import com.google.gson.Gson;
-import com.google.sps.utilities.GetStudentsService;
+import com.google.sps.utilities.StudentDatastoreService;
 
 /** Servlet that returns a list of students for a given tutor. */
 @WebServlet("/my-students")
 public class GetStudentsServlet extends HttpServlet {
-    private GetStudentsService datastore;
+    private StudentDatastoreService datastore;
 
     public void init() {
-        datastore = new GetStudentsService();
+        datastore = new StudentDatastoreService();
     }
 
     @Override
