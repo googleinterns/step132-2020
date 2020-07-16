@@ -49,7 +49,7 @@ public class RatingServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //Make the default ids -1 because no student or tutor has id = -1 --> no session will get rated
         String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
-        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         long sessionId = Long.parseLong(request.getParameter("sessionId"));
         int rating = Integer.parseInt(request.getParameter("rating"));
         

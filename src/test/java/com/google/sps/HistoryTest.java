@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Arrays;
@@ -74,7 +75,7 @@ public final class HistoryTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("studentID")).thenReturn("10");
+        TestUtilities.setSessionId(request, "10");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -83,7 +84,6 @@ public final class HistoryTest {
 
         servlet.doGet(request, response);
 
-        verify(request, atLeast(1)).getParameter("studentID");
         writer.flush();
         // If the user has no tutoring session history, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains("[]"));
@@ -94,7 +94,7 @@ public final class HistoryTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("studentID")).thenReturn("1");
+        TestUtilities.setSessionId(request, "1");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -106,7 +106,6 @@ public final class HistoryTest {
         //id of tutor and student is 1
         String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9))));
 
-        verify(request, times(1)).getParameter("studentID");
         writer.flush();
         System.out.println(stringWriter.toString());
         System.out.println(expected);

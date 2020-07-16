@@ -52,7 +52,7 @@ public class SchedulingServlet extends HttpServlet {
 
         //make the default value -1 if ids were null
         String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
-        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         String start = request.getParameter("start");
         String end = request.getParameter("end");
         String year = request.getParameter("year");

@@ -41,7 +41,7 @@ public class DeleteTutorSessionServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String tutorID = request.getParameter("tutorID");
-        String studentID = request.getParameter("studentID");
+        String studentID = (String)request.getSession(false).getAttribute("userId");
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         String day = request.getParameter("day");

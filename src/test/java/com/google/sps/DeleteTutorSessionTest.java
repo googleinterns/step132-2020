@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -78,12 +79,11 @@ public final class DeleteTutorSessionTest {
                                             .build();
 
         TimeRange time = TimeRange.fromStartToEnd(540, 600, date);
-        // addScheduledTimeRange(time);
 
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        TestUtilities.setSessionId(request, "2");
 
-        when(request.getParameter("tutorID")).thenReturn("2");
         when(request.getParameter("tutorID")).thenReturn("2");
         when(request.getParameter("start")).thenReturn("540");
         when(request.getParameter("end")).thenReturn("600");
@@ -103,7 +103,6 @@ public final class DeleteTutorSessionTest {
         servlet.doPost(request, response);
 
         verify(request, times(1)).getParameter("tutorID");
-        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("start");
         verify(request, times(1)).getParameter("end");
         verify(request, times(1)).getParameter("day");

@@ -40,15 +40,11 @@ public class AddAvailabilityServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
-    }
-
-    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("application/json");
+
         //Set default value to -1 
-        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
+        String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         String startHour = request.getParameter("startHour");
         String startMinute = request.getParameter("startMinute");
         String endHour = request.getParameter("endHour");
@@ -61,7 +57,6 @@ public class AddAvailabilityServlet extends HttpServlet {
         int end = Integer.parseInt(endHour) * 60 + Integer.parseInt(endMinute);
 
         if(tutorID.equals("-1")) {
-            response.setContentType("application/json");
             response.getWriter().println("{\"error\": \"There was an error adding availability.\"}");
             return;
         }
@@ -77,7 +72,6 @@ public class AddAvailabilityServlet extends HttpServlet {
         datastore.addAvailability(tutorID, timeslot);
 
         String json = new Gson().toJson(datastore.getAvailabilityForTutor(tutorID));
-        response.setContentType("application/json;");
         response.getWriter().println(json);
         response.sendRedirect("/manage-availability.html?userID=" + tutorID);
         return;
