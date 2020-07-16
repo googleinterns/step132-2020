@@ -21,11 +21,7 @@ function addEventListeners() {
 }
 
 function getAvailabilityManage() {
-    var queryString = new Array();
-    window.onload = readTutorID(queryString, window);
-    const userID = queryString["userID"];
-
-    fetch('/availability?tutorID=' + userID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
+    fetch('/availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {
         if(timeslots.error) {
             var message = document.createElement("p");
             p.innerText = timeslots.error;
@@ -33,28 +29,13 @@ function getAvailabilityManage() {
             return;
         }
         timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot, userID));
-        })
+            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
+        });
     });
+
 }
 
-// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
-// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readTutorID(queryString, window) {
-    if (queryString.length == 0) {
-        if (window.location.search.split('?').length > 1) {
-            var params = window.location.search.split('?')[1].split('&');
-            for (var i = 0; i < params.length; i++) {
-                var key = params[i].split('=')[0];
-                var value = decodeURIComponent(params[i].split('=')[1]);
-                queryString[key] = value;
-            }
-        }
-    }
-}
-
-function createTimeSlotBoxManage(timeslot, tutorID) {
+function createTimeSlotBoxManage(timeslot) {
     var months = [ "January", "February", "March", "April", "May", "June", 
            "July", "August", "September", "October", "November", "December" ];
 
@@ -88,7 +69,7 @@ function createTimeSlotBoxManage(timeslot, tutorID) {
     deleteButtonElement.style.display = 'inline';
     deleteButtonElement.className = 'btn btn-default btn-lg';
     deleteButtonElement.addEventListener('click', () => {
-        deleteTimeSlot(tutorID, window, timeslot);
+        deleteTimeSlot(window, timeslot);
 
         timeslotElement.remove();
     });
@@ -103,11 +84,13 @@ function createTimeSlotBoxManage(timeslot, tutorID) {
     return timeslotElement;
 }
 
+/** Tells the server to add a timeslot for a tutor. */
 function addTimeSlot() {
-    var queryString = new Array();
-    window.onload = readTutorID(queryString, window);
-    const userID = queryString["userID"];
+    return addTimeSlotHelper(window);
+}
 
+//Helper function for addTimeSlot, used for testing.
+function addTimeSlotHelper(window) {
     const params = new URLSearchParams();
 
     params.append('startHour', document.getElementById('startHour').value);
@@ -117,22 +100,32 @@ function addTimeSlot() {
     params.append('day', document.getElementById('day').value);
     params.append('month', document.getElementById('month').value);
     params.append('year', document.getElementById('year').value);
-    params.append('tutorID', userID);
 
-    fetch('/add-availability', {method: 'POST', body: params}).then(() => {
-        window.location.href = "/manage-availability.html?userID=" + userID;
+    fetch('/add-availability', {method: 'POST', body: params}).then((response) => {
+        console.log(response);
+        //if the tutor id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url
+            return;
+        }
+        window.location.href = "/manage-availability.html";
     });
-
 }
 
-function deleteTimeSlot(tutorID, window, timeslot) {
+/** Function to tell the server to delete a time slot for tutor.  */
+function deleteTimeSlot(window, timeslot) {
     const params = new URLSearchParams();
-    params.append('tutorID', tutorID);
     params.append('year', timeslot.date.year);
     params.append('month', timeslot.date.month);
     params.append('day', timeslot.date.dayOfMonth);
     params.append('start', timeslot.start);
     params.append('end', timeslot.end);
 
-    fetch('/delete-availability', {method: 'POST', body: params});
+    fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
+        //if the tutor id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url
+            return;
+        }
+    });
 }

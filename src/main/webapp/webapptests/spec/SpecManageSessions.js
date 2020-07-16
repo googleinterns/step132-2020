@@ -15,26 +15,21 @@
 describe("Manage Sessions", function() {
 
     describe("when the student requests to see a their scheduled sessions", function() {
-        var mockWindow = {location: {href: "manage-sessions.html?studentID=123", search: "?studentID=123"}};
-
         it("should trigger the fetch function", function() {
-            spyOn(window, "onload").and.callFake(function() {
-                readTutorID(queryString, window);
-            });
-            spyOn(window, 'fetch').and.callThrough();
-            getTutorSessionsManage(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/confirmation?studentID=undefined', {method: 'GET'});
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            getTutorSessionsManage();
+            expect(window.fetch).toHaveBeenCalledWith('/confirmation', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
-    describe("when the student id is read", function() {
-        var mockWindow = {location: {href: "manage-sessions.html?studentID=123", search: "?studentID=123"}};
-        var queryString = new Array();
-        readTutorID(queryString, mockWindow);
-
-        it("should set studentID inside queryString as the studentID", function() {
-            expect(queryString["studentID"]).toEqual("123");
+    describe("when user tries to access someone else's sessions page", function() {
+        var mockWindow = {location: {href: "manage-sessions.html"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            await getTutorSessionsManageHelper(mockWindow);
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
 
@@ -85,26 +80,16 @@ describe("Manage Sessions", function() {
     });
 
     describe("when a user cancels a tutoring session", function() {
-        var mockWindow = {location: {href: "manage-sessions.html?studentID=123", search: "?studentID=123"}};
+        var mockWindow = {location: {href: "manage-sessions.html"}};
         var scheduledSession = {tutorID: "123", studentID: "123", 
                                 subtopics: null, questions: null, rating: 5, id: 1,
                                 timeslot: {start: 600, end: 660,  date: {month: 4, dayOfMonth: 18, year: 2020}}};
         var params = new URLSearchParams();
-        params.append('tutorID', "123");
-        params.append('studentID', "123");
-        params.append('year', 2020);
-        params.append('month', 4);
-        params.append('day', 18);
-        params.append('start', 600);
-        params.append('end', 660);
-        params.append('subtopics', null);
-        params.append('questions', null);
-        params.append('rating', 5);
         params.append('id', 1);
 
         it("should trigger the fetch function", function() {
             spyOn(window, 'fetch').and.callThrough();
-            cancelTutorSession("test@gmail.com", mockWindow, scheduledSession);
+            cancelTutorSession(mockWindow, scheduledSession);
             expect(window.fetch).toHaveBeenCalledWith('/delete-tutor-session', {method: 'POST', body: params})
             expect(window.fetch).toHaveBeenCalled();
         });
