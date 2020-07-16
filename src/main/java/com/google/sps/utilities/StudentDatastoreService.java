@@ -38,7 +38,7 @@ import java.util.Calendar;
 import com.google.gson.Gson;
 
 /** Accesses datastore to get students that have had a tutoring session with the given tutor. */ 
-public final class GetStudentsService {
+public final class StudentDatastoreService {
 
     /**
     * Gets all students that the given userId was or will be a tutor for.
