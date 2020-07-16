@@ -73,7 +73,6 @@ public class AddAvailabilityServlet extends HttpServlet {
 
         String json = new Gson().toJson(datastore.getAvailabilityForTutor(tutorID));
         response.getWriter().println(json);
-        response.sendRedirect("/manage-availability.html?userID=" + tutorID);
         return;
     }
 }
