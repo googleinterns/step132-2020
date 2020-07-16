@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body onload="displayLoginLogoutLink(), getPastSessionsAndTopics(), getAchievements(), getGoals(), getPastClasses()">
+    <body onload="displayLoginLogoutLink(), loadProgress(), addEventListeners()">
         <a href="./homepage.html"><p>Homepage</p></a>
 
         <div class="top-right">
@@ -29,6 +29,7 @@
             <button type="button" id="profile" style="display:none">My Account</button>
             <button type="button" id="availability-settings" style="display:none">Manage your availability</button>
             <button type="button" id="my-students" style="display:none">Your Students</button>
+            <input type="hidden" id="my-progress" style="display:none">
             <button type="button" id="tutor-session-settings" style="display:none">Manage your tutoring sessions</button>
             <button type="button" id="history" style="display:none">Tutoring session history</button>
             <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
@@ -43,6 +44,13 @@
         <div class="container-fluid">
             <h1>Goals</h1>
             <ul class="list-group" id="goals"></ul>
+
+            <form class="form-inline result" id="goals-form" display="none">
+                <label class="my-1 mr-2 sr-only" for="newGoal">Add a new goal for yourself</label>
+                <input type="text" class="form-control my-1 mr-sm-2" id="newGoal" placeholder="Add a new goal for yourself" required>
+
+                <button type="submit" class="btn btn-primary mb-2">Add</button>
+            </form>
         </div>
 
         <div class="container-fluid">

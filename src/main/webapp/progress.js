@@ -12,7 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function getPastClasses() {
+/**
+ * Function for progess.html, checks what kind of user the viewer is, and loads progress information
+ */
+function loadProgress() {
+    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        console.log(loginStatus);    
+        loadProgressHelper(document, loginStatus);
+    });
+}
+
+function loadProgressHelper(document, loginStatus) {
+    getPastClasses(document, loginStatus);
+    getGoals(document, loginStatus);
+    getAchievements(document, loginStatus);
+    getPastSessionsAndTopics(document, loginStatus);
+}
+
+/** A function that adds event listeners to a DOM objects. */
+function addEventListeners() {
+    document.getElementById("goals-form").addEventListener('submit', event => {
+        event.preventDefault();
+        addGoal();
+    });
+}
+
+function getPastClasses(document, loginStatus) {
     const classesContainer = document.createElement("div");
     const message = document.createElement("h3");
     message.innerHTML = "This user has not added any past classes";
@@ -24,7 +49,7 @@ function getPastClasses() {
     document.getElementById('past-classes').appendChild(classesContainer);
 }
 
-function getGoals() {
+function getGoals(document, loginStatus) {
     const goalsContainer = document.createElement("div");
     const message = document.createElement("h3");
     message.innerHTML = "This user has not set any goals";
@@ -34,9 +59,16 @@ function getGoals() {
     goalsContainer.appendChild(message);
 
     document.getElementById('goals').appendChild(goalsContainer);
+
+    // If the user is a student, allow them to add goals
+    if (loginStatus.role == "student") {
+        document.getElementById('goals-form').style.display = "block";
+    } else {
+        document.getElementById('goals-form').style.display = "none";
+    }
 }
 
-function getAchievements() {
+function getAchievements(document, loginStatus) {
     const achievementsContainer = document.createElement("div");
     const message = document.createElement("h3");
     message.innerHTML = "No achievements for this user";
@@ -48,7 +80,7 @@ function getAchievements() {
     document.getElementById('achievements').appendChild(achievementsContainer);
 }
 
-function getPastSessionsAndTopics() {
+function getPastSessionsAndTopics(document, loginStatus) {
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
     const studentID = queryString["studentID"];
@@ -154,6 +186,21 @@ function createPastTopicBox(tutoringSession) {
     topicContainer.classList.add("list-group-item");
     topicContainer.appendChild(topic);
     return topicContainer;
+}
+
+function addGoal() {
+    var queryString = new Array();
+    window.onload = readStudentID(queryString, window);
+    const studentID = queryString["studentID"];
+
+    const params = new URLSearchParams();
+
+    params.append('goal', document.getElementById('newGoal').value);
+    params.append('studentID', studentID);
+
+    fetch('/add-goal', {method: 'POST', body: params}).then(() => {
+        window.location.href = "/progress.html?studentID=" + studentID;
+    });
 }
 
 
