@@ -46,7 +46,7 @@ public class AddExperienceServlet extends HttpServlet {
 
         if(studentID.equals("-1")) {
             response.setContentType("application/json");
-            response.getWriter().println("{\"error\": \"There was an error getting goals.\"}");
+            response.getWriter().println("{\"error\": \"There was an error getting experiences.\"}");
             return;
         }
 
@@ -67,7 +67,7 @@ public class AddExperienceServlet extends HttpServlet {
 
         if(studentID.equals("-1")) {
             response.setContentType("application/json");
-            response.getWriter().println("{\"error\": \"There was an error adding goal.\"}");
+            response.getWriter().println("{\"error\": \"There was an error adding experience.\"}");
             return;
         }
 
@@ -76,7 +76,7 @@ public class AddExperienceServlet extends HttpServlet {
         // Add experience
         datastore.addExperience(newExperience);
 
-        String json = "{}";
+        String json = new Gson().toJson(datastore.getExperiencesByStudent(studentID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
         response.sendRedirect("/progress.html?studentID=" + studentID);
