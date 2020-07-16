@@ -23,7 +23,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body onload="displayLoginLogoutLink()">
+    <body onload="displayLoginLogoutLink(), addEventListeners()">
         <a href="./homepage.html"><p>Homepage</p></a>
 
         <div class="top-right">
@@ -39,7 +39,7 @@
         <div class="container-fluid">
             <h1>Last Step!</h1>
 
-            <form>
+            <form id="scheduling-form">
                 <div class="form-group">
                     <label for="studentEmail" class="col-sm-2 col-form-label">Email:</label>
                     <input type="text" class="form-control" name="studentEmail" id="studentEmail" style="color: #555555;" placeholder="Your email here..." required>
@@ -55,7 +55,7 @@
                     <textarea class="form-control" name="questions" id="questions" rows="3" placeholder="Any questions you might have..."></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary" onclick="scheduleTutorSession()">Submit</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
 
