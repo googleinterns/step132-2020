@@ -19,6 +19,15 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.LoginStatus;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -47,20 +56,21 @@ public class LoginStatusServlet extends HttpServlet {
         } 
         
         String name = getName(userService.getCurrentUser().getUserId(), datastore);
-        setRegistered(request, response, name);
+        setRegistered(request, response, name, datastore);
     }
 
     /** Determines if a logged in user needs to register, created for testing */
-    public void setRegistered(HttpServletRequest request, HttpServletResponse response, String name) throws IOException {
+    public void setRegistered(HttpServletRequest request, HttpServletResponse response, String name, DatastoreService datastore) throws IOException {
         LoginStatus loginStatus;
         // Gets the referring URL of the user so we can return them to the same page when they logout
         String referrer = request.getHeader("referer");     //"referer" is intentionally misspelled
 
         // Name is null if user hasn't registered, set needsToRegister to 'true' and make logout URL
         if (name == null) {
-            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail());
+            loginStatus = new LoginStatus(true, true, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), null);
         } else {  // User is logged in and registered, make logout URL
-            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), userService.getCurrentUser().getEmail());
+            String role = getRole(userService.getCurrentUser().getUserId(), datastore);
+            loginStatus = new LoginStatus(true, false, userService.createLogoutURL(referrer), userService.getCurrentUser().getUserId(), role);
         }
 
         String json = new Gson().toJson(loginStatus);
@@ -95,5 +105,19 @@ public class LoginStatusServlet extends HttpServlet {
         // User has already registered, return their name
         String name = (String) userEntity.getProperty("name");
         return name;
+    }
+
+    public String getRole(String userId, DatastoreService datastore) {
+        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
+        Query query = new Query("User").setFilter(filter);
+        PreparedQuery results = datastore.prepare(query);
+
+        Entity userEntity = results.asSingleEntity();
+
+        if (userEntity == null) {
+            return null;
+        } else{
+            return (String) userEntity.getProperty("role");
+        }
     }
 }

@@ -17,7 +17,13 @@ function getTutorSessionsManage() {
     window.onload = readTutorID(queryString, window);
     const userID = queryString["userID"];
 
-    fetch('/confirmation?studentEmail=' + userID, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+    fetch('/confirmation?studentID=' + userID, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+        if(scheduledSessions.error) {
+            var message = document.createElement("p");
+            p.innerText = scheduledSessions.error;
+            document.getElementById('timeslots').appendChild(message);
+            return;
+        }
         scheduledSessions.forEach((scheduledSession) => {
             document.getElementById('scheduledSessions').appendChild(createScheduledSessionBoxManage(scheduledSession, userID));
         })
@@ -50,7 +56,8 @@ function createScheduledSessionBoxManage(scheduledSession, userID) {
     const tutorElement = document.createElement('h3');
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
-    tutorElement.innerHTML = "Tutoring Session with " + scheduledSession.tutorEmail;
+
+    setTutorEmail(tutorElement, scheduledSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';
@@ -98,10 +105,33 @@ function createScheduledSessionBoxManage(scheduledSession, userID) {
     return scheduledSessionElement;
 }
 
+//Helper function for testing purposes
+//Sets the tutor element's email field to the tutor email
+function setTutorEmail(tutorElement, tutorID) {
+    var tutor;
+    return getUser(tutorID).then(user => tutor = user).then(() => {
+        tutorElement.innerHTML = "Tutoring Session with " + tutor.name;
+    });
+}
+
+/** Gets information about the given user from the server. */
+function getUser(userID) {
+    return fetch('/profile?userId='+userID).then(response => response.json()).then((user) => {
+        if(user.error) {
+            var message = document.createElement("p");
+            p.innerText = user.error;
+            document.body.appendChild(message);
+            return;
+        }
+        return user;
+    });
+}
+
+
 function cancelTutorSession(userID, window, scheduledSession) {
     const params = new URLSearchParams();
-    params.append('tutorEmail', scheduledSession.tutorEmail);
-    params.append('studentEmail', scheduledSession.studentEmail);
+    params.append('tutorID', scheduledSession.tutorID);
+    params.append('studentID', scheduledSession.studentID);
     params.append('year', scheduledSession.timeslot.date.year);
     params.append('month', scheduledSession.timeslot.date.month);
     params.append('day', scheduledSession.timeslot.date.dayOfMonth);

@@ -31,15 +31,53 @@ public final class Student {
     private String pfp;
     private String email;
     private ArrayList<String> learning;
+    private ArrayList<String> tutors;
     private ArrayList<TutorSession> scheduledSessions;
+    private String userId;
 
-    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<TutorSession> scheduledSessions) {
+    /**
+     * Creates a new student with no scheduled sessions field.
+     *
+     * @param name The student's name. Must be non-null.
+     * @param bio The student's bio.
+     * @param pfp The student's prfile picture.
+     * @param email The student's email. Must be non-null.
+     * @param learning The list of topics the student is learning.
+     * @param id The student's id. Must be non-null.
+     */
+    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<String> tutors, String id) {
         this.name = name;
         this.bio = bio;
         this.pfp = pfp;
         this.email = email;
         this.learning = learning;
+        this.tutors = tutors;
+        // Empty array of scheduled sessions (not necessary)
+        this.scheduledSessions = new ArrayList<TutorSession>();
+        this.userId = id;
+    }
+
+    /**
+     * Creates a new student.
+     *
+     * @param name The student's name. Must be non-null.
+     * @param bio The student's bio.
+     * @param pfp The student's prfile picture.
+     * @param email The student's email. Must be non-null.
+     * @param learning The list of topics the student is learning.
+     * @param tutors The list of tutors the student is has had or will have sessions with.
+     * @param scheduledSessions The list of scheduled sessions for the student.
+     * @param id The student's id. Must be non-null.
+     */
+    public Student(String name, String bio, String pfp, String email, ArrayList<String> learning, ArrayList<String> tutors, ArrayList<TutorSession> scheduledSessions, String id) {
+        this.name = name;
+        this.bio = bio;
+        this.pfp = pfp;
+        this.email = email;
+        this.learning = learning;
+        this.tutors = tutors;
         this.scheduledSessions = scheduledSessions;
+        this.userId = id;
     }
 
     public String getName() {
@@ -62,39 +100,15 @@ public final class Student {
         return this.learning;
     }
 
+    public ArrayList<String> getTutors() {
+        return this.tutors;
+    }
+
     public ArrayList<TutorSession> getScheduledSessions() {
         return this.scheduledSessions;
     }
 
-    /** Adds the given Tutor Session to the scheduledSessions array. */
-    public void addToScheduledSessions(TutorSession tutoringSession) {
-        this.scheduledSessions.add(tutoringSession);
+    public String getUserId() {
+        return this.userId;
     }
-
-    /** Deletes the given Tutor Session from the scheduledSessions array. */
-    public void deleteFromScheduledSessions(TutorSession tutoringSession) {
-        TutorSession tutorSession = getSessionById(tutoringSession.getId());
-        this.scheduledSessions.remove(tutorSession);
-    }
-
-    public TutorSession getSessionById(long id) {
-        for (TutorSession tutorSession : this.scheduledSessions) {
-            if (tutorSession.getId() == id) {
-                return tutorSession;
-            }
-        }
-
-        return null;
-    }
-
-    /** Marks the tutoring session that has the given tutor's email as rated.*/
-    public void markTutoringSessionAsRatedByTutorEmail(String tutorEmail, int newRating) {
-        for(TutorSession tutorSession : this.scheduledSessions) {
-            if(tutorEmail.toLowerCase().equals(tutorSession.getTutorEmail().toLowerCase())) {
-                tutorSession.rateSession(newRating);
-            }
-        }
-    }
-
 }
-

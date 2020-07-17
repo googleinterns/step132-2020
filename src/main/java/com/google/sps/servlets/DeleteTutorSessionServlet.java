@@ -19,8 +19,6 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.sps.utilities.TutorSessionDatastoreService;
-import com.google.sps.utilities.RealTutorSessionDatastore;
-import com.google.sps.utilities.MockTutorSessionDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,28 +32,16 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/delete-tutor-session")
 public class DeleteTutorSessionServlet extends HttpServlet {
-        private TutorSessionDatastoreService datastore;
-
-    /**
-    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
-    * We need the default one for deployment because the servlet is created without parameters.
-    */
-    public DeleteTutorSessionServlet(){}
-
-    public DeleteTutorSessionServlet(boolean test) {
-        if(test) {
-            datastore = new MockTutorSessionDatastore();
-        }
-    }
+    private TutorSessionDatastoreService datastore;
 
     public void init() {
-        datastore = new RealTutorSessionDatastore();
+        datastore = new TutorSessionDatastoreService();
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tutorEmail = request.getParameter("tutorEmail");
-        String studentEmail = request.getParameter("studentEmail");
+        String tutorID = request.getParameter("tutorID");
+        String studentID = request.getParameter("studentID");
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         String day = request.getParameter("day");
@@ -73,14 +59,14 @@ public class DeleteTutorSessionServlet extends HttpServlet {
 
         TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end), date);
 
-        TutorSession session = new TutorSession(studentEmail, tutorEmail, subtopics, questions, timeslot, Integer.parseInt(rating), Long.parseLong(id));
+        TutorSession session = new TutorSession(studentID, tutorID, subtopics, questions, timeslot, Integer.parseInt(rating), Long.parseLong(id));
 
         
 
         // Remove tutor session
         datastore.deleteTutorSession(session);
 
-        String json = new Gson().toJson(datastore.getScheduledSessionsForStudent(studentEmail));
+        String json = new Gson().toJson(datastore.getScheduledSessionsForStudent(studentID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return;
