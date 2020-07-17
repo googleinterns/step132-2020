@@ -71,7 +71,6 @@ public class ProfileServlet extends HttpServlet {
         if (role.toLowerCase().equals("student")) {
             query = new Query("Student").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
             results = datastore.prepare(query);
-            System.out.println(results);
             entity = results.asSingleEntity();
 
             String name = (String) entity.getProperty("name");
