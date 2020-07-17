@@ -200,9 +200,6 @@ public final class TutorSessionDatastoreService {
 
         Entity studentEntity = pq.asSingleEntity();
 
-        System.out.println(studentEntity);
-        System.out.println(studentId);
-
         List<String> tutors = (List<String>) studentEntity.getProperty("tutors");
         if (tutors == null) {
             tutors = new ArrayList<String>();
