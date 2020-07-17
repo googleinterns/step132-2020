@@ -32,8 +32,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/add-experience")
-public class AddExperienceServlet extends HttpServlet {
+@WebServlet("/experience")
+public class ExperienceServlet extends HttpServlet {
     private ExperienceDatastoreService datastore;
 
     public void init() {
