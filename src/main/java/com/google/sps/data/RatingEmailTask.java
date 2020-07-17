@@ -32,54 +32,44 @@ import javax.mail.internet.InternetAddress;
  * RatingEmail is setup when a tutoring session is scheduled. 
  */
 public final class RatingEmailTask extends TimerTask {
-    private MimeMessage emailContent;
+    private TutorSession tutoringSession;
 
     public RatingEmailTask(TutorSession tutoringSession) {
+        System.out.println("Initialize task");
+
+        this.tutoringSession = tutoringSession;
+    }
+
+    public void run() {
         System.out.println("Create email");
 
-        this.emailContent = createEmail(tutoringSession.getStudentEmail());
-    }
-
-    public void run() { 
-        System.out.println("Send email");
-
-        if (emailContent != null) {
-            try {
-                Transport.send(emailContent);
-            } catch (MessagingException e) {
-                System.out.println("Unable send message");
-                return;
-            }
-        }
-    }
-
-    /**
-    * Create a MimeMessage using the student's email provided.
-    *
-    * @param to email address of the receiver
-    * @return the MimeMessage to be used to send email
-    */
-    public MimeMessage createEmail(String to) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
+        String to = "bernardo.trevisan@gmail.com";
+        String subject = "Don't Forget To Rate Your Tutoring Session!";
+        String message = "Rate your tutoring session by accessing your history page.";
+
         try {
-            MimeMessage msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("anything@icecube-step-2020.appspotmail.com", "Sullivan"));
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress("contact@icecube-step-2020.appspotmail.com", "Sullivan"));
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            msg.setSubject("Test");
-            msg.setText("Test history.html?userID=" +  to);
+            msg.setSubject(subject);
+            msg.setText(message);
             Transport.send(msg);
-            return msg;
+
+            System.out.println("Email sent");
+
         } catch (AddressException e) {
-            System.out.println("Email address appears to be invalid");
-            return null;
+            System.out.println("Failed to set email address.");
+            return;
         } catch (MessagingException e) {
-            System.out.println("Unable create message");
-            return null;
+            System.out.println("Failed to send email.");
+            return;
         } catch (UnsupportedEncodingException e) {
-            System.out.println("Unable to encode message");
-            return null;
-        }
+            System.out.println("Failed to encode email.");
+            return;
+        } 
     }
+
 }
