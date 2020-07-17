@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/** Servlet that gets and adds to a tutor's availability. */
 @WebServlet("/manage-availability")
 public class ManageAvailabilityServlet extends HttpServlet {
     private AvailabilityDatastoreService datastore;
