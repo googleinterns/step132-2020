@@ -26,6 +26,7 @@ import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import com.google.appengine.api.ThreadManager;
 
 /**
  * Task to send out an email requesting the user to rate their tutoring session. 
@@ -33,14 +34,25 @@ import javax.mail.internet.InternetAddress;
  */
 public final class RatingEmailTask extends TimerTask {
     private TutorSession tutoringSession;
+    private Thread thread;
 
     public RatingEmailTask(TutorSession tutoringSession) {
         System.out.println("Initialize task");
 
         this.tutoringSession = tutoringSession;
+        this.thread = ThreadManager.createBackgroundThread(new Runnable() {
+            @Override
+            public void run() {
+                sendEmail();
+            }
+        });
     }
 
     public void run() {
+        thread.start();
+    }
+
+    public void sendEmail() {
         System.out.println("Create email");
 
         Properties props = new Properties();
