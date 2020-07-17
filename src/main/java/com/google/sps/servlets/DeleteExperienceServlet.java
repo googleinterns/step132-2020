@@ -43,7 +43,7 @@ public class DeleteExperienceServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //Set default value to -1 
-        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         long id = Long.parseLong(request.getParameter("id"));
 
         if(studentID.equals("-1")) {

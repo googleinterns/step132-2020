@@ -12,8 +12,11 @@
         <url-pattern>add-availability</url-pattern>
         <url-pattern>confirmation</url-pattern>
         <url-pattern>delete-availability</url-pattern>
+        <url-pattern>delete-experience</url-pattern>
+        <url-pattern>delete-goal</url-pattern>
         <url-pattern>delete-tutor-session</url-pattern>
         <url-pattern>history</url-pattern>
+        <url-pattern>my-students</url-pattern>
         <url-pattern>rating</url-pattern>
         <url-pattern>registration</url-pattern>
         <url-pattern>scheduling</url-pattern>
