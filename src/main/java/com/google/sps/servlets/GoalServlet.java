@@ -32,8 +32,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/add-goal")
-public class AddGoalServlet extends HttpServlet {
+@WebServlet("/goal")
+public class GoalServlet extends HttpServlet {
     private GoalDatastoreService datastore;
 
     public void init() {

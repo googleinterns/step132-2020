@@ -31,7 +31,7 @@ import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
-import com.google.sps.servlets.AddGoalServlet;
+import com.google.sps.servlets.GoalServlet;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
@@ -44,16 +44,16 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 
 @RunWith(JUnit4.class)
-public final class AddGoalTest {
+public final class GoalTest {
     private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
 
-    private AddGoalServlet servlet;
+    private GoalServlet servlet;
 
     @Before
     public void setUp() {
         helper.setUp();
 
-        servlet = new AddGoalServlet();
+        servlet = new GoalServlet();
         servlet.init();
 
         SampleData sample = new SampleData();
