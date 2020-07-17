@@ -15,33 +15,29 @@
 describe("Manage Availability", function() {
 
     describe("when the tutor requests to see a their availability", function() {
-        var mockWindow = {location: {href: "manage-availability.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
+        var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
 
-        it("should trigger the fetch function", function() {
-            spyOn(window, "onload").and.callFake(function() {
-                readTutorID(queryString, window);
-            });
-            spyOn(document, 'getElementById').and.returnValue("test@gmail.com");
-            spyOn(window, 'fetch').and.callThrough();
-            getAvailabilityManage(mockWindow);
+        it("should trigger the fetch function", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            getAvailabilityManageHelper(mockWindow);
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
-    describe("when the tutor ID is read", function() {
-        var mockWindow = {location: {href: "manage-availability.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
-        var queryString = new Array();
-        readTutorID(queryString, mockWindow);
-
-        it("should set tutorID inside queryString as the tutorID", function() {
-            expect(queryString["tutorID"]).toEqual("test@gmail.com");
+    describe("when user tries to access someone else's manage availability page", function() {
+        var loginStatus = {userId: "000"};
+        var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(loginStatus)}));
+            await getAvailabilityManageHelper(mockWindow);
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
-
+    
     describe("when a time slot box is created", function() {
         var timeslot = {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}};
-        var tutorID = "test@gmail.com";
-        var actual = createTimeSlotBoxManage(timeslot, tutorID);
+        var actual = createTimeSlotBoxManage(timeslot);
 
         it("should return a list item element", function() {
             expect(actual.tagName).toEqual("LI");
@@ -69,11 +65,48 @@ describe("Manage Availability", function() {
         });
     });
 
+    describe("when a user adds a time slot", function() {
+        mockWindow = {location: {href: "manage-availability.html"}}
+        var startHour = document.createElement("select");
+        var startMinute = document.createElement("select");
+        var endHour = document.createElement("select");
+        var endMinute = document.createElement("select");
+        var day = document.createElement("select");
+        var month = document.createElement("select");
+        var year = document.createElement("select");
+        startHour.value = 1;
+        startMinute.value = 30;
+        endHour.value = 3;
+        endMinute.value = 30;
+        day.value = 1;
+        month.value = 1;
+        year.value = 2020;
+
+        var params = new URLSearchParams();
+        params.append('startHour', 1);
+        params.append('startMinute', 30);
+        params.append('endHour', 3);
+        params.append('endMinute', 30);
+        params.append('day', 1);
+        params.append('month', 1);
+        params.append('year', 2020);
+
+        it("should trigger the fetch function", function() {
+            var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
+            spyOn(document, "getElementById").and.returnValues(startHour, startMinute, endHour, endMinute, day, month, year);
+
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            addTimeSlotHelper(mockWindow);
+            expect(window.fetch).toHaveBeenCalledWith('/add-availability', {method: 'POST', body: params})
+            expect(window.fetch).toHaveBeenCalled();
+            expect(mockWindow.location.href).toBe("manage-availability.html?tutorID=123");
+        });
+    });
+
     describe("when a user deletes a time slot", function() {
         var mockWindow = {location: {href: "manage-availability.html"}};
         var timeslot = {duration: 60, end: 540, start: 480, date: {year: 2020, month: 5, dayOfMonth: 18}};
         var params = new URLSearchParams();
-        params.append('tutorID', "test@gmail.com");
         params.append('year', 2020);
         params.append('month', 5);
         params.append('day', 18);
@@ -81,8 +114,8 @@ describe("Manage Availability", function() {
         params.append('end', 540);
 
         it("should trigger the fetch function", function() {
-            spyOn(window, 'fetch').and.callThrough();
-            deleteTimeSlot("test@gmail.com", mockWindow, timeslot);
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            deleteTimeSlot(mockWindow, timeslot);
             expect(window.fetch).toHaveBeenCalledWith('/delete-availability', {method: 'POST', body: params})
             expect(window.fetch).toHaveBeenCalled();
         });

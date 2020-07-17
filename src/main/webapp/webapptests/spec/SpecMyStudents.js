@@ -15,26 +15,23 @@
 describe("My Students", function() {
 
     describe("when the tutor requests to see their student", function() {
-        var mockWindow = {location: {href: "my-students.html?userID=123", search: "?userID=123"}};
+        var mockWindow = {location: {href: "my-students.html"}};
 
         it("should trigger the fetch function", function() {
-            spyOn(window, "onload").and.callFake(function() {
-                readTutorID(queryString, window);
-            });
-            spyOn(window, 'fetch').and.callThrough();
-            getMyStudents(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/my-students?tutorID=undefined', {method: 'GET'});
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            getMyStudents();
+            expect(window.fetch).toHaveBeenCalledWith('/my-students', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
-    describe("when the tutor ID is read", function() {
-        var mockWindow = {location: {href: "my-students.html?userID=123", search: "?userID=123"}};
-        var queryString = new Array();
-        readTutorID(queryString, mockWindow);
-
-        it("should set tutorID inside queryString as the tutorID", function() {
-            expect(queryString["userID"]).toEqual("123");
+    describe("when user tries to access someone else's students page", function() {
+        var mockWindow = {location: {href: "my-students.html"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            await getMyStudentsHelper(mockWindow);
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
 

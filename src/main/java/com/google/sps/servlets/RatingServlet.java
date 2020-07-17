@@ -40,31 +40,20 @@ public class RatingServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
-    }
-
-    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        //Make the default ids -1 because no student or tutor has id = -1 --> no session will get rated
-        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
-        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         long sessionId = Long.parseLong(request.getParameter("sessionId"));
         int rating = Integer.parseInt(request.getParameter("rating"));
         
-        boolean rated = datastore.rateTutorSession(sessionId, rating);
+        boolean rated = datastore.rateTutorSession(sessionId, studentID, rating);
 
         //rating was not successful
         if(!rated) {
             response.setContentType("application/json");
             response.getWriter().println("{\"error\": \"There was an error rating this session.\"}");
         }
-        
-        String jsonTutors = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
-        String jsonStudents = new Gson().toJson(datastore.getScheduledSessionsForStudent(studentID));
 
-        String json = new Gson().toJson(new String[]{jsonTutors, jsonStudents}); 
+        String json = new Gson().toJson(datastore.getScheduledSession(sessionId)); 
         response.setContentType("application/json;");
         response.getWriter().println(json);
         response.sendRedirect("/history.html");

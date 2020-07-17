@@ -66,6 +66,9 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('profile').style.display = "block";
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = loginStatus.url;
+        document.getElementById('logout-url').addEventListener('click', () => {
+             fetch('/logout', {method: 'POST'});
+        });
         document.getElementById('profile').addEventListener('click', () => {
             setProfileQueryString(window, loginStatus);
         });

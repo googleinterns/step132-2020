@@ -14,26 +14,21 @@
 
 describe("History", function() {
     describe("when the history of tutoring sessions is loaded", function() {
-        var mockWindow = {location: {href: "history.html?studentID=123", search: "?studentID=123"}};
-
         it("should trigger the fetch function", function() {
-            spyOn(window, "onload").and.callFake(function() {
-                readStudentID(queryString, window);
-            });
-            spyOn(window, 'fetch').and.callThrough();
-            getTutoringSessionHistory(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/history?studentID=undefined', {method: 'GET'});
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            getTutoringSessionHistory();
+            expect(window.fetch).toHaveBeenCalledWith('/history', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
-    describe("when the student ID is read", function() {
-        var mockWindow = {location: {href: "history.html?studentID=123", search: "?studentID=123"}};
-        var queryString = new Array();
-        readStudentID(queryString, mockWindow);
-
-        it("should set studentID inside queryString as the studentID passed down", function() {
-            expect(queryString["studentID"]).toEqual("123");
+    describe("when user tries to access someone else's confirmation page", function() {
+        var mockWindow = {location: {href: "history.html"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            await getTutoringSessionHistoryHelper(mockWindow);
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
 
@@ -132,11 +127,11 @@ describe("History", function() {
     });
 
     describe("when rateTutor is called", function() {
-        var fakeTutoringSession = {tutorID: "123", studentID: "123"};
+        var fakeTutoringSession = {id: "1"};
         var fakeRating = 5;
 
         it("should trigger the fetch function", function() {
-            spyOn(window, 'fetch').and.callThrough();
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             rateTutor(fakeTutoringSession, fakeRating);
             expect(window.fetch).toHaveBeenCalled();
         });

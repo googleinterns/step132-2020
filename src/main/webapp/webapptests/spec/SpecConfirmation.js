@@ -13,35 +13,30 @@
 // limitations under the License.
 
 describe("Confirmation", function() {
-    describe("when the list of upcoming sessions is loaded", function() {
-        var mockWindow = {location: {href: "confirmation.html?studentID=123", search: "?studentID=123"}};
 
+    describe("when the list of upcoming sessions is loaded", function() {
         it("should trigger the fetch function", function() {
-            spyOn(window, "onload").and.callFake(function() {
-                readTutorID(queryString, window);
-            });
-            spyOn(window, 'fetch').and.callThrough();
-            getScheduledSessions(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/confirmation?studentID=undefined', {method: 'GET'});
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            getScheduledSessions();
+            expect(window.fetch).toHaveBeenCalledWith('/confirmation', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
-    describe("when the tutor ID is read", function() {
-        var mockWindow = {location: {href: "confirmation.html?studentID=123", search: "?studentID=123"}};
-        var queryString = new Array();
-        readTutorID(queryString, mockWindow);
-
-        it("should set tutorID inside queryString as the tutorID", function() {
-            expect(queryString["studentID"]).toEqual("123");
+    describe("when user tries to access someone else's confirmation page", function() {
+        var mockWindow = {location: {href: "confirmation.html"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            await getScheduledSessionsHelper(mockWindow);
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
 
     describe("when a scheduled session box is created", function() {
         var scheduledSession = {tutorID: "123", timeslot: {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}}};
-        var studentID = "123";
 
-        var actual = createScheduledSessionBox(scheduledSession, studentID);
+        var actual = createScheduledSessionBox(scheduledSession);
 
         it("should return a list item element", function() {
             expect(actual.tagName).toEqual("LI");
@@ -62,7 +57,7 @@ describe("Confirmation", function() {
 
         it("should have the inner HTML of the h3 tag equal to to the email of the tutor", function() {
             var tutor = {email: "tester@gmail.com"};
-            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(user)}), Promise.resolve({json: () => Promise.resolve(tutor)}));
+            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve(tutor)}));
 
             const tutorElement = document.createElement('h3');
             setTutorEmail(tutorElement, "123").then(() => {

@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -76,6 +77,7 @@ public final class SchedulingTest {
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        TestUtilities.setSessionId(request, "3");
 
         when(request.getParameter("tutorID")).thenReturn("1");
         when(request.getParameter("start")).thenReturn("480");
@@ -83,7 +85,6 @@ public final class SchedulingTest {
         when(request.getParameter("year")).thenReturn("2020");
         when(request.getParameter("month")).thenReturn("4");
         when(request.getParameter("day")).thenReturn("18");
-        when(request.getParameter("studentID")).thenReturn("3");
         when(request.getParameter("subtopics")).thenReturn("algebra");
         when(request.getParameter("questions")).thenReturn("How does it work?");
 
@@ -100,7 +101,6 @@ public final class SchedulingTest {
         verify(request, times(1)).getParameter("year");
         verify(request, times(1)).getParameter("month");
         verify(request, times(1)).getParameter("day");
-        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("subtopics");
         verify(request, times(1)).getParameter("questions");
 

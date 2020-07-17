@@ -407,11 +407,7 @@ describe("Progress", function() {
         it("should trigger the fetch function with the correct params", function() {
             var params = new URLSearchParams();
             params.append('goal', "undefined");
-            params.append('studentID', 123);
-
-            spyOn(window, "onload").and.callFake(function() {
-                readStudentID(queryString, window);
-            });
+        
             spyOn(window, 'fetch').and.callThrough();
             spyOn(document, 'getElementById').and.returnValue("test");
             addGoal(mockWindow);
@@ -444,7 +440,6 @@ describe("Progress", function() {
 
         it("should trigger the fetch function with the correct params", function() {
             var params = new URLSearchParams();
-            params.append('studentID', 123);
             params.append('id', 1);
 
             spyOn(window, 'fetch').and.callThrough();
@@ -460,7 +455,6 @@ describe("Progress", function() {
 
         it("should trigger the fetch function with the correct params", function() {
             var params = new URLSearchParams();
-            params.append('studentID', 123);
             params.append('id', 1);
 
             spyOn(window, 'fetch').and.callThrough();
