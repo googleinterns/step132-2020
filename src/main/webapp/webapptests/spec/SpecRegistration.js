@@ -150,6 +150,9 @@ describe("Registration", function() {
                 var mockMyStudentsLink = document.createElement('button');
                 mockMyStudentsLink.id = 'my-students';
 
+                var mockMyProgressLink = document.createElement('button');
+                mockMyProgressLink.id = 'my-progress';
+
                 var mockTutorSessionSettingsLink = document.createElement('button');
                 mockTutorSessionSettingsLink.id = 'tutor-session-settings';
 
@@ -163,6 +166,7 @@ describe("Registration", function() {
                 document.body.appendChild(mockProfileLink);
                 document.body.appendChild(mockAvailabilitySettingsLink);
                 document.body.appendChild(mockMyStudentsLink);
+                document.body.appendChild(mockMyProgressLink);
                 document.body.appendChild(mockTutorSessionSettingsLink);
                 document.body.appendChild(mockHistoryLink);
             })
@@ -176,6 +180,7 @@ describe("Registration", function() {
                 expect(document.getElementById('profile').style.display).toBe('none');
                 expect(document.getElementById('availability-settings').style.display).toBe('none');
                 expect(document.getElementById('my-students').style.display).toBe('none');
+                expect(document.getElementById('my-progress').style.display).toBe('none');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('none');
                 expect(document.getElementById('history').style.display).toBe('none');
             });
@@ -189,6 +194,7 @@ describe("Registration", function() {
                 expect(document.getElementById('profile').style.display).toBe('block');
                 expect(document.getElementById('availability-settings').style.display).toBe('none');
                 expect(document.getElementById('my-students').style.display).toBe('none');
+                expect(document.getElementById('my-progress').style.display).toBe('block');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('block');
                 expect(document.getElementById('history').style.display).toBe('block');
             });
@@ -201,6 +207,8 @@ describe("Registration", function() {
                 expect(document.getElementById('logout').style.display).toBe('block');
                 expect(document.getElementById('profile').style.display).toBe('block');
                 expect(document.getElementById('availability-settings').style.display).toBe('block');
+                expect(document.getElementById('my-students').style.display).toBe('block');
+                expect(document.getElementById('my-progress').style.display).toBe('none');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('none');
                 expect(document.getElementById('history').style.display).toBe('none');
             });
@@ -241,6 +249,14 @@ describe("Registration", function() {
                 redirectToMyStudents(mockWindow, mockLoginStatus);
 
                 expect(mockWindow.location.href).toEqual("my-students.html?userID=123");
+            })
+
+            it("adds event listener that redirects the user to their progress", function() {
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'123'};
+                var mockWindow = {location: {href: "homepage.html"}};
+                redirectProgress(mockWindow, mockLoginStatus);
+
+                expect(mockWindow.location.href).toEqual("progress.html?studentID=123");
             })
 
             it("adds event listener that redirects the user to their tutor session settings", function() {

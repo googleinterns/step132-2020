@@ -77,6 +77,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         if (loginStatus.role == "tutor") {
             document.getElementById('availability-settings').style.display = "block";
             document.getElementById('my-students').style.display = "block";
+            document.getElementById('my-progress').style.display = "none";
             document.getElementById('tutor-session-settings').style.display = "none";
             document.getElementById('history').style.display = "none";
             document.getElementById('availability-settings').addEventListener('click', () => {
@@ -89,6 +90,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         } else if (loginStatus.role == "student") {
             document.getElementById('availability-settings').style.display = "none";
             document.getElementById('my-students').style.display = "none";
+            document.getElementById('my-progress').style.display = "block";
             document.getElementById('tutor-session-settings').style.display = "block";
             document.getElementById('history').style.display = "block";
             document.getElementById('tutor-session-settings').addEventListener('click', () => {
@@ -97,6 +99,9 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
             document.getElementById('history').addEventListener('click', () => {
                 redirectToHistory(window, loginStatus);
             });
+            document.getElementById('my-progress').addEventListener('click', () => {
+                redirectProgress(window, loginStatus);
+            });
         }
     }
     else {   // Display login link
@@ -104,6 +109,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('profile').style.display = "none";
         document.getElementById('availability-settings').style.display = "none";
         document.getElementById('my-students').style.display = "none";
+        document.getElementById('my-progress').style.display = "none";
         document.getElementById('tutor-session-settings').style.display = "none";
         document.getElementById('history').style.display = "none";
         document.getElementById('login').style.display = "block";
@@ -148,6 +154,14 @@ function redirectToManageSessions(window, loginStatus) {
  */
 function redirectToHistory(window, loginStatus) {
     var url = "history.html?userID=" + encodeURIComponent(loginStatus.userId);
+    window.location.href = url;
+}
+
+/**
+ * Sets the URL's query string for the user's profile to their user ID and redirect them to progress.html
+ */
+function redirectProgress(window, loginStatus) {
+    var url = "progress.html?studentID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 
