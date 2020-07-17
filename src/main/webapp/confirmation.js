@@ -88,8 +88,7 @@ function createScheduledSessionBox(scheduledSession) {
 //Helper function for testing purposes
 //Sets the tutor element's email field to the tutor email
 function setTutorEmail(tutorElement, tutorID) {
-    var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
+    return getUser(tutorID).then(tutor => {
         tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
     });
 }

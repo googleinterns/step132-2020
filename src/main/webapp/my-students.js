@@ -13,7 +13,18 @@
 // limitations under the License.
 
 function getMyStudents() {
-    fetch('/my-students', {method: 'GET'}).then(response => response.json()).then((students) => {
+    return getMyStudentsHelper(window);
+}
+
+async function getMyStudentsHelper(window) {
+    await fetch('/my-students', {method: 'GET'}).then((response) => {
+        //if the tutor id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url
+            return [];
+        }
+        return response.json();
+    }).then((students) => {
         if(students.error) {
             var message = document.createElement("p");
             p.innerText = students.error;

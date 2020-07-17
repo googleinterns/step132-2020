@@ -18,13 +18,20 @@ describe("My Students", function() {
         var mockWindow = {location: {href: "my-students.html"}};
 
         it("should trigger the fetch function", function() {
-            spyOn(window, "onload").and.callFake(function() {
-                readTutorID(queryString, window);
-            });
-            spyOn(window, 'fetch').and.callThrough();
-            getMyStudents(mockWindow);
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            getMyStudents();
             expect(window.fetch).toHaveBeenCalledWith('/my-students', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
+        });
+    });
+
+    describe("when user tries to access someone else's students page", function() {
+        var mockWindow = {location: {href: "my-students.html"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            await getMyStudentsHelper(mockWindow);
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
 

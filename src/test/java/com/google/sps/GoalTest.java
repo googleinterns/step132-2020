@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -149,7 +150,7 @@ public final class GoalTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("studentID")).thenReturn("123");
+        TestUtilities.setSessionId(request, "123");   
         when(request.getParameter("goal")).thenReturn("testing");
 
         StringWriter stringWriter = new StringWriter();
@@ -159,7 +160,6 @@ public final class GoalTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("goal");
 
         String expected = new Gson()
@@ -176,7 +176,7 @@ public final class GoalTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("studentID")).thenReturn(null);
+        TestUtilities.setSessionId(request, null);           
         when(request.getParameter("goal")).thenReturn("goal");
 
         StringWriter stringWriter = new StringWriter();
@@ -186,7 +186,6 @@ public final class GoalTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("goal");
 
         String expected = "{\"error\": \"There was an error adding goal.\"}";
