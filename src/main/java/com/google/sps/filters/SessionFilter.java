@@ -32,12 +32,16 @@ import java.util.Optional;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-/** Servlet filter that checks if the user has valid session to make a request. */
+/** Servlet filter that checks if the user has valid session to make a request.*/
 public class SessionFilter implements Filter {
 
     private ServletContext context;
     private FilterConfig filterConfig;
 
+    /**
+    * This method is called automatically before the request is sent to the servlet (specified in the web.xml file) to make sure
+    * the session is valid.
+    */
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 
         HttpServletRequest req = (HttpServletRequest) request;
