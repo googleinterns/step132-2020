@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -73,9 +74,8 @@ public final class ConfirmationTest {
     public void testDoGetNoSession() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
-
-        //there is no student with id = 10
-        when(request.getParameter("studentID")).thenReturn("10");
+        //there is no user with session id = 10
+        TestUtilities.setSessionId(request, "10");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -84,7 +84,6 @@ public final class ConfirmationTest {
 
         servlet.doGet(request, response);
 
-        verify(request, atLeast(1)).getParameter("studentID");
         writer.flush();
         // If the user has no scheduled sessions, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains("[]"));
@@ -94,8 +93,8 @@ public final class ConfirmationTest {
     public void testDoGetWithSessions() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        TestUtilities.setSessionId(request, "2"); 
 
-        when(request.getParameter("studentID")).thenReturn("2");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -107,7 +106,6 @@ public final class ConfirmationTest {
         String expected = new Gson().toJson(Arrays.asList(new TutorSession("2","2", null, null,
                                                                         TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14)));
 
-        verify(request, times(1)).getParameter("studentID");
         writer.flush();
         System.out.println(stringWriter.toString());
         System.out.println(expected);

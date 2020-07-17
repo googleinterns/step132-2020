@@ -34,6 +34,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.lang.String;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Calendar;
 import com.google.gson.Gson;
 
@@ -58,7 +59,11 @@ public final class TutorSessionDatastoreService {
             sessionEntity.setProperty("questions", session.getQuestions());
             sessionEntity.setProperty("rated", session.isRated());
             sessionEntity.setProperty("rating", session.getRating());
-            sessionEntity.setProperty("timeslot", updateTimeRangeToScheduled(session.getTutorID(), session.getTimeslot(), (long) sessionEntity.getKey().getId(), datastore, txn));
+    
+            datastore.put(txn, sessionEntity);
+
+            long timeslotId = updateTimeRangeToScheduled(session.getTutorID(), session.getTimeslot(), (long) sessionEntity.getKey().getId(), datastore, txn);
+            sessionEntity.setProperty("timeslot", timeslotId);
 
             datastore.put(txn, sessionEntity);
 
@@ -75,21 +80,31 @@ public final class TutorSessionDatastoreService {
 
     /**
     * Deletes a TutorSession for the tutor and student.
+    * @return boolean, true if successfully deleted, false otherwise
     */
-    public void deleteTutorSession(TutorSession session) {
+    public void deleteTutorSession(String studentID, long sessionId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
 
-        long sessionId = session.getId();
         Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
 
         try {
-            updateTimeRangeToAvailable(session.getId(), session.getTutorID(), datastore, txn);
+            Entity sessionEntity = datastore.get(sessionKey); 
+            
+            //if the person trying to delete the session is not the person who scheduled it
+            if(!((String)sessionEntity.getProperty("studentID")).equals(studentID)) {
+                return;
+            }
+
+            updateTimeRangeToAvailable(sessionId, (String) sessionEntity.getProperty("tutorID"), datastore, txn);
 
             datastore.delete(txn, sessionKey);
 
             txn.commit();
+
+        } catch (EntityNotFoundException e) {
+            //entity doesn't exist, we can't delete it
         } finally {
           if (txn.isActive()) {
             txn.rollback();
@@ -119,7 +134,7 @@ public final class TutorSessionDatastoreService {
     * Adds the given rating to a tutor session and updates the tutor's overall rating.
     * @return boolean, true if session was rated successfully, false otherwise
     */
-    public boolean rateTutorSession(long sessionId, int rating) {
+    public boolean rateTutorSession(long sessionId, String studentID, int rating) {
 
         boolean success = true;
 
@@ -132,6 +147,11 @@ public final class TutorSessionDatastoreService {
         try {
 
             Entity sessionEntity = datastore.get(txn, sessionKey); 
+
+            //if the user trying to rate this session is not the student, return false
+            if(!((String) sessionEntity.getProperty("studentID")).equals(studentID)) {
+                return false;
+            }
 
             sessionEntity.setProperty("rated", true);
             sessionEntity.setProperty("rating", rating);
@@ -155,6 +175,21 @@ public final class TutorSessionDatastoreService {
         return success;
 
     }
+    
+    /**
+    * Gets a TutorSession with the given session id. Used for testing.
+    * @return TutorSession
+    */
+    public TutorSession getScheduledSession(long sessionId) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key sessionKey = KeyFactory.createKey("TutorSession", sessionId);
+        try {
+            Entity sessionEntity = datastore.get(sessionKey); 
+            return createTutorSession(datastore, sessionEntity);
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
+    }
 
     private void updateTutorsForStudent(DatastoreService datastore, Transaction txn, String studentId, String tutorId) {
         //get student with id
@@ -164,9 +199,6 @@ public final class TutorSessionDatastoreService {
         PreparedQuery pq = datastore.prepare(query);
 
         Entity studentEntity = pq.asSingleEntity();
-
-        System.out.println(studentEntity);
-        System.out.println(studentId);
 
         List<String> tutors = (List<String>) studentEntity.getProperty("tutors");
         if (tutors == null) {
@@ -217,27 +249,36 @@ public final class TutorSessionDatastoreService {
         PreparedQuery sessionEntities = datastore.prepare(query);
 
         for(Entity entity : sessionEntities.asIterable()) {
-            try {
-                long id = (long) entity.getKey().getId();
-                String studentID = (String) entity.getProperty("studentID");
-                String tutorID = (String) entity.getProperty("tutorID");
-                String subtopics = (String) entity.getProperty("subtopics");
-                String questions = (String) entity.getProperty("questions");
-                int rating = Math.toIntExact((long) entity.getProperty("rating"));
-
-                Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
-                Entity timeEntity = datastore.get(timeRangeKey); 
-                TimeRange timeslot = createTimeRange(timeEntity);
-
-                sessions.add(new TutorSession(studentID, tutorID, subtopics, questions, timeslot, rating, id));
-
-            } catch (EntityNotFoundException e) {
-                //timeslot was not found, skip this tutoring session
+            TutorSession session = createTutorSession(datastore, entity);
+            if(session != null) {
+                sessions.add(session);
             }
-           
         }
 
         return sessions;
+    }
+
+    /**
+    * Creates a new TutorSession object from a given TutorSession entity.
+    * @return TutorSession
+    */
+    private TutorSession createTutorSession(DatastoreService datastore, Entity entity) {
+        try {
+            long id = (long) entity.getKey().getId();
+            String studentID = (String) entity.getProperty("studentID");
+            String tutorID = (String) entity.getProperty("tutorID");
+            String subtopics = (String) entity.getProperty("subtopics");
+            String questions = (String) entity.getProperty("questions");
+            int rating = Math.toIntExact((long) entity.getProperty("rating"));
+            Key timeRangeKey = KeyFactory.createKey("TimeRange", (long) entity.getProperty("timeslot"));
+            Entity timeEntity = datastore.get(timeRangeKey); 
+            TimeRange timeslot = createTimeRange(timeEntity);
+
+            return new TutorSession(studentID, tutorID, subtopics, questions, timeslot, rating, id);
+
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
     }
 
      /**
@@ -269,15 +310,14 @@ public final class TutorSessionDatastoreService {
 
         //there should only be one result
         Entity timeEntity = pq.asSingleEntity();
-
         //change the tutorID property to the sessionId
         //instead of deleting the TimeRange entity, we can just set the tutorID property to the sessionId to indicate that it is a scheduled session 
-        timeEntity.setProperty("tutorID", sessionId);
+        timeEntity.setProperty("tutorID", String.valueOf(sessionId));
 
         //update in datastore
         datastore.put(txn, timeEntity);
 
-        return timeEntity.getKey().getId();
+        return (long) timeEntity.getKey().getId();
     }
 
     /**
@@ -285,7 +325,8 @@ public final class TutorSessionDatastoreService {
     * @return long, the id of the TimeRange entity
     */
     private long updateTimeRangeToAvailable(long sessionId, String tutorID, DatastoreService datastore, Transaction txn) {
-        //filter by tutor's email and time range properties
+
+        //filter by session id
         Filter timeFilter = new FilterPredicate("tutorID", FilterOperator.EQUAL, String.valueOf(sessionId));
 
         Query query = new Query("TimeRange").setFilter(timeFilter);
@@ -295,13 +336,13 @@ public final class TutorSessionDatastoreService {
         //there should only be one result
         Entity timeEntity = pq.asSingleEntity();
 
-        //change the email property from "scheduled" to the tutor's email
+        //change the tutorID property back to the tutor the time range was owned by before
         timeEntity.setProperty("tutorID", tutorID);
 
         //update in datastore
         datastore.put(txn, timeEntity);
 
-        return timeEntity.getKey().getId();
+        return (long) timeEntity.getKey().getId();
     }
 
 }

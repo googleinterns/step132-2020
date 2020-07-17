@@ -63,6 +63,10 @@ public final class StudentDatastoreService {
                     String email = (String) studentEntity.getProperty("email");
                     ArrayList learning = (ArrayList) studentEntity.getProperty("learning");
 
+                    if(learning == null) {
+                        learning = new ArrayList<String>();
+                    }
+
                     Student student = new Student(name, bio, pfp, email, learning, tutors, studentId);
 
                     students.add(student);

@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.Student;
@@ -63,8 +64,7 @@ public final class GetStudentsTest {
     public void doGetReturnsError() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
-
-        when(request.getParameter("tutorID")).thenReturn("");
+        TestUtilities.setSessionId(request, "");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -72,8 +72,6 @@ public final class GetStudentsTest {
 
         servlet.doGet(request, response);
 
-        //verify that getParameter was called
-        verify(request, times(1)).getParameter("tutorID"); 
         writer.flush(); // it may not have been flushed yet...
         
 
@@ -86,7 +84,7 @@ public final class GetStudentsTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
 
-        when(request.getParameter("tutorID")).thenReturn("1");
+        TestUtilities.setSessionId(request, "1");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -94,8 +92,6 @@ public final class GetStudentsTest {
 
         servlet.doGet(request, response);
 
-        //verify that getParameter was called
-        verify(request, times(1)).getParameter("tutorID"); 
         writer.flush(); // it may not have been flushed yet...
         
         String expected = "[]";
@@ -107,7 +103,7 @@ public final class GetStudentsTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
 
-        when(request.getParameter("tutorID")).thenReturn("0");
+        TestUtilities.setSessionId(request, "0");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -115,8 +111,6 @@ public final class GetStudentsTest {
 
         servlet.doGet(request, response);
 
-        //verify that getParameter was called
-        verify(request, times(1)).getParameter("tutorID"); 
         writer.flush(); // it may not have been flushed yet...
         
         ArrayList<Student> expectedStudents = new ArrayList<Student> (Arrays.asList(sample.getStudentByEmail("thegoogler@google.com"), sample.getStudentByEmail("elian@google.com")));

@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -84,8 +85,8 @@ public final class DeleteAvailabilityTest {
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        TestUtilities.setSessionId(request, "4");
 
-        when(request.getParameter("tutorID")).thenReturn("4");
         when(request.getParameter("start")).thenReturn("780");
         when(request.getParameter("end")).thenReturn("840");
         when(request.getParameter("day")).thenReturn("10");
@@ -99,7 +100,6 @@ public final class DeleteAvailabilityTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("tutorID");
         verify(request, times(1)).getParameter("start");
         verify(request, times(1)).getParameter("end");
         verify(request, times(1)).getParameter("day");

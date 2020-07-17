@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -69,7 +70,7 @@ public final class DeleteExperienceTest {
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
-
+        
         // Adds experience entity to the local datastore
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Entity experienceEntity = new Entity("Experience");
@@ -77,7 +78,7 @@ public final class DeleteExperienceTest {
         experienceEntity.setProperty("experience", "testing");
         datastore.put(experienceEntity);
 
-        when(request.getParameter("studentID")).thenReturn("123");
+        TestUtilities.setSessionId(request, "123");   
         when(request.getParameter("id")).thenReturn("1");
 
         StringWriter stringWriter = new StringWriter();
@@ -87,7 +88,6 @@ public final class DeleteExperienceTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("id");
 
         String expected = "[]";
@@ -113,7 +113,7 @@ public final class DeleteExperienceTest {
         experienceEntity2.setProperty("experience", "testing");
         datastore.put(experienceEntity2);
 
-        when(request.getParameter("studentID")).thenReturn("123");
+        TestUtilities.setSessionId(request, "123");   
         when(request.getParameter("id")).thenReturn("1");
 
         StringWriter stringWriter = new StringWriter();
@@ -123,7 +123,6 @@ public final class DeleteExperienceTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("id");
 
         String expected = new Gson()

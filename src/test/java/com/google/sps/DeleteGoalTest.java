@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -77,7 +78,7 @@ public final class DeleteGoalTest {
         goalEntity.setProperty("goal", "testing");
         datastore.put(goalEntity);
 
-        when(request.getParameter("studentID")).thenReturn("123");
+        TestUtilities.setSessionId(request, "123");   
         when(request.getParameter("id")).thenReturn("1");
 
         StringWriter stringWriter = new StringWriter();
@@ -87,7 +88,6 @@ public final class DeleteGoalTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("id");
 
         String expected = "[]";
@@ -113,7 +113,7 @@ public final class DeleteGoalTest {
         goalEntity2.setProperty("goal", "testing");
         datastore.put(goalEntity2);
 
-        when(request.getParameter("studentID")).thenReturn("123");
+        TestUtilities.setSessionId(request, "123");   
         when(request.getParameter("id")).thenReturn("1");
 
         StringWriter stringWriter = new StringWriter();
@@ -123,7 +123,6 @@ public final class DeleteGoalTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("studentID");
         verify(request, times(1)).getParameter("id");
 
         String expected = new Gson()

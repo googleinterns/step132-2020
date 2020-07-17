@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -83,8 +84,8 @@ public final class AddAvailabilityTest {
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        TestUtilities.setSessionId(request, "0");   
 
-        when(request.getParameter("tutorID")).thenReturn("0");
         when(request.getParameter("startHour")).thenReturn("22");
         when(request.getParameter("startMinute")).thenReturn("00");
         when(request.getParameter("endHour")).thenReturn("23");
@@ -100,7 +101,6 @@ public final class AddAvailabilityTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("tutorID");
         verify(request, times(1)).getParameter("startHour");
         verify(request, times(1)).getParameter("startMinute");
         verify(request, times(1)).getParameter("endHour");

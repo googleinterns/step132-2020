@@ -47,7 +47,7 @@ public class HistoryServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the student whose tutoring history will be displayed.
         // Make the default id -1 if the parameter is null, so an empty list will be returned
-        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
 
         if(studentID.equals("-1")) {
             response.setContentType("application/json");

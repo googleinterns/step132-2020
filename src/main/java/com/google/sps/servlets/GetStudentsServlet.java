@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.lang.String;
 import com.google.gson.Gson;
+import java.util.Optional;
 import com.google.sps.utilities.StudentDatastoreService;
 
 /** Servlet that returns a list of students for a given tutor. */
@@ -39,16 +40,17 @@ public class GetStudentsServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tutorId = request.getParameter("tutorID");
+        //Set default value to -1 
+        String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         response.setContentType("application/json;");
 
-        //send error message if the search was invalid
-        if(tutorId == null || tutorId.equals("")) {
+        //send error message if the tutor id is invalid
+        if(tutorID == null || tutorID.equals("")) {
             response.getWriter().println("{\"error\": \"Invalid tutor.\"}");
             return;
         }
 
-        List<Student> students = datastore.getStudentsForTutor(tutorId);
+        List<Student> students = datastore.getStudentsForTutor(tutorID);
         
         String json = new Gson().toJson(students);
         response.getWriter().println(json);

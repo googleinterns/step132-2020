@@ -14,25 +14,25 @@
 
 describe("Scheduling", function() {
     describe("when tutoring session is scheduled", function() {
-        var mockWindow = {location: {href: "scheduling.html?tutorID=elian%40google.com&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=elian%40google.com&start=480&end=540&year=2020&month=5&day=18"}};
+        var mockWindow = {location: {href: "scheduling.html?tutorID=123&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=123&start=480&end=540&year=2020&month=5&day=18"}};
 
-        it("should trigger the fetch function", function() {
+        it("should trigger the fetch function", async function() {
             spyOn(document, "getElementById").and.returnValue("");
-            spyOn(window, 'fetch').and.callThrough();
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
 
-            scheduleTutorSessionHelper(mockWindow);
+            await scheduleTutorSessionHelper(mockWindow);
 
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
     describe("when the URI components are read", function() {
-        var mockWindow = {location: {href: "scheduling.html?tutorID=thegoogler%40google.com&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=thegoogler%40google.com&start=480&end=540&year=2020&month=5&day=18"}};
+        var mockWindow = {location: {href: "scheduling.html?tutorID=123&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=123&start=480&end=540&year=2020&month=5&day=18"}};
         var queryString = new Array();
         readComponents(queryString, mockWindow);
 
         it("should add tutorID, start, end, year, month, and day to the query string", function() {
-            expect(queryString["tutorID"]).toEqual("thegoogler@google.com");
+            expect(queryString["tutorID"]).toEqual("123");
             expect(queryString["start"]).toEqual("480");
             expect(queryString["end"]).toEqual("540");
             expect(queryString["year"]).toEqual("2020");
@@ -42,11 +42,14 @@ describe("Scheduling", function() {
     });
 
     describe("when a user submits the form", function() {
-        var mockWindow = {location: {href: "scheduling.html"}};
+        var mockWindow = {location: {href: "scheduling.html?tutorID=123&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=123&start=480&end=540&year=2020&month=5&day=18"}};
 
-        it("should redirect the user to confirmation.html and pass tutorID as an URI component", function() {
-            redirectToConfirmation("123", mockWindow);
-            expect(mockWindow.location.href).toEqual("confirmation.html?studentID=123");
+        it("should redirect the user to confirmation.html ", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            spyOn(document, "getElementById").and.returnValue("");
+
+            await scheduleTutorSessionHelper(mockWindow);
+            expect(mockWindow.location.href).toEqual("confirmation.html");
         });
     });
 

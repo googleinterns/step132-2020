@@ -50,7 +50,7 @@ function getExperiences(document, loginStatus) {
     const params = new URLSearchParams();
     params.append('studentID', studentID);
     fetch('/experience?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((experiences) => {
-        getExperiencesHelper(document, experiences);
+        getExperiencesHelper(document, experiences, loginStatus);
     });
 
     // If the user is a student, allow them to add experiences
@@ -61,7 +61,7 @@ function getExperiences(document, loginStatus) {
     }
 }
 
-function getExperiencesHelper(document, experiences) {
+function getExperiencesHelper(document, experiences, loginStatus) {
     //if there was an error
     if(experiences.error) {
         var experienceContainer = document.getElementById('experiences');
@@ -91,7 +91,7 @@ function getGoals(document, loginStatus) {
     const params = new URLSearchParams();
     params.append('studentID', studentID);
     fetch('/goal?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((goals) => {
-        getGoalsHelper(document, goals);
+        getGoalsHelper(document, goals, loginStatus);
     });
 
     // If the user is a student, allow them to add goals
@@ -102,7 +102,7 @@ function getGoals(document, loginStatus) {
     }
 }
 
-function getGoalsHelper(document, goals) {
+function getGoalsHelper(document, goals, loginStatus) {
     //if there was an error
     if(goals.error) {
         var goalContainer = document.getElementById('goals');
@@ -319,48 +319,43 @@ function createExperienceBox(experience, loginStatus) {
 }
 
 function addGoal(window) {
+    const params = new URLSearchParams();
+
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
     const studentID = queryString["studentID"];
 
-    const params = new URLSearchParams();
-
     params.append('goal', document.getElementById('newGoal').value);
-    params.append('studentID', studentID);
 
     fetch('/goal', {method: 'POST', body: params}).then(() => {
         window.location.href = "/progress.html?studentID=" + studentID;
     });
 }
 
-function deleteGoal(goal, studentID, window) {
+function deleteGoal(goal, window) {
     const params = new URLSearchParams();
-
-    params.append('studentID', studentID);
     params.append('id', goal.id);
 
     fetch('/delete-goal', {method: 'POST', body: params});
 }
 
 function addExperience(window) {
+    const params = new URLSearchParams();
+
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
     const studentID = queryString["studentID"];
 
-    const params = new URLSearchParams();
-
     params.append('experience', document.getElementById('newExperience').value);
-    params.append('studentID', studentID);
 
     fetch('/experience', {method: 'POST', body: params}).then(() => {
         window.location.href = "/progress.html?studentID=" + studentID;
     });
 }
 
-function deleteExperience(experience, studentID, window) {
+function deleteExperience(experience, window) {
     const params = new URLSearchParams();
 
-    params.append('studentID', studentID);
     params.append('id', experience.id);
 
     fetch('/delete-experience', {method: 'POST', body: params});
