@@ -186,9 +186,10 @@
          when(response.getWriter()).thenReturn(writer);
          when(request.getContentType()).thenReturn("application/json");
 
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         
         //so we don't have to create a new user entity
-         servlet.setRegistered(request, response, name);
+         servlet.setRegistered(request, response, name, datastore);
 
          servlet.doGet(request, response);
 
