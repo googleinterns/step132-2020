@@ -95,7 +95,7 @@
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html", null);
+         LoginStatus expectedStatus = new LoginStatus(false, false, "/_ah/login?continue=%2Fregistration.html", null, null);
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
          Assert.assertNull(request.getSession(false));
@@ -115,12 +115,14 @@
          when(response.getWriter()).thenReturn(writer);
          when(request.getContentType()).thenReturn("application/json");
 
-         servlet.setRegistered(request, response, name);
+         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+         servlet.setRegistered(request, response, name, datastore);
 
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID");
+         LoginStatus expectedStatus = new LoginStatus(true, true, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID", null);
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
      }
@@ -138,12 +140,23 @@
          when(response.getWriter()).thenReturn(writer);
          when(request.getContentType()).thenReturn("application/json");
 
-         servlet.setRegistered(request, response, name);
+         // Add user and student properties to the local datastore so there is data to query in the function
+         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+         Entity userEntity = new Entity("User");
+         userEntity.setProperty("role", "student");
+         userEntity.setProperty("userId", USER_ID);
+         datastore.put(userEntity);
+         Entity studentEntity = new Entity("Student");
+         studentEntity.setProperty("name", "Student McKnowledge");
+         studentEntity.setProperty("userId", USER_ID);
+         datastore.put(studentEntity);
+
+         servlet.setRegistered(request, response, name, datastore);
 
          writer.flush();
          //Remove new line at the end to compare to expected String
          String actual = stringWriter.toString().replace("\n", "");
-         LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID");
+         LoginStatus expectedStatus = new LoginStatus(true, false, "/_ah/logout?continue=%2Fhomepage.html", "awesomeID", "student");
          String expected = new Gson().toJson(expectedStatus);
          Assert.assertEquals(expected, actual);
      }
@@ -206,6 +219,45 @@
          DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
          String actual = servlet.getName(USER_ID, datastore);
          String expected = null;
+
+         Assert.assertEquals(expected, actual);
+     }
+
+     @Test
+     public void getRoleTutor() {
+         // Add user and tutor properties to the local datastore so there is data to query in the function
+         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+         Entity userEntity = new Entity("User");
+         userEntity.setProperty("role", "tutor");
+         userEntity.setProperty("userId", USER_ID);
+         datastore.put(userEntity);
+        
+         String actual = servlet.getRole(USER_ID, datastore);
+         String expected = "tutor";
+
+         Assert.assertEquals(expected, actual);
+     }
+
+     @Test
+     public void getRoleNull() {
+         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+         String actual = servlet.getRole(USER_ID, datastore);
+         String expected = null;
+
+         Assert.assertEquals(expected, actual);
+     }
+
+     @Test
+     public void getRoleStudent() {
+         // Add user and tutor properties to the local datastore so there is data to query in the function
+         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+         Entity userEntity = new Entity("User");
+         userEntity.setProperty("role", "student");
+         userEntity.setProperty("userId", USER_ID);
+         datastore.put(userEntity);
+        
+         String actual = servlet.getRole(USER_ID, datastore);
+         String expected = "student";
 
          Assert.assertEquals(expected, actual);
      }

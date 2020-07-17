@@ -14,13 +14,13 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Your Scheduled Sessions</title>
+        <title>Student's Progress</title>
         <link rel="stylesheet" type="text/css" href="general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body onload="getTutorSessionsManage(), displayLoginLogoutLink()">
+    <body onload="displayLoginLogoutLink()">
         <a href="./homepage.html"><p>Homepage</p></a>
 
         <div class="top-right">
@@ -28,24 +28,13 @@
             <button type="button" id="profile" style="display:none">My Account</button>
             <button type="button" id="availability-settings" style="display:none">Manage your availability</button>
             <button type="button" id="my-students" style="display:none">Your Students</button>
-            <input type="hidden" id="tutor-session-settings" style="display:none">
+            <button type="button" id="tutor-session-settings" style="display:none">Manage your tutoring sessions</button>
             <button type="button" id="history" style="display:none">Tutoring session history</button>
             <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
         </div>
 
-        <div class="container-fluid">
-            <h1>Manage Your Scheduled Tutoring Sessions</h1>
-            <h2>Cancel any upcoming scheduled sessions.</h2>
-        </div>
-
-        <div class="container-fluid">
-            <ul class="list-group" id="scheduledSessions"></ul>
-        </div>
-
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="manage-sessions.js"></script>
         <script src="registration.js"></script>
-        <script src="profile.js"></script>
     </body>
 </html>

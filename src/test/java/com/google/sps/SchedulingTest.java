@@ -65,6 +65,7 @@ public final class SchedulingTest {
 
         SampleData sample  = new SampleData();
         sample.addTutorsToDatastore();
+        sample.addStudentsToDatastore();
     }
 
     @After
@@ -107,7 +108,7 @@ public final class SchedulingTest {
                             .toJson(new TutorSession("3", "1",
                                             "algebra",
                                             "How does it work?",
-                                            TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), 21)); //21 is the id the local datastore gives to this new session
+                                            TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020), 26)); //26 is the id the local datastore gives to this new session
 
         writer.flush();
         // Tutoring session should have been scheduled

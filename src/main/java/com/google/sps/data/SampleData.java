@@ -82,15 +82,15 @@ public final class SampleData {
 
     private ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
         new Student("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
-                new ArrayList<TutorSession> (Arrays.asList()), "0"),
+                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList()), "0"),
         new Student("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), "1"),
+                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), "1"),
         new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
+                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
         new Student("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
-                new ArrayList<TutorSession> (Arrays.asList()), "3"),
+                new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "3"),
         new Student("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession> (Arrays.asList()), "4")
+                new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
 
    /** 
@@ -138,6 +138,22 @@ public final class SampleData {
 
             addTutorAvailabilityToDatastore(datastore, tutor.getAvailability(), tutor.getUserId());
             addTutorSessionsToDatastore(datastore, tutor.getScheduledSessions());
+        }
+    }
+
+    public void addStudentsToDatastore() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        for(Student student : students) {
+            Entity entity = new Entity("Student");
+            entity.setProperty("name", student.getName());
+            entity.setProperty("bio", student.getBio());
+            entity.setProperty("pfp", student.getPfp());
+            entity.setProperty("email", student.getEmail());
+            entity.setProperty("learning", student.getLearning());
+            entity.setProperty("tutors", student.getTutors());
+            entity.setProperty("userId", student.getUserId());
+            datastore.put(entity);
         }
     }
 
