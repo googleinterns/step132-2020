@@ -49,7 +49,7 @@ function getExperiences(document, loginStatus) {
 
     const params = new URLSearchParams();
     params.append('studentID', studentID);
-    fetch('/add-experience?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((experiences) => {
+    fetch('/experience?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((experiences) => {
         getExperiencesHelper(document, experiences);
     });
 
@@ -90,7 +90,7 @@ function getGoals(document, loginStatus) {
 
     const params = new URLSearchParams();
     params.append('studentID', studentID);
-    fetch('/add-goal?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((goals) => {
+    fetch('/goal?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((goals) => {
         getGoalsHelper(document, goals);
     });
 
@@ -328,7 +328,7 @@ function addGoal(window) {
     params.append('goal', document.getElementById('newGoal').value);
     params.append('studentID', studentID);
 
-    fetch('/add-goal', {method: 'POST', body: params}).then(() => {
+    fetch('/goal', {method: 'POST', body: params}).then(() => {
         window.location.href = "/progress.html?studentID=" + studentID;
     });
 }
@@ -352,7 +352,7 @@ function addExperience(window) {
     params.append('experience', document.getElementById('newExperience').value);
     params.append('studentID', studentID);
 
-    fetch('/add-experience', {method: 'POST', body: params}).then(() => {
+    fetch('/experience', {method: 'POST', body: params}).then(() => {
         window.location.href = "/progress.html?studentID=" + studentID;
     });
 }
