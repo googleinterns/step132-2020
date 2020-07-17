@@ -58,6 +58,21 @@ async function scheduleTutorSessionHelper(window) {
         redirectToConfirmation(window);
     });
 }
+  
+/** A function that adds event listeners to a DOM objects. */
+function addEventListeners() {
+    document.getElementById("scheduling-form").addEventListener('submit', event => {
+        event.preventDefault();
+        scheduleTutorSession(window);
+    });
+}
+
+
+function scheduleTutorSession(window) {
+    getUserId().then(function(studentID) {
+        scheduleTutorSessionHelper(window, studentID);
+    });
+}
 
 // Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
 // 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
