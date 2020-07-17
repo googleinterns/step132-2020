@@ -34,6 +34,7 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import java.lang.String;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Calendar;
 import com.google.gson.Gson;
 
@@ -288,7 +289,7 @@ public final class TutorSessionDatastoreService {
         Entity timeEntity = pq.asSingleEntity();
         //change the tutorID property to the sessionId
         //instead of deleting the TimeRange entity, we can just set the tutorID property to the sessionId to indicate that it is a scheduled session 
-        timeEntity.setProperty("tutorID", sessionId);
+        timeEntity.setProperty("tutorID", String.valueOf(sessionId));
 
         //update in datastore
         datastore.put(txn, timeEntity);
@@ -301,7 +302,8 @@ public final class TutorSessionDatastoreService {
     * @return long, the id of the TimeRange entity
     */
     private long updateTimeRangeToAvailable(long sessionId, String tutorID, DatastoreService datastore, Transaction txn) {
-        //filter by tutor's email and time range properties
+
+        //filter by session id
         Filter timeFilter = new FilterPredicate("tutorID", FilterOperator.EQUAL, String.valueOf(sessionId));
 
         Query query = new Query("TimeRange").setFilter(timeFilter);
@@ -310,15 +312,14 @@ public final class TutorSessionDatastoreService {
 
         //there should only be one result
         Entity timeEntity = pq.asSingleEntity();
-        System.out.println(timeEntity);
 
-        //change the email property from "scheduled" to the tutor's email
+        //change the tutorID property back to the tutor the time range was owned by before
         timeEntity.setProperty("tutorID", tutorID);
 
         //update in datastore
         datastore.put(txn, timeEntity);
 
-        return timeEntity.getKey().getId();
+        return (long) timeEntity.getKey().getId();
     }
 
 }
