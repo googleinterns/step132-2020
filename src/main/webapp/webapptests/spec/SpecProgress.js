@@ -70,7 +70,7 @@ describe("Progress", function() {
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
             getExperiences(document, mockLoginStatus, mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/add-experience?studentID=undefined', {method: 'GET'});
+            expect(window.fetch).toHaveBeenCalledWith('/experience?studentID=undefined', {method: 'GET'});
             expect(document.getElementById('experiences-form').style.display).toBe('block');
         });
 
@@ -83,7 +83,7 @@ describe("Progress", function() {
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
             getExperiences(document, mockLoginStatus, mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/add-experience?studentID=undefined', {method: 'GET'});
+            expect(window.fetch).toHaveBeenCalledWith('/experience?studentID=undefined', {method: 'GET'});
             expect(document.getElementById('experiences-form').style.display).toBe('none');
         });
     });
@@ -140,7 +140,7 @@ describe("Progress", function() {
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
             getGoals(document, mockLoginStatus, mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/add-goal?studentID=undefined', {method: 'GET'});
+            expect(window.fetch).toHaveBeenCalledWith('/goal?studentID=undefined', {method: 'GET'});
             expect(document.getElementById('goals-form').style.display).toBe('block');
         });
 
@@ -153,7 +153,7 @@ describe("Progress", function() {
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
             getGoals(document, mockLoginStatus, mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/add-goal?studentID=undefined', {method: 'GET'});
+            expect(window.fetch).toHaveBeenCalledWith('/goal?studentID=undefined', {method: 'GET'});
             expect(document.getElementById('goals-form').style.display).toBe('none');
         });
     });
@@ -415,7 +415,7 @@ describe("Progress", function() {
             spyOn(window, 'fetch').and.callThrough();
             spyOn(document, 'getElementById').and.returnValue("test");
             addGoal(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/add-goal', {method: 'POST', body: params});
+            expect(window.fetch).toHaveBeenCalledWith('/goal', {method: 'POST', body: params});
         });
     });
 
@@ -433,7 +433,7 @@ describe("Progress", function() {
             spyOn(window, 'fetch').and.callThrough();
             spyOn(document, 'getElementById').and.returnValue("test");
             addExperience(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/add-experience', {method: 'POST', body: params});
+            expect(window.fetch).toHaveBeenCalledWith('/experience', {method: 'POST', body: params});
         });
     });
 
