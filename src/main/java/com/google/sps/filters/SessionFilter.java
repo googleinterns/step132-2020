@@ -25,7 +25,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Cookie;
 import javax.servlet.ServletContext;
 import java.util.stream.*;
 import java.util.Optional;
@@ -61,30 +60,11 @@ public class SessionFilter implements Filter {
     * @return boolean
     */
     public boolean userHasPermissions(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-
-        Cookie[] cookies = request.getCookies();
-
-        //user has not logged in, no cookies have been created
-        if(cookies == null) {
-            this.context.log("Unauthorized access request");
-            return false;
-        }
-
-        String sessionId = "";
-        
-        for(Cookie cookie : cookies) {
-            if(cookie.getName().equals("JSESSIONID")) {
-                sessionId = cookie.getValue();
-                break;
-            }
-        }
     
         HttpSession session = request.getSession(false);
 
-        //The sessionId from the cookie has ".node0" as a suffix
-        if(session == null || !(session.getId()+".node0").equals(sessionId)) {
-            this.context.log("Unauthorized access request");
-			
+        if(session == null) {
+            this.context.log("Invalid session.");			
             return false;
         }
 

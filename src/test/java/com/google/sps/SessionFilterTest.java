@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Cookie;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.*;
@@ -53,13 +52,9 @@ public final class SessionFilterTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
         HttpSession session = mock(HttpSession.class);
-        Cookie mockCookie = mock(Cookie.class);
 
-        when(mockCookie.getName()).thenReturn("JSESSIONID");
-        when(mockCookie.getValue()).thenReturn(sessionId+".node0"); 
         when(request.getSession(false)).thenReturn(session); 
         when(session.getId()).thenReturn(sessionId);      
-        when(request.getCookies()).thenReturn(new Cookie[]{mockCookie}); 
         when(filterConfig.getServletContext()).thenReturn(context);
 
         filter.init(filterConfig);
@@ -68,42 +63,19 @@ public final class SessionFilterTest {
     }
 
     @Test
-    public void testUserPermissionsNoCookie() throws IOException, ServletException {
-        ServletContext context = mock(ServletContext.class);
-        FilterConfig filterConfig = mock(FilterConfig.class);
-        HttpServletRequest request = mock(HttpServletRequest.class);       
-        HttpServletResponse response = mock(HttpServletResponse.class);
-        HttpSession session = mock(HttpSession.class);
-
-        when(request.getSession(false)).thenReturn(session); 
-        when(session.getId()).thenReturn(sessionId);      
-        when(request.getCookies()).thenReturn(null); 
-        when(filterConfig.getServletContext()).thenReturn(context);
-
-        filter.init(filterConfig);
-
-        Assert.assertFalse(filter.userHasPermissions(request, response));
-        verify(context, times(1)).log("Unauthorized access request");
-    }
-
-    @Test
     public void testUserPermissionsNoSession() throws IOException, ServletException {
         ServletContext context = mock(ServletContext.class);
         FilterConfig filterConfig = mock(FilterConfig.class);
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
-        Cookie mockCookie = mock(Cookie.class);
 
-        when(mockCookie.getName()).thenReturn("JSESSIONID");
-        when(mockCookie.getValue()).thenReturn(sessionId+".node0"); 
         when(request.getSession(false)).thenReturn(null); 
-        when(request.getCookies()).thenReturn(new Cookie[]{mockCookie}); 
         when(filterConfig.getServletContext()).thenReturn(context);
 
         filter.init(filterConfig);
 
         Assert.assertFalse(filter.userHasPermissions(request, response));
-        verify(context, times(1)).log("Unauthorized access request");
+        verify(context, times(1)).log("Invalid session.");
     }
 
 }
