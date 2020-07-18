@@ -32,8 +32,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/experience")
-public class ExperienceServlet extends HttpServlet {
+@WebServlet("/add-experience")
+public class AddExperienceServlet extends HttpServlet {
     private ExperienceDatastoreService datastore;
 
     public void init() {
@@ -41,21 +41,26 @@ public class ExperienceServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //Set default value to -1 
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
+        String experience = request.getParameter("experience");
 
         if(studentID.equals("-1")) {
             response.setContentType("application/json");
-            response.getWriter().println("{\"error\": \"There was an error getting experiences.\"}");
+            response.getWriter().println("{\"error\": \"There was an error adding experience.\"}");
             return;
         }
 
-        // Get student's past experiences
-        List<Experience> experiences = datastore.getExperiencesByStudent(studentID);
+        Experience newExperience = new Experience(studentID, experience);
 
-        String json = new Gson().toJson(experiences);
+        // Add experience
+        datastore.addExperience(newExperience);
+
+        String json = new Gson().toJson(datastore.getExperiencesByStudent(studentID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
+        response.sendRedirect("/progress.html?studentID=" + studentID);
         return;
     }
 }

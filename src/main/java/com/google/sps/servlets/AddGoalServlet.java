@@ -18,8 +18,8 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
-import com.google.sps.data.Experience;
-import com.google.sps.utilities.ExperienceDatastoreService;
+import com.google.sps.data.Goal;
+import com.google.sps.utilities.GoalDatastoreService;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,30 +32,35 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/experience")
-public class ExperienceServlet extends HttpServlet {
-    private ExperienceDatastoreService datastore;
+@WebServlet("/add-goal")
+public class AddGoalServlet extends HttpServlet {
+    private GoalDatastoreService datastore;
 
     public void init() {
-        datastore = new ExperienceDatastoreService();
+        datastore = new GoalDatastoreService();
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String studentID = Optional.ofNullable(request.getParameter("studentID")).orElse("-1");
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //Set default value to -1 
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
+        String goal = request.getParameter("goal");
 
         if(studentID.equals("-1")) {
             response.setContentType("application/json");
-            response.getWriter().println("{\"error\": \"There was an error getting experiences.\"}");
+            response.getWriter().println("{\"error\": \"There was an error adding goal.\"}");
             return;
         }
 
-        // Get student's past experiences
-        List<Experience> experiences = datastore.getExperiencesByStudent(studentID);
+        Goal newGoal = new Goal(studentID, goal);
 
-        String json = new Gson().toJson(experiences);
+        // Add goal
+        datastore.addGoal(newGoal);
+
+        String json = new Gson().toJson(datastore.getGoalsByStudent(studentID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
+        response.sendRedirect("/progress.html?studentID=" + studentID);
         return;
     }
 }
