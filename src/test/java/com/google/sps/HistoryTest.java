@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -37,6 +39,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.*;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 @RunWith(JUnit4.class)
 public final class HistoryTest {
@@ -46,12 +50,24 @@ public final class HistoryTest {
                                                         .setDate(2020, 4, 18)
                                                         .build();
 
+    private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
+
     private HistoryServlet servlet;
 
     @Before
     public void setUp() {
-        servlet = new HistoryServlet(true);
-        TutorSession.resetIds();
+        helper.setUp();
+
+        servlet = new HistoryServlet();
+        servlet.init();
+
+        SampleData sample  = new SampleData();
+        sample.addTutorsToDatastore();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
 
     @Test
@@ -59,7 +75,7 @@ public final class HistoryTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("studentEmail")).thenReturn("test@google.com");
+        TestUtilities.setSessionId(request, "10");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -68,7 +84,6 @@ public final class HistoryTest {
 
         servlet.doGet(request, response);
 
-        verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
         // If the user has no tutoring session history, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains("[]"));
@@ -79,7 +94,7 @@ public final class HistoryTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("studentEmail")).thenReturn("btrevisan@google.com");
+        TestUtilities.setSessionId(request, "1");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -88,10 +103,9 @@ public final class HistoryTest {
 
         servlet.doGet(request, response);
 
+        //id of tutor and student is 1
+        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9))));
 
-        String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 0))));
-
-        verify(request, times(1)).getParameter("studentEmail");
         writer.flush();
         System.out.println(stringWriter.toString());
         System.out.println(expected);

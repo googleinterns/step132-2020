@@ -19,13 +19,12 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.sps.utilities.AvailabilityDatastoreService;
-import com.google.sps.utilities.RealAvailabilityDatastore;
-import com.google.sps.utilities.MockAvailabilityDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Calendar;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -34,22 +33,10 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/delete-availability")
 public class DeleteAvailabilityServlet extends HttpServlet {
-        private AvailabilityDatastoreService datastore;
-
-    /**
-    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
-    * We need the default one for deployment because the servlet is created without parameters.
-    */
-    public DeleteAvailabilityServlet(){}
-
-    public DeleteAvailabilityServlet(boolean test) {
-        if(test) {
-            datastore = new MockAvailabilityDatastore();
-        }
-    }
+    private AvailabilityDatastoreService datastore;
 
     public void init() {
-        datastore = new RealAvailabilityDatastore();
+        datastore = new AvailabilityDatastoreService();
     }
 
     @Override
@@ -60,12 +47,19 @@ public class DeleteAvailabilityServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tutorID = request.getParameter("tutorID");
+        //if parameter is null, make the default id -1 so nothing gets deleted because there is no tutor with id = -1
+        String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         String year = request.getParameter("year");
         String month = request.getParameter("month");
         String day = request.getParameter("day");
         String start = request.getParameter("start");
         String end = request.getParameter("end");
+
+        if(tutorID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error deleting availability.\"}");
+            return;
+        }
 
         Calendar date = new Calendar.Builder()
                                 .setCalendarType("iso8601")

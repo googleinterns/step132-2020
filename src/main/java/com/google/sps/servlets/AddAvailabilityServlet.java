@@ -19,48 +19,32 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.sps.utilities.AvailabilityDatastoreService;
-import com.google.sps.utilities.RealAvailabilityDatastore;
-import com.google.sps.utilities.MockAvailabilityDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/addAvailability")
+@WebServlet("/add-availability")
 public class AddAvailabilityServlet extends HttpServlet {
     private AvailabilityDatastoreService datastore;
 
-    /**
-    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
-    * We need the default one for deployment because the servlet is created without parameters.
-    */
-    public AddAvailabilityServlet(){}
-
-    public AddAvailabilityServlet(boolean test) {
-        if(test) {
-            datastore = new MockAvailabilityDatastore();
-        }
-    }
-
     public void init() {
-        datastore = new RealAvailabilityDatastore();
-    }
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
+        datastore = new AvailabilityDatastoreService();
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tutorID = request.getParameter("tutorEmail");
+        response.setContentType("application/json");
+
+        //Set default value to -1 
+        String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         String startHour = request.getParameter("startHour");
         String startMinute = request.getParameter("startMinute");
         String endHour = request.getParameter("endHour");
@@ -71,6 +55,11 @@ public class AddAvailabilityServlet extends HttpServlet {
 
         int start = Integer.parseInt(startHour) * 60 + Integer.parseInt(startMinute);
         int end = Integer.parseInt(endHour) * 60 + Integer.parseInt(endMinute);
+
+        if(tutorID.equals("-1")) {
+            response.getWriter().println("{\"error\": \"There was an error adding availability.\"}");
+            return;
+        }
 
         Calendar date = new Calendar.Builder()
                                 .setCalendarType("iso8601")
@@ -83,9 +72,7 @@ public class AddAvailabilityServlet extends HttpServlet {
         datastore.addAvailability(tutorID, timeslot);
 
         String json = new Gson().toJson(datastore.getAvailabilityForTutor(tutorID));
-        response.setContentType("application/json;");
         response.getWriter().println(json);
-        response.sendRedirect("/manage-availability.html?userID=" + tutorID.replace("@", "%40"));
         return;
     }
 }

@@ -16,7 +16,7 @@
 function displayProfile() {
     const userID = getIdParameter(window);
 
-    fetch('/profile?user-id='+userID).then(response => response.json()).then((user) => {
+    getUser(userID).then((user) => {
         console.log(user);
         document.getElementById('profile-container').appendChild(createProfileDiv(user));
     });
@@ -28,6 +28,19 @@ function getIdParameter(window) {
     return url.searchParams.get('userID');
 }
 
+/** Gets information about the given user from the server. */
+function getUser(userID) {
+    return fetch('/profile?userId='+userID).then(response => response.json()).then((user) => {
+        if(user.error) {
+            var message = document.createElement("p");
+            p.innerText = user.error;
+            document.body.appendChild(message);
+            return;
+        }
+        return user;
+    });
+}
+ 
 // Create elements and fill their inner HTML with user info
 function createProfileDiv(user) {
     const profileDiv = document.createElement('div');

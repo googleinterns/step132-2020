@@ -13,10 +13,10 @@
 // limitations under the License.
 
 function scheduleTutorSession() {
-    scheduleTutorSessionHelper(window);
+    return scheduleTutorSessionHelper(window);
 }
 
-function scheduleTutorSessionHelper(window) {
+async function scheduleTutorSessionHelper(window) {
     var queryString = new Array();
     window.onload = readComponents(queryString, window);
     const tutorID = queryString["tutorID"];
@@ -26,7 +26,6 @@ function scheduleTutorSessionHelper(window) {
     const month = queryString["month"];
     const day = queryString["day"];
 
-    var studentEmail = document.getElementById("studentEmail").value;
     var subtopics = document.getElementById("topics").value;
     var questions = document.getElementById("questions").value;
 
@@ -37,13 +36,41 @@ function scheduleTutorSessionHelper(window) {
     params.append('year', year);
     params.append('month', month);
     params.append('day', day);
-    params.append('studentEmail', studentEmail);
     params.append('subtopics', subtopics);
     params.append('questions', questions);
 
     // Redirect user to confirmation
-    fetch('/scheduling', {method: 'POST', body: params}).then(response => response.json()).then((tutors) => {
-        redirectToConfirmation(studentEmail, window);
+    await fetch('/scheduling', {method: 'POST', body: params}).then((response) => {
+        //if the student id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url
+            return [];
+        }
+        return response.json();
+    }).then((tutors) => {
+        if(tutors.error) {
+            var message = document.createElement("p");
+            message.innerText = tutors.error;
+            document.body.appendChild(message);
+            return;
+        }
+
+        redirectToConfirmation(window);
+    });
+}
+  
+/** A function that adds event listeners to a DOM objects. */
+function addEventListeners() {
+    document.getElementById("scheduling-form").addEventListener('submit', event => {
+        event.preventDefault();
+        scheduleTutorSession(window);
+    });
+}
+
+
+function scheduleTutorSession(window) {
+    getUserId().then(function(studentID) {
+        scheduleTutorSessionHelper(window, studentID);
     });
 }
 
@@ -64,8 +91,8 @@ function readComponents(queryString, window) {
     }
 }
 
-// Redirects the user to the confirmation page and passes down the tutor ID.
-function redirectToConfirmation(studentEmail, window) {
-    var url = "confirmation.html?studentEmail=" + encodeURIComponent(studentEmail);
+// Redirects the user to the confirmation page and passes down the student ID.
+function redirectToConfirmation(window) {
+    var url = "confirmation.html";
     window.location.href = url;
 }

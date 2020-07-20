@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -37,6 +39,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.*;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+
 
 @RunWith(JUnit4.class)
 public final class ConfirmationTest {
@@ -45,20 +50,32 @@ public final class ConfirmationTest {
                                                         .setDate(2020, 7, 18)
                                                         .build();  
 
+    private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
+
     private ConfirmationServlet servlet;
 
     @Before
     public void setUp() {
-        servlet = new ConfirmationServlet(true);
-        TutorSession.resetIds();
+        helper.setUp();
+
+        servlet = new ConfirmationServlet();
+        servlet.init();
+
+        SampleData sample  = new SampleData();
+        sample.addTutorsToDatastore();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
 
     @Test
     public void testDoGetNoSession() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
-
-        when(request.getParameter("studentEmail")).thenReturn("test@google.com");
+        //there is no user with session id = 10
+        TestUtilities.setSessionId(request, "10");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -67,7 +84,6 @@ public final class ConfirmationTest {
 
         servlet.doGet(request, response);
 
-        verify(request, atLeast(1)).getParameter("studentEmail");
         writer.flush();
         // If the user has no scheduled sessions, the return json string should be an empty array
         Assert.assertTrue(stringWriter.toString().contains("[]"));
@@ -77,23 +93,22 @@ public final class ConfirmationTest {
     public void testDoGetWithSessions() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        TestUtilities.setSessionId(request, "2"); 
 
-        when(request.getParameter("studentEmail")).thenReturn("sfalberg@google.com");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
       
-        //id is 1 because this is the second hard coded tutor session
         servlet.doGet(request, response);
 
-        String expected = new Gson().toJson(Arrays.asList(new TutorSession("sfalberg@google.com",
-                                                                        "sfalberg@google.com", null, null,
-                                                                        TimeRange.fromStartToEnd(540, 600, AUGUST182020), 1)));
+        String expected = new Gson().toJson(Arrays.asList(new TutorSession("2","2", null, null,
+                                                                        TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14)));
 
-        verify(request, times(1)).getParameter("studentEmail");
         writer.flush();
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 }
