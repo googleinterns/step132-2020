@@ -20,8 +20,6 @@ import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Student;
 import com.google.sps.utilities.TutorSessionDatastoreService;
-import com.google.sps.utilities.RealTutorSessionDatastore;
-import com.google.sps.utilities.MockTutorSessionDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Optional;
@@ -42,28 +40,23 @@ public class ConfirmationServlet extends HttpServlet {
 
     private TutorSessionDatastoreService datastore;
 
-    /**
-    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
-    * We need the default one for deployment because the servlet is created without parameters.
-    */
-    public ConfirmationServlet(){}
-
-    public ConfirmationServlet(boolean test) {
-        if(test) {
-            datastore = new MockTutorSessionDatastore();
-        }
-    }
-
     public void init() {
-        datastore = new RealTutorSessionDatastore();
+        datastore = new TutorSessionDatastoreService();
     }
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the student whose availability will be displayed.
-        String studentEmail = request.getParameter("studentEmail");
+        // if the parameter is null, make the default id -1, so 0 sessions are returned
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
 
-        List<TutorSession> scheduledSessions = datastore.getScheduledSessionsForStudent(studentEmail);
+        if(studentID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error getting sessions.\"}");
+            return;
+        }
+
+        List<TutorSession> scheduledSessions = datastore.getScheduledSessionsForStudent(studentID);
 
         List<TutorSession> upcomingSessions = filterUpcomingSessions(scheduledSessions);
 

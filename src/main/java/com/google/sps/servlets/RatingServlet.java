@@ -19,13 +19,12 @@ import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
 import com.google.sps.utilities.TutorSessionDatastoreService;
-import com.google.sps.utilities.RealTutorSessionDatastore;
-import com.google.sps.utilities.MockTutorSessionDatastore;
 import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,47 +35,25 @@ public class RatingServlet extends HttpServlet {
   
     private TutorSessionDatastoreService datastore;
 
-    /**
-    * Because we created a constructor with a parameter (the testing one), the default empty constructor does not work anymore so we have to explicitly create it. 
-    * We need the default one for deployment because the servlet is created without parameters.
-    */
-    public RatingServlet(){}
-
-    public RatingServlet(boolean test) {
-        if(test) {
-            datastore = new MockTutorSessionDatastore();
-        }
-    }
-
     public void init() {
-        datastore = new RealTutorSessionDatastore();
-    }
-
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
+        datastore = new TutorSessionDatastoreService();
     }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String tutorEmail = request.getParameter("tutorEmail");
-        String studentEmail = request.getParameter("studentEmail");
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         long sessionId = Long.parseLong(request.getParameter("sessionId"));
         int rating = Integer.parseInt(request.getParameter("rating"));
         
-        boolean rated = datastore.rateTutorSession(sessionId, rating);
+        boolean rated = datastore.rateTutorSession(sessionId, studentID, rating);
 
         //rating was not successful
         if(!rated) {
             response.setContentType("application/json");
             response.getWriter().println("{\"error\": \"There was an error rating this session.\"}");
         }
-        
-        String jsonTutors = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorEmail));
-        String jsonStudents = new Gson().toJson(datastore.getScheduledSessionsForStudent(studentEmail));
 
-        String json = new Gson().toJson(new String[]{jsonTutors, jsonStudents}); 
+        String json = new Gson().toJson(datastore.getScheduledSession(sessionId)); 
         response.setContentType("application/json;");
         response.getWriter().println(json);
         response.sendRedirect("/history.html");

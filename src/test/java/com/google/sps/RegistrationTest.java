@@ -21,7 +21,6 @@ import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalUserServiceTestConfig;
 import com.google.common.collect.ImmutableMap;
 import com.google.sps.servlets.RegistrationServlet;
-import com.google.sps.data.TutorSession;
 import java.io.*;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -65,7 +64,6 @@ public final class RegistrationTest {
         response = mock(HttpServletResponse.class);
         datastore = mock(DatastoreService.class);
         servlet = new RegistrationServlet();
-        TutorSession.resetIds();
     }
 
     @After

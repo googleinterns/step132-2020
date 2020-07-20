@@ -13,34 +13,30 @@
 // limitations under the License.
 
 describe("Confirmation", function() {
-    describe("when the list of upcoming sessions is loaded", function() {
-        var mockWindow = {location: {href: "confirmation.html?studentEmail=test%40gmail.com", search: "?studentEmail=test%40gmail.com"}};
 
+    describe("when the list of upcoming sessions is loaded", function() {
         it("should trigger the fetch function", function() {
-            spyOn(window, "onload").and.callFake(function() {
-                readTutorID(queryString, window);
-            });
-            spyOn(window, 'fetch').and.callThrough();
-            getScheduledSessions(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/confirmation?studentEmail=undefined', {method: 'GET'});
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
+            getScheduledSessions();
+            expect(window.fetch).toHaveBeenCalledWith('/confirmation', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
         });
     });
 
-    describe("when the tutor ID is read", function() {
-        var mockWindow = {location: {href: "confirmation.html?studentEmail=test%40gmail.com", search: "?studentEmail=test%40gmail.com"}};
-        var queryString = new Array();
-        readTutorID(queryString, mockWindow);
-
-        it("should set tutorID inside queryString as the tutorID", function() {
-            expect(queryString["studentEmail"]).toEqual("test@gmail.com");
+    describe("when user tries to access someone else's confirmation page", function() {
+        var mockWindow = {location: {href: "confirmation.html"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            await getScheduledSessionsHelper(mockWindow);
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
 
     describe("when a scheduled session box is created", function() {
-        var scheduledSession = {tutorEmail: "tester@gmail.com", timeslot: {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}}};
-        var studentEmail = "test@gmail.com";
-        var actual = createScheduledSessionBox(scheduledSession, studentEmail);
+        var scheduledSession = {tutorID: "123", timeslot: {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}}};
+
+        var actual = createScheduledSessionBox(scheduledSession);
 
         it("should return a list item element", function() {
             expect(actual.tagName).toEqual("LI");
@@ -60,7 +56,13 @@ describe("Confirmation", function() {
         });
 
         it("should have the inner HTML of the h3 tag equal to to the email of the tutor", function() {
-            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("Tutoring Session with tester@gmail.com");
+            var tutor = {email: "tester@gmail.com"};
+            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve(tutor)}));
+
+            const tutorElement = document.createElement('h3');
+            setTutorEmail(tutorElement, "123").then(() => {
+                expect(tutorElement.innerHTML).toEqual("Tutoring Session with tester@gmail.com");
+            });
         });
 
         it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {

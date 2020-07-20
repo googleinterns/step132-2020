@@ -12,35 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** Gets a list of the user's scheduled sessions from the server and displays them on the page. */
 function getScheduledSessions() {
-    var queryString = new Array();
-    window.onload = readTutorID(queryString, window);
-    const studentEmail = queryString["studentEmail"];
+    return getScheduledSessionsHelper(window);
+}
 
-    fetch('/confirmation?studentEmail=' + studentEmail, {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+//Helper function for getScheduledSessions, used for testing
+async function getScheduledSessionsHelper(window) {
+    await fetch('/confirmation', {method: 'GET'}).then((response) => {
+        //if the student id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url
+            return [];
+        }
+        return response.json();
+        
+    }).then((scheduledSessions) => {
+        if(scheduledSessions.error) {
+            var message = document.createElement("p");
+            p.innerText = scheduledSessions.error;
+            document.getElementById('timeslots').appendChild(message);
+            return;
+        }
         scheduledSessions.forEach((scheduledSession) => {
-            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession, studentEmail));
+            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession));
         })
     });
 }
 
-// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
-// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readTutorID(queryString, window) {
-    if (queryString.length == 0) {
-        if (window.location.search.split('?').length > 1) {
-            var params = window.location.search.split('?')[1].split('&');
-            for (var i = 0; i < params.length; i++) {
-                var key = params[i].split('=')[0];
-                var value = decodeURIComponent(params[i].split('=')[1]);
-                queryString[key] = value;
-            }
-        }
-    }
-}
 
-function createScheduledSessionBox(scheduledSession, studentEmail) {
+function createScheduledSessionBox(scheduledSession) {
+
     var months = [ "January", "February", "March", "April", "May", "June", 
            "July", "August", "September", "October", "November", "December" ];
 
@@ -50,7 +52,8 @@ function createScheduledSessionBox(scheduledSession, studentEmail) {
     const tutorElement = document.createElement('h3');
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
-    tutorElement.innerHTML = "Tutoring Session with " + scheduledSession.tutorEmail;
+
+    setTutorEmail(tutorElement, scheduledSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';
@@ -80,4 +83,12 @@ function createScheduledSessionBox(scheduledSession, studentEmail) {
     scheduledSessionElement.appendChild(tutorLineElement);
     scheduledSessionElement.appendChild(dateLineElement);
     return scheduledSessionElement;
+}
+
+//Helper function for testing purposes
+//Sets the tutor element's email field to the tutor email
+function setTutorEmail(tutorElement, tutorID) {
+    return getUser(tutorID).then(tutor => {
+        tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
+    });
 }

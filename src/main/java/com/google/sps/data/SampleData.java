@@ -14,9 +14,14 @@
 
 package com.google.sps.data;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import com.google.gson.Gson;
+
 
 /** Class that stores sample Tutor objects for testing. */
 public final class SampleData {
@@ -47,81 +52,46 @@ public final class SampleData {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 18)
                                                         .build();
-    private final TutorSession bernardoSession = new TutorSession("btrevisan@google.com", "btrevisan@google.com", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 0); 
-    private final TutorSession samSession = new TutorSession("sfalberg@google.com", "sfalberg@google.com", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 1);                                         
+    //9 and 14 are the ids local datastore gives to these entities
+    private final TutorSession bernardoSession = new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9); 
+    private final TutorSession samSession = new TutorSession("2", "2", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14);
 
     private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
-        new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
+        new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("math", "history")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList())),
-        new Tutor("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
+                new ArrayList<TutorSession> (Arrays.asList()), "0"),
+        new Tutor("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("english", "physics")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
                              TimeRange.fromStartToEnd(TIME_1100AM,TIME_0100PM, AUGUST102020),
                              TimeRange.fromStartToEnd(TIME_0100PM, TIME_0300PM, AUGUST72020))),
-                new ArrayList<TutorSession> (Arrays.asList(bernardoSession))),
-        new Tutor("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
+                new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), "1"),
+        new Tutor("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("geology", "english")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList(samSession))),
-        new Tutor("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
+                new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
+        new Tutor("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("finance", "chemistry")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList())),
-        new Tutor("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Geology", "Math")),
+                new ArrayList<TutorSession> (Arrays.asList()), "3"),
+        new Tutor("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("geology", "math")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1000AM, TIME_1200AM, MAY182020),
                             TimeRange.fromStartToEnd(TIME_0100PM,TIME_0200PM, AUGUST102020))),
-                new ArrayList<TutorSession> (Arrays.asList()))
+                new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
 
     private ArrayList<Student> students = new ArrayList<Student> (Arrays.asList(
         new Student("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
-                new ArrayList<TutorSession> (Arrays.asList())),
+                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList()), "0"),
         new Student("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                new ArrayList<TutorSession> (Arrays.asList(bernardoSession))),
+                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), "1"),
         new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession> (Arrays.asList(samSession))),
+                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
         new Student("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
-                new ArrayList<TutorSession> (Arrays.asList())),
+                new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "3"),
         new Student("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<TutorSession> (Arrays.asList()))
+                new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
-
-    public ArrayList<Tutor> getSampleTutors() {
-        return tutors;
-    }
-
-    public ArrayList<Student> getSampleStudents() {
-        return students;
-    }
-
-    public void addTutor(Tutor tutor) {
-        tutors.add(tutor);
-    }
-
-    public void addStudent(Student student) {
-        students.add(student);
-    }
-
-    /** Finds and deletes a tutor with given email. */
-    public void deleteTutorByEmail(String email) {
-        for(Tutor tutor : tutors) {
-            if(tutor.getEmail().toLowerCase().equals(email.toLowerCase())) {
-                tutors.remove(tutor);
-                break;
-            }
-        }
-    }
-
-    /** Finds and deletes a student with given email. */
-    public void deleteStudentByEmail(String email) {
-        for(Student student : students) {
-            if(student.getEmail().toLowerCase().equals(email.toLowerCase())) {
-                students.remove(student);
-                break;
-            }
-        }
-    }
 
    /** 
     *  Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
@@ -151,59 +121,80 @@ public final class SampleData {
         return null;
     }
 
-    /** Deletes the given timeslot from the given tutor's availability array. */
-    public void deleteAvailabilityByTimeRange(String email, TimeRange delete) {
-        Tutor tutor = getTutorByEmail(email);
+    public void addTutorsToDatastore() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        for(TimeRange timeslot : tutor.getAvailability()) {
+        for(Tutor tutor : tutors) {
+            Entity entity = new Entity("Tutor");
+            entity.setProperty("name", tutor.getName());
+            entity.setProperty("bio", tutor.getBio());
+            entity.setProperty("pfp", tutor.getPfp());
+            entity.setProperty("email", tutor.getEmail());
+            entity.setProperty("topics", tutor.getSkills());
+            entity.setProperty("ratingSum", 0);
+            entity.setProperty("ratingCount", 0);
+            entity.setProperty("userId", tutor.getUserId());
+            datastore.put(entity);
 
-            if(timeslot.getStart() == delete.getStart() && timeslot.getEnd() == delete.getEnd()) {
-                int comparison = timeslot.getDate().compareTo(delete.getDate());
-                if (comparison == 0) {
-                    tutor.deleteAvailabilityByTimeRange(timeslot);
-                    break;
-                }
-            }
+            addTutorAvailabilityToDatastore(datastore, tutor.getAvailability(), tutor.getUserId());
+            addTutorSessionsToDatastore(datastore, tutor.getScheduledSessions());
         }
     }
 
-    /** Adds the given timeslot to the given tutor's availability list. */
-    public void addAvailabilityByTutorEmail(String email, TimeRange timeslot) {
-        Tutor tutor = getTutorByEmail(email);
-        tutor.addAvailabilityByTimeRange(timeslot);
+    public void addStudentsToDatastore() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        for(Student student : students) {
+            Entity entity = new Entity("Student");
+            entity.setProperty("name", student.getName());
+            entity.setProperty("bio", student.getBio());
+            entity.setProperty("pfp", student.getPfp());
+            entity.setProperty("email", student.getEmail());
+            entity.setProperty("learning", student.getLearning());
+            entity.setProperty("tutors", student.getTutors());
+            entity.setProperty("userId", student.getUserId());
+            datastore.put(entity);
+        }
     }
 
-    /** Adds the given TutorSession to the scheduled sessions array of the given tutor. */
-    public void addToTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
-        Tutor tutor = getTutorByEmail(email);
-        tutor.addToScheduledSessions(tutoringSession);
+    private void addTutorAvailabilityToDatastore(DatastoreService datastore, ArrayList<TimeRange> times, String userId) {
+
+        for(TimeRange time : times) {
+            addTimeRangeToDatastore(datastore, time, userId);
+        }
+
     }
 
-    /** Deletes the given TutorSession from the scheduled sessions array of the given tutor. */
-    public void deleteFromTutorScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
-        Tutor tutor = getTutorByEmail(email);
-        tutor.deleteFromScheduledSessions(tutoringSession);
+    private void addTutorSessionsToDatastore(DatastoreService datastore, ArrayList<TutorSession> sessions) {
+
+        for(TutorSession session : sessions) {
+
+            Entity sessionEntity = new Entity("TutorSession");
+
+            sessionEntity.setProperty("tutorID", session.getTutorID());
+            sessionEntity.setProperty("studentID", session.getStudentID());
+            sessionEntity.setProperty("subtopics", session.getSubtopics());
+            sessionEntity.setProperty("questions", session.getQuestions());
+            sessionEntity.setProperty("rated", session.isRated());
+            sessionEntity.setProperty("rating", session.getRating());
+            sessionEntity.setProperty("timeslot", addTimeRangeToDatastore(datastore, session.getTimeslot(), String.valueOf(session.getId())));
+
+            datastore.put(sessionEntity);
+
+        }
     }
 
-    /** Adds the given TutorSession to the scheduled sessions array of the given student. */
-    public void addToStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
-        Student student = getStudentByEmail(email);
-        student.addToScheduledSessions(tutoringSession);
+    private long addTimeRangeToDatastore(DatastoreService datastore, TimeRange time, String id) {
+        Entity timeEntity = new Entity("TimeRange");
+
+        timeEntity.setProperty("tutorID", id);
+        timeEntity.setProperty("start", time.getStart());
+        timeEntity.setProperty("end", time.getEnd());
+        timeEntity.setProperty("date", new Gson().toJson(time.getDate()));
+
+        datastore.put(timeEntity);
+
+        return (long) timeEntity.getKey().getId();
     }
-
-    /** Deletes the given TutorSession from the scheduled sessions array of the given student. */
-    public void deleteFromStudentScheduledSessionsByEmail(String email, TutorSession tutoringSession) {
-        Student student = getStudentByEmail(email);
-        student.deleteFromScheduledSessions(tutoringSession);
-    }
-
-     public void rateTutorByEmail(String tutorEmail, String studentEmail, int newRating) {
-        Tutor tutor = getTutorByEmail(tutorEmail);
-        Student student = getStudentByEmail(studentEmail);
-
-        tutor.rateTutor(newRating);
-
-        student.markTutoringSessionAsRatedByTutorEmail(tutorEmail, newRating);
-     }
 
 }

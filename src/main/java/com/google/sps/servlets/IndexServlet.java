@@ -28,9 +28,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import com.google.sps.utilities.RealAvailabilityDatastore;
-import com.google.sps.utilities.MockAvailabilityDatastore;
-import com.google.sps.utilities.AvailabilityDatastoreService;
 
 /** Servlet that sets what the first page will be. */
 @WebServlet("/")

@@ -22,17 +22,20 @@ import java.io.PrintWriter;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.SampleData;
-import com.google.sps.data.TutorSession;
 import com.google.sps.servlets.AvailabilityServlet;
 import com.google.gson.Gson;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+
 import javax.servlet.*;
 
 @RunWith(JUnit4.class)
@@ -49,20 +52,35 @@ public final class AvailabilityTest {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
                                                         .build();
+    
+    private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+    
     private AvailabilityServlet servlet;
 
     @Before
-    public void setUp() {		        
-        servlet = new AvailabilityServlet(true);
-        TutorSession.resetIds();
+    public void setUp() {
+        helper.setUp();	        
+
+        servlet = new AvailabilityServlet();
+        servlet.init();
+
+        SampleData sample  = new SampleData();
+        sample.addTutorsToDatastore();
+
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
   
     @Test
-    public void testDoGet() throws Exception {
+    public void testDoGetWithValidId() throws Exception {
+
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
 
-        when(request.getParameter("tutorID")).thenReturn("kashisharora@google.com");
+        when(request.getParameter("tutorID")).thenReturn("0");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -76,8 +94,27 @@ public final class AvailabilityTest {
 
         verify(request, times(1)).getParameter("tutorID");
         writer.flush();
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testDoGetWithInvalidId() throws Exception {
+
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        when(request.getParameter("tutorID")).thenReturn(null);
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getContentType()).thenReturn("application/json");
+      
+        servlet.doGet(request, response);
+
+        String expected = "";
+
+        writer.flush();
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 }

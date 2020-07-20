@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.util.Calendar;
@@ -23,6 +24,7 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -34,11 +36,11 @@ import com.google.sps.servlets.AddAvailabilityServlet;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
-import com.google.sps.data.TutorSession;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
-
+import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 @RunWith(JUnit4.class)
 public final class AddAvailabilityTest {
@@ -57,20 +59,33 @@ public final class AddAvailabilityTest {
     private final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
     private final int TIME_1000PM = TimeRange.getTimeInMinutes(22, 00);
     private final int TIME_1100PM = TimeRange.getTimeInMinutes(23, 00);
+
+    private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
+
     private AddAvailabilityServlet servlet;
 
     @Before
-    public void setUp() {		        
-        servlet = new AddAvailabilityServlet(true);
-        TutorSession.resetIds();
+    public void setUp() {
+        helper.setUp();
+
+        servlet = new AddAvailabilityServlet();
+        servlet.init();
+
+        SampleData sample = new SampleData();
+        sample.addTutorsToDatastore();
+    }
+
+    @After
+    public void tearDown() {
+        helper.tearDown();
     }
 
     @Test
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        TestUtilities.setSessionId(request, "0");   
 
-        when(request.getParameter("tutorEmail")).thenReturn("kashisharora@google.com");
         when(request.getParameter("startHour")).thenReturn("22");
         when(request.getParameter("startMinute")).thenReturn("00");
         when(request.getParameter("endHour")).thenReturn("23");
@@ -86,7 +101,6 @@ public final class AddAvailabilityTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("tutorEmail");
         verify(request, times(1)).getParameter("startHour");
         verify(request, times(1)).getParameter("startMinute");
         verify(request, times(1)).getParameter("endHour");

@@ -12,17 +12,42 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** A function that adds event listeners to a DOM objects. */
+function addEventListeners() {
+    document.getElementById("timeslot-form").addEventListener('submit', event => {
+        event.preventDefault();
+        addTimeSlot();
+    });
+}
+
 function getAvailabilityManage() {
-    var queryString = new Array();
-    window.onload = readTutorID(queryString, window);
-    const userID = queryString["userID"];
+    return getAvailabilityManageHelper(window);
+}
 
-    document.getElementById("tutorEmail").value = userID;
+async function getAvailabilityManageHelper(window) {
+    await getUserId().then((userId) => {
+        var queryString = new Array();
+        window.onload = readTutorID(queryString, window);
+        const tutorID = queryString["userID"];
 
-    fetch('/availability?tutorID=' + userID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
-        timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot, userID));
-        })
+        //if user is trying to access someone else's availability
+        if(userId !== tutorID) {
+            window.location.href = "/homepage.html";
+            return;
+        }
+
+        fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
+            if(timeslots.error) {
+                var message = document.createElement("p");
+                p.innerText = timeslots.error;
+                document.getElementById('timeslots').appendChild(message);
+                return;
+            }
+
+            timeslots.forEach((timeslot) => {
+                document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
+            });
+        });
     });
 }
 
@@ -42,7 +67,7 @@ function readTutorID(queryString, window) {
     }
 }
 
-function createTimeSlotBoxManage(timeslot, tutorID) {
+function createTimeSlotBoxManage(timeslot) {
     var months = [ "January", "February", "March", "April", "May", "June", 
            "July", "August", "September", "October", "November", "December" ];
 
@@ -76,7 +101,7 @@ function createTimeSlotBoxManage(timeslot, tutorID) {
     deleteButtonElement.style.display = 'inline';
     deleteButtonElement.className = 'btn btn-default btn-lg';
     deleteButtonElement.addEventListener('click', () => {
-        deleteTimeSlot(tutorID, window, timeslot);
+        deleteTimeSlot(window, timeslot);
 
         timeslotElement.remove();
     });
@@ -91,14 +116,51 @@ function createTimeSlotBoxManage(timeslot, tutorID) {
     return timeslotElement;
 }
 
-function deleteTimeSlot(tutorID, window, timeslot) {
+/** Tells the server to add a timeslot for a tutor. */
+function addTimeSlot() {
+    return addTimeSlotHelper(window);
+}
+
+//Helper function for addTimeSlot, used for testing.
+function addTimeSlotHelper(window) {
+    var queryString = new Array();
+    window.onload = readTutorID(queryString, window);
+    const tutorID = queryString["userID"];
+
     const params = new URLSearchParams();
-    params.append('tutorID', tutorID);
+
+    params.append('startHour', document.getElementById('startHour').value);
+    params.append('startMinute', document.getElementById('startMinute').value);
+    params.append('endHour', document.getElementById('endHour').value);
+    params.append('endMinute', document.getElementById('endMinute').value);
+    params.append('day', document.getElementById('day').value);
+    params.append('month', document.getElementById('month').value);
+    params.append('year', document.getElementById('year').value);
+
+    fetch('/add-availability', {method: 'POST', body: params}).then((response) => {
+        //if the tutor id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url
+            return;
+        }
+        window.location.href = "/manage-availability.html?userID=" + tutorID;
+    });
+}
+
+/** Function to tell the server to delete a time slot for tutor.  */
+function deleteTimeSlot(window, timeslot) {
+    const params = new URLSearchParams();
     params.append('year', timeslot.date.year);
     params.append('month', timeslot.date.month);
     params.append('day', timeslot.date.dayOfMonth);
     params.append('start', timeslot.start);
     params.append('end', timeslot.end);
 
-    fetch('/delete-availability', {method: 'POST', body: params});
+    fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
+        //if the tutor id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url
+            return;
+        }
+    });
 }

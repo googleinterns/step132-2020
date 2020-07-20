@@ -12,6 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function getUserId() {
+    return fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        return loginStatus.userId;
+    });
+}
+
+
 /**
  * Function for registration.html, checks if user needs to register, if not display registration page
  */
@@ -57,28 +64,52 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
     if (loginStatus.isLoggedIn) {
         document.getElementById('login').style.display = "none";
         document.getElementById('profile').style.display = "block";
-        document.getElementById('availability-settings').style.display = "block";
-        document.getElementById('tutor-session-settings').style.display = "block";
-        document.getElementById('history').style.display = "block";
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = loginStatus.url;
+        document.getElementById('logout-url').addEventListener('click', () => {
+             fetch('/logout', {method: 'POST'});
+        });
         document.getElementById('profile').addEventListener('click', () => {
             setProfileQueryString(window, loginStatus);
         });
-        document.getElementById('availability-settings').addEventListener('click', () => {
-            redirectToManageAvailability(window, loginStatus);
-        });
-        document.getElementById('tutor-session-settings').addEventListener('click', () => {
-            redirectToManageSessions(window, loginStatus);
-        });
-        document.getElementById('history').addEventListener('click', () => {
-            redirectToHistory(window, loginStatus);
-        });
+
+        // If the user is a tutor, display availability settings
+        if (loginStatus.role == "tutor") {
+            document.getElementById('availability-settings').style.display = "block";
+            document.getElementById('my-students').style.display = "block";
+            document.getElementById('my-progress').style.display = "none";
+            document.getElementById('tutor-session-settings').style.display = "none";
+            document.getElementById('history').style.display = "none";
+            document.getElementById('availability-settings').addEventListener('click', () => {
+                redirectToManageAvailability(window, loginStatus);
+            });
+            document.getElementById('my-students').addEventListener('click', () => {
+                redirectToMyStudents(window, loginStatus);
+            });
+        // Display tutor session settings and history if the user is a student
+        } else if (loginStatus.role == "student") {
+            document.getElementById('availability-settings').style.display = "none";
+            document.getElementById('my-students').style.display = "none";
+            document.getElementById('my-progress').style.display = "block";
+            document.getElementById('tutor-session-settings').style.display = "block";
+            document.getElementById('history').style.display = "block";
+            document.getElementById('tutor-session-settings').addEventListener('click', () => {
+                redirectToManageSessions(window, loginStatus);
+            });
+            document.getElementById('history').addEventListener('click', () => {
+                redirectToHistory(window, loginStatus);
+            });
+            document.getElementById('my-progress').addEventListener('click', () => {
+                redirectProgress(window, loginStatus);
+            });
+        }
     }
     else {   // Display login link
         document.getElementById('logout').style.display = "none";
         document.getElementById('profile').style.display = "none";
         document.getElementById('availability-settings').style.display = "none";
+        document.getElementById('my-students').style.display = "none";
+        document.getElementById('my-progress').style.display = "none";
         document.getElementById('tutor-session-settings').style.display = "none";
         document.getElementById('history').style.display = "none";
         document.getElementById('login').style.display = "block";
@@ -98,7 +129,15 @@ function setProfileQueryString(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to manage-availability.html
  */
 function redirectToManageAvailability(window, loginStatus) {
-    var url = "manage-availability.html?userID=" + encodeURIComponent(loginStatus.userEmail);
+    var url = "manage-availability.html?userID=" + encodeURIComponent(loginStatus.userId);
+    window.location.href = url;
+}
+
+/**
+ * Sets the URL's query string for the user's profile to their user ID and redirect them to my-students.html
+ */
+function redirectToMyStudents(window, loginStatus) {
+    var url = "my-students.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 
@@ -106,7 +145,7 @@ function redirectToManageAvailability(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to manage-sessions.html
  */
 function redirectToManageSessions(window, loginStatus) {
-    var url = "manage-sessions.html?userID=" + encodeURIComponent(loginStatus.userEmail);
+    var url = "manage-sessions.html?userID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 
@@ -114,7 +153,15 @@ function redirectToManageSessions(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to history.html
  */
 function redirectToHistory(window, loginStatus) {
-    var url = "history.html?userID=" + encodeURIComponent(loginStatus.userEmail);
+    var url = "history.html?userID=" + encodeURIComponent(loginStatus.userId);
+    window.location.href = url;
+}
+
+/**
+ * Sets the URL's query string for the user's profile to their user ID and redirect them to progress.html
+ */
+function redirectProgress(window, loginStatus) {
+    var url = "progress.html?studentID=" + encodeURIComponent(loginStatus.userId);
     window.location.href = url;
 }
 
