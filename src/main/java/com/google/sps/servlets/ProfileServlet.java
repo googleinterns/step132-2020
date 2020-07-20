@@ -17,9 +17,12 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.gson.Gson;
 import com.google.sps.data.Student;
 import com.google.sps.data.TimeRange;
@@ -29,8 +32,10 @@ import com.google.sps.utilities.TutorSessionDatastoreService;
 import com.google.sps.utilities.AvailabilityDatastoreService;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ProfileServlet extends HttpServlet {
 
     private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    private UserService userService = UserServiceFactory.getUserService();
     private TutorSessionDatastoreService sessionDatastore;
     private AvailabilityDatastoreService availabilityDatastore;
 
@@ -52,6 +58,7 @@ public class ProfileServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
+
         //if the user id is null, the default value will be -1 because no tutor or student will have id = -1
         String userId = Optional.ofNullable(request.getParameter("userId")).orElse("-1");
 
@@ -111,7 +118,71 @@ public class ProfileServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {  
+        String userId = userService.getCurrentUser().getUserId();
+        
+        // Don't update profile if cancel button is clicked
+        if (request.getParameter("submit").equals("Cancel")) {
+            response.sendRedirect("/profile.html?userID=" + userId);
+            return;
+        }
+        
+        //Make userId a query filter
+        Query query = new Query("User").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+        PreparedQuery results = datastore.prepare(query);
+        Entity userEntity = results.asSingleEntity();
 
+        String role = (String) userEntity.getProperty("role"); 
+        String bio = Optional.ofNullable(request.getParameter("bio")).orElse("");
+        // Make list of selected topics, remove unchecked topics
+        List<Optional<String>> topics = new ArrayList<Optional<String>>();
+        topics.add(Optional.ofNullable(request.getParameter("math")));
+        topics.add(Optional.ofNullable(request.getParameter("english")));
+        topics.add(Optional.ofNullable(request.getParameter("other")));
+        List<String> topicsToStr = topics
+                                    .stream()
+                                    .filter(t -> t.isPresent())
+                                    .map(t -> t.get().toLowerCase())
+                                    .collect(Collectors.toList());
+
+        // User is a student, update their info
+        if (role.toLowerCase().equals("student")) {
+            Entity studentEntity = new Entity("Student");
+            updateStudentEntityAndPutInDatastore(datastore, studentEntity, userId, bio, topicsToStr);
+        } else {   // User is a tutor, update their info
+            Entity tutorEntity = new Entity("Tutor");
+            updateTutorEntityAndPutInDatastore(datastore, tutorEntity, userId, bio, topicsToStr);
+        }
+        response.sendRedirect("/profile.html?userID=" + userId);
+    }
+
+    /**
+    * Updates a student entity and puts it in datastore, used for testing
+    */
+    public void updateStudentEntityAndPutInDatastore(DatastoreService ds, Entity entity, String userId, String bio, List<String> topics) {
+        Query query = new Query("Student").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+        PreparedQuery results = ds.prepare(query);
+        entity = results.asSingleEntity();
+        if (entity == null) {
+            return;
+        }
+        entity.setProperty("bio", bio);
+        entity.setProperty("learning", topics);
+        ds.put(entity);
+    }
+
+    /**
+    * Updates a tutor entity and puts it in datastore, used for testing
+    */
+    public void updateTutorEntityAndPutInDatastore(DatastoreService ds, Entity entity, String userId, String bio, List<String> topics) {
+        Query query = new Query("Tutor").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+        PreparedQuery results = ds.prepare(query);   
+        entity = results.asSingleEntity();
+        if (entity == null) {
+            return;
+        }
+        entity.setProperty("bio", bio);
+        entity.setProperty("topics", topics);
+        ds.put(entity);
     }
 }
