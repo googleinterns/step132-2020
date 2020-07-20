@@ -59,28 +59,27 @@ function createProfileDiv(user) {
     const profileEmail = document.createElement('p');
     profileEmail.innerHTML = user.email;
 
-    const profileTopics = document.createElement('p');
-    var isStudent;
-    // Students and tutors have different properties, check to see what kind of profile we're displaying
-    if (user.learning != undefined) {   // User is a student
-        profileTopics.innerHTML = "I am learning: " + user.learning;
-        isStudent = true;
-    }
-    else {   // User is a tutor
-        profileTopics.innerHTML = "I am tutoring in: " + user.skills;
-        isStudent = false;
-    }
-
-    // Check if profile belongs to user currently logged in
-    // If not, don't allow them to edit the profile
+    var role;
+    // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
+    // Also fetches the role of the user
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        role = loginStatus.role;
+
         if (loginStatus.userId == getIdParameter(window)) {
             document.getElementById('edit-profile-btn').style.display = 'block';
             document.getElementById('edit-profile-btn').addEventListener('click', () => {
-                editProfile(user, isStudent, document); 
+                editProfile(user, role, document); 
             });
         }
     });
+
+    const profileTopics = document.createElement('p');
+    if (role == 'student') { 
+        profileTopics.innerHTML = "I am learning: " + user.learning;
+    }
+    else { 
+        profileTopics.innerHTML = "I am tutoring in: " + user.skills;
+    }
 
     profileDiv.appendChild(profilePfp);
     profileDiv.appendChild(profileName);
@@ -92,7 +91,7 @@ function createProfileDiv(user) {
 }
 
 // Displays a form that will allow the user to edit the info on their profile
-function editProfile(user, isStudent, document) {
+function editProfile(user, role, document) {
     document.getElementById('profile-container').style.display = 'none';
     document.getElementById('top-right-buttons').style.display = 'none';
     document.getElementById('edit-profile-form').style.display = 'block';
@@ -101,7 +100,7 @@ function editProfile(user, isStudent, document) {
     // This will prevent this data from being lost if the user decides not change this field
     document.getElementById('bio').value = user.bio;
 
-    if (isStudent) {
+    if (role == 'student') {
         document.getElementById('student-topics').style.display = 'block';
         // Automatically check boxes of topics user has already selected
         if (user.learning.indexOf('math') > -1) {
