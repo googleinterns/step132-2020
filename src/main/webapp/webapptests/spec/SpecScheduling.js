@@ -41,7 +41,7 @@ describe("Scheduling", function() {
         });
     });
 
-    describe("when a user submits the form", function() {
+    describe("when a user submits the form and they are logged in", function() {
         var mockWindow = {location: {href: "scheduling.html?tutorID=123&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=123&start=480&end=540&year=2020&month=5&day=18"}};
 
         it("should redirect the user to confirmation.html ", async function() {
@@ -50,6 +50,19 @@ describe("Scheduling", function() {
 
             await scheduleTutorSessionHelper(mockWindow);
             expect(mockWindow.location.href).toEqual("confirmation.html");
+        });
+    });
+
+    describe("when a user submits the form and they are not logged in", function() {
+        var mockWindow = {location: {href: "scheduling.html?tutorID=123&start=480&end=540&year=2020&month=5&day=18", search: "?tutorID=123&start=480&end=540&year=2020&month=5&day=18"}};
+        var response = {redirected: true, url: "/homepage.html"};
+        it("should redirect user to homepage", async function() {
+            spyOn(window, 'alert');
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            spyOn(document, "getElementById").and.returnValue("");
+            await scheduleTutorSessionHelper(mockWindow);
+            expect(window.alert).toHaveBeenCalledWith('You must be signed in to schedule a tutoring session.');
+            expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
 

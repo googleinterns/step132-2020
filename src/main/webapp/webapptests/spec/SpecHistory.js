@@ -26,8 +26,10 @@ describe("History", function() {
         var mockWindow = {location: {href: "history.html"}};
         var response = {redirected: true, url: "/homepage.html"};
         it("should redirect user to homepage", async function() {
+            spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
             await getTutoringSessionHistoryHelper(mockWindow);
+            expect(window.alert).toHaveBeenCalledWith('You must be signed in to view history.');
             expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });

@@ -120,10 +120,6 @@ function addTimeSlot() {
 
 //Helper function for addTimeSlot, used for testing.
 function addTimeSlotHelper(window) {
-    // var queryString = new Array();
-    // window.onload = readTutorID(queryString, window);
-    // const tutorID = queryString["userID"];
-
     const params = new URLSearchParams();
 
     params.append('startHour', document.getElementById('startHour').value);
@@ -137,7 +133,8 @@ function addTimeSlotHelper(window) {
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
         //if the tutor id is not the id of the current user
         if(response.redirected) {
-            window.location.href = response.url
+            window.location.href = response.url;
+            alert("You must be signed in to edit availability.");
             return;
         }
         window.location.href = "/manage-availability.html";
@@ -156,7 +153,8 @@ function deleteTimeSlot(window, timeslot) {
     fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
         //if the tutor id is not the id of the current user
         if(response.redirected) {
-            window.location.href = response.url
+            window.location.href = response.url;
+            alert("You must be signed in to edit availability.");
             return;
         }
     });
