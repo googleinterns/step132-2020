@@ -349,7 +349,7 @@ function deleteGoal(goal, window) {
             alert("You must be signed in to delete a goal.");
             return;
         }
-    });;
+    });
 }
 
 function addExperience(window) {
@@ -384,6 +384,6 @@ function deleteExperience(experience, window) {
             alert("You must be signed in to delete an experience.");
             return;
         }
-    });;
+    });
 }
 
