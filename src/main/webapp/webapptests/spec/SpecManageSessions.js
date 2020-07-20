@@ -27,8 +27,10 @@ describe("Manage Sessions", function() {
         var mockWindow = {location: {href: "manage-sessions.html"}};
         var response = {redirected: true, url: "/homepage.html"};
         it("should redirect user to homepage", async function() {
+            spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
             await getTutorSessionsManageHelper(mockWindow);
+            expect(window.alert).toHaveBeenCalledWith('You must be signed in to manage sessions.');
             expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
@@ -88,7 +90,8 @@ describe("Manage Sessions", function() {
         params.append('id', 1);
 
         it("should trigger the fetch function", function() {
-            spyOn(window, 'fetch').and.callThrough();
+            spyOn(window, 'alert');
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             cancelTutorSession(mockWindow, scheduledSession);
             expect(window.fetch).toHaveBeenCalledWith('/delete-tutor-session', {method: 'POST', body: params})
             expect(window.fetch).toHaveBeenCalled();

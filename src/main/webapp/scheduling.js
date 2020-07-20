@@ -44,18 +44,21 @@ async function scheduleTutorSessionHelper(window) {
         //if the student id is not the id of the current user
         if(response.redirected) {
             window.location.href = response.url
-            return [];
+            alert("You must be signed in to schedule a tutoring session.");
+            return null;
         }
         return response.json();
     }).then((tutors) => {
-        if(tutors.error) {
+        if(tutors !== null && tutors.error) {
             var message = document.createElement("p");
             message.innerText = tutors.error;
             document.body.appendChild(message);
             return;
         }
 
-        redirectToConfirmation(window);
+        if(tutors !== null) {
+            redirectToConfirmation(window);
+        }
     });
 }
   
