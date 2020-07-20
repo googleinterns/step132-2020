@@ -327,7 +327,13 @@ function addGoal(window) {
 
     params.append('goal', document.getElementById('newGoal').value);
 
-    fetch('/goal', {method: 'POST', body: params}).then(() => {
+    fetch('/add-goal', {method: 'POST', body: params}).then((response) => {
+        //if the student id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url;
+            alert("You must be signed in to add a goal.");
+            return;
+        }
         window.location.href = "/progress.html?studentID=" + studentID;
     });
 }
@@ -336,7 +342,14 @@ function deleteGoal(goal, window) {
     const params = new URLSearchParams();
     params.append('id', goal.id);
 
-    fetch('/delete-goal', {method: 'POST', body: params});
+    fetch('/delete-goal', {method: 'POST', body: params}).then((response) => {
+        //if the student id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url;
+            alert("You must be signed in to delete a goal.");
+            return;
+        }
+    });
 }
 
 function addExperience(window) {
@@ -348,7 +361,13 @@ function addExperience(window) {
 
     params.append('experience', document.getElementById('newExperience').value);
 
-    fetch('/experience', {method: 'POST', body: params}).then(() => {
+    fetch('/add-experience', {method: 'POST', body: params}).then((response) => {
+        //if the student id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url;
+            alert("You must be signed in to add an experience.");
+            return;
+        }
         window.location.href = "/progress.html?studentID=" + studentID;
     });
 }
@@ -358,6 +377,13 @@ function deleteExperience(experience, window) {
 
     params.append('id', experience.id);
 
-    fetch('/delete-experience', {method: 'POST', body: params});
+    fetch('/delete-experience', {method: 'POST', body: params}).then((response) => {
+        //if the student id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url;
+            alert("You must be signed in to delete an experience.");
+            return;
+        }
+    });
 }
 

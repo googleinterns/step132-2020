@@ -231,7 +231,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToManageAvailability(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("manage-availability.html?userID=123");
+                expect(mockWindow.location.href).toEqual("manage-availability.html");
             })
 
             it("adds event listener that redirects the user to their students", function() {
@@ -239,7 +239,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToMyStudents(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("my-students.html?userID=123");
+                expect(mockWindow.location.href).toEqual("my-students.html");
             })
 
             it("adds event listener that redirects the user to their progress", function() {
@@ -255,7 +255,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToManageSessions(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("manage-sessions.html?userID=123");
+                expect(mockWindow.location.href).toEqual("manage-sessions.html");
             })
 
             it("adds event listener that redirects the user to their history", function() {
@@ -263,7 +263,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToHistory(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("history.html?userID=123");
+                expect(mockWindow.location.href).toEqual("history.html");
             })
         });
     });

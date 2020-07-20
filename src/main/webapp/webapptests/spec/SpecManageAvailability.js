@@ -25,12 +25,13 @@ describe("Manage Availability", function() {
     });
 
     describe("when user tries to access someone else's manage availability page", function() {
-        var loginStatus = {userId: "000"};
-        var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
+        var mockWindow = {location: {href: "manage-availability.html"}};
         var response = {redirected: true, url: "/homepage.html"};
         it("should redirect user to homepage", async function() {
-            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(loginStatus)}));
+            spyOn(window, 'alert');
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
             await getAvailabilityManageHelper(mockWindow);
+            expect(window.alert).toHaveBeenCalledWith('You must be signed in to manage availability.');
             expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
@@ -93,11 +94,11 @@ describe("Manage Availability", function() {
 
         it("should trigger the fetch function", function() {
             var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
+            spyOn(window, 'alert');
             spyOn(document, "getElementById").and.returnValues(startHour, startMinute, endHour, endMinute, day, month, year);
-
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             addTimeSlotHelper(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/add-availability', {method: 'POST', body: params})
+            expect(window.fetch).toHaveBeenCalledWith('/manage-availability', {method: 'POST', body: params})
             expect(window.fetch).toHaveBeenCalled();
             expect(mockWindow.location.href).toBe("manage-availability.html?tutorID=123");
         });
@@ -114,6 +115,7 @@ describe("Manage Availability", function() {
         params.append('end', 540);
 
         it("should trigger the fetch function", function() {
+            spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             deleteTimeSlot(mockWindow, timeslot);
             expect(window.fetch).toHaveBeenCalledWith('/delete-availability', {method: 'POST', body: params})

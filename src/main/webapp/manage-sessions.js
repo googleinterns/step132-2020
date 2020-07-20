@@ -22,7 +22,8 @@ async function getTutorSessionsManageHelper(window) {
     await fetch('/confirmation', {method: 'GET'}).then((response) => {
         //if the student id is not the id of the current user
         if(response.redirected) {
-            window.location.href = response.url
+            window.location.href = response.url;
+            alert("You must be signed in to manage sessions.");
             return [];
         }
         return response.json();
@@ -59,7 +60,7 @@ function createScheduledSessionBoxManage(scheduledSession) {
     const dateElement = document.createElement('h3');
     dateElement.style.textAlign = 'left';
     dateElement.style.display = 'inline';
-    var hour = parseInt(scheduledSession.timeslot.start) / 60;
+    var hour = Math.floor(parseInt(scheduledSession.timeslot.start) / 60);
     var amOrPm = "am";
     if (hour > 12) {
         hour = hour - 12;
@@ -128,7 +129,8 @@ function cancelTutorSession(window, scheduledSession) {
     fetch('/delete-tutor-session', {method: 'POST', body: params}).then((response) => {
         //if the student id is not the id of the current user
         if(response.redirected) {
-            window.location.href = response.url
+            window.location.href = response.url;
+            alert("You must be signed in to cancel a tutoring session.");
             return;
         }
     });

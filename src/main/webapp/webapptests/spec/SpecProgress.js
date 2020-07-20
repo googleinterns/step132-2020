@@ -407,11 +407,11 @@ describe("Progress", function() {
         it("should trigger the fetch function with the correct params", function() {
             var params = new URLSearchParams();
             params.append('goal', "undefined");
-        
-            spyOn(window, 'fetch').and.callThrough();
+            spyOn(window, 'alert');
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             spyOn(document, 'getElementById').and.returnValue("test");
             addGoal(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/goal', {method: 'POST', body: params});
+            expect(window.fetch).toHaveBeenCalledWith('/add-goal', {method: 'POST', body: params});
         });
     });
 
@@ -422,14 +422,14 @@ describe("Progress", function() {
             var params = new URLSearchParams();
             params.append('experience', "undefined");
             params.append('studentID', 123);
-
+            spyOn(window, 'alert');
             spyOn(window, "onload").and.callFake(function() {
                 readStudentID(queryString, window);
             });
-            spyOn(window, 'fetch').and.callThrough();
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             spyOn(document, 'getElementById').and.returnValue("test");
             addExperience(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/experience', {method: 'POST', body: params});
+            expect(window.fetch).toHaveBeenCalledWith('/add-experience', {method: 'POST', body: params});
         });
     });
 
@@ -441,8 +441,8 @@ describe("Progress", function() {
         it("should trigger the fetch function with the correct params", function() {
             var params = new URLSearchParams();
             params.append('id', 1);
-
-            spyOn(window, 'fetch').and.callThrough();
+            spyOn(window, 'alert');
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             deleteGoal(mockGoal, mockStudentID, mockWindow);
             expect(window.fetch).toHaveBeenCalledWith('/delete-goal', {method: 'POST', body: params});
         });
@@ -456,8 +456,8 @@ describe("Progress", function() {
         it("should trigger the fetch function with the correct params", function() {
             var params = new URLSearchParams();
             params.append('id', 1);
-
-            spyOn(window, 'fetch').and.callThrough();
+            spyOn(window, 'alert');
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
             deleteExperience(mockExperience, mockStudentID, mockWindow);
             expect(window.fetch).toHaveBeenCalledWith('/delete-experience', {method: 'POST', body: params});
         });

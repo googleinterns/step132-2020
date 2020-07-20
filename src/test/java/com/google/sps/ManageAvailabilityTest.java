@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.*;
-import com.google.sps.servlets.AddAvailabilityServlet;
+import com.google.sps.servlets.ManageAvailabilityServlet;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
@@ -43,7 +43,7 @@ import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestC
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 @RunWith(JUnit4.class)
-public final class AddAvailabilityTest {
+public final class ManageAvailabilityTest {
     private final Calendar MAY182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 4, 18)
@@ -62,13 +62,13 @@ public final class AddAvailabilityTest {
 
     private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig()); 
 
-    private AddAvailabilityServlet servlet;
+    private ManageAvailabilityServlet servlet;
 
     @Before
     public void setUp() {
         helper.setUp();
 
-        servlet = new AddAvailabilityServlet();
+        servlet = new ManageAvailabilityServlet();
         servlet.init();
 
         SampleData sample = new SampleData();
@@ -78,6 +78,28 @@ public final class AddAvailabilityTest {
     @After
     public void tearDown() {
         helper.tearDown();
+    }
+
+    @Test
+    public void testDoGet() throws Exception {
+
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        TestUtilities.setSessionId(request, "0");   
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getContentType()).thenReturn("application/json");
+      
+        servlet.doGet(request, response);
+
+        String expected = new Gson().toJson(Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
+                                                    TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020)));
+
+        writer.flush();
+        Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
     @Test

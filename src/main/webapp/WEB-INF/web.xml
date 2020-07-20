@@ -9,64 +9,18 @@
     </filter>
     <filter-mapping>
         <filter-name>SessionFilter</filter-name>
-        <url-pattern>add-availability</url-pattern>
+        <url-pattern>add-goal</url-pattern>
+        <url-pattern>add-experience</url-pattern>
         <url-pattern>confirmation</url-pattern>
         <url-pattern>delete-availability</url-pattern>
         <url-pattern>delete-experience</url-pattern>
         <url-pattern>delete-goal</url-pattern>
         <url-pattern>delete-tutor-session</url-pattern>
         <url-pattern>history</url-pattern>
+        <url-pattern>manage-availability</url-pattern>
         <url-pattern>my-students</url-pattern>
         <url-pattern>rating</url-pattern>
         <url-pattern>registration</url-pattern>
         <url-pattern>scheduling</url-pattern>
     </filter-mapping>
-    <security-constraint>
-        <web-resource-collection>
-            <url-pattern>/history.html</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>*</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
-            <url-pattern>/confirmation.html</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>*</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
-            <url-pattern>/manage-availability.html</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>*</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
-            <url-pattern>/manage-sessions.html</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>*</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
-            <url-pattern>/registration.html</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>*</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <security-constraint>
-        <web-resource-collection>
-            <url-pattern>/scheduling.html</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>*</role-name>
-        </auth-constraint>
-    </security-constraint>
 </web-app>
