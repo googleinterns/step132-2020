@@ -106,14 +106,14 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
     }
     else {   // Display login link
         document.getElementById('logout').style.display = "none";
-        document.getElementById('profile').style.display = "none";
-        document.getElementById('availability-settings').style.display = "none";
-        document.getElementById('my-students').style.display = "none";
-        document.getElementById('my-progress').style.display = "none";
-        document.getElementById('tutor-session-settings').style.display = "none";
-        document.getElementById('history').style.display = "none";
         document.getElementById('login').style.display = "block";
         document.getElementById('login-url').href = loginStatus.url;
+        document.getElementById('profile').style.display = "none";
+        // document.getElementById('availability-settings').style.display = "none";
+        // document.getElementById('my-students').style.display = "none";
+        // document.getElementById('my-progress').style.display = "none";
+        // document.getElementById('tutor-session-settings').style.display = "none";
+        // document.getElementById('history').style.display = "none";
     }
 }
 
