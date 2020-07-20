@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
@@ -165,6 +166,9 @@ public class ProfileServlet extends HttpServlet {
         Query query = new Query("Student").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = ds.prepare(query);
         entity = results.asSingleEntity();
+        if (entity == null) {
+            return;
+        }
         entity.setProperty("bio", bio);
         entity.setProperty("learning", topics);
         ds.put(entity);
@@ -175,8 +179,11 @@ public class ProfileServlet extends HttpServlet {
     */
     public void updateTutorEntityAndPutInDatastore(DatastoreService ds, Entity entity, String userId, String bio, List<String> topics) {
         Query query = new Query("Tutor").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
-        PreparedQuery results = ds.prepare(query);
+        PreparedQuery results = ds.prepare(query);   
         entity = results.asSingleEntity();
+        if (entity == null) {
+            return;
+        }
         entity.setProperty("bio", bio);
         entity.setProperty("topics", topics);
         ds.put(entity);
