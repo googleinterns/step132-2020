@@ -24,29 +24,26 @@ function getAvailabilityManage() {
     return getAvailabilityManageHelper(window);
 }
 
-async function getAvailabilityManageHelper(window) {
-    await getUserId().then((userId) => {
-        var queryString = new Array();
-        window.onload = readTutorID(queryString, window);
-        const tutorID = queryString["userID"];
-
-        //if user is trying to access someone else's availability
-        if(userId !== tutorID) {
-            window.location.href = "/homepage.html";
+function getAvailabilityManageHelper(window) {
+    fetch('/manage-availability', {method: 'GET'}).then((response) => {
+        //if the student id is not the id of the current user
+        if(response.redirected) {
+            window.location.href = response.url;
+            alert("You must be signed in to manage availability.");
+            return [];
+        }
+        return response.json();
+        
+    }).then((timeslots) => {
+        if(timeslots.error) {
+            var message = document.createElement("p");
+            p.innerText = timeslots.error;
+            document.getElementById('timeslots').appendChild(message);
             return;
         }
 
-        fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
-            if(timeslots.error) {
-                var message = document.createElement("p");
-                p.innerText = timeslots.error;
-                document.getElementById('timeslots').appendChild(message);
-                return;
-            }
-
-            timeslots.forEach((timeslot) => {
-                document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
-            });
+        timeslots.forEach((timeslot) => {
+            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
         });
     });
 }
@@ -123,10 +120,6 @@ function addTimeSlot() {
 
 //Helper function for addTimeSlot, used for testing.
 function addTimeSlotHelper(window) {
-    var queryString = new Array();
-    window.onload = readTutorID(queryString, window);
-    const tutorID = queryString["userID"];
-
     const params = new URLSearchParams();
 
     params.append('startHour', document.getElementById('startHour').value);
@@ -137,13 +130,14 @@ function addTimeSlotHelper(window) {
     params.append('month', document.getElementById('month').value);
     params.append('year', document.getElementById('year').value);
 
-    fetch('/add-availability', {method: 'POST', body: params}).then((response) => {
+    fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
         //if the tutor id is not the id of the current user
         if(response.redirected) {
-            window.location.href = response.url
+            window.location.href = response.url;
+            alert("You must be signed in to edit availability.");
             return;
         }
-        window.location.href = "/manage-availability.html?userID=" + tutorID;
+        window.location.href = "/manage-availability.html";
     });
 }
 
@@ -159,7 +153,8 @@ function deleteTimeSlot(window, timeslot) {
     fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
         //if the tutor id is not the id of the current user
         if(response.redirected) {
-            window.location.href = response.url
+            window.location.href = response.url;
+            alert("You must be signed in to edit availability.");
             return;
         }
     });

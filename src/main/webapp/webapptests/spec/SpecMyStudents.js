@@ -29,8 +29,10 @@ describe("My Students", function() {
         var mockWindow = {location: {href: "my-students.html"}};
         var response = {redirected: true, url: "/homepage.html"};
         it("should redirect user to homepage", async function() {
+            spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
             await getMyStudentsHelper(mockWindow);
+            expect(window.alert).toHaveBeenCalledWith('You must be signed in to view your students.');
             expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
