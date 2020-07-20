@@ -59,11 +59,18 @@ function createProfileDiv(user) {
     const profileEmail = document.createElement('p');
     profileEmail.innerHTML = user.email;
 
-    var role;
+    const profileTopics = document.createElement('p');
     // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
     // Also fetches the role of the user
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
-        role = loginStatus.role;
+        var role = loginStatus.role;
+
+        if (role == 'student') { 
+            profileTopics.innerHTML = "I am learning: " + user.learning;
+        }
+        else { 
+            profileTopics.innerHTML = "I am tutoring in: " + user.skills;
+        }
 
         if (loginStatus.userId == getIdParameter(window)) {
             document.getElementById('edit-profile-btn').style.display = 'block';
@@ -72,14 +79,6 @@ function createProfileDiv(user) {
             });
         }
     });
-
-    const profileTopics = document.createElement('p');
-    if (role == 'student') { 
-        profileTopics.innerHTML = "I am learning: " + user.learning;
-    }
-    else { 
-        profileTopics.innerHTML = "I am tutoring in: " + user.skills;
-    }
 
     profileDiv.appendChild(profilePfp);
     profileDiv.appendChild(profileName);
