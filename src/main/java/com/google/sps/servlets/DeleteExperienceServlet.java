@@ -58,7 +58,6 @@ public class DeleteExperienceServlet extends HttpServlet {
         String json = new Gson().toJson(datastore.getExperiencesByStudent(studentID));
         response.setContentType("application/json;");
         response.getWriter().println(json);
-        response.sendRedirect("/progress.html?studentID=" + studentID);
         return;
     }
 }
