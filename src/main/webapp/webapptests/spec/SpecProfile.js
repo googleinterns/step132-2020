@@ -54,4 +54,71 @@ describe("User Profile", function() {
             expect(actualDiv.childNodes[4].innerHTML).toEqual("I am tutoring in: math,physics" );
         });
     });
+
+    describe("When the user edits their profile", function() {
+        var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
+            email: "sfalberg@google.com", skills: ["math", "english"]};
+        
+        beforeAll(function() {
+            var mockProfileContainer = document.createElement('div');
+            mockProfileContainer.id = 'profile-container';
+            mockProfileContainer.style.display = 'block';
+
+            var mockButtonsDiv = document.createElement('div');
+            mockButtonsDiv.id = 'top-right-buttons';
+            mockButtonsDiv.style.display = 'block';
+
+            var mockEditForm = document.createElement('form');
+            mockEditForm.id = 'edit-profile-form';
+            mockEditForm.style.display = 'none';
+
+            var mockBio = document.createElement('textarea');
+            mockBio.id = 'bio';
+
+            var mockStudentTopics = document.createElement('p');
+            mockStudentTopics.id = 'student-topics';
+            mockStudentTopics.style.display = 'none';
+
+            var mockTutorTopics = document.createElement('p');
+            mockTutorTopics.id = 'tutor-topics';
+            mockTutorTopics.style.display = 'none';
+
+            var mockMathCheckbox = document.createElement('checkbox');
+            mockMathCheckbox.id = 'math';
+
+            var mockEnglishCheckbox = document.createElement('checkbox');
+            mockEnglishCheckbox.id = 'english';
+            
+            var mockOtherCheckbox = document.createElement('checkbox');
+            mockOtherCheckbox.id = 'other-subject';
+
+            document.body.appendChild(mockProfileContainer);
+            document.body.appendChild(mockButtonsDiv);
+            document.body.appendChild(mockEditForm);
+            document.body.appendChild(mockBio);
+            document.body.appendChild(mockStudentTopics);
+            document.body.appendChild(mockTutorTopics);
+            document.body.appendChild(mockMathCheckbox);
+            document.body.appendChild(mockEnglishCheckbox);
+            document.body.appendChild(mockOtherCheckbox);
+
+            editProfile(mockUser, false, document);
+        })
+        
+        it("should hide profile info and show the edit form", function() {
+            expect(document.getElementById('profile-container').style.display).toBe('none');
+            expect(document.getElementById('top-right-buttons').style.display).toBe('none');
+            expect(document.getElementById('edit-profile-form').style.display).toBe('block');
+        });
+
+        it("should have the default text for the bio be what the user had previously", function() {
+            expect(document.getElementById('bio').value).toBe('The best bio');
+        });
+
+        it("should check off the topics the user had previously selected", function() {
+            expect(document.getElementById('math').checked).toBe(true);
+            expect(document.getElementById('english').checked).toBe(true);
+            expect(document.getElementById('other-subject').checked).toBe(undefined);
+        });
+    });
 });
