@@ -18,10 +18,6 @@ describe("Registration", function() {
             mockGenInfoDiv.id = "general-info";
             mockGenInfoDiv.style.display = 'none';
 
-            var mockTutorInfoDiv = document.createElement('div');
-            mockTutorInfoDiv.id = "tutor-info";
-            mockTutorInfoDiv.style.display = 'none';
-
             var mockStudentTopics = document.createElement('p');
             mockStudentTopics.id = 'student-topics';
             mockStudentTopics.style.display = 'none';
@@ -45,7 +41,6 @@ describe("Registration", function() {
             document.body.appendChild(mockGenInfoDiv);
             mockGenInfoDiv.appendChild(mockStudentTopics);
             mockGenInfoDiv.appendChild(mockTutorTopics);
-            mockGenInfoDiv.appendChild(mockTutorInfoDiv);
         })
 
         it("should ask for general and student info if user is student", function() {
@@ -54,7 +49,6 @@ describe("Registration", function() {
 
             expect(document.getElementById('general-info').style.display).toBe('block');
             expect(document.getElementById('student-topics').style.display).toBe('block');
-            expect(document.getElementById('tutor-info').style.display).toBe('none');
             expect(document.getElementById('tutor-topics').style.display).toBe('none');
         });
 
@@ -63,7 +57,6 @@ describe("Registration", function() {
             displayRegistrationInfoHelper(document);
 
             expect(document.getElementById('general-info').style.display).toBe('block');
-            expect(document.getElementById('tutor-info').style.display).toBe('block');
             expect(document.getElementById('tutor-topics').style.display).toBe('block');
             expect(document.getElementById('student-topics').style.display).toBe('none');
         });
@@ -75,7 +68,6 @@ describe("Registration", function() {
 
             expect(document.getElementById('general-info').style.display).toBe('block');
             expect(document.getElementById('student-topics').style.display).toBe('block');
-            expect(document.getElementById('tutor-info').style.display).toBe('none');
             expect(document.getElementById('tutor-topics').style.display).toBe('none');
         });
 
@@ -85,7 +77,6 @@ describe("Registration", function() {
             displayRegistrationInfoHelper(document);
 
             expect(document.getElementById('general-info').style.display).toBe('block');
-            expect(document.getElementById('tutor-info').style.display).toBe('block');
             expect(document.getElementById('tutor-topics').style.display).toBe('block');
             expect(document.getElementById('student-topics').style.display).toBe('none');
         });
