@@ -32,13 +32,10 @@ import com.google.sps.utilities.TutorSessionDatastoreService;
 import com.google.sps.utilities.AvailabilityDatastoreService;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-<<<<<<< HEAD
 import java.util.stream.Collectors;
-=======
-import java.util.Arrays;
->>>>>>> ac0a9c8b384e7c422eb079c0932c0a4945efa523
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +58,7 @@ public class ProfileServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
-        
+
         //if the user id is null, the default value will be -1 because no tutor or student will have id = -1
         String userId = Optional.ofNullable(request.getParameter("userId")).orElse("-1");
 
