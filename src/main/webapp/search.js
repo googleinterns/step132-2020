@@ -67,7 +67,7 @@ async function getSearchResultsHelper(document, window) {
 /** Fetches the list of books for the topic the user searched for. */
 async function getBooks(topic) {
     //TODO: create load more button so we can get next 40 results
-    await fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&key=AIzaSyBR6aZ9eFTRQ3Cv4eDBMeB0LSH-jF-Rbsw").then(response => response.json()).then((results) => {
+    await fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y").then(response => response.json()).then((results) => {
         console.log(results);
         var books = document.getElementById("books");
 
