@@ -1,9 +1,12 @@
 <!-- 
                     Copyright 2019 Google LLC
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
+
         https://www.apache.org/licenses/LICENSE-2.0
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,40 +17,31 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Your Students</title>
-        <link rel="stylesheet" type="text/css" href="my-students.css">
+        <title>My Lists</title>
         <link rel="stylesheet" type="text/css" href="general.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-    <body onload="displayLoginLogoutLink(), getMyStudents()">
+    <body>
         <a href="./homepage.html"><p>Homepage</p></a>
 
         <div class="top-right">
             <a id="login-url"><p id="login" style="display:none">Login with Google</p></a>
             <button type="button" id="profile" style="display:none">My Account</button>
-            <button type="button" id="availability-settings" style="display:none">Manage your availability</button>
+            <input type="hidden" id="availability-settings" style="display:none">
             <input type="hidden" id="my-students" style="display:none">
-            <button type="button" id="my-lists" style="display:none">My Lists</button>
-            <button type="button" id="my-progress" style="display:none">My Progress</button>
-            <button type="button" id="tutor-session-settings" style="display:none">Manage your tutoring sessions</button>
-            <button type="button" id="history" style="display:none">Tutoring session history</button>
+            <input type="hidden" id="my-lists" style="display:none">
+            <input type="hidden" id="my-progress" style="display:none">
+            <input type="hidden" id="tutor-session-settings" style="display:none">
+            <input type="hidden" id="history" style="display:none">
             <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
         </div>
 
-        <div class="container-fluid">
-            <h1>Your Students</h1>
-            <h2>Click a student to see their past experiences and progress.</h2>
-        </div>
-
-        <div id="result-container" class="list-group">
-            <div id="students" class="list-group active-container"></div>
-        </div>
-
+       
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="my-students.js"></script>
+        <script src="lists.js"></script>
         <script src="registration.js"></script>
     </body>
 </html>

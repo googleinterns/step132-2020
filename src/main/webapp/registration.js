@@ -77,6 +77,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         if (loginStatus.role == "tutor") {
             document.getElementById('availability-settings').style.display = "block";
             document.getElementById('my-students').style.display = "block";
+            document.getElementById('my-lists').style.display = "block";
             document.getElementById('my-progress').style.display = "none";
             document.getElementById('tutor-session-settings').style.display = "none";
             document.getElementById('history').style.display = "none";
@@ -85,6 +86,9 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
             });
             document.getElementById('my-students').addEventListener('click', () => {
                 redirectToMyStudents(window, loginStatus);
+            });
+            document.getElementById('my-lists').addEventListener('click', () => {
+                redirectToMyLists(window, loginStatus);
             });
         // Display tutor session settings and history if the user is a student
         } else if (loginStatus.role == "student") {
@@ -109,6 +113,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('profile').style.display = "none";
         document.getElementById('availability-settings').style.display = "none";
         document.getElementById('my-students').style.display = "none";
+        document.getElementById('my-lists').style.display = "none";
         document.getElementById('my-progress').style.display = "none";
         document.getElementById('tutor-session-settings').style.display = "none";
         document.getElementById('history').style.display = "none";
@@ -138,6 +143,14 @@ function redirectToManageAvailability(window, loginStatus) {
  */
 function redirectToMyStudents(window, loginStatus) {
     var url = "my-students.html";
+    window.location.href = url;
+}
+
+/**
+ * Sets the URL's query string for the user's profile to their user ID and redirect them to my-lists.html
+ */
+function redirectToMyLists(window, loginStatus) {
+    var url = "my-lists.html";
     window.location.href = url;
 }
 
