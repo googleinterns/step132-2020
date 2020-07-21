@@ -23,10 +23,14 @@ function loadProgress() {
 }
 
 function loadProgressHelper(document, loginStatus) {
-    getExperiences(document, loginStatus);
-    getGoals(document, loginStatus);
-    getAchievements(document, loginStatus);
-    getPastSessionsAndTopics(document, loginStatus);
+    if (loginStatus.role == "student") {
+        document.getElementById('progress-tracker').style.display = 'block';
+
+        getExperiences(document, loginStatus);
+        getGoals(document, loginStatus);
+        getAchievements(document, loginStatus);
+        getPastSessionsAndTopics(document, loginStatus);
+    }
 }
 
 /** A function that adds event listeners to a DOM objects. */
@@ -45,7 +49,7 @@ function addEventListeners() {
 function getExperiences(document, loginStatus) {
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
-    const studentID = queryString["studentID"];
+    const studentID = queryString["userID"];
 
     const params = new URLSearchParams();
     params.append('studentID', studentID);
@@ -86,7 +90,7 @@ function getExperiencesHelper(document, experiences, loginStatus) {
 function getGoals(document, loginStatus) {
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
-    const studentID = queryString["studentID"];
+    const studentID = queryString["userID"];
 
     const params = new URLSearchParams();
     params.append('studentID', studentID);
@@ -135,7 +139,7 @@ function getAchievements(document, loginStatus) {
 function getPastSessionsAndTopics(document, loginStatus) {
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
-    const studentID = queryString["studentID"];
+    const studentID = queryString["userID"];
 
     const params = new URLSearchParams();
     params.append('studentID', studentID);
@@ -323,7 +327,7 @@ function addGoal(window) {
 
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
-    const studentID = queryString["studentID"];
+    const studentID = queryString["userID"];
 
     params.append('goal', document.getElementById('newGoal').value);
 
@@ -334,7 +338,7 @@ function addGoal(window) {
             alert("You must be signed in to add a goal.");
             return;
         }
-        window.location.href = "/progress.html?studentID=" + studentID;
+        window.location.href = "/profile.html?userID=" + studentID;
     });
 }
 
@@ -357,7 +361,7 @@ function addExperience(window) {
 
     var queryString = new Array();
     window.onload = readStudentID(queryString, window);
-    const studentID = queryString["studentID"];
+    const studentID = queryString["userID"];
 
     params.append('experience', document.getElementById('newExperience').value);
 
@@ -368,7 +372,7 @@ function addExperience(window) {
             alert("You must be signed in to add an experience.");
             return;
         }
-        window.location.href = "/progress.html?studentID=" + studentID;
+        window.location.href = "/profile.html?userID=" + studentID;
     });
 }
 

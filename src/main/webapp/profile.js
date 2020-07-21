@@ -18,7 +18,20 @@ function displayProfile() {
 
     getUser(userID).then((user) => {
         console.log(user);
-        document.getElementById('profile-container').appendChild(createProfileDiv(user));
+        document.getElementById('profile-container').style.display = 'block';
+
+        // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
+        // Also fetches the role of the user
+        fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+            if (loginStatus.userId == userID) {
+                document.getElementById('edit-profile-btn').style.display = 'block';
+                document.getElementById('edit-profile-btn').addEventListener('click', () => {
+                    editProfile(user, loginStatus.role, document); 
+                });
+            }
+
+            document.getElementById('profile-container').appendChild(createProfileDiv(user, loginStatus.role));
+        });
     });
 }
 
@@ -42,7 +55,7 @@ function getUser(userID) {
 }
  
 // Create elements and fill their inner HTML with user info
-function createProfileDiv(user) {
+function createProfileDiv(user, role) {
     const profileDiv = document.createElement('div');
     
     const profileName = document.createElement('h3');
@@ -58,20 +71,6 @@ function createProfileDiv(user) {
 
     const profileEmail = document.createElement('p');
     profileEmail.innerHTML = user.email;
-
-    var role;
-    // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
-    // Also fetches the role of the user
-    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
-        role = loginStatus.role;
-
-        if (loginStatus.userId == getIdParameter(window)) {
-            document.getElementById('edit-profile-btn').style.display = 'block';
-            document.getElementById('edit-profile-btn').addEventListener('click', () => {
-                editProfile(user, role, document); 
-            });
-        }
-    });
 
     const profileTopics = document.createElement('p');
     if (role == 'student') { 

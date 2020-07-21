@@ -21,7 +21,7 @@ See the License for the specific language governing permissions and
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="displayLoginLogoutLink(), displayProfile()">
+    <body onload="displayLoginLogoutLink(), displayProfile(), loadProgress(), addEventListeners()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -53,13 +53,13 @@ See the License for the specific language governing permissions and
             </div>
         </nav>
 
-        <div class="container-fluid text-center bg-white bg-white-lg" id="profile-container" style="display:block">
-            <button type="button" class="btn btn-lg" id="edit-profile-btn" style="display:none">Edit Profile</button>
-        </div>
+        <div class="bg-white-lg">
+            <div class="container-fluid text-center bg-white" id="profile-container" style="display:none">
+                <button type="button" class="btn btn-lg" id="edit-profile-btn" style="display:none">Edit Profile</button>
+            </div>
 
-        <div class="bg-description-blue">
-            <div class="container-fluid text-center bg-white">
-                <form id="edit-profile-form" class="bg-white-lg" action="/profile" method="POST" style="display:none">
+            <div class="container-fluid bg-white" id="edit-profile-form" style="display:none">
+                <form action="/profile" method="POST">
                     <label for="bio">Biography:</label><br>
                     <textarea name="bio" id="bio"></textarea><br>
                     <p id="student-topics" style="display:none">What topic(s) would you like to learn?</p>
@@ -75,6 +75,48 @@ See the License for the specific language governing permissions and
                     <input type="submit" name="submit" value="Cancel">
                 </form>
             </div>
+
+            <div class="container-fluid bg-white" id="progress-tracker" style="display:none"> 
+                <div class="container-fluid text-center bg-white">
+                    <h1>Previous Experiences</h1>
+                    <ul class="list-group text-left" id="experiences"></ul>
+
+                    <form class="form-inline result" id="experiences-form" display="none">
+                        <label class="my-1 mr-2 sr-only" for="newExperience">Add a new experience</label>
+                        <input type="text" class="form-control my-1 mr-sm-2" id="newExperience" placeholder="Add a new experience" required>
+
+                        <button type="submit" class="btn btn-primary mb-2">Add</button>
+                    </form>
+                </div>
+
+                <div class="container-fluid text-center bg-white">
+                    <h1>Goals</h1>
+                    <ul class="list-group text-left" id="goals"></ul>
+
+                    <form class="form-inline result" id="goals-form" display="none">
+                        <label class="my-1 mr-2 sr-only" for="newGoal">Add a new goal for yourself</label>
+                        <input type="text" class="form-control my-1 mr-sm-2" id="newGoal" placeholder="Add a new goal for yourself" required>
+
+                        <button type="submit" class="btn btn-primary mb-2">Add</button>
+                    </form>
+                </div>
+
+                <div class="container-fluid text-center bg-white">
+                    <h1>Progress</h1>
+                    <h3>Achievements</h3>
+                    <ul class="list-group text-left" id="achievements"></ul>
+
+                    <h3>Tutoring Sessions</h3>
+                    <ul class="list-group text-left" id="past-sessions"></ul>
+
+                    <h3>Topics Covered</h3>
+                    <ul class="list-group text-left" id="past-topics"></ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-description-blue">
+            <div class="container-fluid bg-white"></div>
         </div>
 
         <footer class="container-fluid text-center bg-blue">
@@ -87,6 +129,7 @@ See the License for the specific language governing permissions and
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="profile.js"></script>
+        <script src="progress.js"></script>
         <script src="registration.js"></script>
     </body>
 </html>
