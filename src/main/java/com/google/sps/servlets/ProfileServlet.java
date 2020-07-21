@@ -152,7 +152,7 @@ public class ProfileServlet extends HttpServlet {
         List<String> topicsToStr = topics
                                     .stream()
                                     .filter(t -> t.isPresent())
-                                    .map(t -> t.get())
+                                    .map(t -> t.get().toLowerCase())
                                     .collect(Collectors.toList());
 
         // Add blank entry to topics list to know where default topics end and custom topics begin
