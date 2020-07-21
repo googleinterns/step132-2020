@@ -65,6 +65,7 @@ function createProfileDiv(user) {
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
         profileTopics.innerHTML = fetchStatusHelper(user, loginStatus, window, document);
     });
+    profileTopics.style.textTransform = 'capitalize';
 
     profileDiv.appendChild(profilePfp);
     profileDiv.appendChild(profileName);
@@ -83,12 +84,16 @@ function fetchStatusHelper(user, loginStatus, window, document) {
     // Display topics as comma-separated list with spaces
     if (role == 'student') { 
         var learning = user.learning.toString();
-        var listWithSpaces = learning.replace(/,/g, ', ');
+        // Remove blank entry that marks start of other topics
+        var removeBlank = learning.replace(', ', '');
+        var listWithSpaces = removeBlank.replace(/,/g, ', ');
         text = "I am learning: " + listWithSpaces;
     }
     else { 
         var skills = user.skills.toString();
-        var listWithSpaces = skills.replace(/,/g, ', ');
+        // Remove blank entry that marks start of other topics
+        var removeBlank = skills.replace(', ', '');
+        var listWithSpaces = removeBlank.replace(/,/g, ', ');
         text = "I am tutoring in: " + listWithSpaces;
     }
 
@@ -145,11 +150,16 @@ function editProfile(user, role, document) {
         if (user.learning.indexOf('Chinese') > -1) {
             document.getElementById('chinese').checked = true;
         }
-        // TODO: Figure out how to fill other topics box with what user already had
-        document.getElementById('other-subject').value = "";
+        var otherTopicsIndex = user.learning.indexOf(' ');
+        var otherTopics;
+        // Check if any other entries exist
+        if (otherTopicsIndex > -1 && user.learning.length > otherTopicsIndex + 1) {
+            otherTopics = user.learning.slice(otherTopicsIndex + 1);
+        }
+        document.getElementById('other-subject').value = otherTopics.join(', ');
     } else {
         document.getElementById('tutor-topics').style.display = 'block';
-        // Atuomatically check boxes of topics user has already selected
+        // Automatically check boxes of topics user has already selected
         if (user.skills.indexOf('Math') > -1) {
             document.getElementById('math').checked = true;
         }
@@ -180,7 +190,12 @@ function editProfile(user, role, document) {
         if (user.skills.indexOf('Chinese') > -1) {
             document.getElementById('chinese').checked = true;
         }
-        // TODO: Figure out how to fill other topics box with what user already had
-        document.getElementById('other-subject').value = "";
+        var otherTopicsIndex = user.skills.indexOf(' ');
+        var otherTopics;
+        // Check if any other entries exist
+        if (otherTopicsIndex > -1 && user.skills.length > otherTopicsIndex + 1) {
+            otherTopics = user.skills.slice(otherTopicsIndex + 1);
+        }
+        document.getElementById('other-subject').value = otherTopics.join(', ');
     }
 }
