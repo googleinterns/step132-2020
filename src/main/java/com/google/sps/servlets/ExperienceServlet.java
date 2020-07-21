@@ -58,28 +58,4 @@ public class ExperienceServlet extends HttpServlet {
         response.getWriter().println(json);
         return;
     }
-
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        //Set default value to -1 
-        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
-        String experience = request.getParameter("experience");
-
-        if(studentID.equals("-1")) {
-            response.setContentType("application/json");
-            response.getWriter().println("{\"error\": \"There was an error adding experience.\"}");
-            return;
-        }
-
-        Experience newExperience = new Experience(studentID, experience);
-
-        // Add experience
-        datastore.addExperience(newExperience);
-
-        String json = new Gson().toJson(datastore.getExperiencesByStudent(studentID));
-        response.setContentType("application/json;");
-        response.getWriter().println(json);
-        response.sendRedirect("/progress.html?studentID=" + studentID);
-        return;
-    }
 }

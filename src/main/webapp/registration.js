@@ -125,7 +125,7 @@ function setProfileQueryString(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to manage-availability.html
  */
 function redirectToManageAvailability(window, loginStatus) {
-    var url = "manage-availability.html?userID=" + encodeURIComponent(loginStatus.userId);
+    var url = "manage-availability.html";
     window.location.href = url;
 }
 
@@ -133,7 +133,7 @@ function redirectToManageAvailability(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to my-students.html
  */
 function redirectToMyStudents(window, loginStatus) {
-    var url = "my-students.html?userID=" + encodeURIComponent(loginStatus.userId);
+    var url = "my-students.html";
     window.location.href = url;
 }
 
@@ -141,7 +141,7 @@ function redirectToMyStudents(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to manage-sessions.html
  */
 function redirectToManageSessions(window, loginStatus) {
-    var url = "manage-sessions.html?userID=" + encodeURIComponent(loginStatus.userId);
+    var url = "manage-sessions.html";
     window.location.href = url;
 }
 
@@ -149,7 +149,7 @@ function redirectToManageSessions(window, loginStatus) {
  * Sets the URL's query string for the user's profile to their user ID and redirect them to history.html
  */
 function redirectToHistory(window, loginStatus) {
-    var url = "history.html?userID=" + encodeURIComponent(loginStatus.userId);
+    var url = "history.html";
     window.location.href = url;
 }
 
@@ -173,7 +173,6 @@ function displayRegistrationInfo() {
  */
 function displayRegistrationInfoHelper(document) {
     var generalInfo = document.getElementById('general-info');
-    var tutorInfo = document.getElementById('tutor-info');
     var studentTopics = document.getElementById('student-topics');
     var tutorTopics = document.getElementById('tutor-topics');
     generalInfo.style.display = 'block';
@@ -182,10 +181,8 @@ function displayRegistrationInfoHelper(document) {
     if (document.getElementById('tutor').checked) {
         studentTopics.style.display = 'none';
         tutorTopics.style.display = 'block';
-        tutorInfo.style.display = 'block';
     } else if (document.getElementById('student').checked) {   // Display student info, hide tutor info
         tutorTopics.style.display = 'none';
-        tutorInfo.style.display = 'none';
         studentTopics.style.display = 'block';
     }
 }
