@@ -63,6 +63,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
     // User is logged in, display logout and profile link on page 
     if (loginStatus.isLoggedIn) {
         document.getElementById('login').style.display = "none";
+        document.getElementById('account-dropdown').style.display = "block";
         document.getElementById('profile').style.display = "block";
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = loginStatus.url;
@@ -106,14 +107,9 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
     }
     else {   // Display login link
         document.getElementById('logout').style.display = "none";
-        document.getElementById('profile').style.display = "none";
-        document.getElementById('availability-settings').style.display = "none";
-        document.getElementById('my-students').style.display = "none";
-        document.getElementById('my-progress').style.display = "none";
-        document.getElementById('tutor-session-settings').style.display = "none";
-        document.getElementById('history').style.display = "none";
         document.getElementById('login').style.display = "block";
         document.getElementById('login-url').href = loginStatus.url;
+        document.getElementById('account-dropdown').style.display = "none";
     }
 }
 

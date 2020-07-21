@@ -122,7 +122,6 @@ describe("User Profile", function() {
         
         it("should hide profile info and show the edit form", function() {
             expect(document.getElementById('profile-container').style.display).toBe('none');
-            expect(document.getElementById('top-right-buttons').style.display).toBe('none');
             expect(document.getElementById('edit-profile-form').style.display).toBe('block');
         });
 
