@@ -78,7 +78,7 @@ public final class RegistrationTest {
         when(request.getParameter("last-name")).thenReturn("Falberg");
         when(request.getParameter("math")).thenReturn("math");
         when(request.getParameter("english")).thenReturn(null);
-        when(request.getParameter("other")).thenReturn("other");
+        when(request.getParameter("other")).thenReturn("History, Business");
 
         servlet.doPost(request, response);
 
