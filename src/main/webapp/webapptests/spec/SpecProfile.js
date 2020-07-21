@@ -62,13 +62,13 @@ describe("User Profile", function() {
 
         it("should create and set p element for topics", function() {
             expect(actualDiv.childNodes[4].tagName).toEqual("P");
-            expect(actualText).toEqual("I am tutoring in: Math,Physics" );
+            expect(actualText).toEqual("I am tutoring in: Math, Physics");
         });
     });
 
     describe("When the user edits their profile", function() {
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
-            email: "sfalberg@google.com", skills: ["Math", "English"]};
+            email: "sfalberg@google.com", skills: ["Math", "English", " ", "Other"]};
         
         beforeAll(function() {
             var mockProfileContainer = document.createElement('div');
@@ -134,7 +134,6 @@ describe("User Profile", function() {
             expect(document.getElementById('math').checked).toBe(true);
             expect(document.getElementById('english').checked).toBe(true);
             expect(document.getElementById('physics').checked).toBe(undefined);
-            //expect(document.getElementById('other-subject').checked).toBe(undefined);
         });
     });
 });
