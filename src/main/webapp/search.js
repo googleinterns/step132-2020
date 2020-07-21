@@ -153,6 +153,9 @@ function createTutorResult(result) {
 
     name.innerText = result.name;
     email.innerText = result.email;
+    // Remove blank entry before adding to inner text
+    var index = result.skills.indexOf(' ');
+    result.skills.splice(index, 1);
     skills.innerText = "Skills: " + result.skills.join(", ");
     availabilityLink.innerText = "Availability";
 

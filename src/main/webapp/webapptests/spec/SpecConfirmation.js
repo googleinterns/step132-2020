@@ -27,8 +27,10 @@ describe("Confirmation", function() {
         var mockWindow = {location: {href: "confirmation.html"}};
         var response = {redirected: true, url: "/homepage.html"};
         it("should redirect user to homepage", async function() {
+            spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
             await getScheduledSessionsHelper(mockWindow);
+            expect(window.alert).toHaveBeenCalledWith('You must be signed in to view upcoming session.');
             expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
@@ -57,7 +59,7 @@ describe("Confirmation", function() {
 
         it("should have the inner HTML of the h3 tag equal to to the email of the tutor", function() {
             var tutor = {email: "tester@gmail.com"};
-            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve(tutor)}));
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(user)}), Promise.resolve({json: () => Promise.resolve(tutor)}));
 
             const tutorElement = document.createElement('h3');
             setTutorEmail(tutorElement, "123").then(() => {

@@ -31,12 +31,32 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/add-availability")
-public class AddAvailabilityServlet extends HttpServlet {
+/** Servlet that gets and adds to a tutor's availability. */
+@WebServlet("/manage-availability")
+public class ManageAvailabilityServlet extends HttpServlet {
     private AvailabilityDatastoreService datastore;
 
     public void init() {
         datastore = new AvailabilityDatastoreService();
+    }
+
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Get the id of the tutor whose availability will be displayed
+        //if id is null, use default id -1 (no tutor has id -1, so no availability will be displayed)
+        String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
+
+        if(tutorID.equals("-1")) {
+            response.setContentType("application/json");
+            response.getWriter().println("{\"error\": \"There was an error getting tutor's availability.\"}");
+        }
+
+        List<TimeRange> timeslots = datastore.getAvailabilityForTutor(tutorID);
+
+        String json = new Gson().toJson(timeslots);
+        response.setContentType("application/json;");
+        response.getWriter().println(json);
+        return; 
     }
 
     @Override

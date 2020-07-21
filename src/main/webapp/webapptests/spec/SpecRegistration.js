@@ -18,10 +18,6 @@ describe("Registration", function() {
             mockGenInfoDiv.id = "general-info";
             mockGenInfoDiv.style.display = 'none';
 
-            var mockTutorInfoDiv = document.createElement('div');
-            mockTutorInfoDiv.id = "tutor-info";
-            mockTutorInfoDiv.style.display = 'none';
-
             var mockStudentTopics = document.createElement('p');
             mockStudentTopics.id = 'student-topics';
             mockStudentTopics.style.display = 'none';
@@ -45,7 +41,6 @@ describe("Registration", function() {
             document.body.appendChild(mockGenInfoDiv);
             mockGenInfoDiv.appendChild(mockStudentTopics);
             mockGenInfoDiv.appendChild(mockTutorTopics);
-            mockGenInfoDiv.appendChild(mockTutorInfoDiv);
         })
 
         it("should ask for general and student info if user is student", function() {
@@ -54,7 +49,6 @@ describe("Registration", function() {
 
             expect(document.getElementById('general-info').style.display).toBe('block');
             expect(document.getElementById('student-topics').style.display).toBe('block');
-            expect(document.getElementById('tutor-info').style.display).toBe('none');
             expect(document.getElementById('tutor-topics').style.display).toBe('none');
         });
 
@@ -63,7 +57,6 @@ describe("Registration", function() {
             displayRegistrationInfoHelper(document);
 
             expect(document.getElementById('general-info').style.display).toBe('block');
-            expect(document.getElementById('tutor-info').style.display).toBe('block');
             expect(document.getElementById('tutor-topics').style.display).toBe('block');
             expect(document.getElementById('student-topics').style.display).toBe('none');
         });
@@ -75,7 +68,6 @@ describe("Registration", function() {
 
             expect(document.getElementById('general-info').style.display).toBe('block');
             expect(document.getElementById('student-topics').style.display).toBe('block');
-            expect(document.getElementById('tutor-info').style.display).toBe('none');
             expect(document.getElementById('tutor-topics').style.display).toBe('none');
         });
 
@@ -85,7 +77,6 @@ describe("Registration", function() {
             displayRegistrationInfoHelper(document);
 
             expect(document.getElementById('general-info').style.display).toBe('block');
-            expect(document.getElementById('tutor-info').style.display).toBe('block');
             expect(document.getElementById('tutor-topics').style.display).toBe('block');
             expect(document.getElementById('student-topics').style.display).toBe('none');
         });
@@ -159,6 +150,9 @@ describe("Registration", function() {
                 var mockHistoryLink = document.createElement('button');
                 mockHistoryLink.id = 'history';
 
+                var mockDropdownLink = document.createElement('button');
+                mockDropdownLink.id = 'account-dropdown';
+
                 document.body.appendChild(mockLoginForm);
                 document.body.appendChild(mockLoginUrl);
                 document.body.appendChild(mockLogoutForm);
@@ -169,6 +163,7 @@ describe("Registration", function() {
                 document.body.appendChild(mockMyProgressLink);
                 document.body.appendChild(mockTutorSessionSettingsLink);
                 document.body.appendChild(mockHistoryLink);
+                document.body.appendChild(mockDropdownLink);
             })
 
             it("displays login link when user logged out", function() {
@@ -177,12 +172,7 @@ describe("Registration", function() {
 
                 expect(document.getElementById('login').style.display).toBe('block');
                 expect(document.getElementById('logout').style.display).toBe('none');
-                expect(document.getElementById('profile').style.display).toBe('none');
-                expect(document.getElementById('availability-settings').style.display).toBe('none');
-                expect(document.getElementById('my-students').style.display).toBe('none');
-                expect(document.getElementById('my-progress').style.display).toBe('none');
-                expect(document.getElementById('tutor-session-settings').style.display).toBe('none');
-                expect(document.getElementById('history').style.display).toBe('none');
+                expect(document.getElementById('account-dropdown').style.display).toBe('none');
             });
 
             it("displays logout link when user logged in and the user is a student", function() {
@@ -197,6 +187,7 @@ describe("Registration", function() {
                 expect(document.getElementById('my-progress').style.display).toBe('block');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('block');
                 expect(document.getElementById('history').style.display).toBe('block');
+                expect(document.getElementById('account-dropdown').style.display).toBe('block');
             });
 
             it("displays logout link when user logged in and the user is a tutor", function() {
@@ -211,6 +202,7 @@ describe("Registration", function() {
                 expect(document.getElementById('my-progress').style.display).toBe('none');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('none');
                 expect(document.getElementById('history').style.display).toBe('none');
+                expect(document.getElementById('account-dropdown').style.display).toBe('block');
             });
 
             it("sets logout link correctly", function() {
@@ -240,7 +232,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToManageAvailability(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("manage-availability.html?userID=123");
+                expect(mockWindow.location.href).toEqual("manage-availability.html");
             })
 
             it("adds event listener that redirects the user to their students", function() {
@@ -248,7 +240,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToMyStudents(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("my-students.html?userID=123");
+                expect(mockWindow.location.href).toEqual("my-students.html");
             })
 
             it("adds event listener that redirects the user to their progress", function() {
@@ -264,7 +256,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToManageSessions(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("manage-sessions.html?userID=123");
+                expect(mockWindow.location.href).toEqual("manage-sessions.html");
             })
 
             it("adds event listener that redirects the user to their history", function() {
@@ -272,7 +264,7 @@ describe("Registration", function() {
                 var mockWindow = {location: {href: "homepage.html"}};
                 redirectToHistory(mockWindow, mockLoginStatus);
 
-                expect(mockWindow.location.href).toEqual("history.html?userID=123");
+                expect(mockWindow.location.href).toEqual("history.html");
             })
         });
     });
