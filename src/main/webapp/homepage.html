@@ -17,8 +17,7 @@ See the License for the specific language governing permissions and
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="homepage.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="general.css">
     </head>
 
     <body onload="displayLoginLogoutLink()">
@@ -36,11 +35,14 @@ See the License for the specific language governing permissions and
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#about">ABOUT</a></li>
                         <li><a href="#about">CONTACT</a></li>
-                        <li id="profile" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">MY ACCOUNT <span class="caret"></span></a>
+                        <li id="account-dropdown" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">MY ACCOUNT <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="#">Profile</a></li>
-                                <li><a href="#">History</a></li>
-                                <li><a href="#">Groups</a></li>
+                                <li><a id="profile">Profile</a></li>
+                                <li><a id="history">History</a></li>
+                                <li><a id="availability-settings">Manage Availability</a></li>
+                                <li><a id="my-students">My Students</a></li>
+                                <li><a id="my-progress">My Progress</a></li>
+                                <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
                             </ul>
                         </li>
                         <li id="login"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
@@ -53,14 +55,12 @@ See the License for the specific language governing permissions and
         <div class="jumbotron text-center">
             <h1>Sullivan</h1>
             <p>questions to answers, answers to questions</p>
-            <form class="form-inline" id="search-form-homepage" onsubmit="return redirectToResults();">
-                <div class="input-group center">
-                    <input type="text" class="form-control search-box" id="search-box-homepage" placeholder="What do you need help with today?" required>
-                    <div class="input-group-btn">
-                        <button type="button" class="btn" type="submit" id="search-submit-homepage">Go</button>
-                    </div>
-                </div>
-            </form>
+             <div id="content" class="container-fluid">
+                <form id="search-form-homepage" class="center-block form-inline" onsubmit="return redirectToResults();">
+                    <div class="form-group-lg"><input class="form-control search-box" type="text" id="search-box-homepage" required="" aria-required=true placeholder="What do you need help with today?"></div>
+                    <button class="btn btn-lg" type="submit" id="search-submit-homepage">Go</button>
+                </form>
+            </div>
         </div>
 
         <div class="bg-description-blue">
@@ -90,6 +90,8 @@ See the License for the specific language governing permissions and
             <p>Bootstrap Theme Made By W3Schools</a></p>
         </footer>
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="search.js"></script>
         <script src="registration.js"></script>
     </body>

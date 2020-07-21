@@ -12,9 +12,84 @@ distributed under the License is distributed on an "AS IS" BASIS,
 See the License for the specific language governing permissions and
  limitations under the License.  */
 
+.jumbotron {
+    background-color: #849324; /* Green */
+    color: #ffffff; /* White */
+    padding: 100px 25px;
+    margin-bottom: 0;
+    height: 600px;
+    border-bottom-left-radius: 40% 10%;
+    border-bottom-right-radius: 40% 10%;
+    align-items: center;
+    width: 100%;
+}
 
-.top-right {
-    position: absolute;
-    top: 0;
-    right: 0;
+.container-fluid {
+  padding: 60px 50px;
+}
+
+.bg-white {
+    background-color: #ffffff; /* White */
+    border-bottom-left-radius: 40% 10%;
+    border-bottom-right-radius: 40% 10%;
+    min-height: 600px;
+}
+
+.bg-jumbotron {
+    margin-top: 0;
+    background-color: #437f97; /* Blue */
+    color: #ffffff; /* White */
+}
+
+.bg-blue {
+    background-color: #437f97; /* Blue */
+    color: #ffffff; /* White */
+}
+
+.bg-description-blue {
+    background-color: #437f97; /* Blue */
+}
+
+.navbar {
+  margin-bottom: 5%;
+  background-color: #849324;
+  z-index: 9999;
+  border: 0;
+  font-size: 12px !important;
+  line-height: 1.42857143 !important;
+  letter-spacing: 4px;
+  border-radius: 0;
+}
+
+.navbar li a, .navbar .navbar-brand {
+  color: #fff !important;
+}
+
+.navbar-nav li a:hover, .navbar-nav li.active a {
+  color: #437f97 !important;
+  background-color: #fff !important;
+}
+
+.navbar-default .navbar-toggle {
+  border-color: transparent;
+  color: #fff !important;
+}
+
+.dropdown-menu {
+    background-color: #849324;
+}
+
+footer .glyphicon {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #437f97;
+}
+
+.btn {
+    background-color: #437f97;
+    color: white;
+}
+
+.btn:hover {
+  color: white;
 }

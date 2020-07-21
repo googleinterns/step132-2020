@@ -13,177 +13,203 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
         <title>Your Availability</title>
-        <link rel="stylesheet" type="text/css" href="general.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" type="text/css" href="general.css">
     </head>
     <body onload="getAvailabilityManage(), displayLoginLogoutLink(), addEventListeners()">
-        <a href="./homepage.html"><p>Homepage</p></a>
+        <nav class="navbar navbar-default navbar-fixed-top" id="top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/homepage.html">Sullivan</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#about">ABOUT</a></li>
+                        <li><a href="#about">CONTACT</a></li>
+                        <li id="account-dropdown" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">MY ACCOUNT <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a id="profile">Profile</a></li>
+                                <li><a id="history">History</a></li>
+                                <li><a id="availability-settings">Manage Availability</a></li>
+                                <li><a id="my-students">My Students</a></li>
+                                <li><a id="my-progress">My Progress</a></li>
+                                <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
+                            </ul>
+                        </li>
+                        <li id="login"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                        <li id="logout"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
-        <div class="top-right">
-            <a id="login-url"><p id="login" style="display:none">Login with Google</p></a>
-            <button type="button" id="profile" style="display:none">My Account</button>
-            <input type="hidden" id="availability-settings" style="display:none">
-            <button type="button" id="my-students" style="display:none">Your Students</button>
-            <button type="button" id="my-progress" style="display:none">My Progress</button>
-            <button type="button" id="tutor-session-settings" style="display:none">Manage your tutoring sessions</button>
-            <button type="button" id="history" style="display:none">Tutoring session history</button>
-            <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
-        </div>
-
-        <div class="container-fluid">
+        <div class="container-fluid text-center bg-white">
             <h1>Manage Your Availability</h1>
             <h2>Delete available timeslots or add new ones.</h2>
         </div>
 
-        <div class="container-fluid">
+        <div class="container-fluid text-center bg-white">
             <ul class="list-group" id="timeslots"></ul>
         </div>
 
-        <div class="container-fluid">
-            <h2>Add a new available timeslot.</h2>
+        <div class="bg-description-blue">
+            <div class="container-fluid text-center bg-white">
+                <h2>Add a new available timeslot.</h2>
 
-            <form class="form-inline" id="timeslot-form">
-                <label class="my-1 mr-2" for="startHour startMinute">From:</label>
-                <select class="custom-select form-control my-1 mr-sm-2" name="startHour" id="startHour" required>
-                    <option value="">select</option>
-                    <option value="0">00</option>
-                    <option value="1">01</option>
-                    <option value="2">02</option>
-                    <option value="3">03</option>
-                    <option value="4">04</option>
-                    <option value="5">05</option>
-                    <option value="6">06</option>
-                    <option value="7">07</option>
-                    <option value="8">08</option>
-                    <option value="9">09</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                </select>
-                <select class="custom-select form-control my-1 mr-sm-2" name="startMinute" id="startMinute" required>
-                    <option value="">select</option>
-                    <option value="0">00</option>
-                    <option value="15">15</option>
-                    <option value="30">30</option>
-                    <option value="45">45</option>
-                </select>
+                <form class="form-inline" id="timeslot-form">
+                    <label class="my-1 mr-2" for="startHour startMinute">From:</label>
+                    <select class="custom-select form-control my-1 mr-sm-2" name="startHour" id="startHour" required>
+                        <option value="">select</option>
+                        <option value="0">00</option>
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                    </select>
+                    <select class="custom-select form-control my-1 mr-sm-2" name="startMinute" id="startMinute" required>
+                        <option value="">select</option>
+                        <option value="0">00</option>
+                        <option value="15">15</option>
+                        <option value="30">30</option>
+                        <option value="45">45</option>
+                    </select>
 
-                <label class="my-1 mr-2" for="endHour endMinute">To:</label>  
-                <select class="custom-select form-control my-1 mr-sm-2" name="endHour" id="endHour" required>
-                    <option value="">select</option>
-                    <option value="0">00</option>
-                    <option value="1">01</option>
-                    <option value="2">02</option>
-                    <option value="3">03</option>
-                    <option value="4">04</option>
-                    <option value="5">05</option>
-                    <option value="6">06</option>
-                    <option value="7">07</option>
-                    <option value="8">08</option>
-                    <option value="9">09</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                </select>
-                <select class="custom-select form-control my-1 mr-sm-2" name="endMinute" id="endMinute" required>
-                    <option value="">select</option>
-                    <option value="0">00</option>
-                    <option value="15">15</option>
-                    <option value="30">30</option>
-                    <option value="45">45</option>
-                </select>
+                    <label class="my-1 mr-2" for="endHour endMinute">To:</label>  
+                    <select class="custom-select form-control my-1 mr-sm-2" name="endHour" id="endHour" required>
+                        <option value="">select</option>
+                        <option value="0">00</option>
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                    </select>
+                    <select class="custom-select form-control my-1 mr-sm-2" name="endMinute" id="endMinute" required>
+                        <option value="">select</option>
+                        <option value="0">00</option>
+                        <option value="15">15</option>
+                        <option value="30">30</option>
+                        <option value="45">45</option>
+                    </select>
 
-                <label class="my-1 mr-2" for="month">Month:</label>
-                <select class="custom-select form-control my-1 mr-sm-2" name="month" id="month" required>
-                    <option value="">select</option>
-                    <option value="0">January</option>
-                    <option value="1">February</option>
-                    <option value="2">March</option>
-                    <option value="3">April</option>
-                    <option value="4">May</option>
-                    <option value="5">June</option>
-                    <option value="6">July</option>
-                    <option value="7">August</option>
-                    <option value="8">September</option>
-                    <option value="9">October</option>
-                    <option value="10">November</option>
-                    <option value="11">December</option>
-                </select>
+                    <label class="my-1 mr-2" for="month">Month:</label>
+                    <select class="custom-select form-control my-1 mr-sm-2" name="month" id="month" required>
+                        <option value="">select</option>
+                        <option value="0">January</option>
+                        <option value="1">February</option>
+                        <option value="2">March</option>
+                        <option value="3">April</option>
+                        <option value="4">May</option>
+                        <option value="5">June</option>
+                        <option value="6">July</option>
+                        <option value="7">August</option>
+                        <option value="8">September</option>
+                        <option value="9">October</option>
+                        <option value="10">November</option>
+                        <option value="11">December</option>
+                    </select>
 
-                <label class="my-1 mr-2" for="day">Day:</label>
-                <select class="custom-select form-control my-1 mr-sm-2" name="day" id="day" required>
-                    <option value="">select</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    <option value="13">13</option>
-                    <option value="14">14</option>
-                    <option value="15">15</option>
-                    <option value="16">16</option>
-                    <option value="17">17</option>
-                    <option value="18">18</option>
-                    <option value="19">19</option>
-                    <option value="20">20</option>
-                    <option value="21">21</option>
-                    <option value="22">22</option>
-                    <option value="23">23</option>
-                    <option value="24">24</option>
-                    <option value="25">25</option>
-                    <option value="26">26</option>
-                    <option value="27">27</option>
-                    <option value="28">28</option>
-                    <option value="29">29</option>
-                    <option value="30">30</option>
-                    <option value="31">31</option>
-                </select>
+                    <label class="my-1 mr-2" for="day">Day:</label>
+                    <select class="custom-select form-control my-1 mr-sm-2" name="day" id="day" required>
+                        <option value="">select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                    </select>
 
-                <label class="my-1 mr-2" for="month">Year:</label>
-                <select class="custom-select form-control my-1 mr-sm-2" name="year" id="year" required>
-                    <option value="">select</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                    <option value="2022">2022</option>
-                    <option value="2023">2023</option>
-                </select>
+                    <label class="my-1 mr-2" for="month">Year:</label>
+                    <select class="custom-select form-control my-1 mr-sm-2" name="year" id="year" required>
+                        <option value="">select</option>
+                        <option value="2020">2020</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                    </select>
 
-                <button type="submit" class="btn btn-primary mb-2">Add</button>
-            </form>
+                    <button type="submit" class="btn btn-primary mb-2">Add</button>
+                </form>
+            </div>
         </div>
+
+        <footer class="container-fluid text-center bg-blue">
+            <a href="#top" title="To Top">
+                <span class="glyphicon glyphicon-chevron-up"></span>
+            </a>
+            <p>Bootstrap Theme Made By W3Schools</a></p>
+        </footer>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
