@@ -177,7 +177,6 @@ function displayRegistrationInfo() {
  */
 function displayRegistrationInfoHelper(document) {
     var generalInfo = document.getElementById('general-info');
-    var tutorInfo = document.getElementById('tutor-info');
     var studentTopics = document.getElementById('student-topics');
     var tutorTopics = document.getElementById('tutor-topics');
     generalInfo.style.display = 'block';
@@ -186,10 +185,8 @@ function displayRegistrationInfoHelper(document) {
     if (document.getElementById('tutor').checked) {
         studentTopics.style.display = 'none';
         tutorTopics.style.display = 'block';
-        tutorInfo.style.display = 'block';
     } else if (document.getElementById('student').checked) {   // Display student info, hide tutor info
         tutorTopics.style.display = 'none';
-        tutorInfo.style.display = 'none';
         studentTopics.style.display = 'block';
     }
 }
