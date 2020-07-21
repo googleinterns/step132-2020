@@ -66,8 +66,9 @@ async function getSearchResultsHelper(document, window) {
 
 /** Fetches the list of books for the topic the user searched for. */
 async function getBooks(topic) {
-    //to be placed by Google Books API
-    await fetch("/books?topic="+topic).then(response => response.json()).then((results) => {
+    //TODO: create load more button so we can get next 40 results
+    await fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&key=AIzaSyBR6aZ9eFTRQ3Cv4eDBMeB0LSH-jF-Rbsw").then(response => response.json()).then((results) => {
+        console.log(results);
         var books = document.getElementById("books");
 
         var numSearchResults = document.createElement("h4");
@@ -77,19 +78,19 @@ async function getBooks(topic) {
 
         //if there was an error reported by the servlet, display the error message
         if(results.error) {
-            numSearchResults.innerText = results.error;
+            numSearchResults.innerText = results.error.message;
             return;
         }
 
         //Only make "books" plural if there are 0 or more than 1 books
-        numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " books for " : " book for ") + topic;
+        numSearchResults.innerText = "Found " + results.items.length + (results.items.length > 1 || results.items.length === 0 ? " books for " : " book for ") + topic;
 
         //create container to put books
         var booksContainer = document.createElement("div");
         booksContainer.id = "books-container";
 
-        results.forEach(function(result) {
-            booksContainer.append(createBookResult(result));
+        results.items.forEach(function(result) {
+            booksContainer.append(createBookResult(result.volumeInfo));
         });
 
         books.appendChild(booksContainer);
@@ -122,16 +123,27 @@ async function getTutors(topic) {
 
 }
 
-/** Creates a div element containing information about a book result. */
+/** Creates a anchor element containing information about a book result. */
 function createBookResult(result) {
-    var container = document.createElement("div");
+    var container = document.createElement("a");
     var thumbnail = document.createElement("img");
     var title = document.createElement("p");
     var author = document.createElement("p");
 
-    thumbnail.src = result.thumbnail;
+    container.href = result.infoLink;
+    container.setAttribute("target", "_blank");
+
+    if(!result.imageLinks) {
+        thumbnail.src = "/images/book-cover.png"
+    } else {
+        thumbnail.src = result.imageLinks.smallThumbnail;
+    }
+
     title.innerText = result.title;
-    author.innerText = "by " + result.author;
+
+    if(result.authors) {
+        author.innerText = "by " + result.authors.join(", ");
+    }
 
     container.classList.add("book-result");
     container.classList.add("col-md-4");

@@ -70,3 +70,14 @@ See the License for the specific language governing permissions and
 .book-result p:first-of-type {
     margin-top: 10px;
 }
+
+.book-result img {
+    width: 150px;
+    height: 200px;
+}
+
+@media (min-width: 992px) {
+  .book-result:nth-child(3n+1) {
+    clear: left;
+  }
+}
