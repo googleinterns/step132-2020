@@ -30,7 +30,7 @@ function displayProfile() {
                 });
             }
 
-            document.getElementById('profile-container').appendChild(createProfileDiv(user, loginStatus.role));
+            document.getElementById('profile-container').appendChild(createProfileDiv(user, loginStatus));
         });
     });
 }
@@ -55,7 +55,7 @@ function getUser(userID) {
 }
  
 // Create elements and fill their inner HTML with user info
-function createProfileDiv(user, role) {
+function createProfileDiv(user, loginStatus) {
     const profileDiv = document.createElement('div');
     
     const profileName = document.createElement('h3');
@@ -73,7 +73,7 @@ function createProfileDiv(user, role) {
     profileEmail.innerHTML = user.email;
 
     const profileTopics = document.createElement('p');
-    if (role == 'student') { 
+    if (loginStatus.role == 'student') { 
         profileTopics.innerHTML = "I am learning: " + user.learning;
     }
     else { 
@@ -85,6 +85,8 @@ function createProfileDiv(user, role) {
     profileDiv.appendChild(profileBio);
     profileDiv.appendChild(profileEmail);
     profileDiv.appendChild(profileTopics);
+
+    loadProgress(document, loginStatus, user);
 
     return profileDiv;
 }

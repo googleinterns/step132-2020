@@ -21,7 +21,7 @@ See the License for the specific language governing permissions and
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="displayLoginLogoutLink(), displayProfile(), loadProgress(), addEventListeners()">
+    <body onload="displayLoginLogoutLink(), displayProfile()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -101,7 +101,7 @@ See the License for the specific language governing permissions and
                     </form>
                 </div>
 
-                <div class="container-fluid text-center bg-white">
+                <div class="container-fluid text-center bg-white" id="sessionsAndAchievements">
                     <h1>Progress</h1>
                     <h3>Achievements</h3>
                     <ul class="list-group text-left" id="achievements"></ul>
@@ -128,8 +128,8 @@ See the License for the specific language governing permissions and
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="profile.js"></script>
         <script src="progress.js"></script>
+        <script src="profile.js"></script>
         <script src="registration.js"></script>
     </body>
 </html>
