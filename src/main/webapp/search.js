@@ -67,13 +67,7 @@ async function getSearchResultsHelper(document, window) {
 var numResultsLoaded = 0;
 /** Fetches the list of books for the topic the user searched for. */
 async function getBooks(topic) {
-<<<<<<< HEAD
-    //TODO: create load more button so we can get next 40 results
     await fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y").then(response => response.json()).then((results) => {
-        console.log(results);
-=======
-    await fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y").then(response => response.json()).then((results) => {
->>>>>>> master
         var books = document.getElementById("books");
 
         var numSearchResults = document.createElement("h4");
@@ -94,7 +88,7 @@ async function getBooks(topic) {
         //create container to put books
         var booksContainer = document.createElement("div");
         booksContainer.id = "books-container";
-        
+
         numResultsLoaded = results.items.length;
 
         results.items.forEach(function(result) {
