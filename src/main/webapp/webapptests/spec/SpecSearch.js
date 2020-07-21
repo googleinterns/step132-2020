@@ -165,7 +165,7 @@ describe("Search", function() {
     });
 
     describe("when a tutor result is created", function() {
-        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId": "123"};
+        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", " ", "History"], "userId": "123"};
         var element = createTutorResult(result);
 
         it("should create div for result element", function() {
