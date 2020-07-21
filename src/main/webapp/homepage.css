@@ -8,23 +8,23 @@ distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
  limitations under the License.  */
- 
+
 #search-box-homepage {
-    width: 75%;
-    display:inline-block;
-    float:left;
+    width: 50%;
+    display: inline;
 }
 
-#search-submit-homepage {
-    display: inline-block;
-    width: 15%;
-    font-weight: bold;
-    background-color: #337ab7;
-    color:white;
-    margin-left: 10px;
+#search-submit-homepage{
+    display: inline;
 }
 
 #search-form-homepage {
-    margin-top: 20% !important;
-    width: 50%;
+    width: 100%;
+    margin-top: 7% !important;
 }
+
+.form-group-lg {
+    display: inline;
+}
+
+
