@@ -23,11 +23,7 @@ See the License for the specific language governing permissions and
     <body onload="displayLoginLogoutLink(), displayProfile()">
         <a href="./homepage.html"><p>Homepage</p></a>
 
-<<<<<<< HEAD
-        <div class="top-right" id="top-right-buttons">
-=======
         <div class="top-right" id="top-right-buttons" style="display:block">
->>>>>>> 645e57f404e1401d57a0b01c719324b23f1939b0
             <a id="login-url"><p id="login" style="display:none">Login with Google</p></a>
             <input type="hidden" id="profile" style="display:none">
             <button type="button" id="availability-settings" style="display:none">Manage your availability</button>
@@ -48,10 +44,26 @@ See the License for the specific language governing permissions and
             <p id="tutor-topics" style="display:none">What topic(s) would you like to tutor in?</p>
                 <input type="checkbox" id="math" name="math" value="Math">
                 <label for="math"> Math</label><br>
+                <input type="checkbox" id="physics" name="physics" value="Physics">
+                <label for="physics"> Physics</label><br>
+                <input type="checkbox" id="chemistry" name="chemistry" value="Chemistry">
+                <label for="chemistry"> Chemistry</label><br>
+                <input type="checkbox" id="biology" name="biology" value="Biology">
+                <label for="biology"> Biology</label><br>
+                <input type="checkbox" id="computer-science" name="computer-science" value="Computer Science">
+                <label for="computer-science"> Computer Science</label><br>
+                <input type="checkbox" id="social-studies" name="social-studies" value="Social Studies">
+                <label for="social-studies"> Social Studies</label><br>
                 <input type="checkbox" id="english" name="english" value="English">
                 <label for="english"> English</label><br>
-                <input type="checkbox" id="other-subject" name="other" value="Other">
-                <label for="other-subject"> Other</label><br><br>
+                <input type="checkbox" id="spanish" name="spanish" value="Spanish">
+                <label for="spanish"> Spanish</label><br>
+                <input type="checkbox" id="french" name="french" value="French">
+                <label for="french"> French</label><br>
+                <input type="checkbox" id="chinese" name="chinese" value="Chinese">
+                <label for="chinese"> Chinese</label><br>
+                <label for="other-subject">Please add any other topics in a comma separated list (e.g. "History, Business, Computer Science"):</label><br>
+                <input type="text" id="other-subject" name="other"><br><br>
 
             <input type="submit" name="submit" value="Submit">
             <input type="submit" name="submit" value="Cancel">
