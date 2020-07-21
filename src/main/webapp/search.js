@@ -64,19 +64,19 @@ async function getSearchResultsHelper(document, window) {
     }
 }
 
+var numResultsLoaded = 0;
 /** Fetches the list of books for the topic the user searched for. */
 async function getBooks(topic) {
-    //TODO: create load more button so we can get next 40 results
     await fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y").then(response => response.json()).then((results) => {
-        console.log(results);
         var books = document.getElementById("books");
 
         var numSearchResults = document.createElement("h4");
         numSearchResults.className = "num-search-results";
+        numSearchResults.id = "num-book-results";
 
         books.appendChild(numSearchResults);
 
-        //if there was an error reported by the servlet, display the error message
+        //if there was an error reported by the api, display the error message
         if(results.error) {
             numSearchResults.innerText = results.error.message;
             return;
@@ -89,11 +89,56 @@ async function getBooks(topic) {
         var booksContainer = document.createElement("div");
         booksContainer.id = "books-container";
 
+        numResultsLoaded = results.items.length;
+
         results.items.forEach(function(result) {
             booksContainer.append(createBookResult(result.volumeInfo));
         });
 
         books.appendChild(booksContainer);
+
+        //if we got the max results, there might be more
+        if(results.items.length == 40) {
+            var loadMore = document.createElement("button");
+            loadMore.id = "load-more";
+            loadMore.classList.add("btn");
+            loadMore.classList.add("btn-default");
+            loadMore.addEventListener("click", function() {
+                loadMoreBooks(topic);
+            });
+            loadMore.innerText = "Load More";
+            books.appendChild(loadMore);
+        }
+
+    });
+}
+
+function loadMoreBooks(topic) {
+    fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&startIndex=" + numResultsLoaded + "&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y").then(response => response.json()).then((results) => {
+        var numSearchResults = document.getElementById("num-book-results");
+
+        //if there was an error reported by the api, display the error message
+        if(results.error) {
+            numSearchResults.innerText = results.error.message;
+            return;
+        }
+
+        numResultsLoaded += results.items.length;
+
+        //Only make "books" plural if there are 0 or more than 1 books
+        numSearchResults.innerText = "Found " + numResultsLoaded + " books for " + topic;
+
+        //create container to put books
+        var booksContainer = document.getElementById("books-container");
+
+        results.items.forEach(function(result) {
+            booksContainer.append(createBookResult(result.volumeInfo));
+        });
+
+        if(results.items.length < 40) {
+            document.getElementById("load-more").display = "none";
+        }
+
     });
 }
 
