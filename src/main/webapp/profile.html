@@ -53,12 +53,13 @@ See the License for the specific language governing permissions and
             </div>
         </nav>
 
-        <div class="container-fluid text-center bg-white" id="profile-container" style="display:block">
+        <div class="container-fluid text-center bg-white bg-white-lg" id="profile-container" style="display:block">
+            <button type="button" class="btn btn-lg" id="edit-profile-btn" style="display:none">Edit Profile</button>
         </div>
 
         <div class="bg-description-blue">
-            <div class="container-fluid text-center bg-white" style="display:none">
-                <form id="edit-profile-form" action="/profile" method="POST">
+            <div class="container-fluid text-center bg-white">
+                <form id="edit-profile-form" class="bg-white-lg" action="/profile" method="POST" style="display:none">
                     <label for="bio">Biography:</label><br>
                     <textarea name="bio" id="bio"></textarea><br>
                     <p id="student-topics" style="display:none">What topic(s) would you like to learn?</p>
@@ -78,7 +79,7 @@ See the License for the specific language governing permissions and
 
         <footer class="container-fluid text-center bg-blue">
             <a href="#top" title="To Top">
-                <span class="glyphicon glyphicon-chevron-up"></span>
+                <span id="top-arrow" class="glyphicon glyphicon-chevron-up"></span>
             </a>
             <p>Bootstrap Theme Made By W3Schools</a></p>
         </footer>

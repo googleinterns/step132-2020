@@ -32,6 +32,9 @@ See the License for the specific language governing permissions and
     background-color: #ffffff; /* White */
     border-bottom-left-radius: 40% 10%;
     border-bottom-right-radius: 40% 10%;
+}
+
+.bg-white-lg {
     min-height: 600px;
 }
 
@@ -92,4 +95,9 @@ footer .glyphicon {
 
 .btn:hover {
   color: white;
+}
+
+#top-arrow {
+    color: white;
+    text-color: white;
 }

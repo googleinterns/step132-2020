@@ -51,16 +51,14 @@
             </div>
         </nav>
 
-        <div class="container-fluid text-center bg-white">
-            <h1>Manage Your Availability</h1>
-            <h2>Delete available timeslots or add new ones.</h2>
-        </div>
+        <div class="bg-white-lg">
+            <div class="container-fluid text-center bg-white">
+                <h1>Manage Your Availability</h1>
+                <h2>Delete available timeslots or add new ones.</h2>
+                <br><br>
+                <ul class="list-group text-left" id="timeslots"></ul>
+            </div>
 
-        <div class="container-fluid text-center bg-white">
-            <ul class="list-group" id="timeslots"></ul>
-        </div>
-
-        <div class="bg-description-blue">
             <div class="container-fluid text-center bg-white">
                 <h2>Add a new available timeslot.</h2>
 
@@ -201,12 +199,19 @@
 
                     <button type="submit" class="btn btn-primary mb-2">Add</button>
                 </form>
+
+                <br><br>
+            </div>
+        </div>
+
+        <div class="bg-description-blue">
+            <div class="container-fluid bg-white">
             </div>
         </div>
 
         <footer class="container-fluid text-center bg-blue">
             <a href="#top" title="To Top">
-                <span class="glyphicon glyphicon-chevron-up"></span>
+                <span id="top-arrow" class="glyphicon glyphicon-chevron-up"></span>
             </a>
             <p>Bootstrap Theme Made By W3Schools</a></p>
         </footer>

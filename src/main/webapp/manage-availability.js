@@ -96,7 +96,7 @@ function createTimeSlotBoxManage(timeslot) {
     deleteButtonElement.innerText = 'Delete';
     deleteButtonElement.style.textAlign = 'right';
     deleteButtonElement.style.display = 'inline';
-    deleteButtonElement.className = 'btn btn-default btn-lg';
+    deleteButtonElement.className = 'btn btn-lg';
     deleteButtonElement.addEventListener('click', () => {
         deleteTimeSlot(window, timeslot);
 
