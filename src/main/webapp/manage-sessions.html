@@ -13,35 +13,63 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
         <title>Your Scheduled Sessions</title>
-        <link rel="stylesheet" type="text/css" href="general.css">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" type="text/css" href="general.css">
     </head>
     <body onload="getTutorSessionsManage(), displayLoginLogoutLink()">
-        <a href="./homepage.html"><p>Homepage</p></a>
+        <nav class="navbar navbar-default navbar-fixed-top" id="top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/homepage.html">Sullivan</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#about">ABOUT</a></li>
+                        <li><a href="#about">CONTACT</a></li>
+                        <li id="account-dropdown" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">MY ACCOUNT <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a id="profile">Profile</a></li>
+                                <li><a id="history">History</a></li>
+                                <li><a id="availability-settings">Manage Availability</a></li>
+                                <li><a id="my-students">My Students</a></li>
+                                <li><a id="my-progress">My Progress</a></li>
+                                <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
+                            </ul>
+                        </li>
+                        <li id="login"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                        <li id="logout"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
 
-        <div class="top-right">
-            <a id="login-url"><p id="login" style="display:none">Login with Google</p></a>
-            <button type="button" id="profile" style="display:none">My Account</button>
-            <button type="button" id="availability-settings" style="display:none">Manage your availability</button>
-            <button type="button" id="my-students" style="display:none">Your Students</button>
-            <button type="button" id="my-progress" style="display:none">My Progress</button>
-            <input type="hidden" id="tutor-session-settings" style="display:none">
-            <button type="button" id="history" style="display:none">Tutoring session history</button>
-            <a id="logout-url"><p id="logout" style="display:none">Logout</p></a>
-        </div>
-
-        <div class="container-fluid">
+        <div class="container-fluid text-center bg-white bg-white-lg">
             <h1>Manage Your Scheduled Tutoring Sessions</h1>
             <h2>Cancel any upcoming scheduled sessions.</h2>
+
+            <br><br>
+            <ul class="list-group text-left" id="scheduledSessions"></ul>
         </div>
 
-        <div class="container-fluid">
-            <ul class="list-group" id="scheduledSessions"></ul>
+        <div class="bg-description-blue">
+            <div class="container-fluid bg-white">
+            </div>
         </div>
+
+        <footer class="container-fluid text-center bg-blue">
+            <a href="#top" title="To Top">
+                <span id="top-arrow" class="glyphicon glyphicon-chevron-up"></span>
+            </a>
+            <p>Bootstrap Theme Made By W3Schools</a></p>
+        </footer>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>

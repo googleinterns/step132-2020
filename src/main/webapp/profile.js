@@ -93,7 +93,6 @@ function createProfileDiv(user) {
 // Displays a form that will allow the user to edit the info on their profile
 function editProfile(user, role, document) {
     document.getElementById('profile-container').style.display = 'none';
-    document.getElementById('top-right-buttons').style.display = 'none';
     document.getElementById('edit-profile-form').style.display = 'block';
 
     // Set default value of bio to what user previously had
