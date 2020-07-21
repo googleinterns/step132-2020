@@ -72,6 +72,9 @@ public class RegistrationServlet extends HttpServlet {
                                 .map(t -> t.get())
                                 .collect(Collectors.toList());
 
+    // Add blank entry to topics list to know where default topics end and custom topics begin
+    topicsToStr.add(" ");
+
     String otherTopics = Optional.ofNullable(request.getParameter("other")).orElse("");
     if (!otherTopics.equals("")) {
         // Split the list, removing commas and whitespace, and add to the rest of the topics
