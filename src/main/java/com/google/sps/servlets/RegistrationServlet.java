@@ -23,6 +23,7 @@ import com.google.gson.Gson;
 import com.google.sps.data.TimeRange;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,13 +57,29 @@ public class RegistrationServlet extends HttpServlet {
     // Make list of selected topics, remove unchecked topics
     List<Optional<String>> topics = new ArrayList<Optional<String>>();
     topics.add(Optional.ofNullable(request.getParameter("math")));
+    topics.add(Optional.ofNullable(request.getParameter("physics")));
+    topics.add(Optional.ofNullable(request.getParameter("chemistry")));
+    topics.add(Optional.ofNullable(request.getParameter("biology")));
+    topics.add(Optional.ofNullable(request.getParameter("computer-science")));
+    topics.add(Optional.ofNullable(request.getParameter("social-studies")));
     topics.add(Optional.ofNullable(request.getParameter("english")));
-    topics.add(Optional.ofNullable(request.getParameter("other")));
+    topics.add(Optional.ofNullable(request.getParameter("spanish")));
+    topics.add(Optional.ofNullable(request.getParameter("french")));
+    topics.add(Optional.ofNullable(request.getParameter("chinese")));
     List<String> topicsToStr = topics
                                 .stream()
                                 .filter(t -> t.isPresent())
-                                .map(t -> t.get().toLowerCase())
+                                .map(t -> t.get())
                                 .collect(Collectors.toList());
+
+    String otherTopics = Optional.ofNullable(request.getParameter("other")).orElse("");
+    if (!otherTopics.equals("")) {
+        // Split the list, removing commas and whitespace, and add to the rest of the topics
+        List<String> otherTopicsToList = Arrays.asList(otherTopics.split("\\s*,\\s*"));
+        for (String otherTopic : otherTopicsToList) {
+            topicsToStr.add(otherTopic);
+        }
+    }
 
     // Make entity for user with all registration info
     Entity userEntity = new Entity("User");
