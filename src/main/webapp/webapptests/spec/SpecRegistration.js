@@ -150,6 +150,9 @@ describe("Registration", function() {
                 var mockHistoryLink = document.createElement('button');
                 mockHistoryLink.id = 'history';
 
+                var mockDropdownLink = document.createElement('button');
+                mockDropdownLink.id = 'account-dropdown';
+
                 document.body.appendChild(mockLoginForm);
                 document.body.appendChild(mockLoginUrl);
                 document.body.appendChild(mockLogoutForm);
@@ -160,6 +163,7 @@ describe("Registration", function() {
                 document.body.appendChild(mockMyProgressLink);
                 document.body.appendChild(mockTutorSessionSettingsLink);
                 document.body.appendChild(mockHistoryLink);
+                document.body.appendChild(mockDropdownLink);
             })
 
             it("displays login link when user logged out", function() {
@@ -168,12 +172,7 @@ describe("Registration", function() {
 
                 expect(document.getElementById('login').style.display).toBe('block');
                 expect(document.getElementById('logout').style.display).toBe('none');
-                expect(document.getElementById('profile').style.display).toBe('none');
-                expect(document.getElementById('availability-settings').style.display).toBe('none');
-                expect(document.getElementById('my-students').style.display).toBe('none');
-                expect(document.getElementById('my-progress').style.display).toBe('none');
-                expect(document.getElementById('tutor-session-settings').style.display).toBe('none');
-                expect(document.getElementById('history').style.display).toBe('none');
+                expect(document.getElementById('account-dropdown').style.display).toBe('none');
             });
 
             it("displays logout link when user logged in and the user is a student", function() {
@@ -188,6 +187,7 @@ describe("Registration", function() {
                 expect(document.getElementById('my-progress').style.display).toBe('block');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('block');
                 expect(document.getElementById('history').style.display).toBe('block');
+                expect(document.getElementById('account-dropdown').style.display).toBe('block');
             });
 
             it("displays logout link when user logged in and the user is a tutor", function() {
@@ -202,6 +202,7 @@ describe("Registration", function() {
                 expect(document.getElementById('my-progress').style.display).toBe('none');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('none');
                 expect(document.getElementById('history').style.display).toBe('none');
+                expect(document.getElementById('account-dropdown').style.display).toBe('block');
             });
 
             it("sets logout link correctly", function() {
