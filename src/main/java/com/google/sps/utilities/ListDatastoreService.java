@@ -14,6 +14,7 @@
 
 package com.google.sps.utilities;
 
+import com.google.sps.data.BookList;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -35,4 +36,79 @@ import java.util.ArrayList;
 
 /** Accesses Datastore to manage book lists. */ 
 public final class ListDatastoreService {
+
+    public ArrayList<BookList> getListsByTopic(String topic) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Filter topicFilter = new FilterPredicate("topic", FilterOperator.EQUAL, topic.toLowerCase());
+        Query query = new Query("BookList").setFilter(topicFilter);
+
+        ArrayList<BookList> lists = new ArrayList<BookList>();
+
+        PreparedQuery results = datastore.prepare(query);
+
+        for (Entity entity : results.asIterable()) {
+
+            lists.add(createBookList(entity));
+            
+        }
+
+        return lists;
+    }
+
+    public ArrayList<BookList> getListsByTutor(String tutorID) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Filter filter = new FilterPredicate("tutorID", FilterOperator.EQUAL, tutorID);
+        Query query = new Query("BookList").setFilter(filter);
+
+        ArrayList<BookList> lists = new ArrayList<BookList>();
+
+        PreparedQuery results = datastore.prepare(query);
+
+        for (Entity entity : results.asIterable()) {
+
+            lists.add(createBookList(entity));
+            
+        }
+
+        return lists;
+
+    }
+
+    /**
+    * Adds a new List entity to datastore. 
+    */
+    public void addList(BookList list, String tutorID) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        try {
+            Entity listEntity = new Entity("BookList");
+
+            listEntity.setProperty("tutorID", tutorID);
+            listEntity.setProperty("books", list.getBooks());
+            listEntity.setProperty("name", list.getName());
+            listEntity.setProperty("topic", list.getTopic());
+            listEntity.setProperty("tutorName", list.getTutorName());
+
+            datastore.put(txn, listEntity);
+
+            txn.commit();
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
+    }
+
+    private BookList createBookList(Entity entity) {
+        long id = (long) entity.getKey().getId();
+        ArrayList books = (ArrayList) entity.getProperty("books");
+        String name = (String) entity.getProperty("name");
+        String topic = (String) entity.getProperty("topic");
+        String tutorName = (String) entity.getProperty("tutorName");
+        
+        return new BookList(books, name, topic, tutorName, id);
+
+    }
 }
