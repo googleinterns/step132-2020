@@ -344,6 +344,8 @@ public final class TutorSessionDatastoreService {
 
         //there should only be one result
         Entity timeEntity = pq.asSingleEntity();
+        System.out.println(timeEntity);
+        System.out.println("herehere");
         //change the tutorID property to the sessionId
         //instead of deleting the TimeRange entity, we can just set the tutorID property to the sessionId to indicate that it is a scheduled session 
         timeEntity.setProperty("tutorID", String.valueOf(sessionId));
