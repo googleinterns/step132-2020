@@ -21,15 +21,24 @@ import com.google.sps.data.SampleData;
 import com.google.sps.utilities.TutorSessionDatastoreService;
 import com.google.gson.Gson;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Optional;
+import java.util.Properties;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 @WebServlet("/scheduling")
 public class SchedulingServlet extends HttpServlet {
@@ -58,6 +67,7 @@ public class SchedulingServlet extends HttpServlet {
         //if the tutor or student id was null
         if(tutorID.equals("-1") || studentID.equals("-1")) {
             response.getWriter().println("{\"error\": \"There was an error scheduling your session.\"}");
+            return;
         }
 
         Calendar date = new Calendar.Builder()
@@ -71,8 +81,41 @@ public class SchedulingServlet extends HttpServlet {
 
         datastore.addTutorSession(tutoringSession);
 
+        sendConfirmationEmail("bernardo.trevisan@gmail.com");
+
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
         response.getWriter().println(json);
         return;
+    }
+
+    public void sendConfirmationEmail(String to) {
+        System.out.println("Create email");
+
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+
+        String subject = "Scheduled Tutoring Session";
+        String message = "Your tutoring session has been scheduled.";
+
+        try {
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress("contact@icecube-step-2020.appspotmail.com", "Sullivan"));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            msg.setSubject(subject);
+            msg.setText(message);
+            Transport.send(msg);
+
+            System.out.println("Email sent");
+
+        } catch (AddressException e) {
+            System.out.println("Failed to set email address.");
+            return;
+        } catch (MessagingException e) {
+            System.out.println("Failed to send email.");
+            return;
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("Failed to encode email.");
+            return;
+        } 
     }
 }
