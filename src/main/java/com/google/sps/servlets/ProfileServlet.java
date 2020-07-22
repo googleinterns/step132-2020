@@ -72,6 +72,9 @@ public class ProfileServlet extends HttpServlet {
         Query query = new Query("User").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
         PreparedQuery results = datastore.prepare(query);
         Entity entity = results.asSingleEntity();
+        if (entity == null) {
+            return;
+        }
         String role = (String) entity.getProperty("role"); 
 
         // User is a student, get their info
@@ -137,13 +140,32 @@ public class ProfileServlet extends HttpServlet {
         // Make list of selected topics, remove unchecked topics
         List<Optional<String>> topics = new ArrayList<Optional<String>>();
         topics.add(Optional.ofNullable(request.getParameter("math")));
+        topics.add(Optional.ofNullable(request.getParameter("physics")));
+        topics.add(Optional.ofNullable(request.getParameter("chemistry")));
+        topics.add(Optional.ofNullable(request.getParameter("biology")));
+        topics.add(Optional.ofNullable(request.getParameter("computer-science")));
+        topics.add(Optional.ofNullable(request.getParameter("social-studies")));
         topics.add(Optional.ofNullable(request.getParameter("english")));
-        topics.add(Optional.ofNullable(request.getParameter("other")));
+        topics.add(Optional.ofNullable(request.getParameter("spanish")));
+        topics.add(Optional.ofNullable(request.getParameter("french")));
+        topics.add(Optional.ofNullable(request.getParameter("chinese")));
         List<String> topicsToStr = topics
                                     .stream()
                                     .filter(t -> t.isPresent())
                                     .map(t -> t.get().toLowerCase())
                                     .collect(Collectors.toList());
+
+        // Add blank entry to topics list to know where default topics end and custom topics begin
+        topicsToStr.add(" ");
+
+        String otherTopics = Optional.ofNullable(request.getParameter("other")).orElse("");
+        if (!otherTopics.equals("")) {
+            // Split the list, removing commas and whitespace, and add to the rest of the topics
+            List<String> otherTopicsToList = Arrays.asList(otherTopics.split("\\s*,\\s*"));
+            for (String otherTopic : otherTopicsToList) {
+                topicsToStr.add(otherTopic);
+            }
+        }
 
         // User is a student, update their info
         if (role.toLowerCase().equals("student")) {
