@@ -63,6 +63,7 @@ public final class DeleteTutorSessionTest {
 
         SampleData sample = new SampleData();
         sample.addTutorsToDatastore();
+        sample.addStudentsToDatastore();
     }
 
     @After
