@@ -83,10 +83,21 @@ public class SchedulingServlet extends HttpServlet {
         datastore.addTutorSession(tutoringSession);
 
         Entity studentEntity = datastore.getStudentForUserId(studentID);
+        String studentName = (String) studentEntity.getProperty("name");
+        String studentEmail = (String) studentEntity.getProperty("email");
         Entity tutorEntity = datastore.getTutorForUserId(tutorID);
+        String tutorName = (String) tutorEntity.getProperty("name");
+        String tutorEmail = (String) tutorEntity.getProperty("email");
+        String monthString = new DateFormatSymbols().getMonths()[Integer.parseInt(month)];
 
-        boolean testTutorEmail = sendConfirmationEmailToTutor(studentEntity, tutorEntity, timeslot);
-        boolean testStudentEmail = sendConfirmationEmailToStudent(studentEntity, tutorEntity, timeslot);
+        String messageStudent = "You have scheduled a tutoring session with " + tutorName + " on " +
+                        monthString + " " + Integer.parseInt(day) + ", " + Integer.parseInt(year) + ". Check your Manage Tutoring Sessions page for more information.";
+
+        String messageTutor = studentName + " has scheduled a tutoring session with you on " +
+                        monthString + " " + Integer.parseInt(day) + ", " + Integer.parseInt(year) + ". Check your My Student page for more information.";
+
+        boolean testTutorEmail = sendConfirmationEmail(messageTutor, tutorEmail);
+        boolean testStudentEmail = sendConfirmationEmail(messageStudent, studentEmail);
 
 
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
@@ -94,19 +105,11 @@ public class SchedulingServlet extends HttpServlet {
         return;
     }
 
-    public boolean sendConfirmationEmailToTutor(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
+    private boolean sendConfirmationEmail(String message, String to) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
-        String to = (String) tutorEntity.getProperty("email");
         String subject = "Scheduled Tutoring Session";
-        String studentName = (String) studentEntity.getProperty("name");
-        Calendar date = timeslot.getDate();
-        String month = new DateFormatSymbols().getMonths()[date.get(Calendar.MONTH)];
-        int day = date.get(Calendar.DAY_OF_MONTH);
-        int year = date.get(Calendar.YEAR);
-        String message = studentName + " has scheduled a tutoring session with you on " +
-                        month + " " + day + ", " + year + ". Check your My Student page for more information.";
 
         try {
             Message msg = new MimeMessage(session);
@@ -128,37 +131,4 @@ public class SchedulingServlet extends HttpServlet {
         } 
     }
 
-    public boolean sendConfirmationEmailToStudent(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
-
-        String to = (String) studentEntity.getProperty("email");
-        String subject = "Scheduled Tutoring Session";
-        String tutorName = (String) tutorEntity.getProperty("name");
-        Calendar date = timeslot.getDate();
-        String month = new DateFormatSymbols().getMonths()[date.get(Calendar.MONTH)];
-        int day = date.get(Calendar.DAY_OF_MONTH);
-        int year = date.get(Calendar.YEAR);
-        String message = "You have scheduled a tutoring session with " + tutorName + " on " +
-                        month + " " + day + ", " + year + ". Check your Manage Tutoring Sessions page for more information.";
-
-        try {
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("contact@icecube-step-2020.appspotmail.com", "Sullivan"));
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            msg.setSubject(subject);
-            msg.setText(message);
-            Transport.send(msg);
-            return true;
-        } catch (AddressException e) {
-            System.out.println("Failed to set email address.");
-            return false;
-        } catch (MessagingException e) {
-            System.out.println("Failed to send email.");
-            return false;
-        } catch (UnsupportedEncodingException e) {
-            System.out.println("Failed to encode email.");
-            return false;
-        } 
-    }
 }

@@ -58,11 +58,25 @@ public class DeleteTutorSessionServlet extends HttpServlet {
         TutorSession tutorSession = datastore.getScheduledSession(id);
 
         Entity studentEntity = datastore.getStudentForUserId(tutorSession.getStudentID());
+        String studentName = (String) studentEntity.getProperty("name");
+        String studentEmail = (String) studentEntity.getProperty("email");
         Entity tutorEntity = datastore.getTutorForUserId(tutorSession.getTutorID());
+        String tutorName = (String) tutorEntity.getProperty("name");
+        String tutorEmail = (String) tutorEntity.getProperty("email");
         TimeRange timeslot = tutorSession.getTimeslot();
+        Calendar date = timeslot.getDate();
+        String month = new DateFormatSymbols().getMonths()[date.get(Calendar.MONTH)];
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        int year = date.get(Calendar.YEAR);
 
-        boolean testTutorEmail = sendCancellationEmailToTutor(studentEntity, tutorEntity, timeslot);
-        boolean testStudentEmail = sendCancellationEmailToStudent(studentEntity, tutorEntity, timeslot);
+        String messageStudent = "You have cancelled your tutoring session with " + tutorName + " on " +
+                        month + " " + day + ", " + year + ". Check your Manage Tutoring Sessions page for more information.";
+
+        String messageTutor = studentName + " has cancelled their tutoring session with you on " +
+                        month + " " + day + ", " + year + ". Check your My Student page for more information.";               
+
+        boolean testTutorEmail = sendCancellationEmail(messageTutor, tutorEmail);
+        boolean testStudentEmail = sendCancellationEmail(messageStudent, studentEmail);
 
         // Remove tutor session
         datastore.deleteTutorSession(studentID, id);
@@ -73,19 +87,11 @@ public class DeleteTutorSessionServlet extends HttpServlet {
         return;
     }
 
-    public boolean sendCancellationEmailToTutor(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
+    private boolean sendCancellationEmail(String message, String to) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
-        String to = (String) tutorEntity.getProperty("email");
         String subject = "Cancelled Tutoring Session";
-        String studentName = (String) studentEntity.getProperty("name");
-        Calendar date = timeslot.getDate();
-        String month = new DateFormatSymbols().getMonths()[date.get(Calendar.MONTH)];
-        int day = date.get(Calendar.DAY_OF_MONTH);
-        int year = date.get(Calendar.YEAR);
-        String message = studentName + " has cancelled their tutoring session with you on " +
-                        month + " " + day + ", " + year + ". Check your My Student page for more information.";
 
         try {
             Message msg = new MimeMessage(session);
@@ -106,39 +112,4 @@ public class DeleteTutorSessionServlet extends HttpServlet {
             return false;
         }
     }
-
-    public boolean sendCancellationEmailToStudent(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
-
-        String to = (String) studentEntity.getProperty("email");
-        String subject = "Cancelled Tutoring Session";
-        String tutorName = (String) tutorEntity.getProperty("name");
-        Calendar date = timeslot.getDate();
-        String month = new DateFormatSymbols().getMonths()[date.get(Calendar.MONTH)];
-        int day = date.get(Calendar.DAY_OF_MONTH);
-        int year = date.get(Calendar.YEAR);
-        String message = "You have cancelled your tutoring session with " + tutorName + " on " +
-                        month + " " + day + ", " + year + ". Check your Manage Tutoring Sessions page for more information.";
-
-        try {
-            Message msg = new MimeMessage(session);
-            msg.setFrom(new InternetAddress("contact@icecube-step-2020.appspotmail.com", "Sullivan"));
-            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            msg.setSubject(subject);
-            msg.setText(message);
-            Transport.send(msg);
-            return true;
-        } catch (AddressException e) {
-            System.out.println("Failed to set email address.");
-            return false;
-        } catch (MessagingException e) {
-            System.out.println("Failed to send email.");
-            return false;
-        } catch (UnsupportedEncodingException e) {
-            System.out.println("Failed to encode email.");
-            return false;
-        }
-    }
-
 }
