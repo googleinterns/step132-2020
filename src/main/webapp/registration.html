@@ -56,7 +56,7 @@ See the License for the specific language governing permissions and
         <div class="container-fluid text-center bg-white bg-white-lg" id="return" style="display:none">
             <p style="display:inline">You're now logged in! Return to the </p><a href="./homepage.html">Homepage</a>
         </div>
-        
+      
         <div class="bg-description-blue">
             <div class="container-fluid bg-white">
                 <form id="registration-form" action="/registration" method="POST" style="display:none">
@@ -77,12 +77,28 @@ See the License for the specific language governing permissions and
 
                         <p id="student-topics" style="display:none">What topic(s) would you like to learn?</p>
                         <p id="tutor-topics" style="display:none">What topic(s) would you like to tutor in?</p>
-                            <input type="checkbox" id="math" name="math" value="Math">
-                            <label for="math"> Math</label><br>
-                            <input type="checkbox" id="english" name="english" value="English">
-                            <label for="english"> English</label><br>
-                            <input type="checkbox" id="other-subject" name="other" value="Other">
-                            <label for="other-subject"> Other</label><br><br>
+                             <input type="checkbox" id="math" name="math" value="Math">
+                              <label for="math"> Math</label><br>
+                              <input type="checkbox" id="physics" name="physics" value="Physics">
+                              <label for="physics"> Physics</label><br>
+                              <input type="checkbox" id="chemistry" name="chemistry" value="Chemistry">
+                              <label for="chemistry"> Chemistry</label><br>
+                              <input type="checkbox" id="biology" name="biology" value="Biology">
+                              <label for="biology"> Biology</label><br>
+                              <input type="checkbox" id="computer-science" name="computer-science" value="Computer Science">
+                              <label for="computer-science"> Computer Science</label><br>
+                              <input type="checkbox" id="social-studies" name="social-studies" value="Social Studies">
+                              <label for="social-studies"> Social Studies</label><br>
+                              <input type="checkbox" id="english" name="english" value="English">
+                              <label for="english"> English</label><br>
+                              <input type="checkbox" id="spanish" name="spanish" value="Spanish">
+                              <label for="spanish"> Spanish</label><br>
+                              <input type="checkbox" id="french" name="french" value="French">
+                              <label for="french"> French</label><br>
+                              <input type="checkbox" id="chinese" name="chinese" value="Chinese">
+                              <label for="chinese"> Chinese</label><br>
+                              <label for="other-subject">Please add any other topics in a comma separated list (e.g. "Business, Music Theory"):</label><br>
+                              <input type="text" id="other-subject" name="other">
                     </div>
 
                     <button class="btn btn-lg" type="submit" id="register-submit">Submit</button>

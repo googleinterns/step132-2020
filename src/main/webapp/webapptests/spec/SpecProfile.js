@@ -18,14 +18,19 @@ describe("User Profile", function() {
         var mockWindow = {location: {href: "http://localhost:8080/profile.html?userID=123", search:"?userID=123"}};
         var actualUserID = getIdParameter(mockWindow);
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
-            email: "sfalberg@google.com", skills: ["math", "physics"]};
-        var mockLoginStatus = {role: "tutor"};
-        var actualDiv;
+            email: "sfalberg@google.com", skills: ["Math", "Physics"]};
+        var actualDiv = createProfileDiv(mockUser);
+        var mockLoginStatus = {role:"tutor"};
+        var actualText;
 
         beforeAll(function() {
-            spyOn(window, "loadProgress");
-            actualDiv = createProfileDiv(mockUser, mockLoginStatus);
-        });
+            var mockEditButton = document.createElement('btn');
+            mockEditButton.style.display = 'none';
+
+            document.body.appendChild(mockEditButton);
+
+            actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
+        })
 
         it("should correctly get the userID parameter from the URL", function() {
             expect(actualUserID).toEqual("123");
@@ -57,13 +62,13 @@ describe("User Profile", function() {
 
         it("should create and set p element for topics", function() {
             expect(actualDiv.childNodes[4].tagName).toEqual("P");
-            expect(actualDiv.childNodes[4].innerHTML).toEqual("I am tutoring in: math,physics" );
+            expect(actualText).toEqual("I am tutoring in: Math, Physics");
         });
     });
 
     describe("When the user edits their profile", function() {
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
-            email: "sfalberg@google.com", skills: ["math", "english"]};
+            email: "sfalberg@google.com", skills: ["Math", "English", " ", "Other"]};
         
         beforeAll(function() {
             var mockProfileContainer = document.createElement('div');
@@ -94,9 +99,12 @@ describe("User Profile", function() {
 
             var mockEnglishCheckbox = document.createElement('checkbox');
             mockEnglishCheckbox.id = 'english';
+
+            var mockPhysicsCheckbox = document.createElement('checkbox');
+            mockPhysicsCheckbox.id = 'physics';
             
-            var mockOtherCheckbox = document.createElement('checkbox');
-            mockOtherCheckbox.id = 'other-subject';
+            var mockOtherTextbox = document.createElement('text');
+            mockOtherTextbox.id = 'other-subject';
 
             document.body.appendChild(mockProfileContainer);
             document.body.appendChild(mockButtonsDiv);
@@ -106,9 +114,10 @@ describe("User Profile", function() {
             document.body.appendChild(mockTutorTopics);
             document.body.appendChild(mockMathCheckbox);
             document.body.appendChild(mockEnglishCheckbox);
-            document.body.appendChild(mockOtherCheckbox);
+            document.body.appendChild(mockPhysicsCheckbox);
+            document.body.appendChild(mockOtherTextbox);
 
-            editProfile(mockUser, false, document);
+            editProfile(mockUser, 'tutor', document);
         })
         
         it("should hide profile info and show the edit form", function() {
@@ -123,7 +132,7 @@ describe("User Profile", function() {
         it("should check off the topics the user had previously selected", function() {
             expect(document.getElementById('math').checked).toBe(true);
             expect(document.getElementById('english').checked).toBe(true);
-            expect(document.getElementById('other-subject').checked).toBe(undefined);
+            expect(document.getElementById('physics').checked).toBe(undefined);
         });
     });
 });
