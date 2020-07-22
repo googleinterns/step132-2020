@@ -55,12 +55,12 @@ describe("Manage Sessions", function() {
         });
 
         it("should have the inner HTML of the h3 tag equal to the name of the tutor for the tutoring session", function() {
-            var tutor = {email: "tester@gmail.com"};
+            var tutor = {name: "Elian"};
             spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(user)}), Promise.resolve({json: () => Promise.resolve(tutor)}));
 
             const tutorElement = document.createElement('h3');
-            setTutorEmail(tutorElement, "123").then(() => {
-                expect(tutorElement.innerHTML).toEqual("Tutoring Session with tester@gmail.com");
+            setTutorName(tutorElement, "123").then(() => {
+                expect(tutorElement.innerHTML).toEqual("Tutoring Session with Elian");
             });
         })
 

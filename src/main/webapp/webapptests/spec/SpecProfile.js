@@ -68,7 +68,7 @@ describe("User Profile", function() {
 
     describe("When the user edits their profile", function() {
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
-            email: "sfalberg@google.com", skills: ["Math", "English", " ", "Other"]};
+            email: "sfalberg@google.com", skills: ["math", "english", " ", "Other"]};
         
         beforeAll(function() {
             var mockProfileContainer = document.createElement('div');
