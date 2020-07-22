@@ -19,7 +19,13 @@ describe("User Profile", function() {
         var actualUserID = getIdParameter(mockWindow);
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
             email: "sfalberg@google.com", skills: ["math", "physics"]};
-        var actualDiv = createProfileDiv(mockUser);
+        var mockLoginStatus = {role: "tutor"};
+        var actualDiv;
+
+        beforeAll(function() {
+            spyOn(window, "loadProgress");
+            actualDiv = createProfileDiv(mockUser, mockLoginStatus);
+        });
 
         it("should correctly get the userID parameter from the URL", function() {
             expect(actualUserID).toEqual("123");
