@@ -34,8 +34,8 @@ describe("Search", function() {
         var tutors = [{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId":"1"}, 
                             {"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"], "userId":"2"}];
 
-        var books = [{"title": "Book 1", "author": "Author 1", "subject": "Math", "thumbnail": ""},
-                    {"title": "Book 2", "author": "Author 2", "subject": "Math", "thumbnail": ""}]
+        var books = {"items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}},
+                    {"volumeInfo": {"infoLink": "", "title": "Book 2", "authors": ["Author 2"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]}
 
         var tutorContainer = document.createElement("div");
         tutorContainer.id = "tutors";
@@ -45,7 +45,7 @@ describe("Search", function() {
 
         var mockWindow = {location: {href: "search-results.html?topic=math", search: "?topic=math"}};
 
-        it("should create result elements inside tutorContainer", async function() {
+        it("should create result elements inside tutorContainer and bookContainer", async function() {
             spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutors)}), Promise.resolve({json: () => Promise.resolve(books)}));
 
             spyOn(document, "getElementById").and.returnValues(tutorContainer, bookContainer);
@@ -54,7 +54,7 @@ describe("Search", function() {
 
             expect(window.fetch).toHaveBeenCalledTimes(2);
             expect(window.fetch.calls.allArgs()[0][0]).toEqual("/search?topic=math");
-            expect(window.fetch.calls.allArgs()[1][0]).toEqual("/books?topic=math");
+            expect(window.fetch.calls.allArgs()[1][0]).toContain("https://www.googleapis.com/books/v1/volumes");
 
             //one for the number of results label + 2 for the number of results in testResults
             expect(tutorContainer.childNodes.length).toEqual(3);
@@ -165,7 +165,7 @@ describe("Search", function() {
     });
 
     describe("when a tutor result is created", function() {
-        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId": "123"};
+        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", " ", "History"], "userId": "123"};
         var element = createTutorResult(result);
 
         it("should create div for result element", function() {
@@ -196,11 +196,11 @@ describe("Search", function() {
     });
 
     describe("when a book result is created", function() {
-        var result = {"title": "Book 1", "author": "Author 1", "subject": "Math", "thumbnail": ""};
+        var result = {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}};
         var element = createBookResult(result);
 
         it("should create div for result element", function() {
-            expect(element.tagName).toEqual("DIV");
+            expect(element.tagName).toEqual("A");
         });
 
         it("should create img element inside result element for thumbnail", function() {
@@ -215,7 +215,7 @@ describe("Search", function() {
 
         it("should create p element inside result element for author", function() {
             expect(element.childNodes[2].tagName).toEqual("P");
-            expect(element.childNodes[2].innerText).toContain("Author 1");
+            expect(element.childNodes[2].innerText).toContain("by Author 1");
         });
 
     });

@@ -59,27 +59,13 @@ function createProfileDiv(user) {
     const profileEmail = document.createElement('p');
     profileEmail.innerHTML = user.email;
 
-    var role;
+    const profileTopics = document.createElement('p');
     // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
     // Also fetches the role of the user
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
-        role = loginStatus.role;
-
-        if (loginStatus.userId == getIdParameter(window)) {
-            document.getElementById('edit-profile-btn').style.display = 'block';
-            document.getElementById('edit-profile-btn').addEventListener('click', () => {
-                editProfile(user, role, document); 
-            });
-        }
+        profileTopics.innerHTML = fetchStatusHelper(user, loginStatus, window, document);
     });
-
-    const profileTopics = document.createElement('p');
-    if (role == 'student') { 
-        profileTopics.innerHTML = "I am learning: " + user.learning;
-    }
-    else { 
-        profileTopics.innerHTML = "I am tutoring in: " + user.skills;
-    }
+    profileTopics.style.textTransform = 'capitalize';
 
     profileDiv.appendChild(profilePfp);
     profileDiv.appendChild(profileName);
@@ -90,10 +76,40 @@ function createProfileDiv(user) {
     return profileDiv;
 }
 
+// Helper function for testing
+function fetchStatusHelper(user, loginStatus, window, document) {
+    var role = loginStatus.role;
+    var text;
+
+    // Display topics as comma-separated list with spaces
+    if (role == 'student') { 
+        var learning = user.learning.toString();
+        // Remove blank entry that marks start of other topics
+        var removeBlank = learning.replace(', ', '');
+        var listWithSpaces = removeBlank.replace(/,/g, ', ');
+        text = "I am learning: " + listWithSpaces;
+    }
+    else { 
+        var skills = user.skills.toString();
+        // Remove blank entry that marks start of other topics
+        var removeBlank = skills.replace(', ', '');
+        var listWithSpaces = removeBlank.replace(/,/g, ', ');
+        text = "I am tutoring in: " + listWithSpaces;
+    }
+
+    if (loginStatus.userId == getIdParameter(window)) {
+        document.getElementById('edit-profile-btn').style.display = 'block';
+        document.getElementById('edit-profile-btn').addEventListener('click', () => {
+            editProfile(user, role, document); 
+        });
+    }
+
+    return text;
+}
+
 // Displays a form that will allow the user to edit the info on their profile
 function editProfile(user, role, document) {
     document.getElementById('profile-container').style.display = 'none';
-    document.getElementById('top-right-buttons').style.display = 'none';
     document.getElementById('edit-profile-form').style.display = 'block';
 
     // Set default value of bio to what user previously had
@@ -106,23 +122,79 @@ function editProfile(user, role, document) {
         if (user.learning.indexOf('math') > -1) {
             document.getElementById('math').checked = true;
         }
+        if (user.learning.indexOf('physics') > -1) {
+            document.getElementById('physics').checked = true;
+        }
+        if (user.learning.indexOf('chemistry') > -1) {
+            document.getElementById('chemistry').checked = true;
+        }
+        if (user.learning.indexOf('biology') > -1) {
+            document.getElementById('biology').checked = true;
+        }
+        if (user.learning.indexOf('computer science') > -1) {
+            document.getElementById('computer-science').checked = true;
+        }
+        if (user.learning.indexOf('social studies') > -1) {
+            document.getElementById('social-studies').checked = true;
+        }
         if (user.learning.indexOf('english') > -1) {
             document.getElementById('english').checked = true;
         }
-        if (user.learning.indexOf('other') > -1) {
-            document.getElementById('other-subject').checked = true;
+        if (user.learning.indexOf('spanish') > -1) {
+            document.getElementById('spanish').checked = true;
         }
+        if (user.learning.indexOf('french') > -1) {
+            document.getElementById('french').checked = true;
+        }
+        if (user.learning.indexOf('chinese') > -1) {
+            document.getElementById('chinese').checked = true;
+        }
+        var otherTopicsIndex = user.learning.indexOf(' ');
+        var otherTopics;
+        // Check if any other entries exist
+        if (otherTopicsIndex > -1 && user.learning.length > otherTopicsIndex + 1) {
+            otherTopics = user.learning.slice(otherTopicsIndex + 1);
+        }
+        document.getElementById('other-subject').value = otherTopics.join(', ');
     } else {
         document.getElementById('tutor-topics').style.display = 'block';
-        // Atuomatically check boxes of topics user has already selected
+        // Automatically check boxes of topics user has already selected
         if (user.skills.indexOf('math') > -1) {
             document.getElementById('math').checked = true;
+        }
+        if (user.skills.indexOf('physics') > -1) {
+            document.getElementById('physics').checked = true;
+        }
+        if (user.skills.indexOf('chemistry') > -1) {
+            document.getElementById('chemistry').checked = true;
+        }
+        if (user.skills.indexOf('biology') > -1) {
+            document.getElementById('biology').checked = true;
+        }
+        if (user.skills.indexOf('computer science') > -1) {
+            document.getElementById('computer-science').checked = true;
+        }
+        if (user.skills.indexOf('social studies') > -1) {
+            document.getElementById('social-studies').checked = true;
         }
         if (user.skills.indexOf('english') > -1) {
             document.getElementById('english').checked = true;
         }
-        if (user.skills.indexOf('other') > -1) {
-            document.getElementById('other-subject').checked = true;
+        if (user.skills.indexOf('spanish') > -1) {
+            document.getElementById('spanish').checked = true;
         }
+        if (user.skills.indexOf('french') > -1) {
+            document.getElementById('french').checked = true;
+        }
+        if (user.skills.indexOf('chinese') > -1) {
+            document.getElementById('chinese').checked = true;
+        }
+        var otherTopicsIndex = user.skills.indexOf(' ');
+        var otherTopics;
+        // Check if any other entries exist
+        if (otherTopicsIndex > -1 && user.skills.length > otherTopicsIndex + 1) {
+            otherTopics = user.skills.slice(otherTopicsIndex + 1);
+        }
+        document.getElementById('other-subject').value = otherTopics.join(', ');
     }
 }
