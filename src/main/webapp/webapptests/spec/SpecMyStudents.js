@@ -69,7 +69,7 @@ describe("My Students", function() {
         });
 
         it("should track progress link's to /progress.html?studentID=123", function() {
-            expect(actual.childNodes[3].href).toContain("/progress.html?studentID=123");
+            expect(actual.childNodes[3].href).toContain("/profile.html?userID=123");
         });
     });
 
