@@ -77,7 +77,7 @@ public final class ListDatastoreService {
     /**
     * Adds a new List entity to datastore. 
     */
-    public void addList(BookList list, String tutorID) {
+    public void addList(BookList list) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
@@ -85,11 +85,10 @@ public final class ListDatastoreService {
         try {
             Entity listEntity = new Entity("BookList");
 
-            listEntity.setProperty("tutorID", tutorID);
+            listEntity.setProperty("tutorID", list.getTutorId());
             listEntity.setProperty("books", list.getBooks());
             listEntity.setProperty("name", list.getName());
-            listEntity.setProperty("topic", list.getTopic());
-            listEntity.setProperty("tutorName", list.getTutorName());
+            listEntity.setProperty("topic", list.getTopic().toLowerCase());
 
             datastore.put(txn, listEntity);
 
@@ -106,9 +105,9 @@ public final class ListDatastoreService {
         ArrayList books = (ArrayList) entity.getProperty("books");
         String name = (String) entity.getProperty("name");
         String topic = (String) entity.getProperty("topic");
-        String tutorName = (String) entity.getProperty("tutorName");
-        
-        return new BookList(books, name, topic, tutorName, id);
+        String tutorID = (String) entity.getProperty("tutorID");
+
+        return new BookList(books, name, topic, tutorID, id);
 
     }
 }

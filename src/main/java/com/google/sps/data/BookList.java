@@ -24,21 +24,21 @@ public final class BookList {
     private ArrayList<String> books;
     private String name;
     private String topic;
-    private String tutorName;
+    private String tutorID;
     private long id;
 
-    public BookList(ArrayList<String> books, String name, String topic, String tutorName) {
+    public BookList(ArrayList<String> books, String name, String topic, String tutorID) {
         this.books = books;
         this.name = name;
         this.topic = topic;
-        this.tutorName = tutorName;
+        this.tutorID = tutorID;
     }
 
-    public BookList(ArrayList<String> books, String name, String tutorName, String topic, long id) {
+    public BookList(ArrayList<String> books, String name, String tutorID, String topic, long id) {
         this.books = books;
         this.name = name;
         this.topic = topic;
-        this.tutorName = tutorName;
+        this.tutorID = tutorID;
         this.id = id;
     }
 
@@ -50,8 +50,8 @@ public final class BookList {
         return this.name;
     }
 
-    public String getTutorName() {
-        return this.tutorName;
+    public String getTutorId() {
+        return this.tutorID;
     }
 
     public String getTopic() {
