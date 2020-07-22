@@ -31,7 +31,7 @@ public final class List {
         this.subject = subject;
     }
 
-    public ArrayList<String> getBooks {
+    public ArrayList<String> getBooks() {
         return this.books;
     }
 
