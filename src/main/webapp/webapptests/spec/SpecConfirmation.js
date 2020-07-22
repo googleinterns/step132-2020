@@ -57,13 +57,13 @@ describe("Confirmation", function() {
             expect(actual.childNodes[1].childNodes[0].tagName).toEqual("H3");
         });
 
-        it("should have the inner HTML of the h3 tag equal to to the email of the tutor", function() {
-            var tutor = {email: "tester@gmail.com"};
+        it("should have the inner HTML of the h3 tag equal to to the name of the tutor", function() {
+            var tutor = {name: "Anand"};
             spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(user)}), Promise.resolve({json: () => Promise.resolve(tutor)}));
 
             const tutorElement = document.createElement('h3');
-            setTutorEmail(tutorElement, "123").then(() => {
-                expect(tutorElement.innerHTML).toEqual("Tutoring Session with tester@gmail.com");
+            setTutorName(tutorElement, "123").then(() => {
+                expect(tutorElement.innerHTML).toEqual("Tutoring Session with Anand");
             });
         });
 
