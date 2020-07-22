@@ -24,7 +24,7 @@
         <link rel="stylesheet" type="text/css" href="general.css">
         <link rel="stylesheet" type="text/css" href="progress.css">
     </head>
-    <body onload="displayLoginLogoutLink()">
+    <body onload="displayLoginLogoutLink(), getLists()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -45,6 +45,7 @@
                                 <li><a id="history">History</a></li>
                                 <li><a id="availability-settings">Manage Availability</a></li>
                                 <li><a id="my-students">My Students</a></li>
+                                <li><a id="my-lists">My Lists</a></li>
                                 <li><a id="my-progress">My Progress</a></li>
                                 <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
                             </ul>
@@ -56,17 +57,23 @@
             </div>
         </nav>
 
-        <div class="container-fluid text-center bg-white">
+        <div class="container-fluid bg-white">
+            <h1>My Lists</h1>
+            <div class="list-group col-md-4" id="list-names"></div>
+        </div>
+
+        <div class="container-fluid bg-white" id="list-info-container"></div>
+
+        <!-- <div class="container-fluid text-center bg-white">
             <h1>Previous Experiences</h1>
             <ul class="list-group" id="experiences"></ul>
-
             <form class="form-inline result" id="experiences-form" display="none">
                 <label class="my-1 mr-2 sr-only" for="newExperience">Add a new experience</label>
                 <input type="text" class="form-control my-1 mr-sm-2" id="newExperience" placeholder="Add a new experience" required>
 
                 <button type="submit" class="btn btn-primary mb-2">Add</button>
             </form>
-        </div>
+        </div> -->
 
         <!-- <div class="container-fluid text-center bg-white">
             <h1>Goals</h1>

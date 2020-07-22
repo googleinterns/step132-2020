@@ -332,7 +332,7 @@ function addGoal(window) {
     params.append('goal', document.getElementById('newGoal').value);
 
     fetch('/add-goal', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user/signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to add a goal.");
@@ -347,7 +347,7 @@ function deleteGoal(goal, window) {
     params.append('id', goal.id);
 
     fetch('/delete-goal', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user/signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to delete a goal.");
@@ -366,7 +366,7 @@ function addExperience(window) {
     params.append('experience', document.getElementById('newExperience').value);
 
     fetch('/add-experience', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user/signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to add an experience.");
@@ -382,7 +382,7 @@ function deleteExperience(experience, window) {
     params.append('id', experience.id);
 
     fetch('/delete-experience', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user/signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to delete an experience.");
