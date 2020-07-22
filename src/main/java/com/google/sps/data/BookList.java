@@ -15,20 +15,31 @@
 package com.google.sps.data;
 
 import java.lang.String;
+import java.util.ArrayList;
 
-/** Stores a list of books along with the name and subject of the list and the name of the tutor who created the list.*/
-public final class List {
+
+/** Stores a list of books along with the name and topic of the list and the name of the tutor who created the list.*/
+public final class BookList {
 
     private ArrayList<String> books;
     private String name;
+    private String topic;
     private String tutorName;
-    private String subject;
+    private long id;
 
-    public List(ArrayList<String> books, String name, String tutorName, String subject) {
+    public BookList(ArrayList<String> books, String name, String topic, String tutorName) {
         this.books = books;
         this.name = name;
+        this.topic = topic;
         this.tutorName = tutorName;
-        this.subject = subject;
+    }
+
+    public BookList(ArrayList<String> books, String name, String tutorName, String topic, long id) {
+        this.books = books;
+        this.name = name;
+        this.topic = topic;
+        this.tutorName = tutorName;
+        this.id = id;
     }
 
     public ArrayList<String> getBooks() {
@@ -36,15 +47,19 @@ public final class List {
     }
 
     public String getName() {
-        return this.name
+        return this.name;
     }
 
     public String getTutorName() {
         return this.tutorName;
     }
 
-    public String getSubject() {
-        return this.subject;
+    public String getTopic() {
+        return this.topic;
+    }
+
+    public long getId() {
+        return this.id;
     }
 
 }
