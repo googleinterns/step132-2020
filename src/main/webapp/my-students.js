@@ -51,7 +51,7 @@ function createStudentBox(student) {
     learning.innerText = "Learning: " + student.learning.join(", ");
     progressLink.innerText = "Track Progress";
 
-    progressLink.href = "/progress.html?studentID=" + student.userId;
+    progressLink.href = "/profile.html?userID=" + student.userId;
 
     studentContainer.classList.add("student-result");
     studentContainer.classList.add("list-group-item");
