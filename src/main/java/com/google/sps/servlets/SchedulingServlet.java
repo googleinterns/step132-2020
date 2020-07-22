@@ -18,6 +18,7 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
+import com.google.sps.data.RatingEmailTask;
 import com.google.sps.utilities.TutorSessionDatastoreService;
 import com.google.gson.Gson;
 import java.io.IOException;
@@ -70,6 +71,10 @@ public class SchedulingServlet extends HttpServlet {
         TutorSession tutoringSession = new TutorSession(studentID, tutorID, subtopics, questions, timeslot);
 
         datastore.addTutorSession(tutoringSession);
+
+        Syst
+
+        new RatingEmailTask(timeslot);
 
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
         response.getWriter().println(json);

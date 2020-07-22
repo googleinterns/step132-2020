@@ -78,9 +78,22 @@
     </dependency>
 
     <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>1.0.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
         <groupId>com.google.collections</groupId>
         <artifactId>google-collections</artifactId>
         <version>1.0-rc1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-tasks</artifactId>
+      <version>1.30.0</version>
     </dependency>
 
   </dependencies>
@@ -96,6 +109,16 @@
         <configuration>
           <deploy.projectId>icecube-step-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <mainClass>com.example.task.CreateTask</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
         </configuration>
       </plugin>
     </plugins>
