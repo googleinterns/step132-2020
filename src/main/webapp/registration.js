@@ -65,9 +65,13 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('login').style.display = "none";
         document.getElementById('profile').style.display = "block";
         document.getElementById('logout').style.display = "block";
-        document.getElementById('logout-url').href = loginStatus.url;
+        document.getElementById('logout-url').href = "#";
         document.getElementById('logout-url').addEventListener('click', () => {
-             fetch('/logout', {method: 'POST'});
+             fetch('/logout', {method: 'GET'}).then((response) => {
+                 if(response.redirected) {
+                     window.location.href = response.url;
+                 }
+             });
         });
         document.getElementById('profile').addEventListener('click', () => {
             setProfileQueryString(window, loginStatus);
@@ -190,3 +194,4 @@ function displayRegistrationInfoHelper(document) {
         studentTopics.style.display = 'block';
     }
 }
+
