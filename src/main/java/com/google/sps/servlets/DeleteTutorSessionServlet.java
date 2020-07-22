@@ -63,21 +63,19 @@ public class DeleteTutorSessionServlet extends HttpServlet {
         Entity tutorEntity = datastore.getTutorForUserId(tutorSession.getTutorID());
         TimeRange timeslot = tutorSession.getTimeslot();
 
-        sendCancellationEmailToTutor(studentEntity, tutorEntity, timeslot);
-        sendCancellationEmailToStudent(studentEntity, tutorEntity, timeslot);
+        boolean testTutorEmail = sendCancellationEmailToTutor(studentEntity, tutorEntity, timeslot);
+        boolean testStudentEmail = sendCancellationEmailToStudent(studentEntity, tutorEntity, timeslot);
 
         // Remove tutor session
         datastore.deleteTutorSession(studentID, id);
 
         String json = new Gson().toJson(datastore.getScheduledSession(id));
         response.setContentType("application/json;");
-        response.getWriter().println(json);
+        response.getWriter().println(json + "testTutorEmail: " + testTutorEmail + " testStudentEmail: " + testStudentEmail);
         return;
     }
 
-    public void sendCancellationEmailToTutor(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
-        System.out.println("Create email");
-
+    public boolean sendCancellationEmailToTutor(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
@@ -98,24 +96,20 @@ public class DeleteTutorSessionServlet extends HttpServlet {
             msg.setSubject(subject);
             msg.setText(message);
             Transport.send(msg);
-
-            System.out.println("Email sent");
-
+            return true;
         } catch (AddressException e) {
             System.out.println("Failed to set email address.");
-            return;
+            return false;
         } catch (MessagingException e) {
             System.out.println("Failed to send email.");
-            return;
+            return false;
         } catch (UnsupportedEncodingException e) {
             System.out.println("Failed to encode email.");
-            return;
-        } 
+            return false;
+        }
     }
 
-    public void sendCancellationEmailToStudent(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
-        System.out.println("Create email");
-
+    public boolean sendCancellationEmailToStudent(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
@@ -136,19 +130,17 @@ public class DeleteTutorSessionServlet extends HttpServlet {
             msg.setSubject(subject);
             msg.setText(message);
             Transport.send(msg);
-
-            System.out.println("Email sent");
-
+            return true;
         } catch (AddressException e) {
             System.out.println("Failed to set email address.");
-            return;
+            return false;
         } catch (MessagingException e) {
             System.out.println("Failed to send email.");
-            return;
+            return false;
         } catch (UnsupportedEncodingException e) {
             System.out.println("Failed to encode email.");
-            return;
-        } 
+            return false;
+        }
     }
 
 }

@@ -107,6 +107,10 @@ public class RegistrationServlet extends HttpServlet {
         createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, bio, pfp, email, topicsToStr, userId);
     }
 
+    boolean testRegistrationEmail = sendRegistrationEmail(fullName, email);
+    
+    response.setContentType("application/json;");
+    response.getWriter().println("testRegistrationEmail: " + testRegistrationEmail);
     // TODO: Redirect back to page user was at before registration rather than always redirect to homepage, Issue #41
     response.sendRedirect("/homepage.html");
   }
@@ -124,7 +128,6 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("tutors", tutors);
     entity.setProperty("userId", userId);
     ds.put(entity);
-    sendRegistrationEmail(name, email);
   }
 
   /**
@@ -140,7 +143,6 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("ratingCount", 0);
     entity.setProperty("userId", userId);
     ds.put(entity);
-    sendRegistrationEmail(name, email);
   }
 
  /**
@@ -155,9 +157,7 @@ public class RegistrationServlet extends HttpServlet {
   /**
   * Sends a welcome email to the user after they register
   */
-  public void sendRegistrationEmail(String name, String email) {
-        System.out.println("Create email");
-
+  public boolean sendRegistrationEmail(String name, String email) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
@@ -176,18 +176,16 @@ public class RegistrationServlet extends HttpServlet {
             msg.setSubject(subject);
             msg.setText(message);
             Transport.send(msg);
-
-            System.out.println("Email sent");
-
+            return true;
         } catch (AddressException e) {
             System.out.println("Failed to set email address.");
-            return;
+            return false;
         } catch (MessagingException e) {
             System.out.println("Failed to send email.");
-            return;
+            return false;
         } catch (UnsupportedEncodingException e) {
             System.out.println("Failed to encode email.");
-            return;
-        } 
+            return false;
+        }
     }
 }

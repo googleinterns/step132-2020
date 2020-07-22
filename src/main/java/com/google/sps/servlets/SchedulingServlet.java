@@ -85,18 +85,16 @@ public class SchedulingServlet extends HttpServlet {
         Entity studentEntity = datastore.getStudentForUserId(studentID);
         Entity tutorEntity = datastore.getTutorForUserId(tutorID);
 
-        sendConfirmationEmailToTutor(studentEntity, tutorEntity, timeslot);
-        sendConfirmationEmailToStudent(studentEntity, tutorEntity, timeslot);
+        boolean testTutorEmail = sendConfirmationEmailToTutor(studentEntity, tutorEntity, timeslot);
+        boolean testStudentEmail = sendConfirmationEmailToStudent(studentEntity, tutorEntity, timeslot);
 
 
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
-        response.getWriter().println(json);
+        response.getWriter().println(json + "testTutorEmail: " + testTutorEmail + " testStudentEmail: " + testStudentEmail);
         return;
     }
 
-    public void sendConfirmationEmailToTutor(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
-        System.out.println("Create email");
-
+    public boolean sendConfirmationEmailToTutor(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
@@ -117,24 +115,20 @@ public class SchedulingServlet extends HttpServlet {
             msg.setSubject(subject);
             msg.setText(message);
             Transport.send(msg);
-
-            System.out.println("Email sent");
-
+            return true;
         } catch (AddressException e) {
             System.out.println("Failed to set email address.");
-            return;
+            return false;
         } catch (MessagingException e) {
             System.out.println("Failed to send email.");
-            return;
+            return false;
         } catch (UnsupportedEncodingException e) {
             System.out.println("Failed to encode email.");
-            return;
+            return false;
         } 
     }
 
-    public void sendConfirmationEmailToStudent(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
-        System.out.println("Create email");
-
+    public boolean sendConfirmationEmailToStudent(Entity studentEntity, Entity tutorEntity, TimeRange timeslot) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
@@ -155,18 +149,16 @@ public class SchedulingServlet extends HttpServlet {
             msg.setSubject(subject);
             msg.setText(message);
             Transport.send(msg);
-
-            System.out.println("Email sent");
-
+            return true;
         } catch (AddressException e) {
             System.out.println("Failed to set email address.");
-            return;
+            return false;
         } catch (MessagingException e) {
             System.out.println("Failed to send email.");
-            return;
+            return false;
         } catch (UnsupportedEncodingException e) {
             System.out.println("Failed to encode email.");
-            return;
+            return false;
         } 
     }
 }

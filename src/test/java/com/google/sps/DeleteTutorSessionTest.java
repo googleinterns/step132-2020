@@ -106,6 +106,8 @@ public final class DeleteTutorSessionTest {
         writer.flush();
         // Tutor session should no longer be scheduled
         Assert.assertFalse(stringWriter.toString().contains(unexpected));
+        Assert.assertTrue(stringWriter.toString().contains("testTutorEmail: true"));
+        Assert.assertTrue(stringWriter.toString().contains("testStudentEmail: true"));
     }
 
 }
