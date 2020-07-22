@@ -18,7 +18,20 @@ function displayProfile() {
 
     getUser(userID).then((user) => {
         console.log(user);
-        document.getElementById('profile-container').appendChild(createProfileDiv(user));
+        document.getElementById('profile-container').style.display = 'block';
+
+        // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
+        // Also fetches the role of the user
+        fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+            if (loginStatus.userId == userID) {
+                document.getElementById('edit-profile-btn').style.display = 'block';
+                document.getElementById('edit-profile-btn').addEventListener('click', () => {
+                    editProfile(user, loginStatus.role, document); 
+                });
+            }
+
+            document.getElementById('profile-container').appendChild(createProfileDiv(user, loginStatus));
+        });
     });
 }
 
@@ -42,7 +55,7 @@ function getUser(userID) {
 }
  
 // Create elements and fill their inner HTML with user info
-function createProfileDiv(user) {
+function createProfileDiv(user, loginStatus) {
     const profileDiv = document.createElement('div');
     
     const profileName = document.createElement('h3');
@@ -60,11 +73,9 @@ function createProfileDiv(user) {
     profileEmail.innerHTML = user.email;
 
     const profileTopics = document.createElement('p');
+
     // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
-    // Also fetches the role of the user
-    fetch('/login-status').then(response => response.json()).then((loginStatus) => {
-        profileTopics.innerHTML = fetchStatusHelper(user, loginStatus, window, document);
-    });
+    profileTopics.innerHTML = fetchStatusHelper(user, loginStatus, window, document);
     profileTopics.style.textTransform = 'capitalize';
 
     profileDiv.appendChild(profilePfp);
@@ -72,6 +83,8 @@ function createProfileDiv(user) {
     profileDiv.appendChild(profileBio);
     profileDiv.appendChild(profileEmail);
     profileDiv.appendChild(profileTopics);
+
+    loadProgress(document, loginStatus, user);
 
     return profileDiv;
 }
