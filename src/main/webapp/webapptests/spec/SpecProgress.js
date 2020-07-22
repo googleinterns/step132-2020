@@ -15,68 +15,76 @@
 describe("Progress", function() {
 
     describe("when progress is loaded", function() {
-        var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
+        beforeAll(function() {
+            var mockProgressTracker = document.createElement('div');
+            mockProgressTracker.id = 'progress-tracker';
+            mockProgressTracker.style.display = 'none';
 
-        it("should trigger the fetch function with the correct params", function() {
-            spyOn(window, 'fetch').and.callThrough();
-            spyOn(window, 'loadProgressHelper').and.returnValue("");
-            loadProgress(mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/login-status');
-            expect(window.fetch).toHaveBeenCalled();
+            document.body.appendChild(mockProgressTracker);
         });
-    });
 
-    describe("when loadProgressHelper is called it should call the correct functions", function() {
-        var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
-        var mockDocument = {};
-        var mockLoginStatus = {};
-
-        it("should trigger the correct functions with the correct params", function() {
-            spyOn(window, 'getExperiences').and.callFake(function(){
-                console.log("ok");
-            });
-            spyOn(window, 'getGoals').and.callFake(function(){
-                console.log("ok");
-            });
-            spyOn(window, 'getAchievements').and.callFake(function(){
-                console.log("ok");
-            });
-            spyOn(window, 'getPastSessionsAndTopics').and.callFake(function(){
-                console.log("ok");
-            });
-            loadProgressHelper(mockDocument, mockLoginStatus, mockWindow);
-            expect(window.getExperiences).toHaveBeenCalledWith(mockDocument, mockLoginStatus);
-            expect(window.getGoals).toHaveBeenCalledWith(mockDocument, mockLoginStatus);
-            expect(window.getAchievements).toHaveBeenCalledWith(mockDocument, mockLoginStatus);
-            expect(window.getPastSessionsAndTopics).toHaveBeenCalledWith(mockDocument, mockLoginStatus);
+        it("should make the progress tracker visible and call the get functions", function() {
+            var loginStatus = {};
+            var user = {};
+            spyOn(window, 'addEventListeners');
+            spyOn(window, 'getExperiences');
+            spyOn(window, 'getGoals');
+            spyOn(window, 'getAchievements');
+            spyOn(window, 'getPastSessionsAndTopics');
+            loadProgress(document, loginStatus, user);
+            expect(document.getElementById('progress-tracker').style.display).toBe('block');
+            expect(window.getExperiences).toHaveBeenCalledWith(document, loginStatus, user);
+            expect(window.getGoals).toHaveBeenCalledWith(document, loginStatus, user);
+            expect(window.getAchievements).toHaveBeenCalledWith(document, loginStatus);
+            expect(window.getPastSessionsAndTopics).toHaveBeenCalledWith(document, loginStatus, user);
         });
     });
 
     describe("when get experiences is called", function() {
 
-        beforeAll(function() {
+        beforeEach(function() {
             var mockExperiencesForm = document.createElement('p');
             mockExperiencesForm.id = 'experiences-form';
 
             document.body.appendChild(mockExperiencesForm);
-        })
+        });
 
-        it("should trigger the fetch function with the correct params and display the form given that the user is a student", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
-            var mockLoginStatus = {role: "student"};
+        afterEach(function() {
+            document.getElementById('experiences-form').remove();
+        });
+
+        it("should trigger the fetch function with the correct params and display the form given that the user is the student attached to the profile", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "student", userId: "123"};
+            var mockUser = {userId: "123"};
 
             spyOn(window, "onload").and.callFake(function() {
                 readStudentID(queryString, window);
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
-            getExperiences(document, mockLoginStatus, mockWindow);
+            getExperiences(document, mockLoginStatus, mockUser, mockWindow);
             expect(window.fetch).toHaveBeenCalledWith('/experience?studentID=undefined', {method: 'GET'});
             expect(document.getElementById('experiences-form').style.display).toBe('block');
         });
 
+        it("should trigger the fetch function with the correct params and not display the form given that the user is not the student attached to the profile", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "student", userId: "321"};
+            var mockUser = {userId: "123"};
+
+            spyOn(window, "onload").and.callFake(function() {
+                readStudentID(queryString, window);
+            });
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
+            getExperiences(document, mockLoginStatus, mockUser, mockWindow);
+            expect(window.fetch).toHaveBeenCalledWith('/experience?studentID=undefined', {method: 'GET'});
+            expect(document.getElementById('experiences-form').style.display).toBe('none');
+        });
+
         it("should trigger the fetch function with the correct params and hide the form given that the user is a tutor", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
-            var mockLoginStatus = {role: "tutor"};
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "tutor", userId: "321"};
+            var mockUser = {userId: "321"};
 
             spyOn(window, "onload").and.callFake(function() {
                 readStudentID(queryString, window);
@@ -102,20 +110,22 @@ describe("Progress", function() {
         })
 
         it("should display the error if there is one", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
             var mockExperiences = {error: "error"};
+            var mockUser = {};
 
-            getExperiencesHelper(document, mockExperiences, mockWindow);
+            getExperiencesHelper(document, mockExperiences, mockUser, mockWindow);
 
             expect(document.getElementById('experiences').childNodes[0].tagName).toEqual('P');
             expect(document.getElementById('experiences').childNodes[0].innerHTML).toEqual('error');
         });
 
         it("should say no experiences exist if none does", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
             var mockExperiences = {};
+            var mockUser = {};
 
-            getExperiencesHelper(document, mockExperiences, mockWindow);
+            getExperiencesHelper(document, mockExperiences, mockUser, mockWindow);
 
             expect(document.getElementById('experiences').childNodes[0].tagName).toEqual('P');
             expect(document.getElementById('experiences').childNodes[0].innerHTML).toEqual('This user has not set any past experiences');
@@ -124,35 +134,55 @@ describe("Progress", function() {
 
      describe("when get goals is called", function() {
 
-        beforeAll(function() {
+        beforeEach(function() {
             var mockGoalsForm = document.createElement('p');
             mockGoalsForm.id = 'goals-form';
 
             document.body.appendChild(mockGoalsForm);
         })
 
+        afterEach(function() {
+            document.getElementById('goals-form').remove();
+        });
+
         it("should trigger the fetch function with the correct params and display the form given that the user is a student", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
-            var mockLoginStatus = {role: "student"};
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "student", userId: "123"};
+            var mockUser = {userId: "123"};
 
             spyOn(window, "onload").and.callFake(function() {
                 readStudentID(queryString, window);
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
-            getGoals(document, mockLoginStatus, mockWindow);
+            getGoals(document, mockLoginStatus, mockUser, mockWindow);
             expect(window.fetch).toHaveBeenCalledWith('/goal?studentID=undefined', {method: 'GET'});
             expect(document.getElementById('goals-form').style.display).toBe('block');
         });
 
-        it("should trigger the fetch function with the correct params and hide the form given that the user is a tutor", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
-            var mockLoginStatus = {role: "tutor"};
+        it("should trigger the fetch function with the correct params and display the form given that the user is a student", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "student"};
+            var mockUser = {userId: "321"};
 
             spyOn(window, "onload").and.callFake(function() {
                 readStudentID(queryString, window);
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
-            getGoals(document, mockLoginStatus, mockWindow);
+            getGoals(document, mockLoginStatus, mockUser, mockWindow);
+            expect(window.fetch).toHaveBeenCalledWith('/goal?studentID=undefined', {method: 'GET'});
+            expect(document.getElementById('goals-form').style.display).toBe('none');
+        });
+
+        it("should trigger the fetch function with the correct params and hide the form given that the user is a tutor", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "tutor"};
+            var mockUser = {userId: "321"};
+
+            spyOn(window, "onload").and.callFake(function() {
+                readStudentID(queryString, window);
+            });
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
+            getGoals(document, mockLoginStatus, mockUser, mockWindow);
             expect(window.fetch).toHaveBeenCalledWith('/goal?studentID=undefined', {method: 'GET'});
             expect(document.getElementById('goals-form').style.display).toBe('none');
         });
@@ -172,20 +202,22 @@ describe("Progress", function() {
         })
 
         it("should display the error if there is one", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
             var mockGoals = {error: "error"};
+            var mockUser = {};
 
-            getGoalsHelper(document, mockGoals, mockWindow);
+            getGoalsHelper(document, mockGoals, mockUser, mockWindow);
 
             expect(document.getElementById('goals').childNodes[0].tagName).toEqual('P');
             expect(document.getElementById('goals').childNodes[0].innerHTML).toEqual('error');
         });
 
         it("should say no goals exist if none does", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
             var mockGoals = {};
+            var mockUser = {};
 
-            getGoalsHelper(document, mockGoals, mockWindow);
+            getGoalsHelper(document, mockGoals, mockUser, mockWindow);
 
             expect(document.getElementById('goals').childNodes[0].tagName).toEqual('P');
             expect(document.getElementById('goals').childNodes[0].innerHTML).toEqual('This user has not set any goals');
@@ -205,8 +237,8 @@ describe("Progress", function() {
             document.getElementById('achievements').remove();
         })
 
-        it("should say no goals exist", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
+        it("should say no achievements exist", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
             var mockLoginStatus = {};
 
             getAchievements(document, mockLoginStatus, mockWindow);
@@ -217,15 +249,66 @@ describe("Progress", function() {
     });
 
     describe("when get PastSessionsAndTopics is called", function() {
-        it("should trigger the fetch function with the correct params", function() {
-            var mockWindow = {location: {href: "progress.html?studentID=123", search: "?studentID=123"}};
+        beforeEach(function() {
+            var mockPastSessionsAndTopics = document.createElement('div');
+            mockPastSessionsAndTopics.id = 'sessionsAndAchievements';
+            mockPastSessionsAndTopics.style.display = 'block';
+
+            document.body.appendChild(mockPastSessionsAndTopics);
+        });
+
+        afterEach(function() {
+            document.getElementById('sessionsAndAchievements').remove();
+        });
+
+        it("should trigger the fetch function with the correct params if the user is the student whose profile is being displayed", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "student", userId: "123"};
+            var mockUser = {userId: "123", tutors: ["321"]};
 
             spyOn(window, "onload").and.callFake(function() {
                 readStudentID(queryString, window);
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
-            getPastSessionsAndTopics(document, mockWindow);
+            getPastSessionsAndTopics(document, mockLoginStatus, mockUser, mockWindow);
             expect(window.fetch).toHaveBeenCalledWith('/history?studentID=undefined', {method: 'GET'});
+            expect(document.getElementById('sessionsAndAchievements').style.display).toBe('block');
+        });
+
+        it("should trigger the fetch function with the correct params if the user is one of the tutors of the student whose profile is being displayed", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "tutor", userId: "321"};
+            var mockUser = {userId: "123", tutors: ["321"]};
+
+            spyOn(window, "onload").and.callFake(function() {
+                readStudentID(queryString, window);
+            });
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
+            getPastSessionsAndTopics(document, mockLoginStatus, mockUser, mockWindow);
+            expect(window.fetch).toHaveBeenCalledWith('/history?studentID=undefined', {method: 'GET'});
+            expect(document.getElementById('sessionsAndAchievements').style.display).toBe('block');
+        });
+
+        it("should not trigger the fetch function and should hide the div if the user does not have the permissions", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "tutor", userId: "456"};
+            var mockUser = {userId: "123", tutors: "321"};
+
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
+            getPastSessionsAndTopics(document, mockLoginStatus, mockUser, mockWindow);
+            expect(window.fetch).not.toHaveBeenCalledWith('/history?studentID=undefined', {method: 'GET'});
+            expect(document.getElementById('sessionsAndAchievements').style.display).toBe('none');
+        });
+
+        it("should not trigger the fetch function and should hide the div if the user does not have the permissions", function() {
+            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
+            var mockLoginStatus = {role: "student", userId: "456"};
+            var mockUser = {userId: "123", tutors: "321"};
+
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
+            getPastSessionsAndTopics(document, mockLoginStatus, mockUser, mockWindow);
+            expect(window.fetch).not.toHaveBeenCalledWith('/history?studentID=undefined', {method: 'GET'});
+            expect(document.getElementById('sessionsAndAchievements').style.display).toBe('none');
         });
     });
 
@@ -317,8 +400,9 @@ describe("Progress", function() {
 
     describe("when a Goal box is created and the user is a tutor", function() {
         var goal = {goal: "test"};
-        var mockLoginStatus = {role: "tutor"};
-        var actual = createGoalBox(goal, mockLoginStatus);
+        var mockLoginStatus = {role: "tutor", userId: "123"};
+        var mockUser = {userId: "456"};
+        var actual = createGoalBox(goal, mockLoginStatus, mockUser);
 
 
         it("should return a div item element", function() {
@@ -334,10 +418,11 @@ describe("Progress", function() {
         });
     });
 
-    describe("when a Goal box is created and the user is a student", function() {
+    describe("when a Goal box is created and the user is the student whose profile is being displayed", function() {
         var goal = {goal: "test"};
-        var mockLoginStatus = {role: "student"};
-        var actual = createGoalBox(goal, mockLoginStatus);
+        var mockLoginStatus = {role: "student", userId: "123"};
+        var mockUser = {userId: "123"};
+        var actual = createGoalBox(goal, mockLoginStatus, mockUser);
 
 
         it("should return a div item element", function() {
@@ -358,11 +443,31 @@ describe("Progress", function() {
         });
     });
 
+    describe("when a Goal box is created and the user is not the student whose profile is being displayed", function() {
+        var goal = {goal: "test"};
+        var mockLoginStatus = {role: "student", userId: "123"};
+        var mockUser = {userId: "321"};
+        var actual = createGoalBox(goal, mockLoginStatus, mockUser);
+
+
+        it("should return a div item element", function() {
+            expect(actual.tagName).toEqual("DIV");
+        });
+
+        it("should have the correct element type for each children of the div", function() {
+            expect(actual.childNodes[0].tagName).toEqual("H3");
+        });
+
+        it("should have date set appropriately", function() {
+            expect(actual.childNodes[0].innerHTML).toEqual("test");
+        });
+    });
+
     describe("when an Experience box is created and the user is a tutor", function() {
         var experience = {experience: "test"};
-        var mockLoginStatus = {role: "tutor"};
-        var actual = createExperienceBox(experience, mockLoginStatus);
-
+        var mockLoginStatus = {role: "tutor", userId: "123"};
+        var mockUser = {userId: "456"};
+        var actual = createExperienceBox(experience, mockLoginStatus, mockUser);
 
         it("should return a div item element", function() {
             expect(actual.tagName).toEqual("DIV");
@@ -377,10 +482,11 @@ describe("Progress", function() {
         });
     });
     
-    describe("when an Experience box is created and the user is a student", function() {
+    describe("when an Experience box is created and the user is the student whose profile is being displayed", function() {
         var experience = {experience: "test"};
-        var mockLoginStatus = {role: "student"};
-        var actual = createExperienceBox(experience, mockLoginStatus);
+        var mockLoginStatus = {role: "student", userId: "123"};
+        var mockUser = {userId: "123"};
+        var actual = createExperienceBox(experience, mockLoginStatus, mockUser);
 
 
         it("should return a div item element", function() {
@@ -398,6 +504,26 @@ describe("Progress", function() {
 
         it("should have button with correct text", function() {
             expect(actual.childNodes[1].innerText).toEqual("Delete");
+        });
+    });
+
+    describe("when an Experience box is created and the user is not the student whose profile is being displayed", function() {
+        var experience = {experience: "test"};
+        var mockLoginStatus = {role: "student", userId: "123"};
+        var mockUser = {userId: "321"};
+        var actual = createExperienceBox(experience, mockLoginStatus, mockUser);
+
+
+        it("should return a div item element", function() {
+            expect(actual.tagName).toEqual("DIV");
+        });
+
+        it("should have the correct element type for each children of the div", function() {
+            expect(actual.childNodes[0].tagName).toEqual("H3");
+        });
+
+        it("should have date set appropriately", function() {
+            expect(actual.childNodes[0].innerHTML).toEqual("test");
         });
     });
 
