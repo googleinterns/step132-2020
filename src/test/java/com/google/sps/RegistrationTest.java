@@ -80,6 +80,11 @@ public final class RegistrationTest {
         when(request.getParameter("english")).thenReturn(null);
         when(request.getParameter("other")).thenReturn("History, Business");
 
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+        when(request.getContentType()).thenReturn("application/json");
+
         servlet.doPost(request, response);
 
         ArgumentCaptor<String> url = ArgumentCaptor.forClass(String.class);
@@ -87,6 +92,7 @@ public final class RegistrationTest {
         List<String> expected = Arrays.asList("/homepage.html");
         // Response redirected to correct URL
         Assert.assertEquals(expected, url.getAllValues());
+        Assert.assertTrue(stringWriter.toString().contains("testRegistrationEmail: true"));
     }
 
     @Test
