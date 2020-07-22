@@ -135,3 +135,30 @@ function cancelTutorSession(window, scheduledSession) {
         }
     });
 }
+
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    const container = document.getElementById('calendar');
+    const chart = new google.visualization.Timeline(container);
+
+    const dataTable = new google.visualization.DataTable();
+    dataTable.addColumn({type: 'string', id: 'Student'});
+    dataTable.addColumn({type: 'string', id: 'Session'});
+    dataTable.addColumn({type: 'date', id: 'Start'});
+    dataTable.addColumn({type: 'date', id: 'End'});
+    dataTable.addRows([
+        ['Sam Falberg', 'Calculus session', new Date("July 22, 2020 13:30:00"), new Date("July 22, 2020 14:30:00")],
+        ['Kashish Arora', 'Geography session', new Date("July 23, 2020 15:00:00"), new Date("July 23, 2020 16:00:00")]
+    ]);
+
+    const options = {
+        'width':1000,
+        'height':200,
+    };
+
+    chart.draw(dataTable, options);
+}
+
+// Load the chart when the doc is ready.
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(createCalendar);
