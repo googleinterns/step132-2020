@@ -119,34 +119,34 @@ function editProfile(user, role, document) {
     if (role == 'student') {
         document.getElementById('student-topics').style.display = 'block';
         // Automatically check boxes of topics user has already selected
-        if (user.learning.indexOf('Math') > -1) {
+        if (user.learning.indexOf('math') > -1) {
             document.getElementById('math').checked = true;
         }
-        if (user.learning.indexOf('Physics') > -1) {
+        if (user.learning.indexOf('physics') > -1) {
             document.getElementById('physics').checked = true;
         }
-        if (user.learning.indexOf('Chemistry') > -1) {
+        if (user.learning.indexOf('chemistry') > -1) {
             document.getElementById('chemistry').checked = true;
         }
-        if (user.learning.indexOf('Biology') > -1) {
+        if (user.learning.indexOf('biology') > -1) {
             document.getElementById('biology').checked = true;
         }
-        if (user.learning.indexOf('Computer Science') > -1) {
+        if (user.learning.indexOf('computer science') > -1) {
             document.getElementById('computer-science').checked = true;
         }
-        if (user.learning.indexOf('Social Studies') > -1) {
+        if (user.learning.indexOf('social studies') > -1) {
             document.getElementById('social-studies').checked = true;
         }
-        if (user.learning.indexOf('English') > -1) {
+        if (user.learning.indexOf('english') > -1) {
             document.getElementById('english').checked = true;
         }
-        if (user.learning.indexOf('Spanish') > -1) {
+        if (user.learning.indexOf('spanish') > -1) {
             document.getElementById('spanish').checked = true;
         }
-        if (user.learning.indexOf('French') > -1) {
+        if (user.learning.indexOf('french') > -1) {
             document.getElementById('french').checked = true;
         }
-        if (user.learning.indexOf('Chinese') > -1) {
+        if (user.learning.indexOf('chinese') > -1) {
             document.getElementById('chinese').checked = true;
         }
         var otherTopicsIndex = user.learning.indexOf(' ');
@@ -159,34 +159,34 @@ function editProfile(user, role, document) {
     } else {
         document.getElementById('tutor-topics').style.display = 'block';
         // Automatically check boxes of topics user has already selected
-        if (user.skills.indexOf('Math') > -1) {
+        if (user.skills.indexOf('math') > -1) {
             document.getElementById('math').checked = true;
         }
-        if (user.skills.indexOf('Physics') > -1) {
+        if (user.skills.indexOf('physics') > -1) {
             document.getElementById('physics').checked = true;
         }
-        if (user.skills.indexOf('Chemistry') > -1) {
+        if (user.skills.indexOf('chemistry') > -1) {
             document.getElementById('chemistry').checked = true;
         }
-        if (user.skills.indexOf('Biology') > -1) {
+        if (user.skills.indexOf('biology') > -1) {
             document.getElementById('biology').checked = true;
         }
-        if (user.skills.indexOf('Computer Science') > -1) {
+        if (user.skills.indexOf('computer science') > -1) {
             document.getElementById('computer-science').checked = true;
         }
-        if (user.skills.indexOf('Social Studies') > -1) {
+        if (user.skills.indexOf('social studies') > -1) {
             document.getElementById('social-studies').checked = true;
         }
-        if (user.skills.indexOf('English') > -1) {
+        if (user.skills.indexOf('english') > -1) {
             document.getElementById('english').checked = true;
         }
-        if (user.skills.indexOf('Spanish') > -1) {
+        if (user.skills.indexOf('spanish') > -1) {
             document.getElementById('spanish').checked = true;
         }
-        if (user.skills.indexOf('French') > -1) {
+        if (user.skills.indexOf('french') > -1) {
             document.getElementById('french').checked = true;
         }
-        if (user.skills.indexOf('Chinese') > -1) {
+        if (user.skills.indexOf('chinese') > -1) {
             document.getElementById('chinese').checked = true;
         }
         var otherTopicsIndex = user.skills.indexOf(' ');
