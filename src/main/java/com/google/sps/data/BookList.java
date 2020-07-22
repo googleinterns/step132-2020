@@ -34,7 +34,7 @@ public final class BookList {
         this.tutorID = tutorID;
     }
 
-    public BookList(ArrayList<String> books, String name, String tutorID, String topic, long id) {
+    public BookList(ArrayList<String> books, String name, String topic, String tutorID, long id) {
         this.books = books;
         this.name = name;
         this.topic = topic;

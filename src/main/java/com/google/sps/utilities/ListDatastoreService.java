@@ -77,7 +77,7 @@ public final class ListDatastoreService {
     /**
     * Adds a new List entity to datastore. 
     */
-    public void addList(BookList list) {
+    public void createList(BookList list) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
