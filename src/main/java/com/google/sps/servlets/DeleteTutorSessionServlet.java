@@ -57,8 +57,6 @@ public class DeleteTutorSessionServlet extends HttpServlet {
 
         TutorSession tutorSession = datastore.getScheduledSession(id);
 
-        System.out.println(tutorSession.getStudentID());
-
         Entity studentEntity = datastore.getStudentForUserId(tutorSession.getStudentID());
         Entity tutorEntity = datastore.getTutorForUserId(tutorSession.getTutorID());
         TimeRange timeslot = tutorSession.getTimeslot();
