@@ -64,6 +64,10 @@ public class LogoutServlet extends HttpServlet {
             }
         }
 
+        if(request.getSession(false) != null) {
+            request.getSession(false).invalidate();
+        }
+
         response.sendRedirect("/homepage.html");
         return;
     }
