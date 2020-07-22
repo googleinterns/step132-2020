@@ -18,6 +18,7 @@ import com.google.utilities.TestUtilities;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import static org.mockito.Mockito.*;
@@ -29,34 +30,54 @@ import javax.servlet.*;
 import javax.servlet.http.HttpSession;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.mockito.ArgumentCaptor;
+import javax.servlet.http.Cookie;
+import com.google.appengine.api.utils.SystemProperty;
+import com.google.appengine.api.utils.SystemProperty.Environment;
+import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 
 @RunWith(JUnit4.class)
 public final class LogoutTest {
 
     private LogoutServlet servlet;
 
+    public final LocalServiceTestHelper helper = new LocalServiceTestHelper();
+
     @Before
     public void setUp() {
+        SystemProperty.environment.set(SystemProperty.Environment.Value.Production);
+        helper.setUp();
         servlet = new LogoutServlet();
     }
 
+    @After
+    public void tearDown() {
+        helper.tearDown();
+    }
+
     @Test
-    public void sessionIsInvalidated() throws Exception {
+    public void testDoGet() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
         HttpSession session = mock(HttpSession.class);
+        Cookie cookie = mock(Cookie.class);
         
         when(request.getSession(false)).thenReturn(session);
+        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
+        when(cookie.getName()).thenReturn("SACSID");
         
         //mock the invalidate method for session
-         doAnswer(new Answer() {
+        doAnswer(new Answer() {
             public Object answer(InvocationOnMock invocation) {
             when(request.getSession(false)).thenReturn(null);
             return null;
         }}).when(session).invalidate();
 
-         servlet.doPost(request, response);
+        servlet.doGet(request, response);
 
-         Assert.assertNull(request.getSession(false));
+        ArgumentCaptor<Cookie> deletedCookie = ArgumentCaptor.forClass(Cookie.class);
+        verify(response).addCookie(deletedCookie.capture());
+
+        Assert.assertNull(request.getSession(false));
     }
 }
