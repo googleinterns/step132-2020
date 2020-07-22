@@ -16,35 +16,35 @@ package com.google.sps.data;
 
 import java.lang.String;
 
-/** Stores information about a book including a title, author, subject, and a thumbnail image. */
-public final class Book {
+/** Stores a list of books along with the name and subject of the list and the name of the tutor who created the list.*/
+public final class List {
 
-    private String title;
-    private String author;
+    private ArrayList<String> books;
+    private String name;
+    private String tutorName;
     private String subject;
-    private String thumbnail;
 
-    public Book(String title, String author, String subject, String thumbnail) {
-        this.title = title;
-        this.author = author;
+    public List(ArrayList<String> books, String name, String tutorName, String subject) {
+        this.books = books;
+        this.name = name;
+        this.tutorName = tutorName;
         this.subject = subject;
-        this.thumbnail = thumbnail;
     }
 
-    public String getTitle() {
-        return this.title;
+    public ArrayList<String> getBooks {
+        return this.books;
     }
 
-    public String getAuthor() {
-        return this.author;
+    public String getName() {
+        return this.name
+    }
+
+    public String getTutorName() {
+        return this.tutorName;
     }
 
     public String getSubject() {
         return this.subject;
-    }
-
-    public String getThumbnail() {
-        return this.thumbnail;
     }
 
 }
