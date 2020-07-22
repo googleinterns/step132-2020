@@ -51,7 +51,7 @@ function createScheduledSessionBoxManage(scheduledSession) {
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
 
-    setTutorEmail(tutorElement, scheduledSession.tutorID);
+    setTutorName(tutorElement, scheduledSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';
@@ -100,8 +100,8 @@ function createScheduledSessionBoxManage(scheduledSession) {
 }
 
 //Helper function for testing purposes
-//Sets the tutor element's email field to the tutor email
-function setTutorEmail(tutorElement, tutorID) {
+//Sets the tutor element's name field to the tutor name
+function setTutorName(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
         tutorElement.innerHTML = "Tutoring Session with " + tutor.name;
@@ -138,25 +138,30 @@ function cancelTutorSession(window, scheduledSession) {
 
 /** Creates a calendar with the Charts API and renders it on the page  */
 function createCalendar() {
-    const container = document.getElementById('calendar');
-    const chart = new google.visualization.Timeline(container);
+    fetch('/confirmation', {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+        console.log(scheduledSessions);
+        const container = document.getElementById('calendar');
+        const chart = new google.visualization.Timeline(container);
 
-    const dataTable = new google.visualization.DataTable();
-    dataTable.addColumn({type: 'string', id: 'Student'});
-    dataTable.addColumn({type: 'string', id: 'Session'});
-    dataTable.addColumn({type: 'date', id: 'Start'});
-    dataTable.addColumn({type: 'date', id: 'End'});
-    dataTable.addRows([
-        ['Sam Falberg', 'Calculus session', new Date("July 22, 2020 13:30:00"), new Date("July 22, 2020 14:30:00")],
-        ['Kashish Arora', 'Geography session', new Date("July 23, 2020 15:00:00"), new Date("July 23, 2020 16:00:00")]
-    ]);
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'string', id: 'Tutor'});
+        dataTable.addColumn({type: 'string', id: 'Session'});
+        dataTable.addColumn({type: 'date', id: 'Start'});
+        dataTable.addColumn({type: 'date', id: 'End'});
+        
+        for (var session of scheduledSessions) {
+            dataTable.addRow([
+                session.tutorID, session.subtopics, new Date("July 22, 2020 13:30:00"), new Date("July 22, 2020 14:30:00")
+            ]);
+        }
 
-    const options = {
-        'width':1000,
-        'height':200,
-    };
+        const options = {
+            'width':1000,
+            'height':200,
+        };
 
-    chart.draw(dataTable, options);
+        chart.draw(dataTable, options);
+    });
 }
 
 // Load the chart when the doc is ready.
