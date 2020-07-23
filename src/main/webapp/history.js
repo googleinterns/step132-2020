@@ -74,7 +74,7 @@ function createTutoringSessionBox(tutoringSession) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
                              " " + tutoringSession.timeslot.date.dayOfMonth + ", " + tutoringSession.timeslot.date.year;
 
     const dateLineElement = document.createElement('div');
@@ -97,7 +97,7 @@ function createTutoringSessionBox(tutoringSession) {
 function setTutorEmail(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
+        tutorElement.innerText = "Tutoring Session with " + tutor.email;
     });
 }
 

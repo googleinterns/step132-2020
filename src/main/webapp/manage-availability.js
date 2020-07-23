@@ -85,7 +85,7 @@ function createTimeSlotBoxManage(timeslot) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
 
     const dateLineElement = document.createElement('div');
     dateLineElement.className = 'd-flex w-100 justify-content-between';
