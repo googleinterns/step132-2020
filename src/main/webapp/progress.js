@@ -215,7 +215,7 @@ function createPastSessionBox(tutoringSession) {
     if (minute == 0) {
         minute = "00";
     }
-    date.innerHTML = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
+    date.innerText = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
                      " " + tutoringSession.timeslot.date.dayOfMonth + ", " + tutoringSession.timeslot.date.year;
 
     sessionContainer.classList.add("result");
@@ -229,7 +229,7 @@ function createPastSessionBox(tutoringSession) {
 function setTutorName(tutorName, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorName.innerHTML = "Tutoring Session with " + tutor.name;
+        tutorName.innerText = "Tutoring Session with " + tutor.name;
     });
 }
 
@@ -251,7 +251,7 @@ function createPastTopicBox(tutoringSession) {
     const topicContainer = document.createElement("div");
     const topic = document.createElement("h3");
 
-    topic.innerHTML = tutoringSession.subtopics;
+    topic.innerText = tutoringSession.subtopics;
     topic.style.textTransform = "capitalize";
 
     topicContainer.classList.add("result");
@@ -265,7 +265,7 @@ function createGoalBox(goal, loginStatus, user) {
     const goalContainer = document.createElement("div");
     const description = document.createElement("h3");
 
-    description.innerHTML = goal.goal;
+    description.innerText = goal.goal;
     description.style.textTransform = "capitalize";
     description.style.display = 'inline';
     description.style.padding = '0px 15px 0px 0px';
@@ -295,7 +295,7 @@ function createExperienceBox(experience, loginStatus, user) {
     const experienceContainer = document.createElement("div");
     const description = document.createElement("h3");
 
-    description.innerHTML = experience.experience;
+    description.innerText = experience.experience;
     description.style.textTransform = "capitalize";
     description.style.display = 'inline';
     description.style.padding = '0px 15px 0px 0px';
