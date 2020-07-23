@@ -70,13 +70,6 @@ function addEventListeners() {
     });
 }
 
-
-function scheduleTutorSession(window) {
-    getUserId().then(function(studentID) {
-        scheduleTutorSessionHelper(window, studentID);
-    });
-}
-
 // Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
 // 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
 // This function reads the id of the tutor that the student has selected and the start and end of the time range selected, which are

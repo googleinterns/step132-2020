@@ -101,7 +101,7 @@ public class SchedulingServlet extends HttpServlet {
 
 
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
-        response.getWriter().println(json + "testTutorEmail: " + testTutorEmail + " testStudentEmail: " + testStudentEmail);
+        response.getWriter().println(json);
         return;
     }
 
