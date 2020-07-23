@@ -10,7 +10,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
+// limitations under the License. 
 
 describe("User Profile", function() {
     
@@ -28,6 +28,14 @@ describe("User Profile", function() {
             mockEditButton.id = "edit-profile-btn"
 
             document.body.appendChild(mockEditButton);
+            
+            spyOn(window, 'addEventListeners');
+            spyOn(window, 'getExperiences');
+            spyOn(window, 'getGoals');
+            spyOn(window, 'getAchievements');
+            spyOn(window, 'getPastSessionsAndTopics')
+            
+            actualDiv = createProfileDiv(mockUser, {role: "tutor", userId: "123"});
 
             actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
         })
@@ -113,8 +121,12 @@ describe("User Profile", function() {
             var mockMathCheckbox = document.createElement('checkbox');
             mockMathCheckbox.id = 'math';
 
+            mockMathCheckbox.checked = true;
+
             var mockEnglishCheckbox = document.createElement('checkbox');
             mockEnglishCheckbox.id = 'english';
+
+            mockEnglishCheckbox.checked = true;
 
             var mockPhysicsCheckbox = document.createElement('checkbox');
             mockPhysicsCheckbox.id = 'physics';
