@@ -29,6 +29,8 @@ describe("Confirmation", function() {
         it("should redirect user to homepage", async function() {
             spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            var sessionsContainer = document.createElement("div");
+            spyOn(document, 'getElementById').and.returnValue(sessionsContainer);
             await getScheduledSessionsHelper(mockWindow);
             expect(window.alert).toHaveBeenCalledWith('You must be signed in to view upcoming session.');
             expect(mockWindow.location.href).toBe('/homepage.html');

@@ -34,9 +34,18 @@ async function getTutorSessionsManageHelper(window) {
             document.getElementById('timeslots').appendChild(message);
             return;
         }
-        scheduledSessions.forEach((scheduledSession) => {
-            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBoxManage(scheduledSession));
-        });
+
+        if (Object.keys(scheduledSessions).length != 0) {
+            scheduledSessions.forEach((scheduledSession) => {
+                document.getElementById('scheduledSessions').appendChild(createScheduledSessionBoxManage(scheduledSession));
+            });
+        } else {
+            var sessionsContainer = document.getElementById('scheduledSessions');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any scheduled tutoring sessions.";
+            sessionsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 

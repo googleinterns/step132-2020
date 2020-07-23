@@ -31,6 +31,8 @@ describe("My Students", function() {
         it("should redirect user to homepage", async function() {
             spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            var studentsContainer = document.createElement("div");
+            spyOn(document, 'getElementById').and.returnValue(studentsContainer);
             await getMyStudentsHelper(mockWindow);
             expect(window.alert).toHaveBeenCalledWith('You must be signed in to view your students.');
             expect(mockWindow.location.href).toBe('/homepage.html');
