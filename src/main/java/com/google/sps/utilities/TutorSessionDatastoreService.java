@@ -259,6 +259,40 @@ public final class TutorSessionDatastoreService {
     }
 
     /**
+    * Gets the tutor entity connected to the given user id.
+    * @return Entity, null if user does not exist
+    */
+    public Entity getTutorForUserId(String userId) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        // get the email for the given user id with the given role
+        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
+        Query query = new Query("Tutor").setFilter(filter);
+        PreparedQuery pq = datastore.prepare(query);
+
+        Entity entity = pq.asSingleEntity();
+
+        return entity;
+    }
+
+    /**
+    * Gets the student entity connected to the given user id.
+    * @return Entity, null if user does not exist
+    */
+    public Entity getStudentForUserId(String userId) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        // get the email for the given user id with the given role
+        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
+        Query query = new Query("Student").setFilter(filter);
+        PreparedQuery pq = datastore.prepare(query);
+
+        Entity entity = pq.asSingleEntity();
+
+        return entity;
+    }
+
+    /**
     * Creates a new TutorSession object from a given TutorSession entity.
     * @return TutorSession
     */

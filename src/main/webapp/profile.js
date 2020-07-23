@@ -84,8 +84,6 @@ function createProfileDiv(user, loginStatus) {
     profileDiv.appendChild(profileEmail);
     profileDiv.appendChild(profileTopics);
 
-    loadProgress(document, loginStatus, user);
-
     return profileDiv;
 }
 
@@ -101,6 +99,8 @@ function fetchStatusHelper(user, loginStatus, window, document) {
         var removeBlank = learning.replace(', ', '');
         var listWithSpaces = removeBlank.replace(/,/g, ', ');
         text = "I am learning: " + listWithSpaces;
+
+        loadProgress(document, loginStatus, user);
     }
     else { 
         var skills = user.skills.toString();
