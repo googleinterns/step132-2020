@@ -151,7 +151,7 @@ function createCalendar() {
         
         for (var session of scheduledSessions) {
             dataTable.addRow([
-                session.tutorID, session.subtopics, new Date("July 22, 2020 13:30:00"), new Date("July 22, 2020 14:30:00")
+                session.tutorID, session.subtopics, asDate(session.timeslot.start), asDate(session.timeslot.end)
             ]);
         }
 
@@ -162,6 +162,17 @@ function createCalendar() {
 
         chart.draw(dataTable, options);
     });
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
 }
 
 // Load the chart when the doc is ready.
