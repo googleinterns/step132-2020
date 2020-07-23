@@ -137,7 +137,7 @@ function getPastSessionsAndTopics(document, loginStatus, user) {
 
         const params = new URLSearchParams();
         params.append('studentID', studentID);
-        fetch('/history?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+        fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
             getPastSessionsAndTopicsHelper(document, tutoringSessions);
         });
     } else {
