@@ -29,6 +29,8 @@ describe("Manage Sessions", function() {
         it("should redirect user to homepage", async function() {
             spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            var sessionsContainer = document.createElement("div");
+            spyOn(document, 'getElementById').and.returnValue(sessionsContainer);
             await getTutorSessionsManageHelper(mockWindow);
             expect(window.alert).toHaveBeenCalledWith('You must be signed in to manage sessions.');
             expect(mockWindow.location.href).toBe('/homepage.html');

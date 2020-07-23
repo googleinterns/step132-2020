@@ -42,9 +42,17 @@ function getAvailabilityManageHelper(window) {
             return;
         }
 
-        timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
-        });
+        if (Object.keys(timeslots).length != 0) {
+            timeslots.forEach((timeslot) => {
+                document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
+            });
+        } else {
+            var timeslotsContainer = document.getElementById('timeslots');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user has not set any available timeslots";
+            timeslotsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
