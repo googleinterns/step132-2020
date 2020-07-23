@@ -21,27 +21,71 @@ import com.google.sps.data.SampleData;
 import com.google.sps.data.RatingEmailTask;
 import com.google.sps.utilities.TutorSessionDatastoreService;
 import com.google.gson.Gson;
+import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Optional;
-import java.util.logging.Logger;
+import java.util.Properties;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 
 @WebServlet("/rating-email")
 public class SendRatingEmailServlet extends HttpServlet {
 
-    private static Logger log = Logger.getLogger(SendRatingEmailServlet.class.getName());
-
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.info("Received task request: " + request.getServletPath());
+        System.out.println("triggered!!!!!!!!!!!");
+
+        boolean testRatingEmail = sendRatingEmailToStudent(String email);
+
+        response.setContentType("application/json;");
+        response.getWriter().println("{testRatingEmail: " + testRatingEmail + "}");
 
         return;
+    }
+
+    /**
+  * Sends an email prompting the student to rate the tutor
+  */
+  public boolean sendRatingEmailToStudent(String email) {
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+
+        String subject = "Rate Your Tutoring Session";
+=        String message = "Hi there,\n" +
+                        "We hope you had a great tutoring session! Don't forget to rate your tutor by " +
+                        "accessing your tutoring session history.\n" + 
+                        "The Sullivan Team";
+
+        try {
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress("contact@icecube-step-2020.appspotmail.com", "Sullivan"));
+            msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
+            msg.setSubject(subject);
+            msg.setText(message);
+            Transport.send(msg);
+            return true;
+        } catch (AddressException e) {
+            System.out.println("Failed to set email address.");
+            return false;
+        } catch (MessagingException e) {
+            System.out.println("Failed to send email.");
+            return false;
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("Failed to encode email.");
+            return false;
+        }
     }
 }

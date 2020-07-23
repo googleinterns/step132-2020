@@ -36,11 +36,11 @@ public final class RatingEmailTask {
     private long scheduledSeconds;
 
     public RatingEmailTask(TimeRange timeslot) throws IOException {
-        int year = 2020;
-        int month = 6;
-        int day = 22;
-        int hour = 10;
-        int min = 0;
+        int year = timeslot.getDate().get(Calendar.YEAR);
+        int month = timeslot.getDate().get(Calendar.MONTH);;
+        int day = timeslot.getDate().get(Calendar.DAY_OF_MONTH);;
+        int hour = (int) Math.floor(timeslot.getEnd() / 60);
+        int min = timeslot.getEnd() % 60;
 
         Calendar scheduledDate = Calendar.getInstance();
         scheduledDate.set(Calendar.YEAR, year);
@@ -75,9 +75,12 @@ public final class RatingEmailTask {
                             .build());
 
             System.out.println(this.scheduledSeconds);
+            long current = Calendar.getInstance().getTime().getTime();
+            System.out.println(current);
 
             // Add the scheduled time to the request.
-            int seconds = 10;
+            int seconds = (int) (this.scheduledSeconds - current) / 1000;
+            System.out.println(seconds + "");
             taskBuilder.setScheduleTime(
                 Timestamp.newBuilder()
                     .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(seconds).getEpochSecond()));
