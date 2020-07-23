@@ -72,7 +72,6 @@ public class SchedulingServlet extends HttpServlet {
 
         datastore.addTutorSession(tutoringSession);
 
-        Syst
 
         new RatingEmailTask(timeslot);
 

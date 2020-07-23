@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Calendar;
 import java.util.Optional;
+import java.util.logging.Logger;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +36,11 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/rating-email")
 public class SendRatingEmailServlet extends HttpServlet {
 
+    private static Logger log = Logger.getLogger(SendRatingEmailServlet.class.getName());
+
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("triggered the send rating email servlet");
+        log.info("Received task request: " + request.getServletPath());
 
         return;
     }
