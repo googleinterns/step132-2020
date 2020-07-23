@@ -19,7 +19,7 @@ describe("User Profile", function() {
         var actualUserID = getIdParameter(mockWindow);
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
             email: "sfalberg@google.com", skills: ["Math", "Physics"]};
-        var actualDiv = createProfileDiv(mockUser);
+        var actualDiv = createProfileDiv(mockUser, {role: "tutor", userId: "123"});
         var mockLoginStatus = {role:"tutor"};
         var actualText;
 
@@ -30,6 +30,10 @@ describe("User Profile", function() {
             document.body.appendChild(mockEditButton);
 
             actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
+            var mockExperiencesForm = document.createElement('p');
+            mockExperiencesForm.id = 'experiences-form';
+
+            document.body.appendChild(mockExperiencesForm);
         })
 
         it("should correctly get the userID parameter from the URL", function() {
@@ -97,8 +101,12 @@ describe("User Profile", function() {
             var mockMathCheckbox = document.createElement('checkbox');
             mockMathCheckbox.id = 'math';
 
+            mockMathCheckbox.checked = true;
+
             var mockEnglishCheckbox = document.createElement('checkbox');
             mockEnglishCheckbox.id = 'english';
+
+            mockEnglishCheckbox.checked = true;
 
             var mockPhysicsCheckbox = document.createElement('checkbox');
             mockPhysicsCheckbox.id = 'physics';
