@@ -37,9 +37,17 @@ function getTutoringSessionHistoryHelper(window) {
             return;
         }
 
-        tutoringSessions.forEach((tutoringSession) => {
-            document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
-        })
+        if (Object.keys(tutoringSessions).length != 0) {
+            tutoringSessions.forEach((tutoringSession) => {
+                document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
+            });
+        } else {
+            var historyContainer = document.getElementById('tutoringSessionHistory');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any tutoring session history.";
+            historyContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
