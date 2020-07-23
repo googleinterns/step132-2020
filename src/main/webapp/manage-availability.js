@@ -162,8 +162,16 @@ function deleteTimeSlot(window, timeslot) {
 
 /** Creates a calendar with the Charts API and renders it on the page  */
 function createCalendar() {
-    fetch('/manage-availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {
+    fetch('/manage-availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
         console.log(timeslots);
+        // Don't create a calendar if there are no available timeslots
+        if (timeslots === undefined || timeslots.length == 0) {
+            return;
+        }
+
+        // There are available timeslots, display header and calendar
+        document.getElementById('calendar-header').style.display = 'block';
+        
         const container = document.getElementById('calendar');
         const chart = new google.visualization.Timeline(container);
 
@@ -173,6 +181,7 @@ function createCalendar() {
         dataTable.addColumn({type: 'date', id: 'End'});
         
         for (var slot of timeslots) {
+            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
             var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
             dataTable.addRow([
                 date, asDate(slot.start), asDate(slot.end)
@@ -199,6 +208,5 @@ function asDate(minutes) {
   return date;
 }
 
-// Load the chart when the doc is ready.
 google.charts.load('current', {'packages': ['timeline']});
 google.charts.setOnLoadCallback(createCalendar);

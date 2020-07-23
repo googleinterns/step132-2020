@@ -140,6 +140,14 @@ function cancelTutorSession(window, scheduledSession) {
 function createCalendar() {
     fetch('/confirmation', {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
         console.log(scheduledSessions);
+        // Don't create a calendar if there are no scheduled sessions
+        if (scheduledSessions === undefined || scheduledSessions.length == 0) {
+            return;
+        }
+
+        // There are available timeslots, display header and calendar
+        document.getElementById('calendar-header').style.display = 'block';
+        
         const container = document.getElementById('calendar');
         const chart = new google.visualization.Timeline(container);
 
@@ -174,7 +182,6 @@ function asDate(minutes) {
   date.setMinutes(minutes % 60);
   return date;
 }
-
-// Load the chart when the doc is ready.
+   
 google.charts.load('current', {'packages': ['timeline']});
 google.charts.setOnLoadCallback(createCalendar);
