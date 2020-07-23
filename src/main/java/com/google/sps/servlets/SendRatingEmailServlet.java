@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Calendar;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.stream.Collectors;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -47,8 +48,11 @@ public class SendRatingEmailServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         System.out.println("triggered!!!!!!!!!!!");
+        String email = request.getReader().lines().collect(Collectors.joining());
 
-        boolean testRatingEmail = sendRatingEmailToStudent(String email);
+        System.out.println(email);
+
+        boolean testRatingEmail = sendRatingEmailToStudent(email);
 
         response.setContentType("application/json;");
         response.getWriter().println("{testRatingEmail: " + testRatingEmail + "}");
@@ -64,7 +68,7 @@ public class SendRatingEmailServlet extends HttpServlet {
         Session session = Session.getDefaultInstance(props, null);
 
         String subject = "Rate Your Tutoring Session";
-=        String message = "Hi there,\n" +
+        String message = "Hi there,\n" +
                         "We hope you had a great tutoring session! Don't forget to rate your tutor by " +
                         "accessing your tutoring session history.\n" + 
                         "The Sullivan Team";

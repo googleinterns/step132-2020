@@ -34,8 +34,9 @@ import java.time.Instant;
  */
 public final class RatingEmailTask {
     private long scheduledSeconds;
+    private String studentEmail;
 
-    public RatingEmailTask(TimeRange timeslot) throws IOException {
+    public RatingEmailTask(TimeRange timeslot, String studentEmail) throws IOException {
         int year = timeslot.getDate().get(Calendar.YEAR);
         int month = timeslot.getDate().get(Calendar.MONTH);;
         int day = timeslot.getDate().get(Calendar.DAY_OF_MONTH);;
@@ -48,7 +49,10 @@ public final class RatingEmailTask {
         scheduledDate.set(Calendar.DAY_OF_MONTH, day);
         scheduledDate.set(Calendar.HOUR_OF_DAY, hour);
         scheduledDate.set(Calendar.MINUTE, min);
+
         this.scheduledSeconds = scheduledDate.getTime().getTime();
+        this.studentEmail = studentEmail;
+
         scheduleTask();
     }
 
@@ -59,7 +63,7 @@ public final class RatingEmailTask {
             String projectId = "icecube-step-2020";
             String queueName = "rating-email-queue";
             String location = "us-central1";
-            String payload = "test";
+            String payload = this.studentEmail;
 
             // Construct the fully qualified queue name.
             String queuePath = QueueName.of(projectId, location, queueName).toString();
@@ -80,7 +84,7 @@ public final class RatingEmailTask {
 
             // Add the scheduled time to the request.
             int seconds = (int) (this.scheduledSeconds - current) / 1000;
-            System.out.println(seconds + "");
+            //System.out.println(seconds + "");
             taskBuilder.setScheduleTime(
                 Timestamp.newBuilder()
                     .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(seconds).getEpochSecond()));

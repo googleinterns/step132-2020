@@ -100,7 +100,7 @@ public class SchedulingServlet extends HttpServlet {
         boolean testTutorEmail = sendConfirmationEmail(messageTutor, tutorEmail);
         boolean testStudentEmail = sendConfirmationEmail(messageStudent, studentEmail);
 
-        new RatingEmailTask(timeslot);
+        new RatingEmailTask(timeslot, studentEmail);
 
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
         response.getWriter().println(json);
