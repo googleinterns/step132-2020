@@ -173,7 +173,7 @@ function createCalendar() {
         dataTable.addColumn({type: 'date', id: 'End'});
         
         for (var slot of timeslots) {
-            var date = slot.date.month + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+            var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
             dataTable.addRow([
                 date, asDate(slot.start), asDate(slot.end)
             ]);
