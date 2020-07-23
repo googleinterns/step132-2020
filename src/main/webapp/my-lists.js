@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** Gets all of the tutor's lists from the server. */
 function getLists() {
     return getListsHelper();
 }
 
+/** Helper function for getLists, used for testing. */
 async function getListsHelper(window) {
     await fetch('/manage-lists', {method: 'GET'}).then((response) => {
         //if the tutor is not the current user/signed in
@@ -44,6 +46,7 @@ async function getListsHelper(window) {
     });
 }
 
+/** Creates a list element containing the list of books, the name of the list and the topic of the list. */
 function createListElement(list) {
     var container = document.createElement("div");
     var listName = document.createElement("h3");
@@ -77,6 +80,7 @@ function createListElement(list) {
     return container;
 }
 
+/** Adds an anchor element to the table created on the left side of the page containing links to the corresponding list element container. */
 function createListNameLink(list) {
     var listNameLink = document.createElement("a");
 
@@ -95,6 +99,7 @@ function createListNameLink(list) {
     return listNameLink;
 }
 
+/** Function to switch between lists and display the active list.*/
 function switchList(elem) {
     //get the name of the project that was clicked
     var listName = elem.innerText;
