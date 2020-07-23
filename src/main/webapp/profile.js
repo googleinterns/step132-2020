@@ -93,7 +93,7 @@ function fetchStatusHelper(user, loginStatus, window, document) {
     var text;
 
     // Display topics as comma-separated list with spaces
-    if (role == 'student') { 
+    if (user.learning != null) { 
         var learning = user.learning.toString();
         // Remove blank entry that marks start of other topics
         var removeBlank = learning.replace(', ', '');
