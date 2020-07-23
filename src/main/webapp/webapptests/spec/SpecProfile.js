@@ -10,7 +10,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
+// limitations under the License. 
 
 describe("User Profile", function() {
     
@@ -19,15 +19,23 @@ describe("User Profile", function() {
         var actualUserID = getIdParameter(mockWindow);
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
             email: "sfalberg@google.com", skills: ["Math", "Physics"]};
-        var actualDiv = createProfileDiv(mockUser);
-        var mockLoginStatus = {role:"tutor"};
+        var mockLoginStatus = {role:"tutor", userId: "123"};
         var actualText;
 
         beforeAll(function() {
             var mockEditButton = document.createElement('btn');
             mockEditButton.style.display = 'none';
+            mockEditButton.id = "edit-profile-btn"
 
             document.body.appendChild(mockEditButton);
+            
+            spyOn(window, 'addEventListeners');
+            spyOn(window, 'getExperiences');
+            spyOn(window, 'getGoals');
+            spyOn(window, 'getAchievements');
+            spyOn(window, 'getPastSessionsAndTopics')
+            
+            actualDiv = createProfileDiv(mockUser, {role: "tutor", userId: "123"});
 
             actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
         })
@@ -37,38 +45,54 @@ describe("User Profile", function() {
         });
 
         it("should create div for inside the container", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var actualDiv = createProfileDiv(mockUser, mockLoginStatus);
             expect(actualDiv.tagName).toEqual("DIV");
         });
 
         it("should create and set img element for pfp", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var actualDiv = createProfileDiv(mockUser, mockLoginStatus);
             expect(actualDiv.childNodes[0].tagName).toEqual("IMG");
             expect(actualDiv.childNodes[0].src).toEqual("http://localhost:8080/images/pfp.jpg");
         });
 
         it("should create and set h3 element for name", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var actualDiv = createProfileDiv(mockUser, mockLoginStatus);
             expect(actualDiv.childNodes[1].tagName).toEqual("H3");
             expect(actualDiv.childNodes[1].innerHTML).toEqual("Sam Falberg");
         });
 
         it("should create and set p element for bio", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var actualDiv = createProfileDiv(mockUser, mockLoginStatus);
             expect(actualDiv.childNodes[2].tagName).toEqual("P");
             expect(actualDiv.childNodes[2].innerHTML).toEqual("About me: The best bio");
         });
 
         it("should create and set p element for email", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var actualDiv = createProfileDiv(mockUser, mockLoginStatus);
             expect(actualDiv.childNodes[3].tagName).toEqual("P");
             expect(actualDiv.childNodes[3].innerHTML).toEqual("sfalberg@google.com");
         });
 
-        it("should create and set p element for topics", function() {
+        it("should create p", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var actualDiv = createProfileDiv(mockUser, mockLoginStatus);
             expect(actualDiv.childNodes[4].tagName).toEqual("P");
+        });
+
+        it("should set p to the correct topics", function() {
+
             expect(actualText).toEqual("I am tutoring in: Math, Physics");
         });
     });
 
     describe("When the user edits their profile", function() {
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
-            email: "sfalberg@google.com", skills: ["Math", "English", " ", "Other"]};
+            email: "sfalberg@google.com", skills: ["math", "english", " ", "Other"]};
         
         beforeAll(function() {
             var mockProfileContainer = document.createElement('div');
@@ -97,8 +121,12 @@ describe("User Profile", function() {
             var mockMathCheckbox = document.createElement('checkbox');
             mockMathCheckbox.id = 'math';
 
+            mockMathCheckbox.checked = true;
+
             var mockEnglishCheckbox = document.createElement('checkbox');
             mockEnglishCheckbox.id = 'english';
+
+            mockEnglishCheckbox.checked = true;
 
             var mockPhysicsCheckbox = document.createElement('checkbox');
             mockPhysicsCheckbox.id = 'physics';
