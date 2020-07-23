@@ -152,20 +152,17 @@ function createCalendar() {
         const chart = new google.visualization.Timeline(container);
 
         const dataTable = new google.visualization.DataTable();
-        dataTable.addColumn({type: 'string', id: 'Tutor'});
-        dataTable.addColumn({type: 'string', id: 'Session'});
+        dataTable.addColumn({type: 'string', id: 'Date'});
+        dataTable.addColumn({type: 'string', id: 'Description'});
         dataTable.addColumn({type: 'date', id: 'Start'});
         dataTable.addColumn({type: 'date', id: 'End'});
         
         for (var session of scheduledSessions) {
-            var startHour = Math.floor(parseInt(session.timeslot.start) / 60);
-            var startMinute = parseInt(session.timeslot.start) % 60;
-            var endHour = Math.floor(parseInt(session.timeslot.end) / 60);
-            var endMinute = parseInt(session.timeslot.end) % 60;
+            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+            var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
+            var description = session.subtopics + " with " + session.tutorID;
             dataTable.addRow([
-                session.tutorID, session.subtopics, 
-                new Date(session.timeslot.date.year, session.timeslot.date.month, session.timeslot.date.dayOfMonth, startHour, startMinute),  
-                new Date(session.timeslot.date.year, session.timeslot.date.month, session.timeslot.date.dayOfMonth, endHour, endMinute)
+                date, description, asDate(session.timeslot.start), asDate(session.timeslot.end)
             ]);
         }
 
@@ -176,6 +173,17 @@ function createCalendar() {
 
         chart.draw(dataTable, options);
     });
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
 }
    
 google.charts.load('current', {'packages': ['timeline']});
