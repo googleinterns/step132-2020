@@ -82,7 +82,7 @@ function createScheduledSessionBox(scheduledSession) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
                              " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
 
 
@@ -100,6 +100,6 @@ function createScheduledSessionBox(scheduledSession) {
 function setTutorEmail(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerHTML = "Tutoring Session with " + tutor.name;
+        tutorElement.innerText = "Tutoring Session with " + tutor.name;
     });
 }
