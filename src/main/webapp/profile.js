@@ -59,6 +59,7 @@ function createProfileDiv(user, loginStatus) {
     const profileDiv = document.createElement('div');
     
     const profileName = document.createElement('h3');
+    profileName.className = "text-center";
     profileName.innerHTML = user.name;
 
     const profileBio = document.createElement('p');
