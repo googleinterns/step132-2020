@@ -158,8 +158,14 @@ function createCalendar() {
         dataTable.addColumn({type: 'date', id: 'End'});
         
         for (var session of scheduledSessions) {
+            var startHour = Math.floor(parseInt(session.timeslot.start) / 60);
+            var startMinute = parseInt(session.timeslot.start) % 60;
+            var endHour = Math.floor(parseInt(session.timeslot.end) / 60);
+            var endMinute = parseInt(session.timeslot.end) % 60;
             dataTable.addRow([
-                session.tutorID, session.subtopics, asDate(session.timeslot.start), asDate(session.timeslot.end)
+                session.tutorID, session.subtopics, 
+                new Date(session.timeslot.date.year, session.timeslot.date.month, session.timeslot.date.dayOfMonth, startHour, startMinute),  
+                new Date(session.timeslot.date.year, session.timeslot.date.month, session.timeslot.date.dayOfMonth, endHour, endMinute)
             ]);
         }
 
@@ -170,17 +176,6 @@ function createCalendar() {
 
         chart.draw(dataTable, options);
     });
-}
-
-/**
- * Converts "minutes since midnight" into a JavaScript Date object.
- * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
- */
-function asDate(minutes) {
-  const date = new Date();
-  date.setHours(Math.floor(minutes / 60));
-  date.setMinutes(minutes % 60);
-  return date;
 }
    
 google.charts.load('current', {'packages': ['timeline']});
