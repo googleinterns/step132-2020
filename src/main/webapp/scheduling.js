@@ -47,8 +47,6 @@ async function scheduleTutorSessionHelper(window) {
             alert("You must be signed in to schedule a tutoring session.");
             return null;
         }
-        console.log("test");
-        console.log(response);
         return response.json();
     }).then((tutors) => {
         if(tutors !== null && tutors.error) {
@@ -71,13 +69,6 @@ function addEventListeners() {
         scheduleTutorSession(window);
     });
 }
-
-
-// function scheduleTutorSession(window) {
-//     getUserId().then(function(studentID) {
-//         scheduleTutorSessionHelper(window, studentID);
-//     });
-// }
 
 // Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
 // 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
