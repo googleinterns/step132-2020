@@ -95,6 +95,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         } else if (loginStatus.role == "student") {
             document.getElementById('availability-settings').style.display = "none";
             document.getElementById('my-students').style.display = "none";
+            document.getElementById('my-lists').style.display = "none";
             document.getElementById('my-progress').style.display = "block";
             document.getElementById('tutor-session-settings').style.display = "block";
             document.getElementById('history').style.display = "block";
