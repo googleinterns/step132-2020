@@ -47,15 +47,12 @@ public class SendRatingEmailServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        System.out.println("triggered!!!!!!!!!!!");
         String email = request.getReader().lines().collect(Collectors.joining());
-
-        System.out.println(email);
 
         boolean testRatingEmail = sendRatingEmailToStudent(email);
 
         response.setContentType("application/json;");
-        response.getWriter().println("{testRatingEmail: " + testRatingEmail + "}");
+        response.getWriter().println("{testRatingEmail: " + testRatingEmail + "} " + email);
 
         return;
     }

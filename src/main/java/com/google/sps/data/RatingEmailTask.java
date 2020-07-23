@@ -78,9 +78,7 @@ public final class RatingEmailTask {
                             .setHttpMethod(HttpMethod.POST)
                             .build());
 
-            System.out.println(this.scheduledSeconds);
             long current = Calendar.getInstance().getTime().getTime();
-            System.out.println(current);
 
             // Add the scheduled time to the request.
             int seconds = (int) (this.scheduledSeconds - current) / 1000;
