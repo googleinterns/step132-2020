@@ -206,11 +206,18 @@ describe("Registration", function() {
             });
 
             it("sets logout link correctly", function() {
-                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'/_ah/logout?continue=%2Fhomepage.html', userId:'abc123', role: "tutor"};
+                mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'#', userId:'abc123', role: "tutor"};
                 displayLoginLogoutLinkHelper(document, mockLoginStatus);
 
-                expect(document.getElementById('logout-url').href).toBe('http://localhost:8080/_ah/logout?continue=%2Fhomepage.html');
+                expect(document.getElementById('logout-url').getAttribute("href")).toBe('#');
             });
+
+            if("makes a request to log the user out and redirect to homepage", function() {
+                var mockWindow = {location:{href: "test"}};
+                spyOn(window, 'fetch').and.returnValue(Promise.resolve({redirected:true, url:"/homepage.html"}));
+                logout(mockWindow);
+                expect(mockWindow.location.href).toBe('/homepage.html');
+            }); 
 
             it("sets login link correctly", function() {
                 mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:null, role: "tutor"};
