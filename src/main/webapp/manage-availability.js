@@ -159,3 +159,46 @@ function deleteTimeSlot(window, timeslot) {
         }
     });
 }
+
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    fetch('/manage-availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {
+        console.log(timeslots);
+        const container = document.getElementById('calendar');
+        const chart = new google.visualization.Timeline(container);
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'string', id: 'Date'});
+        dataTable.addColumn({type: 'date', id: 'Start'});
+        dataTable.addColumn({type: 'date', id: 'End'});
+        
+        for (var slot of timeslots) {
+            var date = slot.date.month + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+            dataTable.addRow([
+                date, asDate(slot.start), asDate(slot.end)
+            ]);
+        }
+
+        const options = {
+            'width':1000,
+            'height':200,
+        };
+
+        chart.draw(dataTable, options);
+    });
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+
+// Load the chart when the doc is ready.
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(createCalendar);
