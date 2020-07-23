@@ -32,9 +32,18 @@ async function getMyStudentsHelper(window) {
             document.getElementById('students').appendChild(message);
             return;
         }
-        students.forEach((student) => {
-            document.getElementById('students').appendChild(createStudentBox(student));
-        })
+
+        if (Object.keys(students).length != 0) {
+            students.forEach((student) => {
+                document.getElementById('students').appendChild(createStudentBox(student));
+            });
+        } else {
+            var studentsContainer = document.getElementById('students');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any students.";
+            studentsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
