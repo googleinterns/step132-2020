@@ -19,7 +19,7 @@ describe("User Profile", function() {
         var actualUserID = getIdParameter(mockWindow);
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
             email: "sfalberg@google.com", skills: ["Math", "Physics"]};
-        var actualDiv = createProfileDiv(mockUser, {role: "tutor", userId: "123"});
+        var actualDiv;
         var mockLoginStatus = {role:"tutor"};
         var actualText;
 
@@ -28,12 +28,16 @@ describe("User Profile", function() {
             mockEditButton.style.display = 'none';
 
             document.body.appendChild(mockEditButton);
+            
+            spyOn(window, 'addEventListeners');
+            spyOn(window, 'getExperiences');
+            spyOn(window, 'getGoals');
+            spyOn(window, 'getAchievements');
+            spyOn(window, 'getPastSessionsAndTopics')
+            
+            actualDiv = createProfileDiv(mockUser, {role: "tutor", userId: "123"});
 
             actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
-            var mockExperiencesForm = document.createElement('p');
-            mockExperiencesForm.id = 'experiences-form';
-
-            document.body.appendChild(mockExperiencesForm);
         })
 
         it("should correctly get the userID parameter from the URL", function() {
