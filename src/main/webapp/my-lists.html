@@ -59,47 +59,66 @@
 
         <div class="container-fluid bg-white" id="lists">
             <h1>My Lists</h1>
-            <div class="list-group col-md-4" id="list-names"></div>
+            <p>Here, you can create your own book "playlists" geared towards a particular topic that you are familiar with.
+                These lists are public and can help students narrow down the best resources available for the topic they are interested in learning more about.</p>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-list-modal" style="display:block">
+                + New List
+            </button>
+            <div class="list-group col-md-4" id="list-names" style="margin-top:3%"></div>
+            <div id="list-info-container" style="margin-top:3%"></div>
         </div>
 
-        <div class="container-fluid bg-white" id="list-info-container"></div>
-
-        <!-- <div class="container-fluid text-center bg-white">
-            <h1>Previous Experiences</h1>
-            <ul class="list-group" id="experiences"></ul>
-            <form class="form-inline result" id="experiences-form" display="none">
-                <label class="my-1 mr-2 sr-only" for="newExperience">Add a new experience</label>
-                <input type="text" class="form-control my-1 mr-sm-2" id="newExperience" placeholder="Add a new experience" required>
-
-                <button type="submit" class="btn btn-primary mb-2">Add</button>
-            </form>
-        </div> -->
-
-        <!-- <div class="container-fluid text-center bg-white">
-            <h1>Goals</h1>
-            <ul class="list-group" id="goals"></ul>
-
-            <form class="form-inline result" id="goals-form" display="none">
-                <label class="my-1 mr-2 sr-only" for="newGoal">Add a new goal for yourself</label>
-                <input type="text" class="form-control my-1 mr-sm-2" id="newGoal" placeholder="Add a new goal for yourself" required>
-
-                <button type="submit" class="btn btn-primary mb-2">Add</button>
-            </form>
-        </div>
-
-        <div class="bg-description-blue">
-            <div class="container-fluid text-center bg-white">
-                <h1>Progress</h1>
-                <h3>Achievements</h3>
-                <ul class="list-group" id="achievements"></ul>
-
-                <h3>Tutoring Sessions</h3>
-                <ul class="list-group" id="past-sessions"></ul>
-
-                <h3>Topics Covered</h3>
-                <ul class="list-group" id="past-topics"></ul>
+        <!-- Modal -->
+        <div class="modal fade" id="new-list-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="vertical-alignment-helper">
+                <div class="modal-dialog modal-dialog-centered vertical-align-center" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="new-list-form-title" style="display:inline-block">Create a new list</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="new-list-form" class="form-inline" action="/manage-lists" method="POST">
+                            <div class="form-group mx-sm-3 mb-2"><input name="name" class="form-control" type="text" id="list-name-input" required="" aria-required=true placeholder="List name"></div>
+                            <div class="form-group" style="float:right">
+                                <label for="list-topic-select">Topic:</label>
+                                <select name="topic" id="list-topic-select" class="form-control" onchange="checkOtherSelected(this.value)" required>
+                                    <!-- <option selected disabled>Topic</option> -->
+                                    <option value="math">Math</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="biology">Biology</option>
+                                    <option value="computer science">Computer Science</option>
+                                    <option value="social studies">Social Studies</option>
+                                    <option value="english">English</option>
+                                    <option value="spanish">Spanish</option>
+                                    <option value="french">French</option>
+                                    <option value="chinese">Chinese</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div style="float:right" class="form-group mx-sm-3 mb-2"><input name="otherTopic" class="form-control" type="text" id="other-topic" placeholder="Other topic"></div>
+                            <div style="width: 100%; margin-top: 3%"> 
+                                <label for="book-list-text">Books:</label> 
+                                <p>Please enter a comma separated list of books with the title and author. <br>
+                                    Example: <br>
+                                    The Catcher in the Rye by J. D. Salinger, <br>
+                                    The Great Gatsby by F. Scott Fitzgerald, <br>
+                                    The Bluest Eye by Toni Morrison
+                                <textarea name="books" class="form-control" id="book-list-text" rows="8" required="" aria-reqiured=true></textarea>
+                            </div>
+                            <button class="btn" type="submit" id="new-list-submit">Submit</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
             </div>
-        </div> -->
+        </div>        
 
         <footer class="container-fluid text-center bg-blue">
             <a href="#top" title="To Top">

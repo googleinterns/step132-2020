@@ -27,3 +27,55 @@ See the License for the specific language governing permissions and
 .book-list {
     padding-left: 10px;
 }
+
+/* Vertically align modal: http://jsfiddle.net/sRmLV/1140/ */
+.vertical-alignment-helper {
+    display:table;
+    height: 100%;
+    width: 100%;
+    pointer-events:none;
+}
+.vertical-align-center {
+    display: table-cell;
+    vertical-align: middle;
+    pointer-events:none;
+}
+.modal-content {
+    width:inherit;
+    max-width:inherit;
+    height:inherit;
+    margin: 0 auto;
+    pointer-events:all;
+}
+/* -------------------------- */
+
+.modal-body {
+    width: 90%;
+    margin: auto;
+}
+
+#list-topic-select {
+    width: 200px;
+}
+
+#other-topic {
+    display: none;
+    float: right;
+    margin: 10px auto auto;
+    width: 160px;
+}
+
+#new-list-submit {
+    display: block !important;
+    margin-top: 3%;
+}
+
+#book-list-text {
+    width: 100% !important;
+    margin-top: 2%;
+}
+
+.list-group-item.active {
+    background-color: #437f97 !important;
+    border-color: #437f97 !important;
+}

@@ -12,6 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+function checkOtherSelected(value) {
+    var otherTextBox = document.getElementById('other-topic');
+    if(value === 'other') {
+        otherTextBox.style.display = 'block';
+        otherTextBox.setAttribute("required", "");
+        otherTextBox.setAttribute("aria-required", true);
+    } else  {
+        otherTextBox.style.display = 'none';
+        otherTextBox.removeAttribute("required");
+        otherTextBox.removeAttribute("aria-required");
+    }
+}
+
 /** Gets all of the tutor's lists from the server. */
 function getLists() {
     return getListsHelper();
@@ -37,7 +50,7 @@ async function getListsHelper(window) {
         }
 
         var listNames = document.getElementById('list-names');
-        var listInfo = document.getElementById('lists')
+        var listInfo = document.getElementById('list-info-container')
 
         lists.forEach((list) => {
             listNames.appendChild(createListNameLink(list));
