@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+
+/** When a user selects "other" topic, it displays the text input so that the user can type their topic. If the user 
+*   selects a different topic, it hides the text input.
+*/
 function checkOtherSelected(value) {
     var otherTextBox = document.getElementById('other-topic');
     if(value === 'other') {

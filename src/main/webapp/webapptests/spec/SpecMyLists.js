@@ -20,7 +20,7 @@ describe("My Lists", function() {
         listLinkContainer.id = "list-names";
 
         var listContainer = document.createElement("div");
-        listContainer.id = "lists";
+        listContainer.id = "list-info-container";
 
         it("should trigger the fetch function and create list links and info elements", async function() {
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(lists)}));
@@ -137,6 +137,40 @@ describe("My Lists", function() {
                 expect(list1Info.classList).not.toContain("active-list");
             });
 
+        });
+    });
+
+    describe("when user selects other in the topic selection form", function() {
+        var input = document.createElement("input");
+        input.id = "other-topic";
+
+        it("should display the input and make the input required", function() {
+            spyOn(document, "getElementById").and.returnValue(input);
+
+            checkOtherSelected("other");
+
+            expect(input.style.display).toBe("block");
+            expect(input.hasAttribute("required")).toBe(true);
+            expect(input.hasAttribute("aria-required")).toBe(true);
+            expect(input.getAttribute("aria-required")).toBe("true");
+        });
+    });
+
+    describe("when user had selected other topic but then selected something else", function() {
+        var input = document.createElement("input");
+        input.id = "other-topic";
+        input.style.display = 'block';
+        input.setAttribute("required", "");
+        input.setAttribute("aria-required", true);
+
+        it("should not display the other topic input", function() {
+            spyOn(document, "getElementById").and.returnValue(input);
+
+            checkOtherSelected("Math");
+
+            expect(input.style.display).toBe("none");
+            expect(input.hasAttribute("required")).toBe(false);
+            expect(input.hasAttribute("aria-required")).toBe(false);
         });
     });
 
