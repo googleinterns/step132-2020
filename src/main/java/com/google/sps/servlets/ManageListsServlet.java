@@ -71,6 +71,10 @@ public class ManageListsServlet extends HttpServlet {
             return;
         }
 
+        if(topic.toLowerCase().equals("other")) {
+            topic = request.getParameter("otherTopic");
+        }
+
         //\\s*,\\s* splits on comma and gets rid of whitespace before and after the word
         BookList list = new BookList(new ArrayList<String>(Arrays.asList(books.trim().split("\\s*,\\s*"))), name, topic, tutorID);
 
@@ -78,6 +82,7 @@ public class ManageListsServlet extends HttpServlet {
 
         String json = new Gson().toJson(datastore.getListsByTutor(tutorID));
         response.getWriter().println(json);
+        response.sendRedirect("/my-lists.html");
         return;
     }
 }
