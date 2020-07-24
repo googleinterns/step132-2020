@@ -133,13 +133,11 @@ function getPastSessionsAndTopics(document, loginStatus, user) {
     // Do not display past tutoring sessions and past learned topics if the user viewing the profile is not one of the student's tutors or 
     // the student themselves
     if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
-        var queryString = new Array();
-        window.onload = readStudentID(queryString, window);
-        const studentID = queryString["userID"];
+        const studentID = user.userId;
 
         const params = new URLSearchParams();
         params.append('studentID', studentID);
-        fetch('/history?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+        fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
             getPastSessionsAndTopicsHelper(document, tutoringSessions);
         });
     } else {
