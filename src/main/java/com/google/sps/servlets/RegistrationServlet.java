@@ -62,49 +62,30 @@ public class RegistrationServlet extends HttpServlet {
     
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
-    
-    // Make list of selected topics, remove unchecked topics
-    List<Optional<String>> topics = new ArrayList<Optional<String>>();
-    topics.add(Optional.ofNullable(request.getParameter("math")));
-    topics.add(Optional.ofNullable(request.getParameter("physics")));
-    topics.add(Optional.ofNullable(request.getParameter("chemistry")));
-    topics.add(Optional.ofNullable(request.getParameter("biology")));
-    topics.add(Optional.ofNullable(request.getParameter("computer-science")));
-    topics.add(Optional.ofNullable(request.getParameter("social-studies")));
-    topics.add(Optional.ofNullable(request.getParameter("english")));
-    topics.add(Optional.ofNullable(request.getParameter("spanish")));
-    topics.add(Optional.ofNullable(request.getParameter("french")));
-    topics.add(Optional.ofNullable(request.getParameter("chinese")));
-    List<String> topicsToStr = topics
-                                .stream()
-                                .filter(t -> t.isPresent())
-                                .map(t -> t.get().toLowerCase())
-                                .collect(Collectors.toList());
-
-    // Add blank entry to topics list to know where default topics end and custom topics begin
-    topicsToStr.add(" ");
-
-    String otherTopics = Optional.ofNullable(request.getParameter("other")).orElse("");
-    if (!otherTopics.equals("")) {
-        // Split the list, removing commas and whitespace, and add to the rest of the topics
-        List<String> otherTopicsToList = Arrays.asList(otherTopics.split("\\s*,\\s*"));
-        for (String otherTopic : otherTopicsToList) {
-            topicsToStr.add(otherTopic);
-        }
-    }
 
     // Make entity for user with all registration info
     Entity userEntity = new Entity("User");
     createUserEntityAndPutInDatastore(datastore, userEntity, role, userId);
 
-    if(role.toLowerCase().equals("tutor")) {
-        Entity tutorEntity = new Entity("Tutor");
-        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, bio, pfp, email, topicsToStr, userId);
-    }
+    if (role.toLowerCase().equals("both")) {
+        List<String> learningTopics = getTopics(request, "learn");
+        List<String> tutoringTopics = getTopics(request, "tutor");
 
-    if(role.toLowerCase().equals("student")) {
+        Entity tutorEntity = new Entity("Tutor");
+        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, bio, pfp, email, tutoringTopics, userId);
+
         Entity studentEntity = new Entity("Student");
-        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, bio, pfp, email, topicsToStr, userId);
+        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, bio, pfp, email, learningTopics, userId);
+    } else if (role.toLowerCase().equals("tutor")) {
+        List<String> tutoringTopics = getTopics(request, "tutor");
+
+        Entity tutorEntity = new Entity("Tutor");
+        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, bio, pfp, email, tutoringTopics, userId);
+    } else if (role.toLowerCase().equals("student")) {
+        List<String> learningTopics = getTopics(request, "learn");
+
+        Entity studentEntity = new Entity("Student");
+        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, bio, pfp, email, learningTopics, userId);
     }
 
     boolean testRegistrationEmail = sendRegistrationEmail(fullName, email);
@@ -187,5 +168,39 @@ public class RegistrationServlet extends HttpServlet {
             System.out.println("Failed to encode email.");
             return false;
         }
+    }
+
+    public List<String> getTopics(HttpServletRequest request, String type) {
+        // Make list of selected topics, remove unchecked topics
+        List<Optional<String>> topics = new ArrayList<Optional<String>>();
+        topics.add(Optional.ofNullable(request.getParameter("math-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("physics-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("chemistry-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("biology-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("computer-science-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("social-studies-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("english-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("spanish-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("french-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("chinese-" + type)));
+        List<String> topicsToStr = topics
+                                    .stream()
+                                    .filter(t -> t.isPresent())
+                                    .map(t -> t.get().toLowerCase())
+                                    .collect(Collectors.toList());
+
+        // Add blank entry to topics list to know where default topics end and custom topics begin
+        topicsToStr.add(" ");
+
+        String otherTopics = Optional.ofNullable(request.getParameter("other-" + type)).orElse("");
+        if (!otherTopics.equals("")) {
+            // Split the list, removing commas and whitespace, and add to the rest of the topics
+            List<String> otherTopicsToList = Arrays.asList(otherTopics.split("\\s*,\\s*"));
+            for (String otherTopic : otherTopicsToList) {
+                topicsToStr.add(otherTopic);
+            }
+        }
+
+        return topicsToStr;
     }
 }

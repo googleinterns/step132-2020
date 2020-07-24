@@ -180,6 +180,9 @@ function displayRegistrationInfoHelper(document) {
     } else if (document.getElementById('student').checked) {   // Display student info, hide tutor info
         tutorTopics.style.display = 'none';
         studentTopics.style.display = 'block';
+    } else if (document.getElementById('both').checked) {
+        tutorTopics.style.display = 'block';
+        studentTopics.style.display = 'block';
     }
 }
 

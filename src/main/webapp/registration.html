@@ -60,9 +60,10 @@ See the License for the specific language governing permissions and
             <div class="container-fluid bg-white">
                 <form id="registration-form" action="/registration" method="POST" style="display:none">
 
-                    <p>Would you like to sign up as a student or a tutor?</p>
+                    <p>Would you like to sign up as a student, a tutor, or both?</p>
                     <input onclick="displayRegistrationInfo()" type="radio" name="role" id="student" value="student"> Student<br>
-                    <input onclick="displayRegistrationInfo()" type="radio" name="role" id="tutor" value="tutor"> Tutor<br><br>
+                    <input onclick="displayRegistrationInfo()" type="radio" name="role" id="tutor" value="tutor"> Tutor<br>
+                    <input onclick="displayRegistrationInfo()" type="radio" name="role" id="both" value="both"> Both<br><br>
                     
                     <div id="general-info" style="display:none">
                         <label for="first-name">First Name:</label>
@@ -74,31 +75,57 @@ See the License for the specific language governing permissions and
                         <label for="image">Profile picture (optional):</label>
                         <input type="file" name="pfp"><br><br>
 
-                        <p id="student-topics" style="display:none">What topic(s) would you like to learn?</p>
-                        <p id="tutor-topics" style="display:none">What topic(s) would you like to tutor in?</p>
-                             <input type="checkbox" id="math" name="math" value="Math">
-                              <label for="math"> Math</label><br>
-                              <input type="checkbox" id="physics" name="physics" value="Physics">
-                              <label for="physics"> Physics</label><br>
-                              <input type="checkbox" id="chemistry" name="chemistry" value="Chemistry">
-                              <label for="chemistry"> Chemistry</label><br>
-                              <input type="checkbox" id="biology" name="biology" value="Biology">
-                              <label for="biology"> Biology</label><br>
-                              <input type="checkbox" id="computer-science" name="computer-science" value="Computer Science">
-                              <label for="computer-science"> Computer Science</label><br>
-                              <input type="checkbox" id="social-studies" name="social-studies" value="Social Studies">
-                              <label for="social-studies"> Social Studies</label><br>
-                              <input type="checkbox" id="english" name="english" value="English">
-                              <label for="english"> English</label><br>
-                              <input type="checkbox" id="spanish" name="spanish" value="Spanish">
-                              <label for="spanish"> Spanish</label><br>
-                              <input type="checkbox" id="french" name="french" value="French">
-                              <label for="french"> French</label><br>
-                              <input type="checkbox" id="chinese" name="chinese" value="Chinese">
-                              <label for="chinese"> Chinese</label><br>
-                              <label for="other-subject">Please add any other topics in a comma separated list (e.g. "Business, Music Theory"):</label><br>
-                              <input type="text" id="other-subject" name="other">
-                    </div>
+                        <div id="student-topics" style="display:none">
+                            <p>What topic(s) would you like to learn?</p>
+                            <input type="checkbox" id="math-learn" name="math-learn" value="Math">
+                            <label for="math-learn"> Math</label><br>
+                            <input type="checkbox" id="physics-learn" name="physics-learn" value="Physics">
+                            <label for="physics-learn"> Physics</label><br>
+                            <input type="checkbox" id="chemistry-learn" name="chemistry-learn" value="Chemistry">
+                            <label for="chemistry-learn"> Chemistry</label><br>
+                            <input type="checkbox" id="biology-learn" name="biology-learn" value="Biology">
+                            <label for="biology-learn"> Biology</label><br>
+                            <input type="checkbox" id="computer-science-learn" name="computer-science-learn" value="Computer Science">
+                            <label for="computer-science-learn"> Computer Science</label><br>
+                            <input type="checkbox" id="social-studies-learn" name="social-studies-learn" value="Social Studies">
+                            <label for="social-studies-learn"> Social Studies</label><br>
+                            <input type="checkbox" id="english-learn" name="english-learn" value="English">
+                            <label for="english-learn"> English</label><br>
+                            <input type="checkbox" id="spanish-learn" name="spanish-learn" value="Spanish">
+                            <label for="spanish-learn"> Spanish</label><br>
+                            <input type="checkbox" id="french-learn" name="french-learn" value="French">
+                            <label for="french-learn"> French</label><br>
+                            <input type="checkbox" id="chinese-learn" name="chinese-learn" value="Chinese">
+                            <label for="chinese-learn"> Chinese</label><br>
+                            <label for="other-subject-learn">Please add any other topics in a comma separated list (e.g. "Business, Music Theory"):</label><br>
+                            <input type="text" id="other-subject-learn" name="other-learn">
+                        </div>
+
+                        <div id="tutor-topics" style="display:none">
+                            <p>What topic(s) would you like to tutor in?</p>
+                            <input type="checkbox" id="math-tutor" name="math-tutor" value="Math">
+                            <label for="math-tutor"> Math</label><br>
+                            <input type="checkbox" id="physics-tutor" name="physics-tutor" value="Physics">
+                            <label for="physics-tutor"> Physics</label><br>
+                            <input type="checkbox" id="chemistry-tutor" name="chemistry-tutor" value="Chemistry">
+                            <label for="chemistry-tutor"> Chemistry</label><br>
+                            <input type="checkbox" id="biology-tutor" name="biology-tutor" value="Biology">
+                            <label for="biology-tutor"> Biology</label><br>
+                            <input type="checkbox" id="computer-science-tutor" name="computer-science-tutor" value="Computer Science">
+                            <label for="computer-science-tutor"> Computer Science</label><br>
+                            <input type="checkbox" id="social-studies-tutor" name="social-studies-tutor" value="Social Studies">
+                            <label for="social-studies-tutor"> Social Studies</label><br>
+                            <input type="checkbox" id="english-tutor" name="english-tutor" value="English">
+                            <label for="english-tutor"> English</label><br>
+                            <input type="checkbox" id="spanish-tutor" name="spanish-tutor" value="Spanish">
+                            <label for="spanish-tutor"> Spanish</label><br>
+                            <input type="checkbox" id="french-tutor" name="french-tutor" value="French">
+                            <label for="french-tutor"> French</label><br>
+                            <input type="checkbox" id="chinese-tutor" name="chinese-tutor" value="Chinese">
+                            <label for="chinese-tutor"> Chinese</label><br>
+                            <label for="other-subject-tutor">Please add any other topics in a comma separated list (e.g. "Business, Music Theory"):</label><br>
+                            <input type="text" id="other-subject-tutor" name="other-tutor">
+                        </div>
 
                     <button class="btn btn-lg" type="submit" id="register-submit">Submit</button>
                 </form>
