@@ -61,11 +61,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = "#";
         document.getElementById('logout-url').addEventListener('click', () => {
-             fetch('/logout', {method: 'GET'}).then((response) => {
-                 if(response.redirected) {
-                     window.location.href = response.url;
-                 }
-             });
+             logout(window);
         });
         document.getElementById('profile').addEventListener('click', () => {
             setProfileQueryString(window, loginStatus);
@@ -108,6 +104,15 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('login-url').href = loginStatus.url;
         document.getElementById('account-dropdown').style.display = "none";
     }
+}
+
+/** Tells the server to log the user out and redirect to homepage. */
+function logout(window) {
+    fetch('/logout', {method: 'GET'}).then((response) => {
+        if(response.redirected) {
+            window.location.href = response.url;
+        }
+    });
 }
 
 /**

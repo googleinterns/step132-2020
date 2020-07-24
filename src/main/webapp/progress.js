@@ -133,13 +133,11 @@ function getPastSessionsAndTopics(document, loginStatus, user) {
     // Do not display past tutoring sessions and past learned topics if the user viewing the profile is not one of the student's tutors or 
     // the student themselves
     if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
-        var queryString = new Array();
-        window.onload = readComponents(queryString, window);
-        const studentID = queryString["userID"];
+        const studentID = user.userId;
 
         const params = new URLSearchParams();
         params.append('studentID', studentID);
-        fetch('/history?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+        fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
             getPastSessionsAndTopicsHelper(document, tutoringSessions);
         });
     } else {
@@ -201,7 +199,7 @@ function createPastSessionBox(tutoringSession) {
     if (minute == 0) {
         minute = "00";
     }
-    date.innerHTML = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
+    date.innerText = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
                      " " + tutoringSession.timeslot.date.dayOfMonth + ", " + tutoringSession.timeslot.date.year;
 
     sessionContainer.classList.add("result");
@@ -216,7 +214,7 @@ function createPastTopicBox(tutoringSession) {
     const topicContainer = document.createElement("div");
     const topic = document.createElement("h3");
 
-    topic.innerHTML = tutoringSession.subtopics;
+    topic.innerText = tutoringSession.subtopics;
     topic.style.textTransform = "capitalize";
 
     topicContainer.classList.add("result");
@@ -230,7 +228,7 @@ function createGoalBox(goal, loginStatus, user) {
     const goalContainer = document.createElement("div");
     const description = document.createElement("h3");
 
-    description.innerHTML = goal.goal;
+    description.innerText = goal.goal;
     description.style.textTransform = "capitalize";
     description.style.display = 'inline';
     description.style.padding = '0px 15px 0px 0px';
@@ -260,7 +258,7 @@ function createExperienceBox(experience, loginStatus, user) {
     const experienceContainer = document.createElement("div");
     const description = document.createElement("h3");
 
-    description.innerHTML = experience.experience;
+    description.innerText = experience.experience;
     description.style.textTransform = "capitalize";
     description.style.display = 'inline';
     description.style.padding = '0px 15px 0px 0px';

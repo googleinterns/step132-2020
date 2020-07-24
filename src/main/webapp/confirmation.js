@@ -35,9 +35,18 @@ async function getScheduledSessionsHelper(window) {
             document.getElementById('timeslots').appendChild(message);
             return;
         }
-        scheduledSessions.forEach((scheduledSession) => {
-            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession));
-        })
+
+        if (Object.keys(scheduledSessions).length != 0) {
+            scheduledSessions.forEach((scheduledSession) => {
+                document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession));
+            });
+        } else {
+            var sessionsContainer = document.getElementById('scheduledSessions');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any scheduled tutoring sessions.";
+            sessionsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
@@ -73,7 +82,7 @@ function createScheduledSessionBox(scheduledSession) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
                              " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
 
 
@@ -85,5 +94,4 @@ function createScheduledSessionBox(scheduledSession) {
     scheduledSessionElement.appendChild(dateLineElement);
     return scheduledSessionElement;
 }
-
 

@@ -37,9 +37,17 @@ function getTutoringSessionHistoryHelper(window) {
             return;
         }
 
-        tutoringSessions.forEach((tutoringSession) => {
-            document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
-        })
+        if (Object.keys(tutoringSessions).length != 0) {
+            tutoringSessions.forEach((tutoringSession) => {
+                document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
+            });
+        } else {
+            var historyContainer = document.getElementById('tutoringSessionHistory');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any tutoring session history.";
+            historyContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
@@ -74,7 +82,7 @@ function createTutoringSessionBox(tutoringSession) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
                              " " + tutoringSession.timeslot.date.dayOfMonth + ", " + tutoringSession.timeslot.date.year;
 
     const dateLineElement = document.createElement('div');

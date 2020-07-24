@@ -42,9 +42,17 @@ function getAvailabilityManageHelper(window) {
             return;
         }
 
-        timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
-        });
+        if (Object.keys(timeslots).length != 0) {
+            timeslots.forEach((timeslot) => {
+                document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
+            });
+        } else {
+            var timeslotsContainer = document.getElementById('timeslots');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user has not set any available timeslots";
+            timeslotsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
@@ -69,7 +77,7 @@ function createTimeSlotBoxManage(timeslot) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
 
     const dateLineElement = document.createElement('div');
     dateLineElement.className = 'd-flex w-100 justify-content-between';
