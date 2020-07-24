@@ -38,6 +38,14 @@ function setTutorEmail(tutorElement, tutorID) {
     });
 }
 
+//Sets tutorName to the name of the tutor who has the given id
+function setTutorName(tutorName, tutorID) {
+    var tutor;
+    return getUser(tutorID).then(user => tutor = user).then(() => {
+        tutorName.innerText = "Tutoring Session with " + tutor.name;
+    });
+}
+
 /** Gets information about the given user from the server. */
 function getUser(userID) {
     return fetch('/profile?userId='+userID).then(response => response.json()).then((user) => {
