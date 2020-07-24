@@ -71,7 +71,7 @@ public final class ManageListsTest {
 
         ArrayList<String> books = new ArrayList<String>(Arrays.asList("Book 1 by Random Person", "Book 2 by Anonymous"));
 
-        // Adds goal entity to the local datastore
+        // Adds book list entity to the local datastore
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Entity listEntity = new Entity("BookList");
         listEntity.setProperty("tutorID", "123");

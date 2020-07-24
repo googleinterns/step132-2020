@@ -89,7 +89,7 @@ public final class BookListsTest {
 
         ArrayList<String> books = new ArrayList<String>(Arrays.asList("Book 1 by Random Person", "Book 2 by Anonymous"));
 
-        // Adds goal entity to the local datastore
+        // Adds book list entity to the local datastore
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
         Entity listEntity = new Entity("BookList");
         listEntity.setProperty("tutorID", "123");
@@ -115,7 +115,7 @@ public final class BookListsTest {
       
         writer.flush();
 
-        // The correct list of goals should have been returned
+        // The correct list of booklists should have been returned
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
