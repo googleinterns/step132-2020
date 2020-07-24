@@ -84,7 +84,15 @@ See the License for the specific language governing permissions and
 }
 
 #load-more {
-    position:absolute;
+    position:relative;
     left:50%;
     margin-bottom: 1%;
 }
+
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+

@@ -79,3 +79,11 @@ See the License for the specific language governing permissions and
     background-color: #437f97 !important;
     border-color: #437f97 !important;
 }
+
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+
