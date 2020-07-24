@@ -31,7 +31,7 @@ function checkOtherSelected(value) {
 
 /** Gets all of the tutor's lists from the server. */
 function getLists() {
-    return getListsHelper();
+    return getListsHelper(window);
 }
 
 /** Helper function for getLists, used for testing. */
@@ -48,7 +48,14 @@ async function getListsHelper(window) {
     }).then((lists) => {
         if(lists.error) {
             var message = document.createElement("p");
-            p.innerText = timeslots.error;
+            message.innerText = timeslots.error;
+            document.getElementById('list-names').appendChild(message);
+            return;
+        }
+
+        if(Object.keys(lists).length === 0) {
+            var message = document.createElement("p");
+            message.innerText = "You do not have any lists.";
             document.getElementById('list-names').appendChild(message);
             return;
         }
