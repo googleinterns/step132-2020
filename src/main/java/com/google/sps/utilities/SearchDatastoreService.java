@@ -92,13 +92,13 @@ public final class SearchDatastoreService {
         CompositeFilter userFilter = CompositeFilterOperator.or(fullNameFilter, firstNameFilter, LastNameFilter);
 
         Query userQuery = new Query("User").setFilter(userFilter);
+        //Query userQuery = new Query("User");
         
         ArrayList<User> users = new ArrayList<User>();
 
         PreparedQuery userResults = datastore.prepare(userQuery);
 
-        for (Entity userEntity : userResults.asIterable()) {
-            
+        for (Entity userEntity : userResults.asIterable()) {            
             String userId = (String) userEntity.getProperty("userId");
             String fullName = (String) userEntity.getProperty("fullName");
 
