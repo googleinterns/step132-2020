@@ -14,12 +14,18 @@ See the License for the specific language governing permissions and
     width: 75%;
 }
 
+.user-result {
+    margin: auto;
+    width: 75%;
+}
+
 #search-form-results {
     margin:auto;
     margin-top: 2% !important;
 }
 
 #search-box-results {
+    margin:auto;
     display: inline-block;
     width: 75%;
 }
