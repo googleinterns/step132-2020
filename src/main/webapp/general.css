@@ -68,9 +68,14 @@ See the License for the specific language governing permissions and
   color: #fff !important;
 }
 
-.navbar-nav li a:hover, .navbar-nav li.active a {
+.navbar-nav .navbar-nav li.active a {
   color: #437f97 !important;
   background-color: #fff !important;
+}
+
+.button-hover a:hover {
+    color: #437f97 !important;
+    background-color: #fff !important;
 }
 
 .navbar-default .navbar-toggle {
