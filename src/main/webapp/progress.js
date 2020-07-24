@@ -41,7 +41,7 @@ function addEventListeners() {
 
 function getExperiences(document, loginStatus, user) {
     var queryString = new Array();
-    window.onload = readStudentID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const studentID = queryString["userID"];
 
     const params = new URLSearchParams();
@@ -82,7 +82,7 @@ function getExperiencesHelper(document, experiences, loginStatus, user) {
 
 function getGoals(document, loginStatus, user) {
     var queryString = new Array();
-    window.onload = readStudentID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const studentID = queryString["userID"];
 
     const params = new URLSearchParams();
@@ -134,7 +134,7 @@ function getPastSessionsAndTopics(document, loginStatus, user) {
     // the student themselves
     if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
         var queryString = new Array();
-        window.onload = readStudentID(queryString, window);
+        window.onload = readComponents(queryString, window);
         const studentID = queryString["userID"];
 
         const params = new URLSearchParams();
@@ -180,22 +180,6 @@ function getPastSessionsAndTopicsHelper(document, tutoringSessions) {
     }
 }
 
-// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
-// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readStudentID(queryString, window) {
-    if (queryString.length == 0) {
-        if (window.location.search.split('?').length > 1) {
-            var params = window.location.search.split('?')[1].split('&');
-            for (var i = 0; i < params.length; i++) {
-                var key = params[i].split('=')[0];
-                var value = decodeURIComponent(params[i].split('=')[1]);
-                queryString[key] = value;
-            }
-        }
-    }
-}
-
 /** Creates a div element containing information about a past tutoring session. */
 function createPastSessionBox(tutoringSession) {
     var months = [ "January", "February", "March", "April", "May", "June", 
@@ -225,27 +209,6 @@ function createPastSessionBox(tutoringSession) {
     sessionContainer.appendChild(tutorName);
     sessionContainer.appendChild(date);
     return sessionContainer;
-}
-
-//Sets tutorName to the name of the tutor who has the given id
-function setTutorName(tutorName, tutorID) {
-    var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorName.innerHTML = "Tutoring Session with " + tutor.name;
-    });
-}
-
-/** Gets information about the given user from the server. */
-function getUser(userID) {
-    return fetch('/profile?userId='+userID).then(response => response.json()).then((user) => {
-        if(user.error) {
-            var message = document.createElement("p");
-            message.innerText = user.error;
-            document.body.appendChild(message);
-            return;
-        }
-        return user;
-    });
 }
 
 /** Creates a div element containing information about a past topic. */
@@ -326,7 +289,7 @@ function addGoal(window) {
     const params = new URLSearchParams();
 
     var queryString = new Array();
-    window.onload = readStudentID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const studentID = queryString["userID"];
 
     params.append('goal', document.getElementById('newGoal').value);
@@ -360,7 +323,7 @@ function addExperience(window) {
     const params = new URLSearchParams();
 
     var queryString = new Array();
-    window.onload = readStudentID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const studentID = queryString["userID"];
 
     params.append('experience', document.getElementById('newExperience').value);

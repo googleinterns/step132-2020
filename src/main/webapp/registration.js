@@ -12,13 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function getUserId() {
-    return fetch('/login-status').then(response => response.json()).then((loginStatus) => {
-        return loginStatus.userId;
-    });
-}
-
-
 /**
  * Function for registration.html, checks if user needs to register, if not display registration page
  */

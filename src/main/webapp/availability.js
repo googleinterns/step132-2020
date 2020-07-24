@@ -14,7 +14,7 @@
 
 function getAvailability() {
     var queryString = new Array();
-    window.onload = readTutorID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const tutorID = queryString["tutorID"];
 
     fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {

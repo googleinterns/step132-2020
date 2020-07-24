@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 // Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
 // 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readTutorID(queryString, window) {
+// This function reads the id of the tutor that the student has selected and the start and end of the time range selected, which are
+// all passed as URI components, and adds them to the queryString array.
+function readComponents(queryString, window) {
     if (queryString.length == 0) {
         if (window.location.search.split('?').length > 1) {
             var params = window.location.search.split('?')[1].split('&');
@@ -48,6 +48,12 @@ function getUser(userID) {
             return;
         }
         return user;
+    });
+}
+
+function getUserId() {
+    return fetch('/login-status').then(response => response.json()).then((loginStatus) => {
+        return loginStatus.userId;
     });
 }
 
