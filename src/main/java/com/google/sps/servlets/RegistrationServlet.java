@@ -132,6 +132,10 @@ public class RegistrationServlet extends HttpServlet {
   public void createUserEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String userId) {
     entity.setProperty("role", role);
     entity.setProperty("userId", userId);
+    // If the user has both roles, set the first view to student by default
+    if (role.equals("both")) {
+        entity.setProperty("view", "student");
+    }
     ds.put(entity);
   }
 
