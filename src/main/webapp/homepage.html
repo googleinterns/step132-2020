@@ -46,14 +46,15 @@ See the License for the specific language governing permissions and
                         </li>
                         <li class="button-hover" id="login" style="display: none"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
                         <li class="button-hover" id="logout" style="display: none"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-                        <li><a href="#" class="role-view-label">STUDENT</a></li>
-                        <li id="role-view-switch">
+                        
+                        <li id="label-student" style="display: none"><a href="#" class="role-view-label">STUDENT</a></li>
+                        <li id="role-view-switch" style="display: none">
                             <label class="switch">
-                                <input type="checkbox" onclick="switchView();">
+                                <input id="view-checkbox" type="checkbox" onclick="switchView();">
                                 <span class="slider round"></span>
                             </label>
                         </li>
-                        <li><a href="#">TUTOR</a></li>
+                        <li id="label-tutor" style="display: none"><a href="#">TUTOR</a></li>
                     </ul>
                 </div>
             </div>
