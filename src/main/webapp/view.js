@@ -23,6 +23,8 @@ function switchView() {
             alert("You do not have permission to switch views.");
             return;
         }
+
+        location.reload();
     });
 }
 
