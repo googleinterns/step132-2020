@@ -45,7 +45,7 @@ function getListsProfile() {
 /** Helper function for getLists, used for testing. */
 async function getListsHelper(window, url) {
     await fetch(url, {method: 'GET'}).then((response) => {
-        //if the tutor is not the current user/signed in, used for the my-lists page
+        //if the tutor is not the current user or not signed in, used for the my-lists page
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to manage lists.");

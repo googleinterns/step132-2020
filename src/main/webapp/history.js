@@ -20,7 +20,7 @@ function getTutoringSessionHistory() {
 //Helper function for getTutoringSessionHistory, used for testing.
 function getTutoringSessionHistoryHelper(window) {
     fetch('/history', {method: 'GET'}).then((response) => {
-        //if the student is not the current user/signed in
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to view history.");
