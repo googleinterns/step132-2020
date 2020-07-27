@@ -274,7 +274,7 @@ function createTutorResult(result) {
     var skills = document.createElement("p");
     var availabilityLink = document.createElement("a");
 
-    name.innerText = result.name;
+    name.innerHTML = "<a style='color:black' href='/profile.html?userID=" + result.userId + "'>" + result.name + "</a>";
     email.innerText = result.email;
     // Remove blank entry before adding to inner text
     var index = result.skills.indexOf(' ');
