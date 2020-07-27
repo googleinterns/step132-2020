@@ -25,9 +25,18 @@ describe("User Profile", function() {
         beforeAll(function() {
             var mockEditButton = document.createElement('btn');
             mockEditButton.style.display = 'none';
-            mockEditButton.id = "edit-profile-btn"
+            mockEditButton.id = "edit-profile-btn";
+
+            var mockAvailability = document.createElement('div');
+            mockAvailability.style.display = 'none';
+            mockAvailability.id = "tutor-availability";
+
+            var mockAvailabilityButton = document.createElement('btn');
+            mockAvailabilityButton.id = "tutor-availability-btn";
 
             document.body.appendChild(mockEditButton);
+            document.body.appendChild(mockAvailability);
+            document.body.appendChild(mockAvailabilityButton);
             
             spyOn(window, 'addEventListeners');
             spyOn(window, 'getExperiences');
@@ -35,6 +44,7 @@ describe("User Profile", function() {
             spyOn(window, 'getAchievements');
             spyOn(window, 'getPastSessionsAndTopics')
             
+            spyOn(window, "getListsProfile");
             actualDiv = createProfileDiv(mockUser, {role: "tutor", userId: "123"});
 
             actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
@@ -85,8 +95,23 @@ describe("User Profile", function() {
         });
 
         it("should set p to the correct topics", function() {
-
+            spyOn(window, "getListsProfile");
+            actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
             expect(actualText).toEqual("I am tutoring in: Math, Physics");
+        });
+
+        it("should set make the tutor availability button visible", function() {
+            spyOn(window, "getListsProfile");
+            fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
+            expect(document.getElementById('tutor-availability').style.display).toBe('block');
+        });
+
+        it("adds event listener that redirects the user to the tutor's availability", function() {
+            var mockWindow = {location: {href: "profile.html"}};
+            var mockUser = {userId: "123"};
+            redirectToAvailability(mockUser, mockWindow);
+
+            expect(mockWindow.location.href).toEqual("availability.html?tutorID=123");
         });
     });
 
