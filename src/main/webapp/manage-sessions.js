@@ -147,7 +147,7 @@ function cancelTutorSession(window, scheduledSession) {
 
 /** Creates a calendar with the Charts API and renders it on the page  */
 function createCalendar() {
-    fetch('/confirmation', {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+    fetch('/confirmation', {method: 'GET'}).then(response => response.json()).then(async (scheduledSessions) => {
         // Don't create a calendar if there are no scheduled sessions
         if (scheduledSessions === undefined || scheduledSessions.length == 0) {
             return;
@@ -166,9 +166,11 @@ function createCalendar() {
         dataTable.addColumn({type: 'date', id: 'End'});
         
         for (var session of scheduledSessions) {
+            // Wait for this promise to resolve so tutor is defined when making calendar row
+            var tutor = await getUser(session.tutorID);
             // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
             var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
-            var description = session.subtopics + " with " + session.tutorID;
+            var description = session.subtopics + " with " + tutor.name;
             dataTable.addRow([
                 date, description, asDate(session.timeslot.start), asDate(session.timeslot.end)
             ]);
