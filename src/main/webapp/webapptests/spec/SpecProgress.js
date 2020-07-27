@@ -271,7 +271,7 @@ describe("Progress", function() {
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
             getPastSessionsAndTopics(document, mockLoginStatus, mockUser, mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/history?studentID=undefined', {method: 'GET'});
+            expect(window.fetch).toHaveBeenCalledWith('/history?studentIDTutorView=123', {method: 'GET'});
             expect(document.getElementById('sessionsAndAchievements').style.display).toBe('block');
         });
 
@@ -285,7 +285,7 @@ describe("Progress", function() {
             });
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve()}));
             getPastSessionsAndTopics(document, mockLoginStatus, mockUser, mockWindow);
-            expect(window.fetch).toHaveBeenCalledWith('/history?studentID=undefined', {method: 'GET'});
+            expect(window.fetch).toHaveBeenCalledWith('/history?studentIDTutorView=123', {method: 'GET'});
             expect(document.getElementById('sessionsAndAchievements').style.display).toBe('block');
         });
 

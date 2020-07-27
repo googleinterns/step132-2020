@@ -59,10 +59,10 @@ function createProfileDiv(user, loginStatus) {
     const profileDiv = document.createElement('div');
     
     const profileName = document.createElement('h3');
-    profileName.innerHTML = user.name;
+    profileName.innerText = user.name;
 
     const profileBio = document.createElement('p');
-    profileBio.innerHTML = "About me: " + user.bio;
+    profileBio.innerText = "About me: " + user.bio;
 
     const profilePfp = document.createElement('img');
     profilePfp.src = user.pfp;
@@ -70,12 +70,12 @@ function createProfileDiv(user, loginStatus) {
     profilePfp.height = 100;
 
     const profileEmail = document.createElement('p');
-    profileEmail.innerHTML = user.email;
+    profileEmail.innerText = user.email;
 
     const profileTopics = document.createElement('p');
 
     // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
-    profileTopics.innerHTML = fetchStatusHelper(user, loginStatus, window, document);
+    profileTopics.innerText = fetchStatusHelper(user, loginStatus, window, document);
     profileTopics.style.textTransform = 'capitalize';
 
     profileDiv.appendChild(profilePfp);
@@ -93,7 +93,7 @@ function fetchStatusHelper(user, loginStatus, window, document) {
     var text;
 
     // Display topics as comma-separated list with spaces
-    if (role == 'student') { 
+    if (user.learning != null) { 
         var learning = user.learning.toString();
         // Remove blank entry that marks start of other topics
         var removeBlank = learning.replace(', ', '');

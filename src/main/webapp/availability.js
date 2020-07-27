@@ -24,9 +24,18 @@ function getAvailability() {
             document.getElementById('timeslots').appendChild(message);
             return;
         }
-        timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBox(timeslot, tutorID));
-        })
+
+        if (Object.keys(timeslots).length != 0) {
+            timeslots.forEach((timeslot) => {
+                document.getElementById('timeslots').appendChild(createTimeSlotBox(timeslot, tutorID));
+            });
+        } else {
+            var timeslotsContainer = document.getElementById('timeslots');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user has not set any available timeslots";
+            timeslotsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
@@ -66,7 +75,7 @@ function createTimeSlotBox(timeslot, tutorID) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
 
     const dateLineElement = document.createElement('div');
     dateLineElement.className = 'd-flex w-100 justify-content-between';
