@@ -301,6 +301,7 @@ function createTutorResult(result) {
     return container;
 }
 
+/** Loads filled and unfilled stars for tutor's rating. */
 function loadStars(starsElement, rating) {
     //tutor does not have a rating yet, don't display anything
     if (rating == 0) {
@@ -311,14 +312,12 @@ function loadStars(starsElement, rating) {
     for (var i = 0; i < rating; i++) {
         stars[i] = document.createElement('span');
         stars[i].className = 'glyphicon glyphicon-star';
-        // const rating = i + 1;
         starsElement.appendChild(stars[i]);
     }
 
     for (var i = rating; i < 5; i++) {
         stars[i] = document.createElement('span');
         stars[i].className = 'glyphicon glyphicon-star-empty';
-        // const rating = i + 1;
         starsElement.appendChild(stars[i]);
     }
 
