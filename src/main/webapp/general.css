@@ -104,3 +104,24 @@ footer .glyphicon {
 #search-bar-user {
     padding: 2% 0;
 }
+
+/* Vertically align modal: http://jsfiddle.net/sRmLV/1140/ */
+.vertical-alignment-helper {
+    display:table;
+    height: 100%;
+    width: 100%;
+    pointer-events:none;
+}
+.vertical-align-center {
+    display: table-cell;
+    vertical-align: middle;
+    pointer-events:none;
+}
+.modal-content {
+    width:inherit;
+    max-width:inherit;
+    height:inherit;
+    margin: 0 auto;
+    pointer-events:all;
+}
+/* -------------------------- */

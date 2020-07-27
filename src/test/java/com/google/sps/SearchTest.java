@@ -14,6 +14,7 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
@@ -82,6 +83,7 @@ public final class SearchTest {
     public void doGetReturnsCorrectResponseForHistory() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
 
         when(request.getParameter("topic")).thenReturn("history");
 
@@ -106,11 +108,39 @@ public final class SearchTest {
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
+    /**
+    * The current searcher is a tutor and that tutor is the only result for history. They should not be able to see themselves in the result.
+    */
+    @Test
+    public void testWhenSearcherIsPartOfResult() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "0");
+
+        when(request.getParameter("topic")).thenReturn("history");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        //create the hard coded data
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        writer.flush(); // it may not have been flushed yet...
+
+        String expected = "[]";
+        System.out.println(stringWriter.toString());
+        System.out.println(expected);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
     @Test
     public void doGetReturnsCorrectEmptyResponseForBusiness() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
-
+        TestUtilities.setSessionId(request, "");
         when(request.getParameter("topic")).thenReturn("business");
 
         StringWriter stringWriter = new StringWriter();
@@ -133,6 +163,7 @@ public final class SearchTest {
     public void doGetReturnsCorrectErrorResponseForEmptyString() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
 
         when(request.getParameter("topic")).thenReturn("");
 

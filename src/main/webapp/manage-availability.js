@@ -26,7 +26,7 @@ function getAvailabilityManage() {
 
 function getAvailabilityManageHelper(window) {
     fetch('/manage-availability', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to manage availability.");
@@ -54,22 +54,6 @@ function getAvailabilityManageHelper(window) {
             return;
         }
     });
-}
-
-// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
-// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readTutorID(queryString, window) {
-    if (queryString.length == 0) {
-        if (window.location.search.split('?').length > 1) {
-            var params = window.location.search.split('?')[1].split('&');
-            for (var i = 0; i < params.length; i++) {
-                var key = params[i].split('=')[0];
-                var value = decodeURIComponent(params[i].split('=')[1]);
-                queryString[key] = value;
-            }
-        }
-    }
 }
 
 function createTimeSlotBoxManage(timeslot) {
@@ -139,7 +123,7 @@ function addTimeSlotHelper(window) {
     params.append('year', document.getElementById('year').value);
 
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to edit availability.");
@@ -159,7 +143,7 @@ function deleteTimeSlot(window, timeslot) {
     params.append('end', timeslot.end);
 
     fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to edit availability.");
@@ -167,3 +151,53 @@ function deleteTimeSlot(window, timeslot) {
         }
     });
 }
+
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    fetch('/manage-availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
+        // Don't create a calendar if there are no available timeslots
+        if (timeslots === undefined || timeslots.length == 0) {
+            return;
+        }
+
+        // There are available timeslots, display header and calendar
+        document.getElementById('calendar-header').style.display = 'block';
+        
+        const container = document.getElementById('calendar');
+        const chart = new google.visualization.Timeline(container);
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'string', id: 'Date'});
+        dataTable.addColumn({type: 'date', id: 'Start'});
+        dataTable.addColumn({type: 'date', id: 'End'});
+        
+        for (var slot of timeslots) {
+            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+            var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+            dataTable.addRow([
+                date, asDate(slot.start), asDate(slot.end)
+            ]);
+        }
+
+        const options = {
+            'width':1000,
+            'height':200,
+        };
+
+        chart.draw(dataTable, options);
+    });
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(createCalendar);
