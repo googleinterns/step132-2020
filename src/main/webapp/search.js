@@ -204,6 +204,7 @@ function createBookResult(result) {
 function createTutorResult(result) {
     var container = document.createElement("div");
     var name = document.createElement("h3");
+    var rating = document.createElement("div");
     var email = document.createElement("h6");
     var skills = document.createElement("p");
     var availabilityLink = document.createElement("a");
@@ -215,18 +216,46 @@ function createTutorResult(result) {
     result.skills.splice(index, 1);
     skills.innerText = "Skills: " + result.skills.join(", ");
     availabilityLink.innerText = "Availability";
+    loadStars(rating, Math.round(parseInt(result.ratingSum) / parseInt(result.ratingCount)));
 
     availabilityLink.href = "/availability.html?tutorID=" + result.userId;
 
+    name.classList.add("tutor-name");
+    rating.classList.add("tutor-rating");
     container.classList.add("tutor-result");
     container.classList.add("list-group-item");
 
     skills.style.textTransform = "capitalize";
 
     container.appendChild(name);
+    container.appendChild(rating);
     container.appendChild(email);
     container.appendChild(skills);
     container.appendChild(availabilityLink);
 
     return container;
-} 
+}
+
+function loadStars(starsElement, rating) {
+    //tutor does not have a rating yet, don't display anything
+    if (rating == 0) {
+        return;
+    }
+    
+    var stars = [];
+    for (var i = 0; i < rating; i++) {
+        stars[i] = document.createElement('span');
+        stars[i].className = 'glyphicon glyphicon-star';
+        // const rating = i + 1;
+        starsElement.appendChild(stars[i]);
+    }
+
+    for (var i = rating; i < 5; i++) {
+        stars[i] = document.createElement('span');
+        stars[i].className = 'glyphicon glyphicon-star-empty';
+        // const rating = i + 1;
+        starsElement.appendChild(stars[i]);
+    }
+
+    return starsElement;
+}
