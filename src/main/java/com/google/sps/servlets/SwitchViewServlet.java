@@ -58,6 +58,7 @@ public class SwitchViewServlet extends HttpServlet {
         if (userID.equals("-1")) {
             response.setContentType("application/json");
             response.getWriter().println("{\"error\": \"There was an error switching views.\"}");
+            return; 
         }
 
         datastore.switchUserView(userID);
