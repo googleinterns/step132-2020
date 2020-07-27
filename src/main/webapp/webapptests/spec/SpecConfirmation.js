@@ -59,7 +59,7 @@ describe("Confirmation", function() {
             expect(actual.childNodes[1].childNodes[0].tagName).toEqual("H3");
         });
 
-        it("should have the inner HTML of the h3 tag equal to to the email of the tutor", async function() {
+        it("should have the inner HTML of the h3 tag equal to to the name of the tutor", async function() {
             var tutor = {name: "Test"};
             spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutor)}));
 

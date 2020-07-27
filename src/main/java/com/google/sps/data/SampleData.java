@@ -98,6 +98,11 @@ public final class SampleData {
                 new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
 
+    private ArrayList<User> users = new ArrayList<User> (Arrays.asList(
+        new User("Test Tester", "0"),
+        new User("Tester Test", "1")
+    ));
+
    /** 
     *  Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
     *  @return Tutor
