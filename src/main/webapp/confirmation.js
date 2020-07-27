@@ -20,7 +20,7 @@ function getScheduledSessions() {
 //Helper function for getScheduledSessions, used for testing
 async function getScheduledSessionsHelper(window) {
     await fetch('/confirmation', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to view upcoming session.");

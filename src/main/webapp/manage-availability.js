@@ -26,7 +26,7 @@ function getAvailabilityManage() {
 
 function getAvailabilityManageHelper(window) {
     fetch('/manage-availability', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to manage availability.");
@@ -123,7 +123,7 @@ function addTimeSlotHelper(window) {
     params.append('year', document.getElementById('year').value);
 
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to edit availability.");
@@ -143,7 +143,7 @@ function deleteTimeSlot(window, timeslot) {
     params.append('end', timeslot.end);
 
     fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to edit availability.");

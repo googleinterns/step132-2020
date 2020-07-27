@@ -46,7 +46,6 @@ function createProfileDiv(user, loginStatus) {
     const profileDiv = document.createElement('div');
     
     const profileName = document.createElement('h3');
-    profileName.className = "text-center";
     profileName.innerText = user.name;
 
     const profileBio = document.createElement('p');
@@ -96,6 +95,7 @@ function fetchStatusHelper(user, loginStatus, window, document) {
         var removeBlank = skills.replace(', ', '');
         var listWithSpaces = removeBlank.replace(/,/g, ', ');
         text = "I am tutoring in: " + listWithSpaces;
+        getListsProfile();
     }
 
     if (loginStatus.userId == getIdParameter(window)) {
