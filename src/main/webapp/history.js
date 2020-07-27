@@ -100,16 +100,6 @@ function createTutoringSessionBox(tutoringSession) {
     return tutoringSessionElement;
 }
 
-//Helper function for testing purposes
-//Sets the tutor element's name field to the tutor name
-function setTutorName(tutorElement, tutorID) {
-    var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerText = "Tutoring Session with " + tutor.name;
-    });
-}
-
-
 function loadStars(starsElement, tutoringSession) {
     var rating = 0;
     if (tutoringSession.rated) {
