@@ -102,6 +102,9 @@ public final class RegistrationTest {
         Entity expectedUser = new Entity("User");
         expectedUser.setProperty("role", "tutor");
         expectedUser.setProperty("userId", USER_ID);
+        expectedUser.setProperty("fullName", "sam f");
+        expectedUser.setProperty("firstName", "sam");
+        expectedUser.setProperty("lastName", "f");
 
         Entity expectedTutor = new Entity("Tutor");
         expectedTutor.setProperty("name", "Sam F");
@@ -114,7 +117,7 @@ public final class RegistrationTest {
         expectedTutor.setProperty("userId", USER_ID);
 
         Entity actualUser = new Entity("User");
-        servlet.createUserEntityAndPutInDatastore(datastore, actualUser, "tutor", USER_ID);
+        servlet.createUserEntityAndPutInDatastore(datastore, actualUser, "tutor", USER_ID, "sam f", "sam", "f");
 
         Entity actualTutor = new Entity("Tutor");
         servlet.createTutorEntityAndPutInDatastore(datastore, actualTutor, "Sam F", "blah", "images/pfp.jpg", USER_EMAIL, mockTopics, USER_ID);

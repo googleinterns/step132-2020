@@ -95,7 +95,7 @@ public class RegistrationServlet extends HttpServlet {
 
     // Make entity for user with all registration info
     Entity userEntity = new Entity("User");
-    createUserEntityAndPutInDatastore(datastore, userEntity, role, userId);
+    createUserEntityAndPutInDatastore(datastore, userEntity, role, userId, fullName.toLowerCase(), firstName.toLowerCase(), lastName.toLowerCase());
 
     if(role.toLowerCase().equals("tutor")) {
         Entity tutorEntity = new Entity("Tutor");
@@ -148,9 +148,12 @@ public class RegistrationServlet extends HttpServlet {
  /**
   * Creates a user entity and puts it in datastore, used for testing
   */
-  public void createUserEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String userId) {
+  public void createUserEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String userId, String fullName, String firstName, String lastName) {
     entity.setProperty("role", role);
     entity.setProperty("userId", userId);
+    entity.setProperty("fullName", fullName);
+    entity.setProperty("firstName", firstName);
+    entity.setProperty("lastName", lastName);
     ds.put(entity);
   }
 

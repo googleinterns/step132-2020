@@ -93,6 +93,11 @@ public final class SampleData {
                 new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "4")
     ));
 
+    private ArrayList<User> users = new ArrayList<User> (Arrays.asList(
+        new User("Test Tester", "0"),
+        new User("Tester Test", "1")
+    ));
+
    /** 
     *  Finds and returns a tutor that has the given email. If no such tutor is found, returns null.
     *  @return Tutor
@@ -153,6 +158,22 @@ public final class SampleData {
             entity.setProperty("learning", student.getLearning());
             entity.setProperty("tutors", student.getTutors());
             entity.setProperty("userId", student.getUserId());
+            datastore.put(entity);
+        }
+    }
+
+    public void addUsersToDatastore() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        for (User user : users) {
+            Entity entity = new Entity("User");
+            entity.setProperty("userId", user.getUserId());
+
+            String fullName = user.getName();
+            entity.setProperty("fullName", fullName.toLowerCase());
+            String[] nameSplit = fullName.split(" ", 2); 
+            entity.setProperty("firstName", nameSplit[0].toLowerCase());
+            entity.setProperty("lastName", nameSplit[1].toLowerCase());
             datastore.put(entity);
         }
     }
