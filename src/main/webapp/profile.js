@@ -108,6 +108,7 @@ function fetchStatusHelper(user, loginStatus, window, document) {
         var removeBlank = skills.replace(', ', '');
         var listWithSpaces = removeBlank.replace(/,/g, ', ');
         text = "I am tutoring in: " + listWithSpaces;
+        getListsProfile();
     }
 
     if (loginStatus.userId == getIdParameter(window)) {
