@@ -25,6 +25,10 @@ function switchTab(elem) {
     elem.parentNode.classList.add("active");
 }
 
+function handleTutorSort(elem) {
+    return getSearchResultsHelper(window, elem.value);
+}
+
 /** Gets the topic the user searched for from the search box and redirects the page to the search-results page with a url that contains a query parameter for the topic. 
     The user may already be on the search-results page. In that case, the page will reload with a different value for the topic query parameter. */
 function redirectToResults() {
@@ -43,11 +47,11 @@ function redirectToResultsHelper(document, window) {
 
 /** Fetches the search results for the topic that the user searched for. */
 function getSearchResults() {
-    return getSearchResultsHelper(document, window);
+    return getSearchResultsHelper(window);
 }
 
 /** Helper function for getSearchResults, used for testing purposes. */
-async function getSearchResultsHelper(document, window) {
+async function getSearchResultsHelper(window, sort) {
     var topic;
 
     if (window.location.search.split('?').length > 0) {
@@ -56,7 +60,7 @@ async function getSearchResultsHelper(document, window) {
     }
 
     if(topic != null) {
-        var tutors = getTutors(topic);
+        var tutors = getTutors(topic, sort);
         var tutorBooks = getTutorBooks(topic);
         var googleBooks = getBooks(topic);
         
@@ -210,8 +214,11 @@ function loadMoreBooks(topic) {
 }
 
 /** Fetches the list of tutors for the topic the user searched for. */
-async function getTutors(topic) {
-    await fetch("/search?topic="+topic).then(response => response.json()).then((results) => {
+async function getTutors(topic, sort) {
+    if(sort === undefined) {
+        sort = "alpha";
+    }
+    await fetch("/search?topic=" + topic + "&sort-type=" + sort).then(response => response.json()).then((results) => {
 
         var numSearchResults = document.getElementById("num-tutor-results");
         
@@ -224,7 +231,13 @@ async function getTutors(topic) {
         //Only make "tutors" plural if there are 0 or more than 1 tutors
         numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " tutors for " : " tutor for ") + topic;
 
+        if(results.length == 0) {
+            document.getElementById("tutor-filter").style.display = "none";
+        }
+
         var tutorContainer = document.getElementById("tutors-container");
+
+        tutorContainer.innerHTML = "";
 
         results.forEach(function(result) {
             tutorContainer.append(createTutorResult(result));

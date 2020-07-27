@@ -14,6 +14,11 @@ See the License for the specific language governing permissions and
     width: 75%;
 }
 
+#tutor-filter {
+    position: fixed;
+    margin-left: 2%;
+}
+
 #search-form-results {
     margin:auto;
     margin-top: 2% !important;

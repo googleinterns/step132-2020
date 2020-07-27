@@ -56,7 +56,9 @@ public class SearchServlet extends HttpServlet {
             return;
         }
 
-        List<Tutor> results = datastore.getTutorsForTopic(topic, studentID);
+        String sortType = Optional.ofNullable(request.getParameter("sort-type")).orElse("alpha");
+
+        List<Tutor> results = datastore.getTutorsForTopic(topic, studentID, sortType);
 
         response.setCharacterEncoding("UTF-8");
 

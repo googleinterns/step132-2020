@@ -29,6 +29,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import java.lang.String;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -44,11 +45,19 @@ public final class SearchDatastoreService {
     * it should not return that tutor in results.
     * @return List<Tutor>
     */
-    public List<Tutor> getTutorsForTopic(String topic, String studentID) {
+    public List<Tutor> getTutorsForTopic(String topic, String studentID, String sortType) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         Filter topicFilter = new FilterPredicate("topics", FilterOperator.EQUAL, topic.toLowerCase());
         Query tutorQuery = new Query("Tutor").setFilter(topicFilter);
+
+        switch(sortType) {
+            case "rating":
+                tutorQuery.addSort("rating", SortDirection.DESCENDING);
+                break;
+            default:
+                tutorQuery.addSort("name", SortDirection.ASCENDING);
+        }
 
         ArrayList<Tutor> tutors = new ArrayList<Tutor>();
 
