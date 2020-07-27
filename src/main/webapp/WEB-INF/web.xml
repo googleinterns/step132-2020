@@ -18,6 +18,7 @@
         <url-pattern>delete-tutor-session</url-pattern>
         <url-pattern>history</url-pattern>
         <url-pattern>manage-availability</url-pattern>
+        <url-pattern>manage-lists</url-pattern>
         <url-pattern>my-students</url-pattern>
         <url-pattern>rating</url-pattern>
         <url-pattern>registration</url-pattern>
