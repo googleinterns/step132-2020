@@ -33,7 +33,8 @@ describe("User Profile", function() {
             spyOn(window, 'getExperiences');
             spyOn(window, 'getGoals');
             spyOn(window, 'getAchievements');
-            spyOn(window, 'getPastSessionsAndTopics')
+            spyOn(window, 'getPastSessionsAndTopics');
+            spyOn(window, 'getListsProfile');
             
             actualDiv = createProfileDiv(mockUser, {role: "tutor", userId: "123"});
 
