@@ -29,6 +29,8 @@ describe("Manage Sessions", function() {
         it("should redirect user to homepage", async function() {
             spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            var sessionsContainer = document.createElement("div");
+            spyOn(document, 'getElementById').and.returnValue(sessionsContainer);
             await getTutorSessionsManageHelper(mockWindow);
             expect(window.alert).toHaveBeenCalledWith('You must be signed in to manage sessions.');
             expect(mockWindow.location.href).toBe('/homepage.html');
@@ -54,13 +56,13 @@ describe("Manage Sessions", function() {
             expect(actual.childNodes[0].childNodes[0].tagName).toEqual("H3");
         });
 
-        it("should have the inner HTML of the h3 tag equal to the name of the tutor for the tutoring session", function() {
-            var tutor = {name: "Elian"};
-            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(user)}), Promise.resolve({json: () => Promise.resolve(tutor)}));
+        it("should have the inner HTML of the h3 tag equal to the name of the tutor for the tutoring session", async function() {
+            var tutor = {name: "Test"};
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutor)}));
 
             const tutorElement = document.createElement('h3');
-            setTutorName(tutorElement, "123").then(() => {
-                expect(tutorElement.innerHTML).toEqual("Tutoring Session with Elian");
+            await setTutorName(tutorElement, "123").then(() => {
+                expect(tutorElement.innerHTML).toEqual("Tutoring Session with Test");
             });
         })
 

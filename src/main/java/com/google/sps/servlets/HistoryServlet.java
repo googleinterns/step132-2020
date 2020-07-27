@@ -48,6 +48,11 @@ public class HistoryServlet extends HttpServlet {
         // Get the id of the student whose tutoring history will be displayed.
         // Make the default id -1 if the parameter is null, so an empty list will be returned
         String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
+        String studentIDTutorView = Optional.ofNullable(request.getParameter("studentIDTutorView")).orElse("-1");
+
+        if (!studentIDTutorView.equals("-1")) {
+            studentID = studentIDTutorView;
+        }
 
         if(studentID.equals("-1")) {
             response.setContentType("application/json");

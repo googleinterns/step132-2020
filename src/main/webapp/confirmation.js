@@ -20,7 +20,7 @@ function getScheduledSessions() {
 //Helper function for getScheduledSessions, used for testing
 async function getScheduledSessionsHelper(window) {
     await fetch('/confirmation', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to view upcoming session.");
@@ -35,9 +35,18 @@ async function getScheduledSessionsHelper(window) {
             document.getElementById('timeslots').appendChild(message);
             return;
         }
-        scheduledSessions.forEach((scheduledSession) => {
-            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession));
-        })
+
+        if (Object.keys(scheduledSessions).length != 0) {
+            scheduledSessions.forEach((scheduledSession) => {
+                document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession));
+            });
+        } else {
+            var sessionsContainer = document.getElementById('scheduledSessions');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any scheduled tutoring sessions.";
+            sessionsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
@@ -73,7 +82,7 @@ function createScheduledSessionBox(scheduledSession) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
                              " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
 
 
@@ -91,6 +100,6 @@ function createScheduledSessionBox(scheduledSession) {
 function setTutorName(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerHTML = "Tutoring Session with " + tutor.name;
+        tutorElement.innerText = "Tutoring Session with " + tutor.name;
     });
 }

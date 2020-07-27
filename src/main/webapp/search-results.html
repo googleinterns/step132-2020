@@ -40,12 +40,12 @@ See the License for the specific language governing permissions and
                                 <li><a id="history">History</a></li>
                                 <li><a id="availability-settings">Manage Availability</a></li>
                                 <li><a id="my-students">My Students</a></li>
-                                <li><a id="my-progress">My Progress</a></li>
+                                <li><a id="my-lists">My Lists</a></li>
                                 <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
                             </ul>
                         </li>
-                        <li id="login"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                        <li id="logout"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                        <li id="login" style="display: none"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                        <li id="logout" style="display: none"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -68,8 +68,39 @@ See the License for the specific language governing permissions and
         </ul>
 
         <div id="result-container bg-white" class="list-group">
-            <div id="tutors" class="list-group active-container"></div>
-            <div id="books"></div>
+            <div id="tutors" class="list-group active-container">
+                <h4 class="container-label" id="num-tutor-results"></h4>
+                <div id="tutors-container"></div>
+            </div>
+            <div id="books">
+                <div id = "tutor-books">
+                    <h4 class="container-label" id="tutor-books-label">Tutors' Recommendations</h4>
+                    <div id="lists-container" class="list-inline"></div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="view-list-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="vertical-alignment-helper">
+                            <div class="modal-dialog modal-dialog-centered vertical-align-center" role="document">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3 class="modal-title" id="list-modal-name" style="display:inline-block"></h3>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body" id="list-modal-body" ></div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="google-books">
+                    <h4 class="container-label" id="num-book-results"></h4>
+                    <div id="books-container"></div>
+                </div>
+            </div>
         </div>
 
         <div class="bg-description-blue">
@@ -87,5 +118,6 @@ See the License for the specific language governing permissions and
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="search.js"></script>
         <script src="registration.js"></script>
+        <script src="profile.js"></script>
     </body>
 </html>

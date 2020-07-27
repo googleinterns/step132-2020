@@ -26,7 +26,7 @@ function getAvailabilityManage() {
 
 function getAvailabilityManageHelper(window) {
     fetch('/manage-availability', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to manage availability.");
@@ -42,9 +42,17 @@ function getAvailabilityManageHelper(window) {
             return;
         }
 
-        timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
-        });
+        if (Object.keys(timeslots).length != 0) {
+            timeslots.forEach((timeslot) => {
+                document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
+            });
+        } else {
+            var timeslotsContainer = document.getElementById('timeslots');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user has not set any available timeslots";
+            timeslotsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
@@ -85,7 +93,7 @@ function createTimeSlotBoxManage(timeslot) {
     if (minute == 0) {
         minute = "00";
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
 
     const dateLineElement = document.createElement('div');
     dateLineElement.className = 'd-flex w-100 justify-content-between';
@@ -131,7 +139,7 @@ function addTimeSlotHelper(window) {
     params.append('year', document.getElementById('year').value);
 
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to edit availability.");
@@ -151,7 +159,7 @@ function deleteTimeSlot(window, timeslot) {
     params.append('end', timeslot.end);
 
     fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to edit availability.");
