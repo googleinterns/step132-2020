@@ -24,6 +24,10 @@ See the License for the specific language governing permissions and
     font-style: italic;
 }
 
+.list-info {
+    text-align: left;
+}
+
 .book-list {
     padding-left: 10px;
 }

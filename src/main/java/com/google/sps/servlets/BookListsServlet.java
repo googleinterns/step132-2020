@@ -37,18 +37,29 @@ public class BookListsServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String topic = request.getParameter("topic");
+        String tutorID = request.getParameter("tutorID");
 
         response.setContentType("application/json;");
+        response.setCharacterEncoding("UTF-8");
 
-        //send error message if the search was invalid
+        //used for the tutor's profile page
+        //if tutor id isn't null, someone is trying to view the tutor's profile which displays the tutor's lists
+        if(tutorID != null) {
+            List<BookList> results = datastore.getListsByTutor(tutorID);
+            String jsonResults = new Gson().toJson(results);
+            response.getWriter().println(jsonResults);
+            return;
+        }
+        
+        //if the tutor id was null and the topic is null
+        //send error message because the search was invalid
         if(topic == null || topic.equals("")) {
             response.getWriter().println("{\"error\": \"Invalid search request.\"}");
             return;
         }
-
+        
+        //otherwise return results for the topic
         List<BookList> results = datastore.getListsByTopic(topic);
-
-        response.setCharacterEncoding("UTF-8");
 
         String jsonResults = new Gson().toJson(results);
 

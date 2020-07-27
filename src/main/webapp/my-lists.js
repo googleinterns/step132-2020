@@ -29,15 +29,23 @@ function checkOtherSelected(value) {
     }
 }
 
-/** Gets all of the tutor's lists from the server. */
-function getLists() {
-    return getListsHelper(window);
+/** Gets all of the tutor's lists from the server, used for the manage-lists page. */
+function getListsManage() {
+    return getListsHelper(window, '/manage-lists');
+}
+
+/** Gets all of the tutor's lists from the server to display on the user's profile */
+function getListsProfile() {
+    var queryString = new Array();
+    readComponents(queryString, window);
+    document.getElementById("list-container-profile").style.display = "block";
+    return getListsHelper(window, '/lists?tutorID=' + queryString["userID"]);
 }
 
 /** Helper function for getLists, used for testing. */
-async function getListsHelper(window) {
-    await fetch('/manage-lists', {method: 'GET'}).then((response) => {
-        //if the tutor is not the current user/signed in
+async function getListsHelper(window, url) {
+    await fetch(url, {method: 'GET'}).then((response) => {
+        //if the tutor is not the current user/signed in, used for the my-lists page
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to manage lists.");
@@ -55,7 +63,7 @@ async function getListsHelper(window) {
 
         if(Object.keys(lists).length === 0) {
             var message = document.createElement("p");
-            message.innerText = "You do not have any lists.";
+            message.innerText = "This user has no lists.";
             document.getElementById('list-names').appendChild(message);
             return;
         }
@@ -68,6 +76,23 @@ async function getListsHelper(window) {
             listInfo.appendChild(createListElement(list));
         });
     });
+}
+
+// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
+// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
+// This function reads the id of the tutor that the student has selected and the start and end of the time range selected, which are
+// all passed as URI components, and adds them to the queryString array.
+function readComponents(queryString, window) {
+    if (queryString.length == 0) {
+        if (window.location.search.split('?').length > 1) {
+            var params = window.location.search.split('?')[1].split('&');
+            for (var i = 0; i < params.length; i++) {
+                var key = params[i].split('=')[0];
+                var value = decodeURIComponent(params[i].split('=')[1]);
+                queryString[key] = value;
+            }
+        }
+    }
 }
 
 /** Creates a list element containing the list of books, the name of the list and the topic of the list. */

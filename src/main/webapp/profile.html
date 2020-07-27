@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
+        <link rel="stylesheet" type="text/css" href="my-lists.css">
     </head>
     <body onload="displayLoginLogoutLink(), displayProfile()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
@@ -125,13 +126,11 @@ See the License for the specific language governing permissions and
                     <h3>Topics Covered</h3>
                     <ul class="list-group text-left" id="past-topics"></ul>
                 </div>
-
-                <div class="container-fluid text-center bg-white">
+            </div>
+            <div class="container-fluid text-center bg-white" id="list-container-profile" style="display:none">
                     <h3>My Lists</h3>
                     <div class="list-group col-md-4" id="list-names" style="margin-top:3%"></div>
                     <div id="list-info-container" style="margin-top:3%"></div>
-                </div>
-                
             </div>
         </div>
 
