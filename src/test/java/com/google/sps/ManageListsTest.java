@@ -103,7 +103,7 @@ public final class ManageListsTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         TestUtilities.setSessionId(request, "123");   
 
-        when(request.getParameter("books")).thenReturn("New Book 1 by Person 1, New Book 2 by Person 2, New Book 3 by Person 3");
+        when(request.getParameter("books")).thenReturn("New Book 1 by Person 1 \n New Book 2 by Person 2 \n New Book 3 by Person 3");
         when(request.getParameter("name")).thenReturn("My New List");
         when(request.getParameter("topic")).thenReturn("science");
 

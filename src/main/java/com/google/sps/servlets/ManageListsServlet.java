@@ -39,7 +39,7 @@ public class ManageListsServlet extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         // Get the id of the tutor 
-        // if id is null, use default id -1 (
+        // if id is null, use default id -1
         String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
 
         if(tutorID.equals("-1")) {
@@ -75,8 +75,8 @@ public class ManageListsServlet extends HttpServlet {
             topic = request.getParameter("otherTopic");
         }
 
-        //\\s*,\\s* splits on comma and gets rid of whitespace before and after the word
-        BookList list = new BookList(new ArrayList<String>(Arrays.asList(books.trim().split("\\s*,\\s*"))), name, topic, tutorID);
+        //\\s*\n\\s* splits on a new line and gets rid of whitespace before and after the word
+        BookList list = new BookList(new ArrayList<String>(Arrays.asList(books.trim().split("\\s*\n\\s*"))), name, topic, tutorID);
 
         datastore.createList(list);
 
