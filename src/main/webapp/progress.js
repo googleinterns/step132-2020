@@ -130,19 +130,36 @@ function getAchievements(document, loginStatus) {
 }
 
 function getPastSessionsAndTopics(document, loginStatus, user) {
-    // Do not display past tutoring sessions and past learned topics if the user viewing the profile is not one of the student's tutors or 
-    // the student themselves
-    if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
-        const studentID = user.userId;
+    
+    // If the user is both a tutor and a student
+    if (user.student != null) {
+        // Do not display past tutoring sessions and past learned topics if the user viewing the profile is not one of the student's tutors or 
+        // the student themselves
+        if (user.student.tutors.includes(loginStatus.userId) || user.student.userId == loginStatus.userId) {
+            const studentID = user.student.userId;
 
-        const params = new URLSearchParams();
-        params.append('studentID', studentID);
-        fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
-            getPastSessionsAndTopicsHelper(document, tutoringSessions);
-        });
+            const params = new URLSearchParams();
+            params.append('studentID', studentID);
+            fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+                getPastSessionsAndTopicsHelper(document, tutoringSessions);
+            });
+        } else {
+            document.getElementById("sessionsAndAchievements").style.display = "none";
+            return;
+        }
     } else {
-        document.getElementById("sessionsAndAchievements").style.display = "none";
-        return;
+        if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
+            const studentID = user.userId;
+
+            const params = new URLSearchParams();
+            params.append('studentID', studentID);
+            fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+                getPastSessionsAndTopicsHelper(document, tutoringSessions);
+            });
+        } else {
+            document.getElementById("sessionsAndAchievements").style.display = "none";
+            return;
+        }
     }
 }
 

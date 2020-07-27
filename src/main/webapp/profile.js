@@ -57,22 +57,26 @@ function getUser(userID) {
 // Create elements and fill their inner HTML with user info
 function createProfileDiv(user, loginStatus) {
     const profileDiv = document.createElement('div');
-    
     const profileName = document.createElement('h3');
-    profileName.innerText = user.name;
-
     const profileBio = document.createElement('p');
-    profileBio.innerText = "About me: " + user.bio;
-
     const profilePfp = document.createElement('img');
-    profilePfp.src = user.pfp;
     profilePfp.width = 100;
     profilePfp.height = 100;
-
     const profileEmail = document.createElement('p');
-    profileEmail.innerText = user.email;
-
     const profileTopics = document.createElement('p');
+
+    // If the user is both a tutor and a studen
+    if (user.student != null) {
+        profileName.innerText = user.student.name;
+        profileBio.innerText = "About me: " + user.student.bio;
+        profilePfp.src = user.student.pfp;
+        profileEmail.innerText = user.student.email;
+    } else {
+        profileName.innerText = user.name;
+        profileBio.innerText = "About me: " + user.bio;
+        profilePfp.src = user.pfp;
+        profileEmail.innerText = user.email;
+    }
 
     // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
     profileTopics.innerText = fetchStatusHelper(user, loginStatus, window, document);
@@ -92,8 +96,22 @@ function fetchStatusHelper(user, loginStatus, window, document) {
     var role = loginStatus.role;
     var text;
 
-    // Display topics as comma-separated list with spaces
-    if (user.learning != null) { 
+    if (user.student != null) {
+        var learning = user.student.learning.toString();
+        // Remove blank entry that marks start of other topics
+        var removeBlankStudent = learning.replace(', ', '');
+        var listWithSpacesStudent = removeBlankStudent.replace(/,/g, ', ');
+
+        var skills = user.tutor.skills.toString();
+        // Remove blank entry that marks start of other topics
+        var removeBlankTutor = skills.replace(', ', '');
+        var listWithSpacesTutor = removeBlankTutor.replace(/,/g, ', ')
+
+        text = "I am learning: " + listWithSpacesStudent + "\n" +
+            "I am tutoring in: " + listWithSpacesTutor;
+
+        loadProgress(document, loginStatus, user);
+    } else if (user.learning != null) { // Display topics as comma-separated list with spaces
         var learning = user.learning.toString();
         // Remove blank entry that marks start of other topics
         var removeBlank = learning.replace(', ', '');
@@ -101,8 +119,7 @@ function fetchStatusHelper(user, loginStatus, window, document) {
         text = "I am learning: " + listWithSpaces;
 
         loadProgress(document, loginStatus, user);
-    }
-    else { 
+    } else if (user.skills != null){ 
         var skills = user.skills.toString();
         // Remove blank entry that marks start of other topics
         var removeBlank = skills.replace(', ', '');
@@ -125,82 +142,97 @@ function editProfile(user, role, document) {
     document.getElementById('profile-container').style.display = 'none';
     document.getElementById('edit-profile-form').style.display = 'block';
 
-    // Set default value of bio to what user previously had
-    // This will prevent this data from being lost if the user decides not change this field
-    document.getElementById('bio').value = user.bio;
+    if (role == "both") {
+        // Set default value of bio to what user previously had
+        // This will prevent this data from being lost if the user decides not change this field
+        document.getElementById('bio').value = user.student.bio;
 
-    if (role == 'student') {
-        document.getElementById('student-topics').style.display = 'block';
+        editProfileTutor(user, true, document);
+        editProfileStudent(user, true, document);
+    } else if (role == 'student') {
+        document.getElementById('bio').value = user.bio;
+
+        editProfileStudent(user, false, document);
+    } else if (role == tutor) {
+        document.getElementById('bio').value = user.bio;
+
+        editProfileTutor(user, false, document);
+    }
+}
+
+function editProfileTutor(user, both, document) {
+    if (both == true) {
+        document.getElementById('tutor-topics').style.display = 'block';
         // Automatically check boxes of topics user has already selected
-        if (user.learning.indexOf('math') > -1) {
-            document.getElementById('math').checked = true;
+        if (user.tutor.skills.indexOf('math') > -1) {
+            document.getElementById('math-tutor').checked = true;
         }
-        if (user.learning.indexOf('physics') > -1) {
-            document.getElementById('physics').checked = true;
+        if (user.tutor.skills.indexOf('physics') > -1) {
+            document.getElementById('physics-tutor').checked = true;
         }
-        if (user.learning.indexOf('chemistry') > -1) {
-            document.getElementById('chemistry').checked = true;
+        if (user.tutor.skills.indexOf('chemistry') > -1) {
+            document.getElementById('chemistry-tutor').checked = true;
         }
-        if (user.learning.indexOf('biology') > -1) {
-            document.getElementById('biology').checked = true;
+        if (user.tutor.skills.indexOf('biology') > -1) {
+            document.getElementById('biology-tutor').checked = true;
         }
-        if (user.learning.indexOf('computer science') > -1) {
-            document.getElementById('computer-science').checked = true;
+        if (user.tutor.skills.indexOf('computer science') > -1) {
+            document.getElementById('computer-science-tutor').checked = true;
         }
-        if (user.learning.indexOf('social studies') > -1) {
-            document.getElementById('social-studies').checked = true;
+        if (user.tutor.skills.indexOf('social studies') > -1) {
+            document.getElementById('social-studies-tutor').checked = true;
         }
-        if (user.learning.indexOf('english') > -1) {
-            document.getElementById('english').checked = true;
+        if (user.tutor.skills.indexOf('english') > -1) {
+            document.getElementById('english-tutor').checked = true;
         }
-        if (user.learning.indexOf('spanish') > -1) {
-            document.getElementById('spanish').checked = true;
+        if (user.tutor.skills.indexOf('spanish') > -1) {
+            document.getElementById('spanish-tutor').checked = true;
         }
-        if (user.learning.indexOf('french') > -1) {
-            document.getElementById('french').checked = true;
+        if (user.tutor.skills.indexOf('french') > -1) {
+            document.getElementById('french-tutor').checked = true;
         }
-        if (user.learning.indexOf('chinese') > -1) {
-            document.getElementById('chinese').checked = true;
+        if (user.tutor.skills.indexOf('chinese') > -1) {
+            document.getElementById('chinese-tutor').checked = true;
         }
-        var otherTopicsIndex = user.learning.indexOf(' ');
-        var otherTopics;
+        var otherTopicsIndex = user.tutor.skills.indexOf(' ');
+        var otherTopics = [];
         // Check if any other entries exist
-        if (otherTopicsIndex > -1 && user.learning.length > otherTopicsIndex + 1) {
-            otherTopics = user.learning.slice(otherTopicsIndex + 1);
+        if (otherTopicsIndex > -1 && user.tutor.skills.length > otherTopicsIndex + 1) {
+            otherTopics = user.tutor.skills.slice(otherTopicsIndex + 1);
         }
-        document.getElementById('other-subject').value = otherTopics.join(', ');
+        document.getElementById('other-subject-tutor').value = otherTopics.join(', ');
     } else {
         document.getElementById('tutor-topics').style.display = 'block';
         // Automatically check boxes of topics user has already selected
         if (user.skills.indexOf('math') > -1) {
-            document.getElementById('math').checked = true;
+            document.getElementById('math-tutor').checked = true;
         }
         if (user.skills.indexOf('physics') > -1) {
-            document.getElementById('physics').checked = true;
+            document.getElementById('physics-tutor').checked = true;
         }
         if (user.skills.indexOf('chemistry') > -1) {
-            document.getElementById('chemistry').checked = true;
+            document.getElementById('chemistry-tutor').checked = true;
         }
         if (user.skills.indexOf('biology') > -1) {
-            document.getElementById('biology').checked = true;
+            document.getElementById('biology-tutor').checked = true;
         }
         if (user.skills.indexOf('computer science') > -1) {
-            document.getElementById('computer-science').checked = true;
+            document.getElementById('computer-science-tutor').checked = true;
         }
         if (user.skills.indexOf('social studies') > -1) {
-            document.getElementById('social-studies').checked = true;
+            document.getElementById('social-studies-tutor').checked = true;
         }
         if (user.skills.indexOf('english') > -1) {
-            document.getElementById('english').checked = true;
+            document.getElementById('english-tutor').checked = true;
         }
         if (user.skills.indexOf('spanish') > -1) {
-            document.getElementById('spanish').checked = true;
+            document.getElementById('spanish-tutor').checked = true;
         }
         if (user.skills.indexOf('french') > -1) {
-            document.getElementById('french').checked = true;
+            document.getElementById('french-tutor').checked = true;
         }
         if (user.skills.indexOf('chinese') > -1) {
-            document.getElementById('chinese').checked = true;
+            document.getElementById('chinese-tutor').checked = true;
         }
         var otherTopicsIndex = user.skills.indexOf(' ');
         var otherTopics;
@@ -208,6 +240,90 @@ function editProfile(user, role, document) {
         if (otherTopicsIndex > -1 && user.skills.length > otherTopicsIndex + 1) {
             otherTopics = user.skills.slice(otherTopicsIndex + 1);
         }
-        document.getElementById('other-subject').value = otherTopics.join(', ');
+        document.getElementById('other-subject-tutor').value = otherTopics.join(', ');
+    }
+}
+
+function editProfileStudent(user, both, document) {
+    if (both == true) {
+        document.getElementById('student-topics').style.display = 'block';
+        // Automatically check boxes of topics user has already selected
+        if (user.student.learning.indexOf('math') > -1) {
+            document.getElementById('math-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('physics') > -1) {
+            document.getElementById('physics-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('chemistry') > -1) {
+            document.getElementById('chemistry-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('biology') > -1) {
+            document.getElementById('biology-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('computer science') > -1) {
+            document.getElementById('computer-science-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('social studies') > -1) {
+            document.getElementById('social-studies-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('english') > -1) {
+            document.getElementById('english-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('spanish') > -1) {
+            document.getElementById('spanish-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('french') > -1) {
+            document.getElementById('french-learn').checked = true;
+        }
+        if (user.student.learning.indexOf('chinese') > -1) {
+            document.getElementById('chinese-learn').checked = true;
+        }
+        var otherTopicsIndex = user.student.learning.indexOf(' ');
+        var otherTopics = [];
+        // Check if any other entries exist
+        if (otherTopicsIndex > -1 && user.student.learning.length > otherTopicsIndex + 1) {
+            otherTopics = user.student.learning.slice(otherTopicsIndex + 1);
+        }
+        document.getElementById('other-subject-learn').value = otherTopics.join(', ');
+    } else {
+        document.getElementById('student-topics').style.display = 'block';
+        // Automatically check boxes of topics user has already selected
+        if (user.learning.indexOf('math') > -1) {
+            document.getElementById('math-learn').checked = true;
+        }
+        if (user.learning.indexOf('physics') > -1) {
+            document.getElementById('physics-learn').checked = true;
+        }
+        if (user.learning.indexOf('chemistry') > -1) {
+            document.getElementById('chemistry-learn').checked = true;
+        }
+        if (user.learning.indexOf('biology') > -1) {
+            document.getElementById('biology-learn').checked = true;
+        }
+        if (user.learning.indexOf('computer science') > -1) {
+            document.getElementById('computer-science-learn').checked = true;
+        }
+        if (user.learning.indexOf('social studies') > -1) {
+            document.getElementById('social-studies-learn').checked = true;
+        }
+        if (user.learning.indexOf('english') > -1) {
+            document.getElementById('english-learn').checked = true;
+        }
+        if (user.learning.indexOf('spanish') > -1) {
+            document.getElementById('spanish-learn').checked = true;
+        }
+        if (user.learning.indexOf('french') > -1) {
+            document.getElementById('french-learn').checked = true;
+        }
+        if (user.learning.indexOf('chinese') > -1) {
+            document.getElementById('chinese-learn').checked = true;
+        }
+        var otherTopicsIndex = user.learning.indexOf(' ');
+        var otherTopics;
+        // Check if any other entries exist
+        if (otherTopicsIndex > -1 && user.learning.length > otherTopicsIndex + 1) {
+            otherTopics = user.learning.slice(otherTopicsIndex + 1);
+        }
+        document.getElementById('other-subject-learn').value = otherTopics.join(', ');
     }
 }
