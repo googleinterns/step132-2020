@@ -139,7 +139,6 @@ function cancelTutorSession(window, scheduledSession) {
 /** Creates a calendar with the Charts API and renders it on the page  */
 function createCalendar() {
     fetch('/confirmation', {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
-        console.log(scheduledSessions);
         // Don't create a calendar if there are no scheduled sessions
         if (scheduledSessions === undefined || scheduledSessions.length == 0) {
             return;

@@ -163,7 +163,6 @@ function deleteTimeSlot(window, timeslot) {
 /** Creates a calendar with the Charts API and renders it on the page  */
 function createCalendar() {
     fetch('/manage-availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
-        console.log(timeslots);
         // Don't create a calendar if there are no available timeslots
         if (timeslots === undefined || timeslots.length == 0) {
             return;
