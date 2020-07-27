@@ -63,7 +63,7 @@ function createTutoringSessionBox(tutoringSession) {
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
 
-    setTutorEmail(tutorElement, tutoringSession.tutorID);
+    setTutorName(tutorElement, tutoringSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';

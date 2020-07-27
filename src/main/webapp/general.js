@@ -31,18 +31,10 @@ function readComponents(queryString, window) {
 
 //Helper function for testing purposes
 //Sets the tutor element's email field to the tutor email
-function setTutorEmail(tutorElement, tutorID) {
+function setTutorName(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
         tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
-    });
-}
-
-//Sets tutorName to the name of the tutor who has the given id
-function setTutorName(tutorName, tutorID) {
-    var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorName.innerText = "Tutoring Session with " + tutor.name;
     });
 }
 

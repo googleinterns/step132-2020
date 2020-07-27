@@ -64,7 +64,7 @@ describe("Confirmation", function() {
             spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(user)}), Promise.resolve({json: () => Promise.resolve(tutor)}));
 
             const tutorElement = document.createElement('h3');
-            setTutorEmail(tutorElement, "123").then(() => {
+            setTutorName(tutorElement, "123").then(() => {
                 expect(tutorElement.innerHTML).toEqual("Tutoring Session with tester@gmail.com");
             });
         });
