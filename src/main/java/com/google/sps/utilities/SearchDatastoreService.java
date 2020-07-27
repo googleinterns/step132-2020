@@ -40,10 +40,11 @@ import com.google.gson.Gson;
 public final class SearchDatastoreService {
 
     /**
-    * Gets a list of tutors from datastore that have the specified topic as a skill.
+    * Gets a list of tutors from datastore that have the specified topic as a skill. If a tutor is searching, 
+    * it should not return that tutor in results.
     * @return List<Tutor>
     */
-    public List<Tutor> getTutorsForTopic(String topic) {
+    public List<Tutor> getTutorsForTopic(String topic, String studentID) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         Filter topicFilter = new FilterPredicate("topics", FilterOperator.EQUAL, topic.toLowerCase());
@@ -56,6 +57,11 @@ public final class SearchDatastoreService {
         for (Entity tutorEntity : tutorResults.asIterable()) {
             
             String userId = (String) tutorEntity.getProperty("userId");
+            //don't return the tutor that is currently searching
+            if(userId.equals(studentID)) {
+                continue;
+            }
+
             String name = (String) tutorEntity.getProperty("name");
             String bio = (String) tutorEntity.getProperty("bio");
             String pfp = (String) tutorEntity.getProperty("pfp");

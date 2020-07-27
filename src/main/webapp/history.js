@@ -20,7 +20,7 @@ function getTutoringSessionHistory() {
 //Helper function for getTutoringSessionHistory, used for testing.
 function getTutoringSessionHistoryHelper(window) {
     fetch('/history', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to view history.");
@@ -63,7 +63,7 @@ function createTutoringSessionBox(tutoringSession) {
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
 
-    setTutorEmail(tutorElement, tutoringSession.tutorID);
+    setTutorName(tutorElement, tutoringSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';
@@ -101,11 +101,11 @@ function createTutoringSessionBox(tutoringSession) {
 }
 
 //Helper function for testing purposes
-//Sets the tutor element's email field to the tutor email
-function setTutorEmail(tutorElement, tutorID) {
+//Sets the tutor element's name field to the tutor name
+function setTutorName(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerText = "Tutoring Session with " + tutor.email;
+        tutorElement.innerText = "Tutoring Session with " + tutor.name;
     });
 }
 
