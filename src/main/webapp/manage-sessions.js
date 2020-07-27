@@ -176,9 +176,19 @@ function createCalendar() {
             ]);
         }
 
+        // Have timeline span 24 hours regardless of what's scheduled
+        var min = new Date();
+        min.setHours(0);
+        var max = new Date();
+        max.setHours(24);
+
         const options = {
-            'width':1000,
-            'height':200,
+            width: 1000,
+            height: 200,
+            hAxis: {
+                minValue: min,
+                maxValue: max
+            }
         };
 
         chart.draw(dataTable, options);
