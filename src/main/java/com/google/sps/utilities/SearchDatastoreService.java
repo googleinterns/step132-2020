@@ -51,7 +51,7 @@ public final class SearchDatastoreService {
         Filter topicFilter = new FilterPredicate("topics", FilterOperator.EQUAL, topic.toLowerCase());
         Query tutorQuery = new Query("Tutor").setFilter(topicFilter);
 
-        switch(sortType) {
+        switch(sortType.toLowerCase()) {
             case "rating":
                 tutorQuery.addSort("rating", SortDirection.DESCENDING);
                 break;
@@ -99,7 +99,7 @@ public final class SearchDatastoreService {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //get all sessions with user id
-        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
+        Filter filter = new FilterPredicate("tutorID", FilterOperator.EQUAL, userId);
         Query query = new Query("TutorSession").setFilter(filter);
 
         PreparedQuery sessionEntities = datastore.prepare(query);
