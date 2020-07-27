@@ -32,6 +32,12 @@ See the License for the specific language governing permissions and
     padding-left: 10px;
 }
 
+.list-names {
+    margin-top: 3%;
+    height: 50vh;
+    overflow: scroll;
+}
+
 .modal-body {
     width: 90%;
     margin: auto;
@@ -64,7 +70,7 @@ See the License for the specific language governing permissions and
 }
 
 .footer {
-    position: absolute;
+    position: relative;
     left: 0;
     bottom: 0;
     width: 100%;
