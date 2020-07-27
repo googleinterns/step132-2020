@@ -1,4 +1,4 @@
-<!-- Copyright 2019 Google LLC
+ <!-- Copyright 2019 Google LLC
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -12,14 +12,14 @@ See the License for the specific language governing permissions and
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Sullivan</title>
+        <title>Results</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="homepage.css">
+        <link rel="stylesheet" type="text/css" href="search-results.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="displayLoginLogoutLink()">
+    <body onload="getSearchUserResults(), displayLoginLogoutLink()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -40,7 +40,6 @@ See the License for the specific language governing permissions and
                                 <li><a id="history">History</a></li>
                                 <li><a id="availability-settings">Manage Availability</a></li>
                                 <li><a id="my-students">My Students</a></li>
-                                <li><a id="my-lists">My Lists</a></li>
                                 <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
                             </ul>
                         </li>
@@ -49,7 +48,7 @@ See the License for the specific language governing permissions and
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        <form class="form-inline my-2 my-lg-0" id="search-bar-user" onsubmit="return redirectToResultsUsers();">
+                        <form class="form-inline my-2 my-lg-0" onsubmit="return redirectToResultsUsers();">
                             <input class="form-control mr-sm-2" id="searched-name" type="search" placeholder="Search users by name" aria-label="Search" required>
                             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                         </form>
@@ -60,35 +59,12 @@ See the License for the specific language governing permissions and
             </div>
         </nav>
 
-        <div class="jumbotron text-center">
-            <h1>Sullivan</h1>
-            <p>questions to answers, answers to questions</p>
-             <div id="content" class="container-fluid">
-                <form id="search-form-homepage" class="center-block form-inline" onsubmit="return redirectToResults();">
-                    <div class="form-group-lg"><input class="form-control search-box" type="text" id="search-box-homepage" required="" aria-required=true placeholder="What do you need help with today?"></div>
-                    <button class="btn btn-lg" type="submit" id="search-submit-homepage">Go</button>
-                </form>
-            </div>
+        <div id="result-container" class="list-group bg-white bg-white-lg">
+            <div id="users" class="list-group active-container"></div>
         </div>
 
         <div class="bg-description-blue">
-            <div class="container-fluid bg-white text-center">
-                <h3>How we can help</h3>
-                <div class="row">
-                    <div class="col-sm-4">
-                        <h3>Learn</h3>
-                        <p>Learn face-to-face with experienced tutors</p>
-                    </div>
-                    <div class="col-sm-4">
-                        <h3>Read</h3>
-                        <p>Explore curated reading playlists.</p>
-                    </div>
-                    <div class="col-sm-4">
-                        <h3>Share</h3>
-                        <p>Contribute to our community by signing up as a tutor and helping others on a topics you are comfortable with.</p>
-                    </div>
-                </div>
-            </div>
+            <div class="container-fluid bg-white"></div>
         </div>
 
         <footer class="container-fluid text-center bg-blue">
@@ -100,10 +76,8 @@ See the License for the specific language governing permissions and
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="search-users.js"></script>
         <script src="general.js"></script>
-        <script src="search.js"></script>
+        <script src="search-users.js"></script>
         <script src="registration.js"></script>
     </body>
 </html>
-

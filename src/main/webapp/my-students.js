@@ -18,7 +18,7 @@ function getMyStudents() {
 
 async function getMyStudentsHelper(window) {
     await fetch('/my-students', {method: 'GET'}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to view your students.");

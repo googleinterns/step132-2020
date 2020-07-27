@@ -14,12 +14,18 @@ See the License for the specific language governing permissions and
     width: 75%;
 }
 
+.user-result {
+    margin: auto;
+    width: 75%;
+}
+
 #search-form-results {
     margin:auto;
     margin-top: 2% !important;
 }
 
 #search-box-results {
+    margin:auto;
     display: inline-block;
     width: 75%;
 }
@@ -28,7 +34,7 @@ See the License for the specific language governing permissions and
     display: inline-block;
 }
 
-.num-search-results {
+.container-label {
     width: 75%;
     margin: auto;
     margin-bottom: 10px;
@@ -84,7 +90,47 @@ See the License for the specific language governing permissions and
 }
 
 #load-more {
-    position:absolute;
+    position:relative;
     left:50%;
     margin-bottom: 1%;
 }
+
+#lists-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 75%;
+    margin: auto;
+    overflow: scroll;
+}
+
+#tutor-books {
+    margin-bottom: 2%;
+}
+
+.tutor-list-result {
+    margin-bottom: 0 !important;
+    padding: 2% !important ;
+    margin-right: 2% !important;
+}
+
+.tutor-list-result h4 {
+    font-weight: 700;
+    margin: 0;
+}
+
+.tutor-list-result a {
+    color: black;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.tutor-list-result a:hover {
+    color: rgb(67, 127, 151) !important
+}
+
+.nav-pills>li.active>a {
+    background-color: rgb(67, 127, 151) !important;
+}
+
