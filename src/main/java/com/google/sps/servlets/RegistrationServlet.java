@@ -14,6 +14,11 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -26,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -58,7 +64,7 @@ public class RegistrationServlet extends HttpServlet {
     String fullName = firstName + " " + lastName;
     String bio = Optional.ofNullable(request.getParameter("bio")).orElse("");
     // For now, we will automatically set everyone's profile picture to a default avatar
-    String pfp = "images/pfp.jpg";
+    String pfp = getBlobKey(request, "pfp");
     
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
@@ -152,6 +158,30 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("role", role);
     entity.setProperty("userId", userId);
     ds.put(entity);
+  }
+
+  /** Returns the blob key for the user-uploaded file */
+  private String getBlobKey(HttpServletRequest request, String name) {
+    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(name);
+
+    // User submitted form without selecting a file, so we can't get a URL. (dev server)
+    if (blobKeys == null || blobKeys.isEmpty()) {
+        return null;
+    } 
+
+    // Form only contains a single file input, so get the first index.
+    String blobKey = blobKeys.get(0).getKeyString();
+
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKeys.get(0));
+    if (blobInfo.getSize() == 0) {
+        blobstoreService.delete(blobKeys.get(0));
+        return null;
+    }
+
+    return blobKey;        
   }
 
   /**
