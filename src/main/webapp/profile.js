@@ -153,7 +153,7 @@ function editProfile(user, role, document) {
         document.getElementById('bio').value = user.bio;
 
         editProfileStudent(user, false, document);
-    } else if (role == tutor) {
+    } else if (role == 'tutor') {
         document.getElementById('bio').value = user.bio;
 
         editProfileTutor(user, false, document);

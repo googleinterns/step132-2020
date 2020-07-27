@@ -12,17 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Switch the view of the user (from student to tutor or vice versa). */
-function switchView() {
-    fetch('/switch-view', {method: 'POST'}).then((response) => {
-        // if the user who tried to switched views is not the current user
-        if(response.redirected) {
-            window.location.href = response.url;
-            alert("You do not have permission to switch views.");
-            return;
-        }
+describe("View", function() {
 
-        location.reload();
+    describe("when the user request to switch their view", function() {
+        it("should trigger the fetch function", function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve());
+            switchView();
+            expect(window.fetch).toHaveBeenCalledWith('/switch-view', {method: 'POST'});
+            expect(window.fetch).toHaveBeenCalled();
+        });
     });
-}
 
+});

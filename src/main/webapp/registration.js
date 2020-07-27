@@ -90,10 +90,10 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
 
         // If the user is only tutor, display availability settings
         if (loginStatus.role == "tutor") {
-            displayStudentView(document, loginStatus);
+            displayTutorView(document, loginStatus);
         // Display tutor session settings and history if the user is a student
         } else if (loginStatus.role == "student") {
-            displayTutorView(document, loginStatus);
+            displayStudentView(document, loginStatus);
         }
     }
     else {   // Display login link
