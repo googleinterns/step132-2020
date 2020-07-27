@@ -98,7 +98,6 @@ public final class SearchDatastoreService {
         CompositeFilter userFilter = CompositeFilterOperator.or(fullNameFilter, firstNameFilter, LastNameFilter);
 
         Query userQuery = new Query("User").setFilter(userFilter);
-        //Query userQuery = new Query("User");
         
         ArrayList<User> users = new ArrayList<User>();
 
