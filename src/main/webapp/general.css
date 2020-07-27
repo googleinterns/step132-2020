@@ -105,6 +105,14 @@ footer .glyphicon {
     padding: 2% 0;
 }
 
+.footer {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: -1;
+}
+
 /* Vertically align modal: http://jsfiddle.net/sRmLV/1140/ */
 .vertical-alignment-helper {
     display:table;
