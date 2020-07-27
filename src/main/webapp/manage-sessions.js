@@ -20,7 +20,7 @@ function getTutorSessionsManage() {
 //Helper function for getTutorSessionManage, used for testing
 async function getTutorSessionsManageHelper(window) {
     await fetch('/confirmation', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to manage sessions.");
@@ -60,7 +60,7 @@ function createScheduledSessionBoxManage(scheduledSession) {
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
 
-    setTutorEmail(tutorElement, scheduledSession.tutorID);
+    setTutorName(tutorElement, scheduledSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';
@@ -109,8 +109,8 @@ function createScheduledSessionBoxManage(scheduledSession) {
 }
 
 //Helper function for testing purposes
-//Sets the tutor element's email field to the tutor email
-function setTutorEmail(tutorElement, tutorID) {
+//Sets the tutor element's name field to the tutor name
+function setTutorName(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
         tutorElement.innerText = "Tutoring Session with " + tutor.name;
@@ -136,7 +136,7 @@ function cancelTutorSession(window, scheduledSession) {
     params.append('id', scheduledSession.id);
 
     fetch('/delete-tutor-session', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to cancel a tutoring session.");

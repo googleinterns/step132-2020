@@ -20,6 +20,7 @@ See the License for the specific language governing permissions and
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
+        <link rel="stylesheet" type="text/css" href="my-lists.css">
     </head>
     <body onload="displayLoginLogoutLink(), displayProfile()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
@@ -42,6 +43,7 @@ See the License for the specific language governing permissions and
                                 <li><a id="history">History</a></li>
                                 <li><a id="availability-settings">Manage Availability</a></li>
                                 <li><a id="my-students">My Students</a></li>
+                                <li><a id="my-lists">My Lists</a></li>
                                 <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
                             </ul>
                         </li>
@@ -51,12 +53,10 @@ See the License for the specific language governing permissions and
                 </div>
             </div>
         </nav>
-
         <div class="bg-white-lg">
             <div class="container-fluid bg-white text-center" id="profile-container" style="display:none">
                 <button type="button" class="btn btn-lg" id="edit-profile-btn" style="display:none">Edit Profile</button>
             </div>
-
             <div class="container-fluid bg-white" id="edit-profile-form" style="display:none">
                 <form action="/profile" method="POST">
                     <label for="bio">Biography:</label><br>
@@ -127,6 +127,11 @@ See the License for the specific language governing permissions and
                     <ul class="list-group text-left" id="past-topics"></ul>
                 </div>
             </div>
+            <div class="container-fluid text-center bg-white" id="list-container-profile" style="display:none">
+                    <h3>My Lists</h3>
+                    <div class="list-group col-md-4" id="list-names" style="margin-top:3%"></div>
+                    <div id="list-info-container" style="margin-top:3%"></div>
+            </div>
         </div>
 
         <div class="bg-description-blue">
@@ -145,5 +150,6 @@ See the License for the specific language governing permissions and
         <script src="progress.js"></script>
         <script src="profile.js"></script>
         <script src="registration.js"></script>
+        <script src="my-lists.js"></script>
     </body>
 </html>
