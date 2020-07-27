@@ -144,3 +144,55 @@ function cancelTutorSession(window, scheduledSession) {
         }
     });
 }
+
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    fetch('/confirmation', {method: 'GET'}).then(response => response.json()).then((scheduledSessions) => {
+        // Don't create a calendar if there are no scheduled sessions
+        if (scheduledSessions === undefined || scheduledSessions.length == 0) {
+            return;
+        }
+
+        // There are available timeslots, display header and calendar
+        document.getElementById('calendar-header').style.display = 'block';
+        
+        const container = document.getElementById('calendar');
+        const chart = new google.visualization.Timeline(container);
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'string', id: 'Date'});
+        dataTable.addColumn({type: 'string', id: 'Description'});
+        dataTable.addColumn({type: 'date', id: 'Start'});
+        dataTable.addColumn({type: 'date', id: 'End'});
+        
+        for (var session of scheduledSessions) {
+            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+            var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
+            var description = session.subtopics + " with " + session.tutorID;
+            dataTable.addRow([
+                date, description, asDate(session.timeslot.start), asDate(session.timeslot.end)
+            ]);
+        }
+
+        const options = {
+            'width':1000,
+            'height':200,
+        };
+
+        chart.draw(dataTable, options);
+    });
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+   
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(createCalendar);

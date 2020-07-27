@@ -167,3 +167,53 @@ function deleteTimeSlot(window, timeslot) {
         }
     });
 }
+
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    fetch('/manage-availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
+        // Don't create a calendar if there are no available timeslots
+        if (timeslots === undefined || timeslots.length == 0) {
+            return;
+        }
+
+        // There are available timeslots, display header and calendar
+        document.getElementById('calendar-header').style.display = 'block';
+        
+        const container = document.getElementById('calendar');
+        const chart = new google.visualization.Timeline(container);
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'string', id: 'Date'});
+        dataTable.addColumn({type: 'date', id: 'Start'});
+        dataTable.addColumn({type: 'date', id: 'End'});
+        
+        for (var slot of timeslots) {
+            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+            var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+            dataTable.addRow([
+                date, asDate(slot.start), asDate(slot.end)
+            ]);
+        }
+
+        const options = {
+            'width':1000,
+            'height':200,
+        };
+
+        chart.draw(dataTable, options);
+    });
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(createCalendar);
