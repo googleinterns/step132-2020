@@ -69,8 +69,14 @@ public class SchedulingServlet extends HttpServlet {
         //if the tutor or student id was null
         if(tutorID.equals("-1") || studentID.equals("-1")) {
             response.getWriter().println("{\"error\": \"There was an error scheduling your session.\"}");
+            return;
         }
 
+        if(tutorID.equals(studentID)) {
+            response.getWriter().println("{\"error\": \"You cannot schedule your own session.\"}");
+            return;
+        }
+        
         Calendar date = new Calendar.Builder()
                                 .setCalendarType("iso8601")
                                 .setDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day))
