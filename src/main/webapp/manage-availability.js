@@ -93,6 +93,10 @@ function createTimeSlotBoxManage(timeslot) {
     if (minute == 0) {
         minute = "00";
     }
+    // Display minutes regularly (e.g. 1:05pm rather than 1:5pm)
+    if (minute < 10) {
+        minute = "0" + minute;
+    }
     dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
 
     const dateLineElement = document.createElement('div');
@@ -130,13 +134,9 @@ function addTimeSlot() {
 function addTimeSlotHelper(window) {
     const params = new URLSearchParams();
 
-    params.append('startHour', document.getElementById('startHour').value);
-    params.append('startMinute', document.getElementById('startMinute').value);
-    params.append('endHour', document.getElementById('endHour').value);
-    params.append('endMinute', document.getElementById('endMinute').value);
-    params.append('day', document.getElementById('day').value);
-    params.append('month', document.getElementById('month').value);
-    params.append('year', document.getElementById('year').value);
+    params.append('startTime', document.getElementById('startTime').value);
+    params.append('endTime', document.getElementById('endTime').value);
+    params.append('date', document.getElementById('date').value);
 
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
         //if the tutor id is not the id of the current user
