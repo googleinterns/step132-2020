@@ -95,13 +95,11 @@ describe("User Profile", function() {
         });
 
         it("should set p to the correct topics", function() {
-            spyOn(window, "getListsProfile");
             actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
             expect(actualText).toEqual("I am tutoring in: Math, Physics");
         });
 
         it("should set make the tutor availability button visible", function() {
-            spyOn(window, "getListsProfile");
             fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
             expect(document.getElementById('tutor-availability').style.display).toBe('block');
         });
