@@ -215,6 +215,9 @@ public final class SampleData {
         tutorEntity.setProperty("rating", Math.round(ratingSum/ratingCount));
 
         datastore.put(tutorEntity);
+
+        Tutor tutor = getTutorByEmail((String) tutorEntity.getProperty("email"));
+        tutor.addRating(rating);
     }
 
     private void addTutorAvailabilityToDatastore(DatastoreService datastore, ArrayList<TimeRange> times, String userId) {
