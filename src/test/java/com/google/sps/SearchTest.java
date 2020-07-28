@@ -94,7 +94,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -117,7 +116,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -144,7 +142,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -170,7 +167,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -196,7 +192,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -230,7 +225,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -266,7 +260,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -290,7 +283,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -314,7 +306,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called

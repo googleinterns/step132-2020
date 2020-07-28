@@ -120,8 +120,6 @@ public final class SearchDatastoreService {
 
         for(Tutor tutor : tutors) {
             tutor.setStudents(studentDatastore.getStudentsForTutor(tutor.getUserId()));
-            System.out.println(tutor.getName());
-            System.out.println(tutor.getStudents());
         }
 
         Collections.sort(tutors, new Comparator<Tutor>() {
