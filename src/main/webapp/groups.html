@@ -18,6 +18,7 @@ See the License for the specific language governing permissions and
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="search-results.css">
         <link rel="stylesheet" type="text/css" href="general.css">
+        <link rel="stylesheet" type="text/css" href="groups.css">
     </head>
     <body onload="displayLoginLogoutLink()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
@@ -60,11 +61,69 @@ See the License for the specific language governing permissions and
             </div>
         </nav>
 
+        <div class="container-fluid bg-white" id="groups">
+            <h1>Groups</h1>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal" style="display:block">
+                + New List
+            </button>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="new-group-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="vertical-alignment-helper">
+                <div class="modal-dialog modal-dialog-centered vertical-align-center" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="new-group-form-title" style="display:inline-block">Create a new group</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="new-group-form" class="form-inline" action="/manage-groups" method="POST">
+                            <div class="form-group mx-sm-3 mb-2"><input name="name" class="form-control" type="text" id="group-name-input" required="" aria-required=true placeholder="Group name"></div>
+                            <div class="form-group" style="float:right">
+                                <label for="group-topic-select">Topic:</label>
+                                <select name="topic" id="group-topic-select" class="form-control" onchange="checkOtherSelected(this.value)" required>
+                                    <option value="math">Math</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="biology">Biology</option>
+                                    <option value="computer science">Computer Science</option>
+                                    <option value="social studies">Social Studies</option>
+                                    <option value="english">English</option>
+                                    <option value="spanish">Spanish</option>
+                                    <option value="french">French</option>
+                                    <option value="chinese">Chinese</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div style="float:right" class="form-group mx-sm-3 mb-2"><input name="otherTopic" class="form-control" type="text" id="other-topic" placeholder="Other topic"></div>
+                            <div style="width: 100%; margin-top: 3%"> 
+                                <label for="group-description">Description:</label> 
+                                <p>Please enter a description for this group. <br>
+                                <textarea name="group-description" class="form-control" id="group-description" rows="8" required="" aria-reqiured=true></textarea>
+                            </div>
+                            <button class="btn" type="submit" id="new-group-submit">Create</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
         <div class="container-fluid bg-white" style="text-align: center;">
-            <form id="search-groups-form" onsubmit="return redirectToResultsGroup();">
+            <form id="search-groups-form" onsubmit="return getSearchGroupResults();">
                 <input class="form-control search-box" type="text" id="search-box-results" required="" aria-required=true placeholder="What group are you looking for?">
                 <button class="btn btn-default" type="submit" id="search-submit-results">Go</button>
             </form>
+        </div>
+
+        <div id="result-container" class="list-group bg-white bg-white-lg">
+            <div id="groups" class="list-group active-container"></div>
         </div>
 
         <div class="footer">
