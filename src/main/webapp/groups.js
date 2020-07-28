@@ -58,8 +58,6 @@ async function getSearchGroupResultsHelper(document, window) {
 /** Fetches the list of groups for the group name the user searched for. */
 async function getGroups(group) {
     await fetch("/manage-groups?group=" + group).then(response => response.json()).then((results) => {
-        console.log("wait here");
-
         var groupContainer = document.getElementById("groups");
 
         var numSearchResults = document.createElement("h4");
@@ -92,15 +90,14 @@ function createGroupResult(result) {
     var topic = document.createElement("h4");
     topic.style.textTransform = 'capitalize';
     var description = document.createElement("h5");
-    //var groupLink = document.createElement("a");
+    var groupLink = document.createElement("a");
 
     name.innerText = result.name;
     //members.innerText = result.members + (result.members > 1 || result.members === 0 ? " members" : " member");
     topic.innerText = result.topic;
     description.innerText = result.description;
-    //groupLink.innerText = "View";
-
-    //groupLink.href = "/group.html?groupId=" + result.groupId;
+    groupLink.innerText = "View";
+    groupLink.href = "/group.html?groupId=" + result.id;
 
     container.classList.add("user-result");
     container.classList.add("list-group-item");
@@ -109,7 +106,7 @@ function createGroupResult(result) {
     //container.appendChild(members);
     container.appendChild(topic);
     container.appendChild(description);
-    //container.appendChild(profileLink);
+    container.appendChild(groupLink);
 
     return container;
 }

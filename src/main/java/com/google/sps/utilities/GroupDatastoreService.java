@@ -57,8 +57,9 @@ public final class GroupDatastoreService {
             String topic = (String) groupEntity.getProperty("topic");
             String description = (String) groupEntity.getProperty("description");
             String owner = (String) groupEntity.getProperty("owner");
+            long id = (long) groupEntity.getKey().getId();
 
-            Group group = new Group(name, topic, description, owner);
+            Group group = new Group(name, topic, description, owner, id);
 
             groups.add(group);
             
