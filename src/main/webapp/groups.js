@@ -19,7 +19,7 @@ function getSearchGroupResults() {
 }
 
 /** Helper function for getSearchGroupResults, used for testing purposes. */
-function getSearchGroupResultsHelper(document, window) {
+async function getSearchGroupResultsHelper(document, window) {
     var group = document.getElementById("search-box-results").value;
     if(group != null) {
         var groups = getGroups(group);
@@ -30,7 +30,7 @@ function getSearchGroupResultsHelper(document, window) {
 
 /** Fetches the list of groups for the group name the user searched for. */
 async function getGroups(group) {
-    await fetch("/groups?group=" + group).then(response => response.json()).then((results) => {
+    await fetch("/manage-groups?group=" + group).then(response => response.json()).then((results) => {
         var groupContainer = document.getElementById("groups");
 
         var numSearchResults = document.createElement("h4");
@@ -82,6 +82,22 @@ function createGroupResult(result) {
     container.appendChild(profileLink);
 
     return container;
+}
+
+/** When a user selects "other" topic, it displays the text input so that the user can type their topic. If the user 
+*   selects a different topic, it hides the text input.
+*/
+function checkOtherSelected(value) {
+    var otherTextBox = document.getElementById('other-topic');
+    if(value === 'other') {
+        otherTextBox.style.display = 'block';
+        otherTextBox.setAttribute("required", "");
+        otherTextBox.setAttribute("aria-required", true);
+    } else  {
+        otherTextBox.style.display = 'none';
+        otherTextBox.removeAttribute("required");
+        otherTextBox.removeAttribute("aria-required");
+    }
 }
 
 
