@@ -12,14 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** A function that adds event listeners to a DOM objects. */
-function addEventListeners() {
-    document.getElementById("search-groups-form").addEventListener('submit', event => {
-        event.preventDefault();
-        getSearchGroupResults();
-    });
-}
-
 /** Gets the name of the group the user search for and display the search results. */
 function redirectToResultsGroups() {
     return redirectToResultsGroupsHelper(document, window);
@@ -34,7 +26,6 @@ function redirectToResultsGroupsHelper(document, window) {
 
     return false;
 }
-
 
 /** Gets the name the group searched for from the group search box and displays a list of the results from querying the databse
     for the given group name. */
@@ -72,7 +63,7 @@ async function getGroups(group) {
         }
 
         //Only make "groups" plural if there are 0 or more than 1 tutors
-        numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " groups name " : " group named ") + name;
+        numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " groups named " : " group named ") + group;
 
         results.forEach(function(result) {
             groupContainer.append(createGroupResult(result));
