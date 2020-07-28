@@ -40,6 +40,7 @@
                                 <li><a id="history">History</a></li>
                                 <li><a id="availability-settings">Manage Availability</a></li>
                                 <li><a id="my-students">My Students</a></li>
+                                <li><a id="my-lists">My Lists</a></li>
                                 <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
                             </ul>
                         </li>
@@ -55,10 +56,18 @@
                         </li>
                         <li id="label-tutor" style="display: none"><a href="#">TUTOR</a></li>
                     </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <form class="form-inline my-2 my-lg-0" id="search-bar-user" onsubmit="return redirectToResultsUsers();">
+                            <input class="form-control mr-sm-2" id="searched-name" type="search" placeholder="Search users by name" aria-label="Search" required>
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+                        <li id="login" style="display: none"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                        <li id="logout" style="display: none"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    </ul>
                 </div>
             </div>
         </nav>
-
         <div class="bg-description-blue">
             <div class="container-fluid text-center bg-white bg-white-lg">
                 <h1>Tutoring Sessions History</h1>
@@ -75,6 +84,8 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="search-users.js"></script>
+        <script src="general.js"></script>
         <script src="history.js"></script>
         <script src="registration.js"></script>
         <script src="profile.js"></script>

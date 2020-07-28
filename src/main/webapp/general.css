@@ -104,7 +104,6 @@ footer .glyphicon {
 
 #top-arrow {
     color: white;
-    text-color: white;
 }
 
 /* The switch - the box around the slider */
@@ -173,3 +172,36 @@ input:checked + .slider:before {
 #role-view-switch {
     padding: 1% 0;
 }
+
+#search-bar-user {
+    padding: 2% 0;
+}
+
+.footer {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: -1;
+}
+
+/* Vertically align modal: http://jsfiddle.net/sRmLV/1140/ */
+.vertical-alignment-helper {
+    display:table;
+    height: 100%;
+    width: 100%;
+    pointer-events:none;
+}
+.vertical-align-center {
+    display: table-cell;
+    vertical-align: middle;
+    pointer-events:none;
+}
+.modal-content {
+    width:inherit;
+    max-width:inherit;
+    height:inherit;
+    margin: 0 auto;
+    pointer-events:all;
+}
+/* -------------------------- */

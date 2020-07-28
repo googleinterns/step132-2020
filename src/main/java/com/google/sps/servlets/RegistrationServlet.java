@@ -65,7 +65,7 @@ public class RegistrationServlet extends HttpServlet {
 
     // Make entity for user with all registration info
     Entity userEntity = new Entity("User");
-    createUserEntityAndPutInDatastore(datastore, userEntity, role, userId);
+    createUserEntityAndPutInDatastore(datastore, userEntity, role, userId, fullName.toLowerCase(), firstName.toLowerCase(), lastName.toLowerCase());
 
     // The "learn" parameter in the getTopics function refers to the topics that the user is learning and the 
     // "tutor" parameter refers to the topics the user is tutoring in. The distinction between these two sets of
@@ -125,6 +125,7 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("topics", topics);
     entity.setProperty("ratingSum", 0);
     entity.setProperty("ratingCount", 0);
+    entity.setProperty("rating", 0);
     entity.setProperty("userId", userId);
     ds.put(entity);
   }
@@ -132,13 +133,16 @@ public class RegistrationServlet extends HttpServlet {
  /**
   * Creates a user entity and puts it in datastore, used for testing
   */
-  public void createUserEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String userId) {
+  public void createUserEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String userId, String fullName, String firstName, String lastName) {
     entity.setProperty("role", role);
     entity.setProperty("userId", userId);
     // If the user has both roles, set the first view to student by default
     if (role.equals("both")) {
         entity.setProperty("view", "student");
     }
+    entity.setProperty("fullName", fullName);
+    entity.setProperty("firstName", firstName);
+    entity.setProperty("lastName", lastName);
     ds.put(entity);
   }
 
