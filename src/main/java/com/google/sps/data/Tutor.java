@@ -95,4 +95,12 @@ public final class Tutor {
     public String getUserId() {
         return this.userId;
     }
+
+    /**
+    * Used for testing.
+    */
+    public void addRating(int rating) {
+        this.ratingCount++;
+        this.ratingSum += rating;
+    }
 }
