@@ -12,14 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Gets a list of scheduled sessions for the student and displays them on the page with a delete button. */
-function getTutorSessionsManage() {
-    return getTutorSessionsManageHelper(window);
-}
-
-//Helper function for getTutorSessionManage, used for testing
-async function getTutorSessionsManageHelper(window) {
-    await fetch('/confirmation', {method: 'GET'}).then((response) => {
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    fetch('/confirmation', {method: 'GET'}).then((response) => {
         //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
@@ -27,113 +22,24 @@ async function getTutorSessionsManageHelper(window) {
             return [];
         }
         return response.json();
-    }).then((scheduledSessions) => {
+    }).then(async (scheduledSessions) => {
+        const container = document.getElementById('calendar');
+        
         if(scheduledSessions.error) {
             var message = document.createElement("p");
             p.innerText = scheduledSessions.error;
-            document.getElementById('timeslots').appendChild(message);
+            document.getElementById('calendar').appendChild(message);
             return;
         }
 
-        if (Object.keys(scheduledSessions).length != 0) {
-            scheduledSessions.forEach((scheduledSession) => {
-                document.getElementById('scheduledSessions').appendChild(createScheduledSessionBoxManage(scheduledSession));
-            });
-        } else {
-            var sessionsContainer = document.getElementById('scheduledSessions');
-            var errorMessage = document.createElement("p");
-            errorMessage.innerText = "This user does not have any scheduled tutoring sessions.";
-            sessionsContainer.appendChild(errorMessage);
-            return;
-        }
-    });
-}
-
-function createScheduledSessionBoxManage(scheduledSession) {
-    var months = [ "January", "February", "March", "April", "May", "June", 
-           "July", "August", "September", "October", "November", "December" ];
-
-    const scheduledSessionElement = document.createElement('li');
-    scheduledSessionElement.className = 'list-group-item';
-
-    const tutorElement = document.createElement('h3');
-    tutorElement.style.textAlign = 'left';
-    tutorElement.style.display = 'inline';
-
-    setTutorName(tutorElement, scheduledSession.tutorID);
-
-    const tutorLineElement = document.createElement('div');
-    tutorLineElement.className = 'd-flex w-100 justify-content-between';
-    tutorLineElement.appendChild(tutorElement);
-
-    const dateElement = document.createElement('h3');
-    dateElement.style.textAlign = 'left';
-    dateElement.style.display = 'inline';
-    var hour = Math.floor(parseInt(scheduledSession.timeslot.start) / 60);
-    var amOrPm = "am";
-    if (hour > 12) {
-        hour = hour - 12;
-        amOrPm = "pm"
-    }
-    var minute = parseInt(scheduledSession.timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
-    }
-    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
-                             " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
-
-    const dateLineElement = document.createElement('div');
-    dateLineElement.className = 'd-flex w-100 justify-content-between';
-    dateLineElement.appendChild(dateElement);
-    
-    const cancelButtonElement = document.createElement('button');
-    cancelButtonElement.innerText = 'Cancel';
-    cancelButtonElement.style.textAlign = 'right';
-    cancelButtonElement.style.display = 'inline';
-    cancelButtonElement.className = 'btn btn-default btn-lg';
-    cancelButtonElement.addEventListener('click', () => {
-        cancelTutorSession(window, scheduledSession);
-
-        scheduledSessionElement.remove();
-    });
-
-    const buttonLineElement = document.createElement('div');
-    buttonLineElement.className = 'd-flex w-100 justify-content-between';
-    buttonLineElement.style.padding = '10px';
-    buttonLineElement.appendChild(cancelButtonElement);
-
-    scheduledSessionElement.appendChild(tutorLineElement);
-    scheduledSessionElement.appendChild(dateLineElement);
-    scheduledSessionElement.appendChild(buttonLineElement);
-    return scheduledSessionElement;
-}
-
-function cancelTutorSession(window, scheduledSession) {
-    const params = new URLSearchParams();
-    params.append('id', scheduledSession.id);
-
-    fetch('/delete-tutor-session', {method: 'POST', body: params}).then((response) => {
-        //if the student is not the current user or not signed in
-        if(response.redirected) {
-            window.location.href = response.url;
-            alert("You must be signed in to cancel a tutoring session.");
-            return;
-        }
-    });
-}
-
-/** Creates a calendar with the Charts API and renders it on the page  */
-function createCalendar() {
-    fetch('/confirmation', {method: 'GET'}).then(response => response.json()).then(async (scheduledSessions) => {
         // Don't create a calendar if there are no scheduled sessions
         if (scheduledSessions === undefined || scheduledSessions.length == 0) {
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any scheduled tutoring sessions.";
+            container.appendChild(errorMessage);
             return;
         }
-
-        // There are available timeslots, display header and calendar
-        document.getElementById('calendar-header').style.display = 'block';
         
-        const container = document.getElementById('calendar');
         const chart = new google.visualization.Timeline(container);
 
         const dataTable = new google.visualization.DataTable();
@@ -148,12 +54,24 @@ function createCalendar() {
                 (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
         });
         
+        var sessionIDs = new Object();
+
         for (var session of scheduledSessions) {
-            // Wait for this promise to resolve so tutor is defined when making calendar row
-            var tutor = await getUser(session.tutorID);
             // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
             var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
-            var description = session.subtopics + " with " + tutor.name;
+
+            // Wait for this promise to resolve so tutor is defined when making calendar row
+            var tutor = await getUser(session.tutorID);
+            var description;
+            if (session.subtopics == '') {
+                description = "Tutoring session with " + tutor.name;
+            } else {
+                description = session.subtopics + " with " + tutor.name;
+            }
+
+            // Add to associative array with calendar entry info as key and session ID as value so we can use them in the chart's event listener
+            sessionIDs[date+description+asDate(session.timeslot.start)] = session.id;
+            
             dataTable.addRow([
                 date, description, asDate(session.timeslot.start), asDate(session.timeslot.end)
             ]);
@@ -174,8 +92,35 @@ function createCalendar() {
             }
         };
 
+        google.visualization.events.addListener(chart, 'select', function() {
+            var selection = chart.getSelection()[0];
+            if (selection) {
+                cancelSession(sessionIDs, dataTable, selection);
+            }
+        });
+
         chart.draw(dataTable, options);
     });
+}
+
+// Cancels the tutor session associated with the specified session ID
+function cancelSession(sessionIDs, dataTable, selection) {
+    var deleteSession = confirm("Cancel upcoming tutor session?");
+
+    if (deleteSession) {
+        const params = new URLSearchParams();
+        // Use associative array to get session ID
+        params.append('id', sessionIDs[dataTable.getValue(selection.row, 0)+dataTable.getValue(selection.row, 1)+dataTable.getValue(selection.row, 2)]);
+
+        fetch('/delete-tutor-session', {method: 'POST', body: params}).then((response) => {
+            //if the student is not the current user or not signed in
+            if(response.redirected) {
+                window.location.href = response.url;
+                alert("You must be signed in to cancel a tutoring session.");
+                return;
+            }
+        }).then(location.reload());
+    }
 }
 
 /**
