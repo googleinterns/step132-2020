@@ -65,7 +65,7 @@ function createProfileDiv(user, loginStatus) {
     const profileEmail = document.createElement('p');
     const profileTopics = document.createElement('p');
 
-    // If the user is both a tutor and a studen
+    // If the user is both a tutor and a student
     if (user.student != null) {
         profileName.innerText = user.student.name;
         profileBio.innerText = "About me: " + user.student.bio;

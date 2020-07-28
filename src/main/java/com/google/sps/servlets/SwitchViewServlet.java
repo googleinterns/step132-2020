@@ -62,7 +62,6 @@ public class SwitchViewServlet extends HttpServlet {
         }
 
         datastore.switchUserView(userID);
-        System.out.println(datastore.getUserView(userID));
 
         String json = new Gson().toJson(datastore.getUserView(userID));
         response.setContentType("application/json;");

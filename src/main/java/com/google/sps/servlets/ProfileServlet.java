@@ -84,7 +84,6 @@ public class ProfileServlet extends HttpServlet {
 
             String jsonStudent = new Gson().toJson(student);
             String jsonTutor = new Gson().toJson(tutor);
-            //String json = new Gson().toJson(jsonStudent + jsonTutor);
             String json = "{\"student\": " + jsonStudent + ", \"tutor\": " + jsonTutor + "}";
             response.getWriter().println(json);
         }
