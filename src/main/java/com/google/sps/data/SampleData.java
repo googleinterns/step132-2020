@@ -175,6 +175,25 @@ public final class SampleData {
     }
 
     /**
+    * Adds all sample User objects to datastore.
+    */
+    public void addUsersToDatastore() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        for (User user : users) {
+            Entity entity = new Entity("User");
+            entity.setProperty("userId", user.getUserId());
+
+            String fullName = user.getName();
+            entity.setProperty("fullName", fullName.toLowerCase());
+            String[] nameSplit = fullName.split(" ", 2); 
+            entity.setProperty("firstName", nameSplit[0].toLowerCase());
+            entity.setProperty("lastName", nameSplit[1].toLowerCase());
+            datastore.put(entity);
+        }
+    }
+
+    /**
     * Rates a sample tutor with the given rating.
     */
     public void rateTutor(String userId, int rating) {
