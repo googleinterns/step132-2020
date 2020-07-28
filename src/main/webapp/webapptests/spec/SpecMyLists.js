@@ -25,7 +25,7 @@ describe("My Lists", function() {
         it("should trigger the fetch function and create list links and info elements", async function() {
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(lists)}));
             spyOn(document, "getElementById").and.returnValues(listLinkContainer, listContainer);
-            await getListsHelper(window);
+            await getListsHelper(window, '/manage-lists');
             expect(window.fetch).toHaveBeenCalledWith('/manage-lists', {method: 'GET'});
             expect(window.fetch).toHaveBeenCalled();
 
@@ -40,7 +40,7 @@ describe("My Lists", function() {
         it("should redirect user to homepage", async function() {
             spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
-            await getListsHelper(mockWindow);
+            await getListsHelper(mockWindow, '/manage-lists');
             expect(window.alert).toHaveBeenCalledWith('You must be signed in to manage lists.');
             expect(mockWindow.location.href).toBe('/homepage.html');
         });

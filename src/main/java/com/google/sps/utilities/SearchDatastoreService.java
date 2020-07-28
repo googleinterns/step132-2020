@@ -84,7 +84,7 @@ public final class SearchDatastoreService {
             int ratingCount = Math.toIntExact((long) tutorEntity.getProperty("ratingCount"));
             int ratingSum = Math.toIntExact((long) tutorEntity.getProperty("ratingSum"));
 
-            Tutor tutor = new Tutor(name, bio, pfp, email, skills, availability, scheduledSessions, userId);
+            Tutor tutor = new Tutor(name, bio, pfp, email, skills, availability, scheduledSessions, ratingCount, ratingSum, userId);
 
             tutors.add(tutor);
             

@@ -31,8 +31,8 @@ describe("Search", function() {
     });
 
     describe("when search results page is loaded", function() {
-        var tutors = [{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId":"1"}, 
-                            {"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"], "userId":"2"}];
+        var tutors = [{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId":"1", "ratingCount": 1, "ratingSum": 5}, 
+                            {"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"], "userId":"2", "ratingCount": 2, "ratingSum": 8}];
 
         var lists = [{name: "list 1", books: ["book 1", "book 2"], topic: "math"}, {name: "list 2", books: ["book 1", "book 2"], topic: "math"}];
 
@@ -175,7 +175,7 @@ describe("Search", function() {
     });
 
     describe("when a tutor result is created", function() {
-        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", " ", "History"], "userId": "123"};
+        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", " ", "History"], "userId": "123", "ratingCount": 1, "ratingSum": 5};
         var element = createTutorResult(result);
 
         it("should create div for result element", function() {
@@ -187,20 +187,45 @@ describe("Search", function() {
             expect(element.childNodes[0].innerText).toContain("Tutor 1");
         });
 
+        it("should create anchor element inside name element for link to user's profile", function() {
+            expect(element.childNodes[0].childNodes[0].tagName).toEqual("A");
+            expect(element.childNodes[0].childNodes[0].href).toContain("/profile.html?userID=123");
+        });
+
+        it("should create div element inside result element for rating", function() {
+            expect(element.childNodes[1].tagName).toEqual("DIV");
+        });
+
+        it("should create a span element for each star inside of rating element", function() {
+            expect(element.childNodes[1].childNodes[0].tagName).toEqual("SPAN");
+            expect(element.childNodes[1].childNodes[1].tagName).toEqual("SPAN");
+            expect(element.childNodes[1].childNodes[2].tagName).toEqual("SPAN");
+            expect(element.childNodes[1].childNodes[3].tagName).toEqual("SPAN");
+            expect(element.childNodes[1].childNodes[4].tagName).toEqual("SPAN");
+        });
+
+        it("should have all stars inside the rating element of class glyphicon glyphicon-star", function() {
+            expect(element.childNodes[1].childNodes[0].className).toContain("glyphicon glyphicon-star");
+            expect(element.childNodes[1].childNodes[1].className).toContain("glyphicon glyphicon-star");
+            expect(element.childNodes[1].childNodes[2].className).toContain("glyphicon glyphicon-star");
+            expect(element.childNodes[1].childNodes[3].className).toContain("glyphicon glyphicon-star");
+            expect(element.childNodes[1].childNodes[4].className).toContain("glyphicon glyphicon-star");
+        });
+
         it("should create h6 element inside result element for email", function() {
-            expect(element.childNodes[1].tagName).toEqual("H6");
-            expect(element.childNodes[1].innerText).toContain("tutor1@gmail.com");
+            expect(element.childNodes[2].tagName).toEqual("H6");
+            expect(element.childNodes[2].innerText).toContain("tutor1@gmail.com");
         });
 
         it("should create p element inside result element for skills", function() {
-            expect(element.childNodes[2].tagName).toEqual("P");
-            expect(element.childNodes[2].innerText).toContain("Skills: Math, History");
+            expect(element.childNodes[3].tagName).toEqual("P");
+            expect(element.childNodes[3].innerText).toContain("Skills: Math, History");
         });
 
         it("should create anchor element inside result element for availability link", function() {
-            expect(element.childNodes[3].tagName).toEqual("A");
-            expect(element.childNodes[3].innerText).toContain("Availability");
-            expect(element.childNodes[3].href).toContain("/availability.html?tutorID=123");
+            expect(element.childNodes[4].tagName).toEqual("A");
+            expect(element.childNodes[4].innerText).toContain("Availability");
+            expect(element.childNodes[4].href).toContain("/availability.html?tutorID=123");
         });
 
     });

@@ -45,6 +45,18 @@ See the License for the specific language governing permissions and
     margin-bottom: 10px;
 }
 
+.tutor-name {
+    display: inline-block;
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.tutor-rating {
+    display: inline-block;
+    float: right;
+    margin-top: 10px;
+}
+
 #result-container {
     margin-top: 3%;
 }
