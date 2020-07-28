@@ -120,20 +120,20 @@ describe("User Profile", function() {
             mockTutorTopics.style.display = 'none';
 
             var mockMathCheckbox = document.createElement('checkbox');
-            mockMathCheckbox.id = 'math';
+            mockMathCheckbox.id = 'math-tutor';
 
             mockMathCheckbox.checked = true;
 
             var mockEnglishCheckbox = document.createElement('checkbox');
-            mockEnglishCheckbox.id = 'english';
+            mockEnglishCheckbox.id = 'english-tutor';
 
             mockEnglishCheckbox.checked = true;
 
             var mockPhysicsCheckbox = document.createElement('checkbox');
-            mockPhysicsCheckbox.id = 'physics';
+            mockPhysicsCheckbox.id = 'physics-tutor';
             
             var mockOtherTextbox = document.createElement('text');
-            mockOtherTextbox.id = 'other-subject';
+            mockOtherTextbox.id = 'other-subject-tutor';
 
             document.body.appendChild(mockProfileContainer);
             document.body.appendChild(mockButtonsDiv);
@@ -159,9 +159,9 @@ describe("User Profile", function() {
         });
 
         it("should check off the topics the user had previously selected", function() {
-            expect(document.getElementById('math').checked).toBe(true);
-            expect(document.getElementById('english').checked).toBe(true);
-            expect(document.getElementById('physics').checked).toBe(undefined);
+            expect(document.getElementById('math-tutor').checked).toBe(true);
+            expect(document.getElementById('english-tutor').checked).toBe(true);
+            expect(document.getElementById('physics-tutor').checked).toBe(undefined);
         });
     });
 });

@@ -50,8 +50,15 @@ function getExperiences(document, loginStatus, user) {
         getExperiencesHelper(document, experiences, loginStatus, user);
     });
 
-    // If the user is a student, allow them to add experiences
-    if (loginStatus.userId == user.userId) {
+    // If user is both a student and a tutor
+    if (user.student != null ) {
+        // If user is the one whose profile is being displayed
+        if (loginStatus.userId == user.student.userId) {
+            document.getElementById('experiences-form').style.display = "block";
+        } else {
+            document.getElementById('experiences-form').style.display = "none";
+        }
+    } else if (loginStatus.userId == user.userId) {
         document.getElementById('experiences-form').style.display = "block";
     } else {
         document.getElementById('experiences-form').style.display = "none";
@@ -91,8 +98,15 @@ function getGoals(document, loginStatus, user) {
         getGoalsHelper(document, goals, loginStatus, user);
     });
 
-    // If the user is a student, allow them to add goals
-    if (loginStatus.userId == user.userId) {
+    // If user is both a student and a tutor
+    if (user.student != null ) {
+        // If user is the one whose profile is being displayed
+        if (loginStatus.userId == user.student.userId) {
+            document.getElementById('goals-form').style.display = "block";
+        } else {
+            document.getElementById('goals-form').style.display = "none";
+        }
+    } else if (loginStatus.userId == user.userId) {
         document.getElementById('goals-form').style.display = "block";
     } else {
         document.getElementById('goals-form').style.display = "none";
@@ -130,19 +144,36 @@ function getAchievements(document, loginStatus) {
 }
 
 function getPastSessionsAndTopics(document, loginStatus, user) {
-    // Do not display past tutoring sessions and past learned topics if the user viewing the profile is not one of the student's tutors or 
-    // the student themselves
-    if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
-        const studentID = user.userId;
+    
+    // If the user is both a tutor and a student
+    if (user.student != null) {
+        // Do not display past tutoring sessions and past learned topics if the user viewing the profile is not one of the student's tutors or 
+        // the student themselves
+        if (user.student.tutors.includes(loginStatus.userId) || user.student.userId == loginStatus.userId) {
+            const studentID = user.student.userId;
 
-        const params = new URLSearchParams();
-        params.append('studentID', studentID);
-        fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
-            getPastSessionsAndTopicsHelper(document, tutoringSessions);
-        });
+            const params = new URLSearchParams();
+            params.append('studentID', studentID);
+            fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+                getPastSessionsAndTopicsHelper(document, tutoringSessions);
+            });
+        } else {
+            document.getElementById("sessionsAndAchievements").style.display = "none";
+            return;
+        }
     } else {
-        document.getElementById("sessionsAndAchievements").style.display = "none";
-        return;
+        if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
+            const studentID = user.userId;
+
+            const params = new URLSearchParams();
+            params.append('studentID', studentID);
+            fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+                getPastSessionsAndTopicsHelper(document, tutoringSessions);
+            });
+        } else {
+            document.getElementById("sessionsAndAchievements").style.display = "none";
+            return;
+        }
     }
 }
 
@@ -237,8 +268,21 @@ function createGoalBox(goal, loginStatus, user) {
     goalContainer.classList.add("list-group-item");
     goalContainer.appendChild(description);
 
-    // Only create the delete button if the user has the student role
-    if (loginStatus.userId == user.userId) {
+    // If user is both a student and a tutor
+    if (user.student != null ) {
+        // If user is the one whose profile is being displayed, display delete button
+        if (loginStatus.userId == user.student.userId) {
+            const deleteGoalButton = document.createElement('button');
+            deleteGoalButton.innerText = 'Delete';
+            deleteGoalButton.className = 'btn btn-default btn-lg';
+            deleteGoalButton.addEventListener('click', () => {
+                deleteGoal(goal, loginStatus.userId, window);
+
+                goalContainer.remove();
+            });
+            goalContainer.appendChild(deleteGoalButton);
+        }
+    } else if (loginStatus.userId == user.userId) {
         const deleteGoalButton = document.createElement('button');
         deleteGoalButton.innerText = 'Delete';
         deleteGoalButton.className = 'btn btn-default btn-lg';
@@ -267,8 +311,21 @@ function createExperienceBox(experience, loginStatus, user) {
     experienceContainer.classList.add("list-group-item");
     experienceContainer.appendChild(description);
 
-    // Only create the delete button if the user has the student role
-    if (loginStatus.userId == user.userId) {
+    // If user is both a student and a tutor
+    if (user.student != null ) {
+        // If user is the one whose profile is being displayed, display delete button
+        if (loginStatus.userId == user.student.userId) {
+            const deleteExperienceButton = document.createElement('button');
+            deleteExperienceButton.innerText = 'Delete';
+            deleteExperienceButton.className = 'btn btn-default btn-lg';
+            deleteExperienceButton.addEventListener('click', () => {
+                deleteExperience(experience, loginStatus.userId, window);
+
+                experienceContainer.remove();
+            });
+            experienceContainer.appendChild(deleteExperienceButton);
+        }
+    } else if (loginStatus.userId == user.userId) {
         const deleteExperienceButton = document.createElement('button');
         deleteExperienceButton.innerText = 'Delete';
         deleteExperienceButton.className = 'btn btn-default btn-lg';
@@ -279,7 +336,7 @@ function createExperienceBox(experience, loginStatus, user) {
         });
         experienceContainer.appendChild(deleteExperienceButton);
     }
-
+    
     return experienceContainer;
 }
 
