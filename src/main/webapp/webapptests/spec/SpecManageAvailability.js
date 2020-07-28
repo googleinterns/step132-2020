@@ -77,7 +77,7 @@ describe("Manage Availability", function() {
         var year = document.createElement("select");
         startHour.value = 1;
         startMinute.value = 30;
-        endHour.value = 3;
+        endHour.value = 2;
         endMinute.value = 30;
         day.value = 1;
         month.value = 1;
@@ -86,7 +86,7 @@ describe("Manage Availability", function() {
         var params = new URLSearchParams();
         params.append('startHour', 1);
         params.append('startMinute', 30);
-        params.append('endHour', 3);
+        params.append('endHour', 2);
         params.append('endMinute', 30);
         params.append('day', 1);
         params.append('month', 1);
