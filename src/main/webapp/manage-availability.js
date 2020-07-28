@@ -78,7 +78,7 @@ function createTimeSlotBoxManage(timeslot) {
         minute = "00";
     }
     // Display minutes regularly (e.g. 1:05pm rather than 1:5pm)
-    if (minute < 10) {
+    if (minute < 10  && minute != 0) {
         minute = "0" + minute;
     }
     dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
