@@ -49,11 +49,16 @@ async function getListsHelper(window, url) {
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to manage lists.");
-            return [];
+            return null;
         }
         return response.json();
         
     }).then((lists) => {
+        //page was redirected
+        if(lists === null) {
+            return;
+        }
+
         if(lists.error) {
             var message = document.createElement("p");
             message.innerText = timeslots.error;
