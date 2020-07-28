@@ -56,8 +56,9 @@ function createTimeSlotBox(timeslot, tutorID) {
         amOrPm = "pm"
     }
     var minute = parseInt(timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
+    // Display minutes regularly (e.g. 1:05pm rather than 1:5pm)
+    if (minute < 10) {
+        minute = "0" + minute;
     }
     dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
 
@@ -95,3 +96,68 @@ function selectTimeSlot(tutorID, window, timeslot) {
                 "&day=" + encodeURIComponent(timeslot.date.dayOfMonth);
     window.location.href = url;
 }
+
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    var queryString = new Array();
+    window.onload = readComponents(queryString, window);
+    const tutorID = queryString["tutorID"];
+
+    fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
+        console.log(timeslots);
+        // Don't create a calendar if there are no available timeslots
+        if (timeslots === undefined || timeslots.length == 0) {
+            return;
+        }
+
+        // There are available timeslots, display header and calendar
+        document.getElementById('calendar-header').style.display = 'block';
+        
+        const container = document.getElementById('calendar');
+        const chart = new google.visualization.Timeline(container);
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'string', id: 'Date'});
+        dataTable.addColumn({type: 'date', id: 'Start'});
+        dataTable.addColumn({type: 'date', id: 'End'});
+        
+        for (var slot of timeslots) {
+            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+            var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+            dataTable.addRow([
+                date, asDate(slot.start), asDate(slot.end)
+            ]);
+        }
+
+        // Have timeline span 24 hours regardless of what's scheduled
+        var min = new Date();
+        min.setHours(0);
+        var max = new Date();
+        max.setHours(24);
+
+        const options = {
+            width: 1000,
+            height: 200,
+            hAxis: {
+                minValue: min,
+                maxValue: max
+            }
+        };
+
+        chart.draw(dataTable, options);
+    });
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(createCalendar);

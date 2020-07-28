@@ -67,9 +67,17 @@
             <h2>Select one of the free time slots below to schedule your tutoring session.</h2>
         </div>
 
+        <div class="bg-white-lg">
+            <div class="container-fluid bg-white">
+                <ul class="list-group text-left" id="timeslots"></ul>
+            </div>
+        </div>
+
+        <h2 id="calendar-header" style="display:none" align="center">Available Sessions</h2>
+        <div id="calendar" align="center"></div>
+
         <div class="bg-description-blue">
             <div class="container-fluid bg-white">
-                <ul class="list-group" id="timeslots"></ul>
             </div>
         </div>
 
@@ -82,6 +90,7 @@
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="search-users.js"></script>
         <script src="general.js"></script>
         <script src="availability.js"></script>
