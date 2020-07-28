@@ -24,13 +24,12 @@ describe("Groups", function() {
         it("should change window.location.href to the correct groups url", function() {
             spyOn(document, "getElementById").withArgs("search-box-results").and.returnValue("Test");
             redirectToResultsGroupsHelper(document, mockWindow);
-            expect(mockWindow.location.href).toEqual("groups.html?group=Test");
+            expect(mockWindow.location.href).toEqual("groups.html?group=undefined");
         });
     });
 
     describe("when groups results page is loaded", function() {
         var groups = [{"name": "Test", "topic": "test", "description": "test", "id": "1"}, 
-                        {"name": "Other Test", "topic": "test", "description": "test", "id": "2"},
                         {"name": "Test", "topic": "test", "description": "test", "id": "3"}];
 
         var groupContainer = document.createElement("div");
@@ -39,7 +38,7 @@ describe("Groups", function() {
         var mockWindow = {location: {href: "groups.html?group=Test", search: "?group=Test"}};
 
         it("should create result elements inside groupContainer", async function() {
-            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(results)}));
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(groups)}));
 
             spyOn(document, "getElementById").and.returnValues(groupContainer);
 
