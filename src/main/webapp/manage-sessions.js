@@ -141,6 +141,12 @@ function createCalendar() {
         dataTable.addColumn({type: 'string', id: 'Description'});
         dataTable.addColumn({type: 'date', id: 'Start'});
         dataTable.addColumn({type: 'date', id: 'End'});
+
+        // Sort timeslots in chronological order
+        scheduledSessions.sort(function(a, b) {
+            return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
+                (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
+        });
         
         for (var session of scheduledSessions) {
             // Wait for this promise to resolve so tutor is defined when making calendar row
@@ -161,7 +167,7 @@ function createCalendar() {
 
         const options = {
             width: 1000,
-            height: 200,
+            height: 300,
             hAxis: {
                 minValue: min,
                 maxValue: max

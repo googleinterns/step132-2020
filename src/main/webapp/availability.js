@@ -120,8 +120,14 @@ function createCalendar() {
         dataTable.addColumn({type: 'string', id: 'Date'});
         dataTable.addColumn({type: 'date', id: 'Start'});
         dataTable.addColumn({type: 'date', id: 'End'});
+
+        // Sort timeslots in chronological order
+        timeslots.sort(function(a, b) {
+            return (a.date.year + a.date.month/12 + a.date.dayOfMonth/365) - (b.date.year + b.date.month/12 + b.date.dayOfMonth/365);
+        });
         
         for (var slot of timeslots) {
+            console.log(slot.date);
             // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
             var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
             dataTable.addRow([
@@ -137,7 +143,7 @@ function createCalendar() {
 
         const options = {
             width: 1000,
-            height: 200,
+            height: 300,
             hAxis: {
                 minValue: min,
                 maxValue: max
