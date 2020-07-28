@@ -232,7 +232,7 @@ async function getTutors(topic, sort) {
         numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " tutors for " : " tutor for ") + topic;
 
         if(results.length == 0) {
-            document.getElementById("tutor-filter").style.display = "none";
+            document.getElementById("tutor-sort").style.display = "none";
         }
 
         var tutorContainer = document.getElementById("tutors-container");

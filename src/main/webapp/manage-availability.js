@@ -74,9 +74,7 @@ function createTimeSlotBoxManage(timeslot) {
         amOrPm = "pm"
     }
     var minute = parseInt(timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
-    }
+
     // Display minutes regularly (e.g. 1:05pm rather than 1:5pm)
     if (minute < 10) {
         minute = "0" + minute;
