@@ -12,87 +12,95 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Gets a list of the user's scheduled sessions from the server and displays them on the page. */
-function getScheduledSessions() {
-    return getScheduledSessionsHelper(window);
-}
-
-//Helper function for getScheduledSessions, used for testing
-async function getScheduledSessionsHelper(window) {
-    await fetch('/confirmation', {method: 'GET'}).then((response) => {
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    fetch('/confirmation', {method: 'GET'}).then((response) => {
         //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
-            alert("You must be signed in to view upcoming session.");
+            alert("You must be signed in to manage sessions.");
             return [];
         }
         return response.json();
+    }).then(async (scheduledSessions) => {
+        const container = document.getElementById('calendar');
         
-    }).then((scheduledSessions) => {
         if(scheduledSessions.error) {
             var message = document.createElement("p");
             p.innerText = scheduledSessions.error;
-            document.getElementById('timeslots').appendChild(message);
+            document.getElementById('calendar').appendChild(message);
             return;
         }
 
-        if (Object.keys(scheduledSessions).length != 0) {
-            scheduledSessions.forEach((scheduledSession) => {
-                document.getElementById('scheduledSessions').appendChild(createScheduledSessionBox(scheduledSession));
-            });
-        } else {
-            var sessionsContainer = document.getElementById('scheduledSessions');
+        // Don't create a calendar if there are no scheduled sessions
+        if (scheduledSessions === undefined || scheduledSessions.length == 0) {
             var errorMessage = document.createElement("p");
             errorMessage.innerText = "This user does not have any scheduled tutoring sessions.";
-            sessionsContainer.appendChild(errorMessage);
+            container.appendChild(errorMessage);
             return;
         }
+        
+        const chart = new google.visualization.Timeline(container);
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'string', id: 'Date'});
+        dataTable.addColumn({type: 'string', id: 'Description'});
+        dataTable.addColumn({type: 'date', id: 'Start'});
+        dataTable.addColumn({type: 'date', id: 'End'});
+
+        // Sort timeslots in chronological order
+        scheduledSessions.sort(function(a, b) {
+            return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
+                (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
+        });
+
+        for (var session of scheduledSessions) {
+            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+            var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
+
+            // Wait for this promise to resolve so tutor is defined when making calendar row
+            var tutor = await getUser(session.tutorID);
+            var description;
+            if (session.subtopics == '') {
+                description = "Tutoring session with " + tutor.name;
+            } else {
+                description = session.subtopics + " with " + tutor.name;
+            }
+            
+            dataTable.addRow([
+                date, description, asDate(session.timeslot.start), asDate(session.timeslot.end)
+            ]);
+        }
+
+        // Have timeline span 24 hours regardless of what's scheduled
+        var min = new Date();
+        min.setHours(0);
+        var max = new Date();
+        max.setHours(24);
+
+        const options = {
+            width: 1000,
+            height: 300,
+            hAxis: {
+                minValue: min,
+                maxValue: max
+            }
+        };
+
+        chart.draw(dataTable, options);
     });
 }
 
-
-function createScheduledSessionBox(scheduledSession) {
-
-    var months = [ "January", "February", "March", "April", "May", "June", 
-           "July", "August", "September", "October", "November", "December" ];
-
-    const scheduledSessionElement = document.createElement('li');
-    scheduledSessionElement.className = 'list-group-item';
-
-    const tutorElement = document.createElement('h3');
-    tutorElement.style.textAlign = 'left';
-    tutorElement.style.display = 'inline';
-
-    setTutorName(tutorElement, scheduledSession.tutorID);
-
-    const tutorLineElement = document.createElement('div');
-    tutorLineElement.className = 'd-flex w-100 justify-content-between';
-    tutorLineElement.appendChild(tutorElement);
-
-    const dateElement = document.createElement('h3');
-    dateElement.style.textAlign = 'left';
-    dateElement.style.display = 'inline';
-    var hour = Math.floor(parseInt(scheduledSession.timeslot.start) / 60);
-    var amOrPm = "am";
-    if (hour > 12) {
-        hour = hour - 12;
-        amOrPm = "pm"
-    }
-    var minute = parseInt(scheduledSession.timeslot.start) % 60;
-    // Display minutes regularly (e.g. 1:05pm rather than 1:5pm)
-    if (minute < 10) {
-        minute = "0" + minute;
-    }
-    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
-                             " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
-
-
-    const dateLineElement = document.createElement('div');
-    dateLineElement.className = 'd-flex w-100 justify-content-between';
-    dateLineElement.appendChild(dateElement);
-
-    scheduledSessionElement.appendChild(tutorLineElement);
-    scheduledSessionElement.appendChild(dateLineElement);
-    return scheduledSessionElement;
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
 }
-
+   
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(createCalendar);

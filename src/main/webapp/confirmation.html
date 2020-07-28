@@ -22,7 +22,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="getScheduledSessions(), displayLoginLogoutLink()">
+    <body onload="displayLoginLogoutLink()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -70,7 +70,7 @@
         <div class="bg-description-blue">
             <div class="container-fluid bg-white text-center">
                 <h1>Upcoming Tutoring Sessions</h1>
-                <ul class="list-group text-left" id="scheduledSessions"></ul>
+                <div id="calendar" align="center"></div>
             </div>
         </div>
 
@@ -83,6 +83,7 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="search-users.js"></script>
         <script src="general.js"></script>
         <script src="confirmation.js"></script>
