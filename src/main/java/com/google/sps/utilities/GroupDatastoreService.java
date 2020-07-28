@@ -42,14 +42,54 @@ public final class GroupDatastoreService {
     /**
     * Retrieves a list of groups for the given group name.
     */
-    public List<Group> getGroupsByName(String group) {
-        return null;
+    public List<Group> getGroupsByName(String groupName) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        Filter groupFilter = new FilterPredicate("name", FilterOperator.EQUAL, groupName.toLowerCase());
+        Query groupQuery = new Query("Group").setFilter(groupFilter);
+        
+        ArrayList<Group> groups = new ArrayList<Group>();
+
+        PreparedQuery groupResults = datastore.prepare(groupQuery);
+
+        for (Entity groupEntity : groupResults.asIterable()) {            
+            String name = (String) groupEntity.getProperty("name");
+            String topic = (String) groupEntity.getProperty("topic");
+            String description = (String) groupEntity.getProperty("description");
+            String owner = (String) groupEntity.getProperty("owner");
+
+            Group group = new Group(name, topic, description, owner);
+
+            groups.add(group);
+            
+        }
+
+        return groups;
     }
 
     /**
     * Creates a new group.
     */
     public void createGroup(Group group) {
-        return;
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        TransactionOptions options = TransactionOptions.Builder.withXG(true);
+        Transaction txn = datastore.beginTransaction(options);
+
+        try {
+            Entity groupEntity = new Entity("Group");
+
+            groupEntity.setProperty("name", group.getName().toLowerCase());
+            groupEntity.setProperty("topic", group.getTopic());
+            groupEntity.setProperty("description", group.getDescription());
+            groupEntity.setProperty("owner", group.getOwner());
+
+            datastore.put(txn, groupEntity);
+
+            txn.commit();
+        } finally {
+          if (txn.isActive()) {
+            txn.rollback();
+          }
+        }
     }
 }

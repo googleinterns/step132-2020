@@ -12,6 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+/** A function that adds event listeners to a DOM objects. */
+function addEventListeners() {
+    document.getElementById("search-groups-form").addEventListener('submit', event => {
+        event.preventDefault();
+        getSearchGroupResults();
+    });
+}
+
+/** Gets the name of the group the user search for and display the search results. */
+function redirectToResultsGroups() {
+    return redirectToResultsGroupsHelper(document, window);
+}
+
+/** Helper function for redirectToResultsGroups, used for testing purposes. */
+function redirectToResultsGroupsHelper(document, window) {
+    var group = document.getElementById("search-box-results").value;
+    
+    var url = "groups.html?group=" + encodeURIComponent(group);
+    window.location.href = url;
+
+    return false;
+}
+
+
 /** Gets the name the group searched for from the group search box and displays a list of the results from querying the databse
     for the given group name. */
 function getSearchGroupResults() {
@@ -20,7 +44,10 @@ function getSearchGroupResults() {
 
 /** Helper function for getSearchGroupResults, used for testing purposes. */
 async function getSearchGroupResultsHelper(document, window) {
-    var group = document.getElementById("search-box-results").value;
+    var queryString = new Array();
+    window.onload = readComponents(queryString, window);
+    var group = queryString["group"];
+
     if(group != null) {
         var groups = getGroups(group);
         
@@ -31,6 +58,8 @@ async function getSearchGroupResultsHelper(document, window) {
 /** Fetches the list of groups for the group name the user searched for. */
 async function getGroups(group) {
     await fetch("/manage-groups?group=" + group).then(response => response.json()).then((results) => {
+        console.log("wait here");
+
         var groupContainer = document.getElementById("groups");
 
         var numSearchResults = document.createElement("h4");
@@ -59,27 +88,28 @@ function createGroupResult(result) {
     var container = document.createElement("div");
     var name = document.createElement("h3");
     name.style.textTransform = 'capitalize';
-    var members = document.createElement("h4");
+    //var members = document.createElement("h4");
     var topic = document.createElement("h4");
+    topic.style.textTransform = 'capitalize';
     var description = document.createElement("h5");
-    var groupLink = document.createElement("a");
+    //var groupLink = document.createElement("a");
 
     name.innerText = result.name;
-    members.innerText = result.members + (result.members > 1 || result.members === 0 ? " members" : " member");
+    //members.innerText = result.members + (result.members > 1 || result.members === 0 ? " members" : " member");
     topic.innerText = result.topic;
     description.innerText = result.description;
-    groupLink.innerText = "View";
+    //groupLink.innerText = "View";
 
-    groupLink.href = "/group.html?groupId=" + result.groupId;
+    //groupLink.href = "/group.html?groupId=" + result.groupId;
 
     container.classList.add("user-result");
     container.classList.add("list-group-item");
 
     container.appendChild(name);
-    container.appendChild(members);
+    //container.appendChild(members);
     container.appendChild(topic);
     container.appendChild(description);
-    container.appendChild(profileLink);
+    //container.appendChild(profileLink);
 
     return container;
 }

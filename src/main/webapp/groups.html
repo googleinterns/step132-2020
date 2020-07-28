@@ -12,7 +12,7 @@ See the License for the specific language governing permissions and
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Results</title>
+        <title>Groups</title>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
         <link rel="stylesheet" type="text/css" href="general.css">
         <link rel="stylesheet" type="text/css" href="groups.css">
     </head>
-    <body onload="displayLoginLogoutLink()">
+    <body onload="displayLoginLogoutLink(), addEventListeners(), getSearchGroupResults()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -61,10 +61,10 @@ See the License for the specific language governing permissions and
             </div>
         </nav>
 
-        <div class="container-fluid bg-white" id="groups">
+        <div class="container-fluid bg-white" id="groups-header">
             <h1>Groups</h1>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal" style="display:block">
-                + New List
+                + New Group
             </button>
         </div>
 
@@ -116,7 +116,7 @@ See the License for the specific language governing permissions and
         </div> 
 
         <div class="container-fluid bg-white" style="text-align: center;">
-            <form id="search-groups-form" onsubmit="return getSearchGroupResults();">
+            <form id="search-groups-form" onsubmit="return redirectToResultsGroups();">
                 <input class="form-control search-box" type="text" id="search-box-results" required="" aria-required=true placeholder="What group are you looking for?">
                 <button class="btn btn-default" type="submit" id="search-submit-results">Go</button>
             </form>
