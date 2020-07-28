@@ -67,6 +67,9 @@ public class RegistrationServlet extends HttpServlet {
     Entity userEntity = new Entity("User");
     createUserEntityAndPutInDatastore(datastore, userEntity, role, userId);
 
+    // The "learn" parameter in the getTopics function refers to the topics that the user is learning and the 
+    // "tutor" parameter refers to the topics the user is tutoring in. The distinction between these two sets of
+    // topics exist to that a user can have different topics to tutor in from the topics they are learning.
     if (role.toLowerCase().equals("both")) {
         List<String> learningTopics = getTopics(request, "learn");
         List<String> tutoringTopics = getTopics(request, "tutor");
