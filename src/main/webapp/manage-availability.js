@@ -20,92 +20,6 @@ function addEventListeners() {
     });
 }
 
-function getAvailabilityManage() {
-    return getAvailabilityManageHelper(window);
-}
-
-function getAvailabilityManageHelper(window) {
-    fetch('/manage-availability', {method: 'GET'}).then((response) => {
-        //if the student is not the current user or not signed in
-        if(response.redirected) {
-            window.location.href = response.url;
-            alert("You must be signed in to manage availability.");
-            return [];
-        }
-        return response.json();
-        
-    }).then((timeslots) => {
-        if(timeslots.error) {
-            var message = document.createElement("p");
-            p.innerText = timeslots.error;
-            document.getElementById('timeslots').appendChild(message);
-            return;
-        }
-
-        if (Object.keys(timeslots).length != 0) {
-            timeslots.forEach((timeslot) => {
-                document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
-            });
-        } else {
-            var timeslotsContainer = document.getElementById('timeslots');
-            var errorMessage = document.createElement("p");
-            errorMessage.innerText = "This user has not set any available timeslots";
-            timeslotsContainer.appendChild(errorMessage);
-            return;
-        }
-    });
-}
-
-function createTimeSlotBoxManage(timeslot) {
-    var months = [ "January", "February", "March", "April", "May", "June", 
-           "July", "August", "September", "October", "November", "December" ];
-
-    const timeslotElement = document.createElement('li');
-    timeslotElement.className = 'list-group-item';
-
-    const dateElement = document.createElement('h3');
-    dateElement.style.textAlign = 'left';
-    dateElement.style.display = 'inline';
-
-    var hour = Math.floor(parseInt(timeslot.start) / 60);
-    var amOrPm = "am";
-    if (hour > 12) {
-        hour = hour - 12;
-        amOrPm = "pm"
-    }
-    var minute = parseInt(timeslot.start) % 60;
-    // Display minutes regularly (e.g. 1:05pm rather than 1:5pm)
-    if (minute < 10) {
-        minute = "0" + minute;
-    }
-    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
-
-    const dateLineElement = document.createElement('div');
-    dateLineElement.className = 'd-flex w-100 justify-content-between';
-    dateLineElement.style.padding = '10px';
-    dateLineElement.appendChild(dateElement);
-
-    const deleteButtonElement = document.createElement('button');
-    deleteButtonElement.innerText = 'Delete';
-    deleteButtonElement.style.textAlign = 'right';
-    deleteButtonElement.style.display = 'inline';
-    deleteButtonElement.className = 'btn btn-lg';
-    deleteButtonElement.addEventListener('click', () => {
-        deleteTimeSlot(window, timeslot);
-
-        timeslotElement.remove();
-    });
-
-    const buttonLineElement = document.createElement('div');
-    buttonLineElement.className = 'd-flex w-100 justify-content-between';
-    buttonLineElement.style.padding = '10px';
-    buttonLineElement.appendChild(deleteButtonElement);
-
-    timeslotElement.appendChild(dateLineElement);
-    timeslotElement.appendChild(buttonLineElement);
-    return timeslotElement;
-}
-
 /** Tells the server to add a timeslot for a tutor. */
 function addTimeSlot() {
     return addTimeSlotHelper(window);
@@ -129,37 +43,34 @@ function addTimeSlotHelper(window) {
     });
 }
 
-/** Function to tell the server to delete a time slot for tutor.  */
-function deleteTimeSlot(window, timeslot) {
-    const params = new URLSearchParams();
-    params.append('year', timeslot.date.year);
-    params.append('month', timeslot.date.month);
-    params.append('day', timeslot.date.dayOfMonth);
-    params.append('start', timeslot.start);
-    params.append('end', timeslot.end);
-
-    fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor is not the current user or not signed in
-        if(response.redirected) {
-            window.location.href = response.url;
-            alert("You must be signed in to edit availability.");
-            return;
-        }
-    });
-}
-
 /** Creates a calendar with the Charts API and renders it on the page  */
 function createCalendar() {
-    fetch('/manage-availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
-        // Don't create a calendar if there are no available timeslots
-        if (timeslots === undefined || timeslots.length == 0) {
+    fetch('/manage-availability', {method: 'GET'}).then((response) => {
+        //if the student is not the current user or not signed in
+        if(response.redirected) {
+            window.location.href = response.url;
+            alert("You must be signed in to manage availability.");
+            return [];
+        }
+        return response.json();
+    }).then((timeslots) => {
+        const container = document.getElementById('calendar');
+        
+        if(timeslots.error) {
+            var message = document.createElement("p");
+            p.innerText = timeslots.error;
+            document.getElementById('calendar').appendChild(message);
             return;
         }
 
-        // There are available timeslots, display header and calendar
-        document.getElementById('calendar-header').style.display = 'block';
+        // Don't create a calendar if there are no available timeslots
+        if (timeslots === undefined || timeslots.length == 0) {
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user has not set any available timeslots.";
+            container.appendChild(errorMessage);
+            return;
+        }
         
-        const container = document.getElementById('calendar');
         const chart = new google.visualization.Timeline(container);
 
         const dataTable = new google.visualization.DataTable();
@@ -195,8 +106,41 @@ function createCalendar() {
             }
         };
 
+        google.visualization.events.addListener(chart, 'select', function() {
+            var selection = chart.getSelection()[0];
+            if (selection) {
+                deleteSession(dataTable, selection);
+            }
+        });
+
         chart.draw(dataTable, options);
     });
+}
+
+/** Function to tell the server to delete an available time slot for tutor.  */
+function deleteSession(dataTable, selection) {
+    var deleteSession = confirm("Delete available time slot?");
+
+    if (deleteSession) {
+        var start = asMinutes(dataTable.getValue(selection.row, 1));
+        var end = asMinutes(dataTable.getValue(selection.row, 2));
+        var date = dataTable.getValue(selection.row, 0).split('/');
+        const params = new URLSearchParams();
+        params.append('year', date[2]);
+        params.append('month', date[0]-1);
+        params.append('day', date[1]);
+        params.append('start', start);
+        params.append('end', end);
+
+        fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
+            //if the tutor is not the current user or not signed in
+            if(response.redirected) {
+                window.location.href = response.url;
+                alert("You must be signed in to edit availability.");
+                return;
+            }
+        }).then(location.reload());
+    }
 }
 
 /**
@@ -208,6 +152,11 @@ function asDate(minutes) {
   date.setHours(Math.floor(minutes / 60));
   date.setMinutes(minutes % 60);
   return date;
+}
+
+// Converts a JavaScript Date object into "minutes since midnight"
+function asMinutes(date) {
+    return date.getHours()*60 + date.getMinutes();
 }
 
 google.charts.load('current', {'packages': ['timeline']});
