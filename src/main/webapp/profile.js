@@ -65,18 +65,17 @@ function createProfileDiv(user, loginStatus) {
     const profileEmail = document.createElement('p');
     const profileTopics = document.createElement('p');
 
-    // If the user is both a tutor and a student
+    var userInfo;
+    // If the user is both a tutor and a student get their student info
     if (user.student != null) {
-        profileName.innerText = user.student.name;
-        profileBio.innerText = "About me: " + user.student.bio;
-        profilePfp.src = user.student.pfp;
-        profileEmail.innerText = user.student.email;
+        userInfo = user.student;
     } else {
-        profileName.innerText = user.name;
-        profileBio.innerText = "About me: " + user.bio;
-        profilePfp.src = user.pfp;
-        profileEmail.innerText = user.email;
+        userInfo = user;
     }
+    profileName.innerText = userInfo.name;
+    profileBio.innerText = "About me: " + userInfo.bio;
+    profilePfp.src = userInfo.pfp;
+    profileEmail.innerText = userInfo.email;
 
     // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
     profileTopics.innerText = fetchStatusHelper(user, loginStatus, window, document);
@@ -96,6 +95,7 @@ function fetchStatusHelper(user, loginStatus, window, document) {
     var role = loginStatus.role;
     var text;
 
+    // If the user is both a student and a tutor
     if (user.student != null) {
         var learning = user.student.learning.toString();
         // Remove blank entry that marks start of other topics
@@ -111,6 +111,8 @@ function fetchStatusHelper(user, loginStatus, window, document) {
             "I am tutoring in: " + listWithSpacesTutor;
 
         loadProgress(document, loginStatus, user);
+        
+         // If the user is only a student
     } else if (user.learning != null) { // Display topics as comma-separated list with spaces
         var learning = user.learning.toString();
         // Remove blank entry that marks start of other topics
@@ -119,6 +121,8 @@ function fetchStatusHelper(user, loginStatus, window, document) {
         text = "I am learning: " + listWithSpaces;
 
         loadProgress(document, loginStatus, user);
+
+        // If the user is only a tutor
     } else if (user.skills != null){ 
         var skills = user.skills.toString();
         // Remove blank entry that marks start of other topics
