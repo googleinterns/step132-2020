@@ -117,6 +117,11 @@ function fetchStatusHelper(user, loginStatus, window, document) {
         var listWithSpaces = removeBlank.replace(/,/g, ', ');
         text = "I am tutoring in: " + listWithSpaces;
         getListsProfile();
+
+        document.getElementById('tutor-availability').style.display = 'block';
+        document.getElementById('tutor-availability-btn').addEventListener('click', () => {
+            redirectToAvailability(user, window); 
+        });
     }
 
     if (loginStatus.userId == getIdParameter(window)) {
@@ -255,4 +260,17 @@ function editProfileStudent(user, both, document) {
         otherTopics = student.learning.slice(otherTopicsIndex + 1);
     }
     document.getElementById('other-subject-learn').value = otherTopics.join(', ');
+}
+
+function redirectToAvailability(user, window) {
+    var url;
+
+    // If the user is both a tutor and a student
+    if (user.student != null) {
+        url = "availability.html?tutorID=" + user.tutor.userId;
+    } else {
+        url = "availability.html?tutorID=" + user.userId;
+    }
+
+    window.location.href = url;
 }
