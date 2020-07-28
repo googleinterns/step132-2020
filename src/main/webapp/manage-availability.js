@@ -56,22 +56,6 @@ function getAvailabilityManageHelper(window) {
     });
 }
 
-// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
-// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readTutorID(queryString, window) {
-    if (queryString.length == 0) {
-        if (window.location.search.split('?').length > 1) {
-            var params = window.location.search.split('?')[1].split('&');
-            for (var i = 0; i < params.length; i++) {
-                var key = params[i].split('=')[0];
-                var value = decodeURIComponent(params[i].split('=')[1]);
-                queryString[key] = value;
-            }
-        }
-    }
-}
-
 function createTimeSlotBoxManage(timeslot) {
     var months = [ "January", "February", "March", "April", "May", "June", 
            "July", "August", "September", "October", "November", "December" ];
@@ -92,6 +76,10 @@ function createTimeSlotBoxManage(timeslot) {
     var minute = parseInt(timeslot.start) % 60;
     if (minute == 0) {
         minute = "00";
+    }
+    // Display minutes regularly (e.g. 1:05pm rather than 1:5pm)
+    if (minute < 10) {
+        minute = "0" + minute;
     }
     dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
 
@@ -130,13 +118,9 @@ function addTimeSlot() {
 function addTimeSlotHelper(window) {
     const params = new URLSearchParams();
 
-    params.append('startHour', document.getElementById('startHour').value);
-    params.append('startMinute', document.getElementById('startMinute').value);
-    params.append('endHour', document.getElementById('endHour').value);
-    params.append('endMinute', document.getElementById('endMinute').value);
-    params.append('day', document.getElementById('day').value);
-    params.append('month', document.getElementById('month').value);
-    params.append('year', document.getElementById('year').value);
+    params.append('startTime', document.getElementById('startTime').value);
+    params.append('endTime', document.getElementById('endTime').value);
+    params.append('date', document.getElementById('date').value);
 
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
         //if the tutor is not the current user or not signed in
@@ -167,3 +151,53 @@ function deleteTimeSlot(window, timeslot) {
         }
     });
 }
+
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar() {
+    fetch('/manage-availability', {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
+        // Don't create a calendar if there are no available timeslots
+        if (timeslots === undefined || timeslots.length == 0) {
+            return;
+        }
+
+        // There are available timeslots, display header and calendar
+        document.getElementById('calendar-header').style.display = 'block';
+        
+        const container = document.getElementById('calendar');
+        const chart = new google.visualization.Timeline(container);
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({type: 'string', id: 'Date'});
+        dataTable.addColumn({type: 'date', id: 'Start'});
+        dataTable.addColumn({type: 'date', id: 'End'});
+        
+        for (var slot of timeslots) {
+            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+            var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+            dataTable.addRow([
+                date, asDate(slot.start), asDate(slot.end)
+            ]);
+        }
+
+        const options = {
+            'width':1000,
+            'height':200,
+        };
+
+        chart.draw(dataTable, options);
+    });
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(createCalendar);

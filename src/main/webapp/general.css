@@ -99,7 +99,18 @@ footer .glyphicon {
 
 #top-arrow {
     color: white;
-    text-color: white;
+}
+
+#search-bar-user {
+    padding: 2% 0;
+}
+
+.footer {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: -1;
 }
 
 /* Vertically align modal: http://jsfiddle.net/sRmLV/1140/ */

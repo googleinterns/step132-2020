@@ -19,7 +19,7 @@ describe("Availability", function() {
 
         it("should trigger the fetch function", function() {
             spyOn(window, "onload").and.callFake(function() {
-                readTutorID(queryString, window);
+                readComponents(queryString, window);
             });
             spyOn(window, 'fetch').and.callThrough();
             getAvailability(mockWindow);
@@ -31,7 +31,7 @@ describe("Availability", function() {
     describe("when the tutor ID is read", function() {
         var mockWindow = {location: {href: "availability.html?tutorID=test%40gmail.com", search: "?tutorID=test%40gmail.com"}};
         var queryString = new Array();
-        readTutorID(queryString, mockWindow);
+        readComponents(queryString, mockWindow);
 
         it("should set tutorID inside queryString as the tutorID", function() {
             expect(queryString["tutorID"]).toEqual("test@gmail.com");

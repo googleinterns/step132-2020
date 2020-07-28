@@ -16,6 +16,7 @@ package com.google.sps.utilities;
 
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Tutor;
+import com.google.sps.data.User;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.appengine.api.datastore.DatastoreService;
@@ -29,6 +30,8 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.CompositeFilter;
+import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import java.lang.String;
 import java.util.Collection;
 import java.util.ArrayList;
@@ -80,6 +83,37 @@ public final class SearchDatastoreService {
 
         return tutors;
         
+    }
+
+    /**
+    * Gets a list of users from datastore that have the specified name as a skill.
+    * @return List<User>
+    */
+    public List<User> getUsersForName(String name) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        Filter fullNameFilter = new FilterPredicate("fullName", FilterOperator.EQUAL, name.toLowerCase());
+        Filter firstNameFilter = new FilterPredicate("firstName", FilterOperator.EQUAL, name.toLowerCase());
+        Filter LastNameFilter = new FilterPredicate("lastName", FilterOperator.EQUAL, name.toLowerCase());
+        CompositeFilter userFilter = CompositeFilterOperator.or(fullNameFilter, firstNameFilter, LastNameFilter);
+
+        Query userQuery = new Query("User").setFilter(userFilter);
+        
+        ArrayList<User> users = new ArrayList<User>();
+
+        PreparedQuery userResults = datastore.prepare(userQuery);
+
+        for (Entity userEntity : userResults.asIterable()) {            
+            String userId = (String) userEntity.getProperty("userId");
+            String fullName = (String) userEntity.getProperty("fullName");
+
+            User user = new User(fullName, userId);
+
+            users.add(user);
+            
+        }
+
+        return users;
     }
 
     /**
