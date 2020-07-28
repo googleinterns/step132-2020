@@ -35,6 +35,8 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import java.lang.String;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
@@ -90,8 +92,36 @@ public final class SearchDatastoreService {
             
         }
 
+        switch(sortType.toLowerCase()) {
+            case "availability":
+                sortByAvailability(tutors);
+                break;
+            case "most-students":
+                // sortByStudents("most");
+                break;
+            case "least-students":
+                // sortByStudents("least");
+                break;
+            default:
+                //do nothing
+                break;
+        }
+
         return tutors;
         
+    }
+
+    /**
+    * Sorts the list of tutors based on the number of available times in descending order.
+    */
+    private void sortByAvailability(ArrayList<Tutor> tutors) {
+        Collections.sort(tutors, new Comparator<Tutor>() {
+            @Override
+            public int compare(Tutor a, Tutor b) {
+                //descending order
+                return b.getAvailability().size() - a.getAvailability().size();
+            }
+        });
     }
 
     /**

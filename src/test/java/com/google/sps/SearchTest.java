@@ -155,6 +155,32 @@ public final class SearchTest {
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
+    @Test
+    public void testSortByAvailability() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        when(request.getParameter("topic")).thenReturn("english");
+        when(request.getParameter("sort-type")).thenReturn("availability");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        //create the hard coded data
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("sort-type"); 
+        writer.flush(); // it may not have been flushed yet...
+        //Bernardo has more available timeslots
+        List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("btrevisan@google.com"), sample.getTutorByEmail("sfalberg@google.com"));
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
     /**
     * The current searcher is a tutor and that tutor is the only result for history. They should not be able to see themselves in the result.
     */

@@ -26,7 +26,8 @@ function switchTab(elem) {
 }
 
 function handleTutorSort(elem) {
-    return getSearchResultsHelper(window, elem.value);
+    console.log(elem.options[elem.selectedIndex].value);
+    return getSearchResultsHelper(window, elem.options[elem.selectedIndex].value);
 }
 
 /** Gets the topic the user searched for from the search box and redirects the page to the search-results page with a url that contains a query parameter for the topic. 
