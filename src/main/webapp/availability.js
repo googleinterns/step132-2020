@@ -19,6 +19,13 @@ function createCalendar() {
     const tutorID = queryString["tutorID"];
 
     fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
+        if(timeslots.error) {
+            var message = document.createElement("p");
+            p.innerText = timeslots.error;
+            document.getElementById('calendar').appendChild(message);
+            return;
+        }
+
         // Don't create a calendar if there are no available timeslots
         if (timeslots === undefined || timeslots.length == 0) {
             return;
