@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="getAvailabilityManage(), displayLoginLogoutLink(), addEventListeners()">
+    <body onload="displayLoginLogoutLink(), addEventListeners()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -62,9 +62,9 @@
         <div class="bg-white-lg">
             <div class="container-fluid text-center bg-white">
                 <h1>Manage Your Availability</h1>
-                <h2>Delete available timeslots or add new ones.</h2>
+                <h2>Click on an available session to delete it.</h2>
                 <br><br>
-                <ul class="list-group text-left" id="timeslots"></ul>
+                <div id="calendar" align="center"></div>
             </div>
             <div class="container-fluid text-center bg-white">
                 <h2>Add a new available timeslot.</h2>
@@ -82,9 +82,7 @@
                 <br><br>
             </div>
         </div>
-
-        <h2 id="calendar-header" style="display:none" align="center">Available Sessions</h2>
-        <div id="calendar" align="center"></div>
+        
 
         <div class="bg-description-blue">
             <div class="container-fluid bg-white">
