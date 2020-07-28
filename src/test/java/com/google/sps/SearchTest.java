@@ -17,6 +17,7 @@ package com.google.sps;
 import com.google.utilities.TestUtilities;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Tutor;
+import com.google.sps.data.Student;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import org.junit.Assert;
@@ -70,6 +71,7 @@ public final class SearchTest {
 
         sample = new SampleData();
         sample.addTutorsToDatastore();
+        sample.addStudentsToDatastore();
 
         servlet = new SearchServlet();
         servlet.init();
@@ -177,6 +179,74 @@ public final class SearchTest {
         writer.flush(); // it may not have been flushed yet...
         //Bernardo has more available timeslots
         List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("btrevisan@google.com"), sample.getTutorByEmail("sfalberg@google.com"));
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testSortByMostStudents() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        when(request.getParameter("topic")).thenReturn("geology");
+        when(request.getParameter("sort-type")).thenReturn("most-students");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        //create the hard coded data
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("sort-type"); 
+        writer.flush(); // it may not have been flushed yet...
+
+        Tutor samTutor = sample.getTutorByEmail("sfalberg@google.com");
+        Student samStudent = new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", 
+                                        new ArrayList<String> (Arrays.asList("Finance", "Chemistry")), new ArrayList<String> (Arrays.asList("2")), "2");
+        samTutor.addStudent(samStudent);
+
+        Tutor elianTutor = sample.getTutorByEmail("elian@google.com");
+        elianTutor.setStudents(new ArrayList<Student>());
+        //Sam has more students
+        List<Tutor> expectedTutorList = Arrays.asList(samTutor, elianTutor);
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testSortByLeastStudents() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        when(request.getParameter("topic")).thenReturn("geology");
+        when(request.getParameter("sort-type")).thenReturn("least-students");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        //create the hard coded data
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("sort-type"); 
+        writer.flush(); // it may not have been flushed yet...
+
+        Tutor samTutor = sample.getTutorByEmail("sfalberg@google.com");
+        Student samStudent = new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", 
+                                        new ArrayList<String> (Arrays.asList("Finance", "Chemistry")), new ArrayList<String> (Arrays.asList("2")), "2");
+        samTutor.addStudent(samStudent);
+
+        Tutor elianTutor = sample.getTutorByEmail("elian@google.com");
+        elianTutor.setStudents(new ArrayList<Student>());
+        //Elian has less students
+        List<Tutor> expectedTutorList = Arrays.asList(elianTutor, samTutor);
         String expected = new Gson().toJson(expectedTutorList);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }

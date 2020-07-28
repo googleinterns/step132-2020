@@ -97,10 +97,10 @@ public final class SearchDatastoreService {
                 sortByAvailability(tutors);
                 break;
             case "most-students":
-                // sortByStudents("most");
+                sortByStudents(tutors, "most");
                 break;
             case "least-students":
-                // sortByStudents("least");
+                sortByStudents(tutors, "least");
                 break;
             default:
                 //do nothing
@@ -109,6 +109,31 @@ public final class SearchDatastoreService {
 
         return tutors;
         
+    }
+
+    /**
+    * Sorts the list of tutors based on the number of students each tutor has. Sorts in descending order if 
+    * order = "most" or ascending order if order = "least". 
+    */
+    private void sortByStudents(ArrayList<Tutor> tutors, String order) {
+        StudentDatastoreService studentDatastore = new StudentDatastoreService();
+
+        for(Tutor tutor : tutors) {
+            tutor.setStudents(studentDatastore.getStudentsForTutor(tutor.getUserId()));
+            System.out.println(tutor.getName());
+            System.out.println(tutor.getStudents());
+        }
+
+        Collections.sort(tutors, new Comparator<Tutor>() {
+            @Override
+            public int compare(Tutor a, Tutor b) {
+                if(order.equals("most")) {
+                    return b.getStudents().size() - a.getStudents().size();
+                }
+
+                return a.getStudents().size() - b.getStudents().size();
+            }
+        });
     }
 
     /**

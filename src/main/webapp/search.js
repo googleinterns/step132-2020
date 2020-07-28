@@ -26,7 +26,6 @@ function switchTab(elem) {
 }
 
 function handleTutorSort(elem) {
-    console.log(elem.options[elem.selectedIndex].value);
     return getSearchResultsHelper(window, elem.options[elem.selectedIndex].value);
 }
 
