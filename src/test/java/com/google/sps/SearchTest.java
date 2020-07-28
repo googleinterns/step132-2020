@@ -60,6 +60,7 @@ public final class SearchTest {
                                                         .build();
 
     private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+    private SampleData sample;
 
     private SearchServlet servlet;
 
@@ -67,7 +68,7 @@ public final class SearchTest {
     public void setUp() {
         helper.setUp();	  
 
-        SampleData sample = new SampleData();
+        sample = new SampleData();
         sample.addTutorsToDatastore();
 
         servlet = new SearchServlet();
@@ -97,14 +98,60 @@ public final class SearchTest {
         //verify that getParameter was called
         verify(request, times(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
-        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", 
-                                                            new ArrayList<String> (Arrays.asList("math", "history")),
-                                                            new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                                                                        TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
-                                                            new ArrayList<TutorSession> (Arrays.asList()), 0, 0, "0"));
+        List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("kashisharora@google.com"));
         String expected = new Gson().toJson(expectedTutorList);
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testDefaultSortBy() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        when(request.getParameter("topic")).thenReturn("english");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        //create the hard coded data
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        writer.flush(); // it may not have been flushed yet...
+        List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("btrevisan@google.com"), sample.getTutorByEmail("sfalberg@google.com"));
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testSortByRating() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        //rate Sam
+        sample.rateTutor("2", 5);
+
+        when(request.getParameter("topic")).thenReturn("english");
+        when(request.getParameter("sort-type")).thenReturn("rating");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        //create the hard coded data
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("sort-type"); 
+        writer.flush(); // it may not have been flushed yet...
+        //Sam should be before Bernardo now
+        List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("sfalberg@google.com"), sample.getTutorByEmail("btrevisan@google.com"));
+        String expected = new Gson().toJson(expectedTutorList);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
