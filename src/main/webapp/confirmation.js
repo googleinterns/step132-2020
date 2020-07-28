@@ -79,8 +79,9 @@ function createScheduledSessionBox(scheduledSession) {
         amOrPm = "pm"
     }
     var minute = parseInt(scheduledSession.timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
+    // Display minutes regularly (e.g. 1:05pm rather than 1:5pm)
+    if (minute < 10) {
+        minute = "0" + minute;
     }
     dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
                              " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
