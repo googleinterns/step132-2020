@@ -112,12 +112,12 @@ function createScheduledSessionBoxManage(scheduledSession) {
 //Sets the tutor element's email field to the tutor email
 function setTutorEmail(tutorElement, tutorID) {
     var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
-        // If the tutor is also a student, get the proper info
-        if (tutor.student != null) {
-            tutorElement.innerText = "Tutoring Session with " + tutor.tutor.name;
+    return getUser(tutorID).then(user => {
+    // If the tutor is also a student, get the proper info
+        if (user.student != null) {
+            tutorElement.innerText = "Tutoring Session with " + user.tutor.name;
         } else {
-            tutorElement.innerText = "Tutoring Session with " + tutor.name;
+            tutorElement.innerText = "Tutoring Session with " + user.name;
         }
     });
 }
