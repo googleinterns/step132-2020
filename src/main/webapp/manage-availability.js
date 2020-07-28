@@ -116,7 +116,6 @@ function addTimeSlotHelper(window) {
     const params = new URLSearchParams();
 
     params.append('startTime', document.getElementById('startTime').value);
-    params.append('endTime', document.getElementById('endTime').value);
     params.append('date', document.getElementById('date').value);
 
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
