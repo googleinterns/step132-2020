@@ -69,7 +69,7 @@ public class ManageGroupsServlet extends HttpServlet {
         String description = request.getParameter("group-description");
 
         if(userID.equals("-1")) {
-            response.getWriter().println("{\"error\": \"There was an error creating list.\"}");
+            response.getWriter().println("{\"error\": \"There was an error creating group.\"}");
             return;
         }
 
