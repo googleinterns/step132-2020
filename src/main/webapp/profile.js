@@ -77,7 +77,6 @@ function createProfileDiv(user, profilePfp, loginStatus) {
     }
     profileName.innerText = userInfo.name;
     profileBio.innerText = "About me: " + userInfo.bio;
-    profilePfp.src = userInfo.pfp;
     profileEmail.innerText = userInfo.email;
 
     // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
