@@ -60,8 +60,12 @@ public final class SearchDatastoreService {
             case "rating":
                 tutorQuery.addSort("rating", SortDirection.DESCENDING);
                 break;
-            default:
+            case "alpha":
                 tutorQuery.addSort("name", SortDirection.ASCENDING);
+                break;
+            default:
+                //do nothing
+                break;
         }
 
         ArrayList<Tutor> tutors = new ArrayList<Tutor>();
