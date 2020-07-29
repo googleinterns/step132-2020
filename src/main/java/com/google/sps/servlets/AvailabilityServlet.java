@@ -62,9 +62,32 @@ public class AvailabilityServlet extends HttpServlet {
 
         List<TimeRange> timeslots = datastore.getAvailabilityForTutor(tutorID);
 
-        String json = new Gson().toJson(timeslots);
+        List<TimeRange> upcomingTimeslots = filterUpcomingTimeslots(timeslots);
+
+        String json = new Gson().toJson(upcomingTimeslots);
         response.setContentType("application/json;");
         response.getWriter().println(json);
         return; 
+    }
+
+
+    /**
+    * Filters out time slots that are in the future.
+    * @return List<TimeRange>
+    */
+    private List<TimeRange> filterUpcomingTimeslots(List<TimeRange> allTimeslots) {
+        List<TimeRange> upcomingTimeslots = new ArrayList<TimeRange>();
+
+        Calendar currentCalendar = Calendar.getInstance();
+
+        for (TimeRange timeslot : allTimeslots) {
+            Calendar timeslotCalendar = timeslot.getDate();
+            int comparison = currentCalendar.compareTo(timeslotCalendar);
+            if (comparison == 0 || comparison == -1) {
+                    upcomingTimeslots.add(timeslot);
+            }
+        }
+
+        return upcomingTimeslots;
     }
 }
