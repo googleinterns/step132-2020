@@ -92,6 +92,7 @@ async function getListsHelper(window, url) {
             alert("You must be signed in to manage lists.");
             return null;
         }
+
         return response.json();
         
     }).then((lists) => {
@@ -160,11 +161,11 @@ function createListElement(list) {
         fetch("https://www.googleapis.com/books/v1/volumes?q=intitle:" + title + "+inauthor:" + author + "&maxResults=1&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y")
             .then(response => response.json()).then((results) => {
                 if(results.totalItems === 0) {
-                    books.appendChild(createNoGoogleBookResult(book));
+                    books.appendChild(createNoGoogleBookResult(book, "book-result"));
                     return;
                 }
 
-                books.appendChild(createBookResult(results.items[0].volumeInfo));
+                books.appendChild(createBookResult(results.items[0].volumeInfo, "book-result col-md-4"));
             });
     });
 
@@ -181,25 +182,6 @@ function createListElement(list) {
     container.appendChild(books);
 
     container.style.display = "none";
-
-    return container;
-}
-
-/** Creates a book result with an empty book cover and the name of the book. */
-function createNoGoogleBookResult(result) {
-    var container = document.createElement("div");
-    var thumbnail = document.createElement("img");
-    var book = document.createElement("p");
-
-    thumbnail.src = "/images/book-cover.png";
-
-    book.innerText = result;
-
-    container.classList.add("book-result");
-    container.classList.add("col-md-4");
-
-    container.appendChild(thumbnail);
-    container.appendChild(book);
 
     return container;
 }
