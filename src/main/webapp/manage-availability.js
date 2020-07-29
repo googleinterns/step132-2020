@@ -43,6 +43,37 @@ function addTimeSlotHelper(window) {
     });
 }
 
+// Sets the minimum date and time that the user can enter into the timeslot form
+function setMinDate() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = today.getMonth() + 1; 
+    var day = today.getDate(); 
+    var hour = today.getHours(); 
+    var minute = today.getMinutes(); 
+    setMinDateHelper(document, year, month, day, hour, minute);
+}
+
+// Helper function for setMinDate, used for testing
+function setMinDateHelper(document, year, month, day, hour, minute) {
+    // Add a 0 before the month, day, hour, and minute if they're less than 10 so the min value is properly set
+    if (month < 10) {
+        month = "0" + month;
+    }
+    if (day < 10) {
+        day = "0" + day;
+    }
+    if (hour < 10) {
+        hour = "0" + hour;
+    }
+    if (minute < 10) {
+        minute = "0" + minute;
+    }
+
+    document.getElementById('date').min = year + '-' + month + '-' + day;
+    document.getElementById('startTime').min = hour + ":" + minute;
+}
+
 /** Creates a calendar with the Charts API and renders it on the page  */
 function createCalendar() {
     fetch('/manage-availability', {method: 'GET'}).then((response) => {
