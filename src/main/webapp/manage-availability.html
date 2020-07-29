@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="getAvailabilityManage(), displayLoginLogoutLink(), addEventListeners()">
+    <body onload="displayLoginLogoutLink(), addEventListeners(), setMinDate()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -71,19 +71,16 @@
         <div class="bg-white-lg">
             <div class="container-fluid text-center bg-white">
                 <h1>Manage Your Availability</h1>
-                <h2>Delete available timeslots or add new ones.</h2>
+                <h2>Click on an available session to delete it.</h2>
                 <br><br>
-                <ul class="list-group text-left" id="timeslots"></ul>
+                <div id="calendar" align="center"></div>
             </div>
             <div class="container-fluid text-center bg-white">
                 <h2>Add a new available timeslot.</h2>
 
                 <form class="form-inline" id="timeslot-form">
-                    <label class="my-1 mr-2" for="startTime">From:</label>
+                    <label class="my-1 mr-2" for="startTime">Start time (sessions are 1 hour):</label>
                     <input type="time" id="startTime" name="startTime" required>
-
-                    <label class="my-1 mr-2" for="endTime">To:</label>  
-                    <input type="time" id="endTime" name="endTime" required>
 
                     <label class="my-1 mr-2" for="date">Date:</label>
                     <input type="date" id="date" name="date" required>
@@ -94,9 +91,7 @@
                 <br><br>
             </div>
         </div>
-
-        <h2 id="calendar-header" style="display:none" align="center">Available Sessions</h2>
-        <div id="calendar" align="center"></div>
+        
 
         <div class="bg-description-blue">
             <div class="container-fluid bg-white">
