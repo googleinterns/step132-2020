@@ -42,7 +42,7 @@ public final class PostDatastoreService {
     /**
     * Retrieves a list of posts for a given group's id.
     */
-    public List<Post> getPostsByGroupID(String groupId) {
+    public List<Post> getPostsByGroupId(String groupId) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         Filter postFilter = new FilterPredicate("groupId", FilterOperator.EQUAL, groupId);
@@ -60,7 +60,6 @@ public final class PostDatastoreService {
             Post post = new Post(userId, groupId, content, id);
 
             posts.add(post);
-            
         }
 
         return posts;

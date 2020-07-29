@@ -36,27 +36,27 @@ public class ManagePostsServlet extends HttpServlet {
         datastore = new PostDatastoreService();
     }
 
-    // @Override
-    // public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //     String group = request.getParameter("group");
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String groupId = request.getParameter("groupId");
 
-    //     response.setContentType("application/json;");
+        response.setContentType("application/json;");
 
-    //     // Send error message if the search was invalid.
-    //     if (group == null || group.equals("")) {
-    //         response.getWriter().println("{\"error\": \"Invalid search request.\"}");
-    //         return;
-    //     }
+        // Send error message if the search was invalid.
+        if (groupId == null || groupId.equals("")) {
+            response.getWriter().println("{\"error\": \"Invalid search request.\"}");
+            return;
+         }
 
-    //     List<Group> results = datastore.getGroupsByName(group);
+        List<Post> results = datastore.getPostsByGroupId(groupId);
 
-    //     response.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
 
-    //     String json = new Gson().toJson(results);
+        String json = new Gson().toJson(results);
 
-    //     response.getWriter().println(json);
-    //     return;
-    // }
+        response.getWriter().println(json);
+        return;
+    }
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -65,8 +65,8 @@ public class ManagePostsServlet extends HttpServlet {
         String userID;
 
         // If the user opted to post anonymously, make their userId anonymous.
-        String anonymous = Optional.ofNullable(request.getParameter("anonymous")).orElse("off");
-        if (anonymous.equals("on")) {
+        String anonymous = Optional.ofNullable(request.getParameter("anonymous")).orElse("false");
+        if (anonymous.equals("true")) {
             userID = "anonymous";
         } else {
             //Set default value to -1 
@@ -85,7 +85,7 @@ public class ManagePostsServlet extends HttpServlet {
 
         datastore.addPost(newPost);
 
-        String json = new Gson().toJson(datastore.getPostsByGroupID(groupID));
+        String json = new Gson().toJson(datastore.getPostsByGroupId(groupID));
         response.getWriter().println(json);
         response.sendRedirect("/group.html?groudId=" + groupID);
         return;
