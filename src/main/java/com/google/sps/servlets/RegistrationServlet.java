@@ -53,9 +53,15 @@ public class RegistrationServlet extends HttpServlet {
   
   private UserService userService = UserServiceFactory.getUserService();
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    doPostHelper(request, response, blobstoreService);
+  }
+
+  // Helper function for doPost, created for testing
+  public void doPostHelper(HttpServletRequest request, HttpServletResponse response, BlobstoreService blobstoreService) throws IOException {
     String role = Optional.ofNullable(request.getParameter("role")).orElse(null);
     String firstName = Optional.ofNullable(request.getParameter("first-name"))
             .orElseThrow(() -> new IllegalArgumentException("Must fill out first name"));
@@ -64,7 +70,7 @@ public class RegistrationServlet extends HttpServlet {
     String fullName = firstName + " " + lastName;
     String bio = Optional.ofNullable(request.getParameter("bio")).orElse("");
     // For now, we will automatically set everyone's profile picture to a default avatar
-    String pfp = getBlobKey(request, "pfp");
+    String pfp = getBlobKey(request, "pfp", blobstoreService);
     
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
@@ -153,8 +159,7 @@ public class RegistrationServlet extends HttpServlet {
   }
 
   /** Returns the blob key for the user-uploaded file */
-  private String getBlobKey(HttpServletRequest request, String name) {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+  private String getBlobKey(HttpServletRequest request, String name, BlobstoreService blobstoreService) {
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get(name);
 
