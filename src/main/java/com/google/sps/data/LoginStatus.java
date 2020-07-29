@@ -22,12 +22,14 @@ public class LoginStatus {
     private String url;
     private String userId;
     private String role;
+    private String view;
 
-    public LoginStatus(boolean isLoggedIn, boolean needsToRegister, String url, String userId, String role) {
+    public LoginStatus(boolean isLoggedIn, boolean needsToRegister, String url, String userId, String role, String view) {
         this.isLoggedIn = isLoggedIn;
         this.needsToRegister = needsToRegister;
         this.url = url;
         this.userId = userId;
         this.role = role;
+        this.view = view;
     }
 }
