@@ -35,6 +35,8 @@ import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import java.lang.String;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
@@ -58,8 +60,12 @@ public final class SearchDatastoreService {
             case "rating":
                 tutorQuery.addSort("rating", SortDirection.DESCENDING);
                 break;
-            default:
+            case "alpha":
                 tutorQuery.addSort("name", SortDirection.ASCENDING);
+                break;
+            default:
+                //do nothing
+                break;
         }
 
         ArrayList<Tutor> tutors = new ArrayList<Tutor>();
@@ -90,8 +96,59 @@ public final class SearchDatastoreService {
             
         }
 
+        switch(sortType.toLowerCase()) {
+            case "availability":
+                sortByAvailability(tutors);
+                break;
+            case "most-students":
+                sortByStudents(tutors, "most");
+                break;
+            case "least-students":
+                sortByStudents(tutors, "least");
+                break;
+            default:
+                //do nothing
+                break;
+        }
+
         return tutors;
         
+    }
+
+    /**
+    * Sorts the list of tutors based on the number of students each tutor has. Sorts in descending order if 
+    * order = "most" or ascending order if order = "least". 
+    */
+    private void sortByStudents(ArrayList<Tutor> tutors, String order) {
+        StudentDatastoreService studentDatastore = new StudentDatastoreService();
+
+        for(Tutor tutor : tutors) {
+            tutor.setStudents(studentDatastore.getStudentsForTutor(tutor.getUserId()));
+        }
+
+        Collections.sort(tutors, new Comparator<Tutor>() {
+            @Override
+            public int compare(Tutor a, Tutor b) {
+                if(order.equals("most")) {
+                    return b.getStudents().size() - a.getStudents().size();
+                }
+
+                return a.getStudents().size() - b.getStudents().size();
+            }
+        });
+    }
+
+    /**
+    * Sorts the list of tutors based on the number of available times in descending order.
+    */
+    private void sortByAvailability(ArrayList<Tutor> tutors) {
+        Collections.sort(tutors, new Comparator<Tutor>() {
+            @Override
+            public int compare(Tutor a, Tutor b) {
+                //descending order
+                return b.getAvailability().size() - a.getAvailability().size();
+            }
+        });
     }
 
     /**

@@ -14,9 +14,10 @@ See the License for the specific language governing permissions and
     width: 75%;
 }
 
-#tutor-filter {
+#tutor-sort {
     position: fixed;
-    margin-left: 2%;
+    margin-left: 1.5%;
+    width: 10%;
 }
 
 .user-result {

@@ -26,7 +26,7 @@ function switchTab(elem) {
 }
 
 function handleTutorSort(elem) {
-    return getSearchResultsHelper(window, elem.value);
+    return getSearchResultsHelper(window, elem.options[elem.selectedIndex].value);
 }
 
 /** Gets the topic the user searched for from the search box and redirects the page to the search-results page with a url that contains a query parameter for the topic. 
@@ -236,7 +236,7 @@ async function getTutors(topic, sort) {
         numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " tutors for " : " tutor for ") + topic;
 
         if(results.length == 0) {
-            document.getElementById("tutor-filter").style.display = "none";
+            document.getElementById("tutor-sort").style.display = "none";
         }
 
         var tutorContainer = document.getElementById("tutors-container");
