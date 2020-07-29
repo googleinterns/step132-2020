@@ -109,7 +109,6 @@ public final class ManageAvailabilityTest {
         TestUtilities.setSessionId(request, "0");   
 
         when(request.getParameter("startTime")).thenReturn("22:00");
-        when(request.getParameter("endTime")).thenReturn("23:00");
         when(request.getParameter("date")).thenReturn("2021-02-20");
 
         StringWriter stringWriter = new StringWriter();
@@ -120,7 +119,6 @@ public final class ManageAvailabilityTest {
         servlet.doPost(request, response);
 
         verify(request, times(1)).getParameter("startTime");
-        verify(request, times(1)).getParameter("endTime");
         verify(request, times(1)).getParameter("date");
 
         Calendar expectedDate = new Calendar.Builder()

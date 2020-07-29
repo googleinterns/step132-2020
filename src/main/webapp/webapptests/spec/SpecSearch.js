@@ -307,12 +307,22 @@ describe("Search", function() {
 
     });
 
-    describe("when sort type is changed to rating", function() {
-        var radioButton = document.createElement("input");
-        radioButton.value = "rating";
+    describe("when sort type is changed", function() {
+        var select = document.createElement("select");
+        var rating = document.createElement("option");
+        rating.value = "rating";
+
+        rating.selected = 'selected';
+
+        var availability = document.createElement("option");
+        availability.value = "availability";
+
+        select.appendChild(rating);
+        select.appendChild(availability);
+        
         it("should call getSearchResultsHelper with the correct parameters", function() {
             spyOn(window, "getSearchResultsHelper");
-            handleTutorSort(radioButton);
+            handleTutorSort(select);
             expect(window.getSearchResultsHelper).toHaveBeenCalledTimes(1);
             expect(window.getSearchResultsHelper.calls.allArgs()[0][1]).toEqual("rating");
 
