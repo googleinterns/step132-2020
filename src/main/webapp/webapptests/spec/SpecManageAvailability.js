@@ -123,4 +123,31 @@ describe("Manage Availability", function() {
         });
     });
 
+    describe("when setting a min date", function() {  
+        var year = 2020;
+        var month = 5;
+        var day = 4;
+        var hour = 3;
+        var minute = 2;
+
+        beforeAll(function() {
+            var mockTimeInput = document.createElement('input');
+            mockTimeInput.id = 'startTime';
+            mockTimeInput.setAttribute('type', 'time');
+            var mockDateInput = document.createElement('input');
+            mockDateInput.id = 'date';
+            mockDateInput.setAttribute('type', 'date');
+
+            document.body.appendChild(mockTimeInput);
+            document.body.appendChild(mockDateInput);
+        })
+    
+        it("should correctly format the month, day, hour, and minute", function() {
+            setMinDateHelper(document, year, month, day, hour, minute);
+
+            expect(document.getElementById('startTime').min).toBe('03:02');
+            expect(document.getElementById('date').min).toBe('2020-05-04');
+        });
+    });
+
 });
