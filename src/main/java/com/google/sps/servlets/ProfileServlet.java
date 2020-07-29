@@ -77,43 +77,25 @@ public class ProfileServlet extends HttpServlet {
         }
         String role = (String) entity.getProperty("role"); 
 
+        // If user has both roles, get their info
+        if (role.toLowerCase().equals("both")) {
+            Student student = getStudent(userId);
+            Tutor tutor = getTutor(userId);
+
+            String jsonStudent = new Gson().toJson(student);
+            String jsonTutor = new Gson().toJson(tutor);
+            String json = "{\"student\": " + jsonStudent + ", \"tutor\": " + jsonTutor + "}";
+            response.getWriter().println(json);
+        }
+
         // User is a student, get their info
         if (role.toLowerCase().equals("student")) {
-            query = new Query("Student").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
-            results = datastore.prepare(query);
-            entity = results.asSingleEntity();
-
-            String name = (String) entity.getProperty("name");
-            String bio = (String) entity.getProperty("bio");
-            String pfp = (String) entity.getProperty("pfp");
-            String email = (String) entity.getProperty("email");
-            ArrayList<String> learning = (ArrayList) entity.getProperty("learning");
-            ArrayList<String> tutors = (ArrayList) entity.getProperty("tutors");
-            if (tutors == null) {
-                tutors = new ArrayList<String> (Arrays.asList());
-            }
-            ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForStudent(userId);
-
-            Student student = new Student(name, bio, pfp, email, learning, tutors, scheduledSessions, userId);
+            Student student = getStudent(userId);
 
             String json = new Gson().toJson(student);
             response.getWriter().println(json);
-        } else {   // User is a tutor, get their info
-            query = new Query("Tutor").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
-            results = datastore.prepare(query);
-            entity = results.asSingleEntity();
-
-            String name = (String) entity.getProperty("name");
-            String bio = (String) entity.getProperty("bio");
-            String pfp = (String) entity.getProperty("pfp");
-            String email = (String) entity.getProperty("email");
-            ArrayList<String> skills = (ArrayList) entity.getProperty("topics");
-            ArrayList<TimeRange> availability = (ArrayList) availabilityDatastore.getAvailabilityForTutor(userId);
-            ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForTutor(userId);
-            int ratingCount = Math.toIntExact((long) entity.getProperty("ratingCount"));
-            int ratingSum = Math.toIntExact((long) entity.getProperty("ratingSum"));
-
-            Tutor tutor = new Tutor(name, bio, pfp, email, skills, availability, scheduledSessions, ratingCount, ratingSum, userId);
+        } else if (role.toLowerCase().equals("tutor")) {   // User is a tutor, get their info
+            Tutor tutor = getTutor(userId);
 
             String json = new Gson().toJson(tutor);
             response.getWriter().println(json);
@@ -137,44 +119,28 @@ public class ProfileServlet extends HttpServlet {
 
         String role = (String) userEntity.getProperty("role"); 
         String bio = Optional.ofNullable(request.getParameter("bio")).orElse("");
-        // Make list of selected topics, remove unchecked topics
-        List<Optional<String>> topics = new ArrayList<Optional<String>>();
-        topics.add(Optional.ofNullable(request.getParameter("math")));
-        topics.add(Optional.ofNullable(request.getParameter("physics")));
-        topics.add(Optional.ofNullable(request.getParameter("chemistry")));
-        topics.add(Optional.ofNullable(request.getParameter("biology")));
-        topics.add(Optional.ofNullable(request.getParameter("computer-science")));
-        topics.add(Optional.ofNullable(request.getParameter("social-studies")));
-        topics.add(Optional.ofNullable(request.getParameter("english")));
-        topics.add(Optional.ofNullable(request.getParameter("spanish")));
-        topics.add(Optional.ofNullable(request.getParameter("french")));
-        topics.add(Optional.ofNullable(request.getParameter("chinese")));
-        List<String> topicsToStr = topics
-                                    .stream()
-                                    .filter(t -> t.isPresent())
-                                    .map(t -> t.get().toLowerCase())
-                                    .collect(Collectors.toList());
 
-        // Add blank entry to topics list to know where default topics end and custom topics begin
-        topicsToStr.add(" ");
+        if (role.toLowerCase().equals("both")) {
+            List<String> learningTopics = getTopics(request, "learn");
+            List<String> tutoringTopics = getTopics(request, "tutor");
 
-        String otherTopics = Optional.ofNullable(request.getParameter("other")).orElse("");
-        if (!otherTopics.equals("")) {
-            // Split the list, removing commas and whitespace, and add to the rest of the topics
-            List<String> otherTopicsToList = Arrays.asList(otherTopics.split("\\s*,\\s*"));
-            for (String otherTopic : otherTopicsToList) {
-                topicsToStr.add(otherTopic);
-            }
-        }
-
-        // User is a student, update their info
-        if (role.toLowerCase().equals("student")) {
-            Entity studentEntity = new Entity("Student");
-            updateStudentEntityAndPutInDatastore(datastore, studentEntity, userId, bio, topicsToStr);
-        } else {   // User is a tutor, update their info
             Entity tutorEntity = new Entity("Tutor");
-            updateTutorEntityAndPutInDatastore(datastore, tutorEntity, userId, bio, topicsToStr);
+            updateTutorEntityAndPutInDatastore(datastore, tutorEntity, userId, bio, tutoringTopics);
+
+            Entity studentEntity = new Entity("Student");
+            updateStudentEntityAndPutInDatastore(datastore, studentEntity, userId, bio, learningTopics);
+        } else if (role.toLowerCase().equals("tutor")) {
+            List<String> tutoringTopics = getTopics(request, "tutor");
+
+            Entity tutorEntity = new Entity("Tutor");
+            updateTutorEntityAndPutInDatastore(datastore, tutorEntity, userId, bio, tutoringTopics);
+        } else if (role.toLowerCase().equals("student")) {
+            List<String> learningTopics = getTopics(request, "learn");
+
+            Entity studentEntity = new Entity("Student");
+            updateStudentEntityAndPutInDatastore(datastore, studentEntity, userId, bio, learningTopics);
         }
+
         response.sendRedirect("/profile.html?userID=" + userId);
     }
 
@@ -206,5 +172,82 @@ public class ProfileServlet extends HttpServlet {
         entity.setProperty("bio", bio);
         entity.setProperty("topics", topics);
         ds.put(entity);
+    }
+
+    /**
+    * Gets the information from a student
+    */
+    private Student getStudent(String userId) {
+        Query query = new Query("Student").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+        PreparedQuery results = datastore.prepare(query);
+        Entity entity = results.asSingleEntity();
+
+        String name = (String) entity.getProperty("name");
+        String bio = (String) entity.getProperty("bio");
+        String pfp = (String) entity.getProperty("pfp");
+        String email = (String) entity.getProperty("email");
+        ArrayList<String> learning = (ArrayList) entity.getProperty("learning");
+        ArrayList<String> tutors = (ArrayList) entity.getProperty("tutors");
+        if (tutors == null) {
+            tutors = new ArrayList<String> (Arrays.asList());
+        }
+        ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForStudent(userId);
+
+        return new Student(name, bio, pfp, email, learning, tutors, scheduledSessions, userId);
+    }
+
+    /**
+    * Gets the information from a tutor
+    */
+    private Tutor getTutor(String userId) {
+        Query query = new Query("Tutor").setFilter(new Query.FilterPredicate("userId", Query.FilterOperator.EQUAL, userId));
+        PreparedQuery results = datastore.prepare(query);
+        Entity entity = results.asSingleEntity();
+
+        String name = (String) entity.getProperty("name");
+        String bio = (String) entity.getProperty("bio");
+        String pfp = (String) entity.getProperty("pfp");
+        String email = (String) entity.getProperty("email");
+        ArrayList<String> skills = (ArrayList) entity.getProperty("topics");
+        ArrayList<TimeRange> availability = (ArrayList) availabilityDatastore.getAvailabilityForTutor(userId);
+        ArrayList<TutorSession> scheduledSessions = (ArrayList) sessionDatastore.getScheduledSessionsForTutor(userId);
+        int ratingCount = Math.toIntExact((long) entity.getProperty("ratingCount"));
+        int ratingSum = Math.toIntExact((long) entity.getProperty("ratingSum"));
+
+        return new Tutor(name, bio, pfp, email, skills, availability, scheduledSessions, ratingCount, ratingSum, userId); 
+    }
+
+    public List<String> getTopics(HttpServletRequest request, String type) {
+        // Make list of selected topics, remove unchecked topics
+        List<Optional<String>> topics = new ArrayList<Optional<String>>();
+        topics.add(Optional.ofNullable(request.getParameter("math-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("physics-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("chemistry-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("biology-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("computer-science-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("social-studies-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("english-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("spanish-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("french-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("chinese-" + type)));
+        List<String> topicsToStr = topics
+                                    .stream()
+                                    .filter(t -> t.isPresent())
+                                    .map(t -> t.get().toLowerCase())
+                                    .collect(Collectors.toList());
+
+        // Add blank entry to topics list to know where default topics end and custom topics begin
+        topicsToStr.add(" ");
+
+        String otherTopics = Optional.ofNullable(request.getParameter("other-" + type)).orElse("");
+        if (!otherTopics.equals("")) {
+            // Split the list, removing commas and whitespace, and add to the rest of the topics
+            List<String> otherTopicsToList = Arrays.asList(otherTopics.split("\\s*,\\s*"));
+            for (String otherTopic : otherTopicsToList) {
+                topicsToStr.add(otherTopic);
+            }
+        }
+
+        return topicsToStr;
     }
 }

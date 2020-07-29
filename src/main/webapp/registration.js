@@ -12,13 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function getUserId() {
-    return fetch('/login-status').then(response => response.json()).then((loginStatus) => {
-        return loginStatus.userId;
-    });
-}
-
-
 /**
  * Function for registration.html, checks if user needs to register, if not display registration page
  */
@@ -74,30 +67,26 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
             setProfileQueryString(window, loginStatus);
         });
 
-        // If the user is a tutor, display availability settings
+        if (loginStatus.role == "both") {
+            document.getElementById('label-student').style.display = "block";
+            document.getElementById('role-view-switch').style.display = "block";
+            document.getElementById('label-tutor').style.display = "block";
+
+            if (loginStatus.view == "student") {
+                document.getElementById('view-checkbox').checked = false;
+                displayStudentView(document, loginStatus);
+            } else if (loginStatus.view == "tutor") {
+                document.getElementById('view-checkbox').checked = true;
+                displayTutorView(document, loginStatus);
+            }
+        }
+
+        // If the user is only tutor, display availability settings
         if (loginStatus.role == "tutor") {
-            document.getElementById('availability-settings').style.display = "block";
-            document.getElementById('my-students').style.display = "block";
-            document.getElementById('tutor-session-settings').style.display = "none";
-            document.getElementById('history').style.display = "none";
-            document.getElementById('availability-settings').addEventListener('click', () => {
-                redirectToManageAvailability(window, loginStatus);
-            });
-            document.getElementById('my-students').addEventListener('click', () => {
-                redirectToMyStudents(window, loginStatus);
-            });
+            displayTutorView(document, loginStatus);
         // Display tutor session settings and history if the user is a student
         } else if (loginStatus.role == "student") {
-            document.getElementById('availability-settings').style.display = "none";
-            document.getElementById('my-students').style.display = "none";
-            document.getElementById('tutor-session-settings').style.display = "block";
-            document.getElementById('history').style.display = "block";
-            document.getElementById('tutor-session-settings').addEventListener('click', () => {
-                redirectToManageSessions(window, loginStatus);
-            });
-            document.getElementById('history').addEventListener('click', () => {
-                redirectToHistory(window, loginStatus);
-            });
+            displayStudentView(document, loginStatus);
         }
     }
     else {   // Display login link
@@ -106,6 +95,32 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('login-url').href = loginStatus.url;
         document.getElementById('account-dropdown').style.display = "none";
     }
+}
+
+function displayStudentView(document, loginStatus) {
+    document.getElementById('availability-settings').style.display = "none";
+    document.getElementById('my-students').style.display = "none";
+    document.getElementById('tutor-session-settings').style.display = "block";
+    document.getElementById('history').style.display = "block";
+    document.getElementById('tutor-session-settings').addEventListener('click', () => {
+        redirectToManageSessions(window, loginStatus);
+    });
+    document.getElementById('history').addEventListener('click', () => {
+        redirectToHistory(window, loginStatus);
+    });
+}
+
+function displayTutorView(document, loginStatus) {
+    document.getElementById('availability-settings').style.display = "block";
+    document.getElementById('my-students').style.display = "block";
+    document.getElementById('tutor-session-settings').style.display = "none";
+    document.getElementById('history').style.display = "none";
+    document.getElementById('availability-settings').addEventListener('click', () => {
+        redirectToManageAvailability(window, loginStatus);
+    });
+    document.getElementById('my-students').addEventListener('click', () => {
+        redirectToMyStudents(window, loginStatus);
+    });
 }
 
 /** Tells the server to log the user out and redirect to homepage. */
@@ -138,6 +153,14 @@ function redirectToManageAvailability(window, loginStatus) {
  */
 function redirectToMyStudents(window, loginStatus) {
     var url = "my-students.html";
+    window.location.href = url;
+}
+
+/**
+ * Sets the URL's query string for the user's profile to their user ID and redirect them to my-lists.html
+ */
+function redirectToMyLists(window, loginStatus) {
+    var url = "my-lists.html";
     window.location.href = url;
 }
 
@@ -179,6 +202,9 @@ function displayRegistrationInfoHelper(document) {
         tutorTopics.style.display = 'block';
     } else if (document.getElementById('student').checked) {   // Display student info, hide tutor info
         tutorTopics.style.display = 'none';
+        studentTopics.style.display = 'block';
+    } else if (document.getElementById('both').checked) {
+        tutorTopics.style.display = 'block';
         studentTopics.style.display = 'block';
     }
 }

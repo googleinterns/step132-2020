@@ -20,107 +20,6 @@ function addEventListeners() {
     });
 }
 
-function getAvailabilityManage() {
-    return getAvailabilityManageHelper(window);
-}
-
-function getAvailabilityManageHelper(window) {
-    fetch('/manage-availability', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
-        if(response.redirected) {
-            window.location.href = response.url;
-            alert("You must be signed in to manage availability.");
-            return [];
-        }
-        return response.json();
-        
-    }).then((timeslots) => {
-        if(timeslots.error) {
-            var message = document.createElement("p");
-            p.innerText = timeslots.error;
-            document.getElementById('timeslots').appendChild(message);
-            return;
-        }
-
-        if (Object.keys(timeslots).length != 0) {
-            timeslots.forEach((timeslot) => {
-                document.getElementById('timeslots').appendChild(createTimeSlotBoxManage(timeslot));
-            });
-        } else {
-            var timeslotsContainer = document.getElementById('timeslots');
-            var errorMessage = document.createElement("p");
-            errorMessage.innerText = "This user has not set any available timeslots";
-            timeslotsContainer.appendChild(errorMessage);
-            return;
-        }
-    });
-}
-
-// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
-// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readTutorID(queryString, window) {
-    if (queryString.length == 0) {
-        if (window.location.search.split('?').length > 1) {
-            var params = window.location.search.split('?')[1].split('&');
-            for (var i = 0; i < params.length; i++) {
-                var key = params[i].split('=')[0];
-                var value = decodeURIComponent(params[i].split('=')[1]);
-                queryString[key] = value;
-            }
-        }
-    }
-}
-
-function createTimeSlotBoxManage(timeslot) {
-    var months = [ "January", "February", "March", "April", "May", "June", 
-           "July", "August", "September", "October", "November", "December" ];
-
-    const timeslotElement = document.createElement('li');
-    timeslotElement.className = 'list-group-item';
-
-    const dateElement = document.createElement('h3');
-    dateElement.style.textAlign = 'left';
-    dateElement.style.display = 'inline';
-
-    var hour = Math.floor(parseInt(timeslot.start) / 60);
-    var amOrPm = "am";
-    if (hour > 12) {
-        hour = hour - 12;
-        amOrPm = "pm"
-    }
-    var minute = parseInt(timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
-    }
-    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
-
-    const dateLineElement = document.createElement('div');
-    dateLineElement.className = 'd-flex w-100 justify-content-between';
-    dateLineElement.style.padding = '10px';
-    dateLineElement.appendChild(dateElement);
-
-    const deleteButtonElement = document.createElement('button');
-    deleteButtonElement.innerText = 'Delete';
-    deleteButtonElement.style.textAlign = 'right';
-    deleteButtonElement.style.display = 'inline';
-    deleteButtonElement.className = 'btn btn-lg';
-    deleteButtonElement.addEventListener('click', () => {
-        deleteTimeSlot(window, timeslot);
-
-        timeslotElement.remove();
-    });
-
-    const buttonLineElement = document.createElement('div');
-    buttonLineElement.className = 'd-flex w-100 justify-content-between';
-    buttonLineElement.style.padding = '10px';
-    buttonLineElement.appendChild(deleteButtonElement);
-
-    timeslotElement.appendChild(dateLineElement);
-    timeslotElement.appendChild(buttonLineElement);
-    return timeslotElement;
-}
-
 /** Tells the server to add a timeslot for a tutor. */
 function addTimeSlot() {
     return addTimeSlotHelper(window);
@@ -130,16 +29,11 @@ function addTimeSlot() {
 function addTimeSlotHelper(window) {
     const params = new URLSearchParams();
 
-    params.append('startHour', document.getElementById('startHour').value);
-    params.append('startMinute', document.getElementById('startMinute').value);
-    params.append('endHour', document.getElementById('endHour').value);
-    params.append('endMinute', document.getElementById('endMinute').value);
-    params.append('day', document.getElementById('day').value);
-    params.append('month', document.getElementById('month').value);
-    params.append('year', document.getElementById('year').value);
+    params.append('startTime', document.getElementById('startTime').value);
+    params.append('date', document.getElementById('date').value);
 
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to edit availability.");
@@ -149,21 +43,168 @@ function addTimeSlotHelper(window) {
     });
 }
 
-/** Function to tell the server to delete a time slot for tutor.  */
-function deleteTimeSlot(window, timeslot) {
-    const params = new URLSearchParams();
-    params.append('year', timeslot.date.year);
-    params.append('month', timeslot.date.month);
-    params.append('day', timeslot.date.dayOfMonth);
-    params.append('start', timeslot.start);
-    params.append('end', timeslot.end);
+// Sets the minimum date and time that the user can enter into the timeslot form
+function setMinDate() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = today.getMonth() + 1; 
+    var day = today.getDate(); 
+    var hour = today.getHours(); 
+    var minute = today.getMinutes(); 
+    setMinDateHelper(document, year, month, day, hour, minute);
+}
 
-    fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
-        //if the tutor id is not the id of the current user
+// Helper function for setMinDate, used for testing
+function setMinDateHelper(document, year, month, day, hour, minute) {
+    // Add a 0 before the month, day, hour, and minute if they're less than 10 so the min value is properly set
+    if (month < 10) {
+        month = "0" + month;
+    }
+    if (day < 10) {
+        day = "0" + day;
+    }
+    if (hour < 10) {
+        hour = "0" + hour;
+    }
+    if (minute < 10) {
+        minute = "0" + minute;
+    }
+
+    document.getElementById('date').min = year + '-' + month + '-' + day;
+    document.getElementById('startTime').min = hour + ":" + minute;
+}
+
+// Fetches info used to create the calendar
+function fetchTimeslotInfo() {
+    fetchTimeslotInfoHelper(window);
+}
+
+// Helper function for fetchCalendarInfo, used for testing
+function fetchTimeslotInfoHelper(window) {
+    fetch('/manage-availability', {method: 'GET'}).then((response) => {
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
-            alert("You must be signed in to edit availability.");
+            alert("You must be signed in to manage availability.");
+            return [];
+        }
+        return response.json();
+    }).then((timeslots) => {
+        const container = document.getElementById('calendar');
+        
+        if(timeslots.error) {
+            var message = document.createElement("p");
+            p.innerText = timeslots.error;
+            document.getElementById('calendar').appendChild(message);
             return;
         }
+
+        // Don't create a calendar if there are no available timeslots
+        if (timeslots === undefined || timeslots.length == 0) {
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user has not set any available timeslots.";
+            container.appendChild(errorMessage);
+            return;
+        }
+
+        createCalendar(timeslots, container);
     });
 }
+
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar(timeslots, container) {
+    const chart = new google.visualization.Timeline(container);
+
+    const dataTable = new google.visualization.DataTable();
+    dataTable.addColumn({type: 'string', id: 'Date'});
+    dataTable.addColumn({type: 'date', id: 'Start'});
+    dataTable.addColumn({type: 'date', id: 'End'});
+
+    // Sort timeslots in chronological order
+    sortTimeslots(timeslots);
+    
+    for (var slot of timeslots) {
+        // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+        var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+        dataTable.addRow([
+            date, asDate(slot.start), asDate(slot.end)
+        ]);
+    }
+
+    // Have timeline span 24 hours regardless of what's scheduled
+    var min = new Date();
+    min.setHours(0);
+    var max = new Date();
+    max.setHours(24);
+
+    const options = {
+        width: 1000,
+        height: 300,
+        hAxis: {
+            minValue: min,
+            maxValue: max
+        }
+    };
+
+    google.visualization.events.addListener(chart, 'select', function() {
+        var selection = chart.getSelection()[0];
+        if (selection) {
+            deleteSession(dataTable, selection);
+        }
+    });
+
+    chart.draw(dataTable, options);
+}
+
+// Sorts all available time slots in chronological order
+function sortTimeslots(timeslots) {
+    timeslots.sort(function(a, b) {
+        return (a.date.year + a.date.month/12 + a.date.dayOfMonth/365) - (b.date.year + b.date.month/12 + b.date.dayOfMonth/365);
+    });
+}
+
+/** Function to tell the server to delete an available time slot for tutor.  */
+function deleteSession(dataTable, selection) {
+    // Add confirmation popup in case user accidentally clicked on time slot
+    var deleteSession = confirm("Delete available time slot?");
+
+    if (deleteSession) {
+        var start = asMinutes(dataTable.getValue(selection.row, 1));
+        var end = asMinutes(dataTable.getValue(selection.row, 2));
+        var date = dataTable.getValue(selection.row, 0).split('/');
+        const params = new URLSearchParams();
+        params.append('year', date[2]);
+        params.append('month', date[0]-1);
+        params.append('day', date[1]);
+        params.append('start', start);
+        params.append('end', end);
+
+        fetch('/delete-availability', {method: 'POST', body: params}).then((response) => {
+            //if the tutor is not the current user or not signed in
+            if(response.redirected) {
+                window.location.href = response.url;
+                alert("You must be signed in to edit availability.");
+                return;
+            }
+        }).then(location.reload());
+    }
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+
+// Converts a JavaScript Date object into "minutes since midnight"
+function asMinutes(date) {
+    return date.getHours()*60 + date.getMinutes();
+}
+
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(fetchTimeslotInfo);

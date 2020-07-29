@@ -108,13 +108,8 @@ public final class ManageAvailabilityTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         TestUtilities.setSessionId(request, "0");   
 
-        when(request.getParameter("startHour")).thenReturn("22");
-        when(request.getParameter("startMinute")).thenReturn("00");
-        when(request.getParameter("endHour")).thenReturn("23");
-        when(request.getParameter("endMinute")).thenReturn("00");
-        when(request.getParameter("day")).thenReturn("20");
-        when(request.getParameter("month")).thenReturn("1");
-        when(request.getParameter("year")).thenReturn("2021");
+        when(request.getParameter("startTime")).thenReturn("22:00");
+        when(request.getParameter("date")).thenReturn("2021-02-20");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -123,13 +118,8 @@ public final class ManageAvailabilityTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("startHour");
-        verify(request, times(1)).getParameter("startMinute");
-        verify(request, times(1)).getParameter("endHour");
-        verify(request, times(1)).getParameter("endMinute");
-        verify(request, times(1)).getParameter("day");
-        verify(request, times(1)).getParameter("month");
-        verify(request, times(1)).getParameter("year");
+        verify(request, times(1)).getParameter("startTime");
+        verify(request, times(1)).getParameter("date");
 
         Calendar expectedDate = new Calendar.Builder()
                                             .setCalendarType("iso8601")

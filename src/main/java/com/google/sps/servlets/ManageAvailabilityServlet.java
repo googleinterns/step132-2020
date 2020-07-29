@@ -63,30 +63,31 @@ public class ManageAvailabilityServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
 
-        //Set default value to -1 
+        // Set default value to -1 
         String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
-        String startHour = request.getParameter("startHour");
-        String startMinute = request.getParameter("startMinute");
-        String endHour = request.getParameter("endHour");
-        String endMinute = request.getParameter("endMinute");
-        String day = request.getParameter("day");
-        String month = request.getParameter("month");
-        String year = request.getParameter("year");
+        String startTime = request.getParameter("startTime");
+        // Split hour and minute to separate strings
+        String[] startHourAndMinute = startTime.split(":");
+        
+        String date = request.getParameter("date");
+        // Split year, month, and day to separate strings
+        String[] yearMonthDay = date.split("-");
 
-        int start = Integer.parseInt(startHour) * 60 + Integer.parseInt(startMinute);
-        int end = Integer.parseInt(endHour) * 60 + Integer.parseInt(endMinute);
+        int start = Integer.parseInt(startHourAndMinute[0]) * 60 + Integer.parseInt(startHourAndMinute[1]);
+        // Make all tutor sessions last 1 hour
+        int end = Integer.parseInt(startHourAndMinute[0]) * 60 + Integer.parseInt(startHourAndMinute[1]) + 60;
 
         if(tutorID.equals("-1")) {
             response.getWriter().println("{\"error\": \"There was an error adding availability.\"}");
             return;
         }
 
-        Calendar date = new Calendar.Builder()
+        Calendar calendarDate = new Calendar.Builder()
                                 .setCalendarType("iso8601")
-                                .setDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day))
+                                .setDate(Integer.parseInt(yearMonthDay[0]), Integer.parseInt(yearMonthDay[1])-1, Integer.parseInt(yearMonthDay[2]))
                                 .build();
 
-        TimeRange timeslot = TimeRange.fromStartToEnd(start, end, date);
+        TimeRange timeslot = TimeRange.fromStartToEnd(start, end, calendarDate);
 
         // Add available timeslot
         datastore.addAvailability(tutorID, timeslot);

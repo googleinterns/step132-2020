@@ -15,10 +15,13 @@
 describe("Manage Sessions", function() {
 
     describe("when the student requests to see a their scheduled sessions", function() {
-        it("should trigger the fetch function", function() {
+        var mockWindow = {location: {href: "manage-sessions.html"}};
+
+        it("should trigger the fetch function", async function() {
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
-            getTutorSessionsManage();
-            expect(window.fetch).toHaveBeenCalledWith('/confirmation', {method: 'GET'});
+            var sessionsContainer = document.createElement("div");
+            spyOn(document, 'getElementById').and.returnValue(sessionsContainer);
+            await fetchSessionInfoHelper(mockWindow);
             expect(window.fetch).toHaveBeenCalled();
         });
     });
@@ -31,72 +34,9 @@ describe("Manage Sessions", function() {
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
             var sessionsContainer = document.createElement("div");
             spyOn(document, 'getElementById').and.returnValue(sessionsContainer);
-            await getTutorSessionsManageHelper(mockWindow);
+            await fetchSessionInfoHelper(mockWindow);
             expect(window.alert).toHaveBeenCalledWith('You must be signed in to manage sessions.');
             expect(mockWindow.location.href).toBe('/homepage.html');
-        });
-    });
-
-    describe("when a tutor session box is created", function() {
-        var scheduledSession = {tutorID: "123", timeslot: {start: 600, date: {month: 4, dayOfMonth: 18, year: 2020}}};
-        var userID = "test@gmail.com";
-        var actual = createScheduledSessionBoxManage(scheduledSession, userID);
-
-        it("should return a list item element", function() {
-            expect(actual.tagName).toEqual("LI");
-        });
-
-        it("should have div elements as the children of each list item element", function() {
-            expect(actual.childNodes[0].tagName).toEqual("DIV");
-            expect(actual.childNodes[1].tagName).toEqual("DIV");
-            expect(actual.childNodes[2].tagName).toEqual("DIV");
-        });
-
-        it("should have an h3 element as the child of the first div element inside each list item element", function() {
-            expect(actual.childNodes[0].childNodes[0].tagName).toEqual("H3");
-        });
-
-        it("should have the inner HTML of the h3 tag equal to the name of the tutor for the tutoring session", function() {
-            var tutor = {email: "tester@gmail.com"};
-            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(user)}), Promise.resolve({json: () => Promise.resolve(tutor)}));
-
-            const tutorElement = document.createElement('h3');
-            setTutorEmail(tutorElement, "123").then(() => {
-                expect(tutorElement.innerHTML).toEqual("Tutoring Session with tester@gmail.com");
-            });
-        })
-
-        it("should have an h3 element as the child of the second div element inside each list item element", function() {
-            expect(actual.childNodes[1].childNodes[0].tagName).toEqual("H3");
-        });
-
-        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
-            expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("10:00am on May 18, 2020");
-        });
-
-        it("should have a button element as the child of the second div element inside each list item element", function() {
-            expect(actual.childNodes[2].childNodes[0].tagName).toEqual("BUTTON");
-        });
-
-        it("should have the inner text of the button equal to Select", function() {
-            expect(actual.childNodes[2].childNodes[0].innerText).toEqual("Cancel");
-        });
-    });
-
-    describe("when a user cancels a tutoring session", function() {
-        var mockWindow = {location: {href: "manage-sessions.html"}};
-        var scheduledSession = {tutorID: "123", studentID: "123", 
-                                subtopics: null, questions: null, rating: 5, id: 1,
-                                timeslot: {start: 600, end: 660,  date: {month: 4, dayOfMonth: 18, year: 2020}}};
-        var params = new URLSearchParams();
-        params.append('id', 1);
-
-        it("should trigger the fetch function", function() {
-            spyOn(window, 'alert');
-            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
-            cancelTutorSession(mockWindow, scheduledSession);
-            expect(window.fetch).toHaveBeenCalledWith('/delete-tutor-session', {method: 'POST', body: params})
-            expect(window.fetch).toHaveBeenCalled();
         });
     });
 
