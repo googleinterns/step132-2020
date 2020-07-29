@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /** Creates a calendar with the Charts API and renders it on the page  */
-function createCalendar() {
-    fetch('/confirmation', {method: 'GET'}).then((response) => {
+async function createCalendar() {
+    await fetch('/confirmation', {method: 'GET'}).then((response) => {
         //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
