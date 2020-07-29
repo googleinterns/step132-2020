@@ -22,7 +22,7 @@ async function createCalendar() {
             return [];
         }
         return response.json();
-    }).then(async (scheduledSessions) => {
+    }).then((scheduledSessions) => {
         const container = document.getElementById('calendar');
         
         if(scheduledSessions.error) {
@@ -39,56 +39,61 @@ async function createCalendar() {
             container.appendChild(errorMessage);
             return;
         }
-        
-        const chart = new google.visualization.Timeline(container);
 
-        const dataTable = new google.visualization.DataTable();
-        dataTable.addColumn({type: 'string', id: 'Date'});
-        dataTable.addColumn({type: 'string', id: 'Description'});
-        dataTable.addColumn({type: 'date', id: 'Start'});
-        dataTable.addColumn({type: 'date', id: 'End'});
-
-        // Sort timeslots in chronological order
-        scheduledSessions.sort(function(a, b) {
-            return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
-                (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
-        });
-
-        for (var session of scheduledSessions) {
-            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
-            var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
-
-            // Wait for this promise to resolve so tutor is defined when making calendar row
-            var tutor = await getUser(session.tutorID);
-            var description;
-            if (session.subtopics == '') {
-                description = "Tutoring session with " + tutor.name;
-            } else {
-                description = session.subtopics + " with " + tutor.name;
-            }
-            
-            dataTable.addRow([
-                date, description, asDate(session.timeslot.start), asDate(session.timeslot.end)
-            ]);
-        }
-
-        // Have timeline span 24 hours regardless of what's scheduled
-        var min = new Date();
-        min.setHours(0);
-        var max = new Date();
-        max.setHours(24);
-
-        const options = {
-            width: 1000,
-            height: 300,
-            hAxis: {
-                minValue: min,
-                maxValue: max
-            }
-        };
-
-        chart.draw(dataTable, options);
+        createCalendarHelper(scheduledSessions, container);
     });
+}
+
+// Helper function for createCalendar to improve readability 
+async function createCalendarHelper(scheduledSessions, container) {
+    const chart = new google.visualization.Timeline(container);
+
+    const dataTable = new google.visualization.DataTable();
+    dataTable.addColumn({type: 'string', id: 'Date'});
+    dataTable.addColumn({type: 'string', id: 'Description'});
+    dataTable.addColumn({type: 'date', id: 'Start'});
+    dataTable.addColumn({type: 'date', id: 'End'});
+
+    // Sort sessions in chronological order
+    scheduledSessions.sort(function(a, b) {
+        return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
+            (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
+    });
+
+    for (var session of scheduledSessions) {
+        // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+        var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
+
+        // Wait for this promise to resolve so tutor is defined when making calendar row
+        var tutor = await getUser(session.tutorID);
+        var description;
+        if (session.subtopics == '') {
+            description = "Tutoring session with " + tutor.name;
+        } else {
+            description = session.subtopics + " with " + tutor.name;
+        }
+        
+        dataTable.addRow([
+            date, description, asDate(session.timeslot.start), asDate(session.timeslot.end)
+        ]);
+    }
+
+    // Have timeline span 24 hours regardless of what's scheduled
+    var min = new Date();
+    min.setHours(0);
+    var max = new Date();
+    max.setHours(24);
+
+    const options = {
+        width: 1000,
+        height: 300,
+        hAxis: {
+            minValue: min,
+            maxValue: max
+        }
+    };
+
+    chart.draw(dataTable, options);
 }
 
 /**

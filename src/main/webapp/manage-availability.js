@@ -70,55 +70,61 @@ function createCalendar() {
             container.appendChild(errorMessage);
             return;
         }
-        
-        const chart = new google.visualization.Timeline(container);
 
-        const dataTable = new google.visualization.DataTable();
-        dataTable.addColumn({type: 'string', id: 'Date'});
-        dataTable.addColumn({type: 'date', id: 'Start'});
-        dataTable.addColumn({type: 'date', id: 'End'});
-
-        // Sort timeslots in chronological order
-        timeslots.sort(function(a, b) {
-            return (a.date.year + a.date.month/12 + a.date.dayOfMonth/365) - (b.date.year + b.date.month/12 + b.date.dayOfMonth/365);
-        });
-        
-        for (var slot of timeslots) {
-            // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
-            var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
-            dataTable.addRow([
-                date, asDate(slot.start), asDate(slot.end)
-            ]);
-        }
-
-        // Have timeline span 24 hours regardless of what's scheduled
-        var min = new Date();
-        min.setHours(0);
-        var max = new Date();
-        max.setHours(24);
-
-        const options = {
-            width: 1000,
-            height: 300,
-            hAxis: {
-                minValue: min,
-                maxValue: max
-            }
-        };
-
-        google.visualization.events.addListener(chart, 'select', function() {
-            var selection = chart.getSelection()[0];
-            if (selection) {
-                deleteSession(dataTable, selection);
-            }
-        });
-
-        chart.draw(dataTable, options);
+        createCalendarHelper(timeslots, container);
     });
+}
+
+// Helper function for createCalendar to improve readability 
+function createCalendarHelper(timeslots, container) {
+    const chart = new google.visualization.Timeline(container);
+
+    const dataTable = new google.visualization.DataTable();
+    dataTable.addColumn({type: 'string', id: 'Date'});
+    dataTable.addColumn({type: 'date', id: 'Start'});
+    dataTable.addColumn({type: 'date', id: 'End'});
+
+    // Sort timeslots in chronological order
+    timeslots.sort(function(a, b) {
+        return (a.date.year + a.date.month/12 + a.date.dayOfMonth/365) - (b.date.year + b.date.month/12 + b.date.dayOfMonth/365);
+    });
+    
+    for (var slot of timeslots) {
+        // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+        var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+        dataTable.addRow([
+            date, asDate(slot.start), asDate(slot.end)
+        ]);
+    }
+
+    // Have timeline span 24 hours regardless of what's scheduled
+    var min = new Date();
+    min.setHours(0);
+    var max = new Date();
+    max.setHours(24);
+
+    const options = {
+        width: 1000,
+        height: 300,
+        hAxis: {
+            minValue: min,
+            maxValue: max
+        }
+    };
+
+    google.visualization.events.addListener(chart, 'select', function() {
+        var selection = chart.getSelection()[0];
+        if (selection) {
+            deleteSession(dataTable, selection);
+        }
+    });
+
+    chart.draw(dataTable, options);
 }
 
 /** Function to tell the server to delete an available time slot for tutor.  */
 function deleteSession(dataTable, selection) {
+    // Add confirmation popup in case user accidentally clicked on time slot
     var deleteSession = confirm("Delete available time slot?");
 
     if (deleteSession) {
