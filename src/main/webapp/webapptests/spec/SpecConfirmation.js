@@ -15,10 +15,13 @@
 describe("Confirmation", function() {
 
     describe("when the list of upcoming sessions is loaded", function() {
-        it("should trigger the fetch function", function() {
+        var mockWindow = {location: {href: "confirmation.html"}};
+
+        it("should trigger the fetch function", async function() {
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
-            getScheduledSessions();
-            expect(window.fetch).toHaveBeenCalledWith('/confirmation', {method: 'GET'});
+            var sessionsContainer = document.createElement("div");
+            spyOn(document, 'getElementById').and.returnValue(sessionsContainer);
+            await fetchUpcomingSessionsHelper(mockWindow);
             expect(window.fetch).toHaveBeenCalled();
         });
     });
@@ -31,46 +34,9 @@ describe("Confirmation", function() {
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
             var sessionsContainer = document.createElement("div");
             spyOn(document, 'getElementById').and.returnValue(sessionsContainer);
-            await getScheduledSessionsHelper(mockWindow);
-            expect(window.alert).toHaveBeenCalledWith('You must be signed in to view upcoming session.');
+            await fetchUpcomingSessionsHelper(mockWindow);
+            expect(window.alert).toHaveBeenCalledWith('You must be signed in to view upcoming sessions.');
             expect(mockWindow.location.href).toBe('/homepage.html');
-        });
-    });
-
-    describe("when a scheduled session box is created", function() {
-        var scheduledSession = {tutorID: "123", timeslot: {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}}};
-
-        var actual = createScheduledSessionBox(scheduledSession);
-
-        it("should return a list item element", function() {
-            expect(actual.tagName).toEqual("LI");
-        });
-
-        it("should have div elements as the children of each list item element", function() {
-            expect(actual.childNodes[0].tagName).toEqual("DIV");
-            expect(actual.childNodes[1].tagName).toEqual("DIV");
-        });
-
-        it("should have an h3 element as the child of the first div element inside each list item element", function() {
-            expect(actual.childNodes[0].childNodes[0].tagName).toEqual("H3");
-        });
-
-        it("should have an h3 element as the child of the second div element inside each list item element", function() {
-            expect(actual.childNodes[1].childNodes[0].tagName).toEqual("H3");
-        });
-
-        it("should have the inner HTML of the h3 tag equal to to the name of the tutor", async function() {
-            var tutor = {name: "Test"};
-            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutor)}));
-
-            const tutorElement = document.createElement('h3');
-            await setTutorName(tutorElement, "123").then(() => {
-                expect(tutorElement.innerHTML).toEqual("Tutoring Session with Test");
-            });
-        });
-
-        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
-            expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:00am on May 18, 2020");
         });
     });
 

@@ -66,17 +66,16 @@ public class ManageAvailabilityServlet extends HttpServlet {
         // Set default value to -1 
         String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         String startTime = request.getParameter("startTime");
-        String endTime = request.getParameter("endTime");
         // Split hour and minute to separate strings
         String[] startHourAndMinute = startTime.split(":");
-        String[] endHourAndMinute = endTime.split(":");
         
         String date = request.getParameter("date");
         // Split year, month, and day to separate strings
         String[] yearMonthDay = date.split("-");
 
         int start = Integer.parseInt(startHourAndMinute[0]) * 60 + Integer.parseInt(startHourAndMinute[1]);
-        int end = Integer.parseInt(endHourAndMinute[0]) * 60 + Integer.parseInt(endHourAndMinute[1]);
+        // Make all tutor sessions last 1 hour
+        int end = Integer.parseInt(startHourAndMinute[0]) * 60 + Integer.parseInt(startHourAndMinute[1]) + 60;
 
         if(tutorID.equals("-1")) {
             response.getWriter().println("{\"error\": \"There was an error adding availability.\"}");
