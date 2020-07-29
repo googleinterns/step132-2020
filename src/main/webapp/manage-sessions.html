@@ -19,7 +19,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="getTutorSessionsManage(), displayLoginLogoutLink()">
+    <body onload="displayLoginLogoutLink()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -69,14 +69,11 @@
         
         <div class="container-fluid text-center bg-white bg-white-lg">
             <h1>Manage Your Scheduled Tutoring Sessions</h1>
-            <h2>Cancel any upcoming scheduled sessions.</h2>
-
+            <h2>Click on any upcoming scheduled session to cancel it.</h2>
+            
             <br><br>
-            <ul class="list-group text-left" id="scheduledSessions"></ul>
+            <div id="calendar" align="center"></div>
         </div>
-
-        <h2 id="calendar-header" style="display:none" align="center">Scheduled Sessions</h2>
-        <div id="calendar" align="center"></div>
 
         <div class="bg-description-blue">
             <div class="container-fluid bg-white">
