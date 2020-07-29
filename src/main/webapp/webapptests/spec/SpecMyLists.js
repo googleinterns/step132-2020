@@ -61,8 +61,18 @@ describe("My Lists", function() {
     });
 
     describe("when a list info box is created", function() {
-        var list = {name: "list 1", books: ["book 1", "book 2"], topic: "math"};
-        var element = createListElement(list);
+        var list = {name: "list 1", books: ["book 1 by author 1", "book 2 by author 2"], topic: "math"};
+        var googleBookResult = {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}};
+        var element;
+
+        beforeAll(function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(googleBookResult)}));
+            element = createListElement(list);
+        });
+        
+        it("should call fetch with the correct parameter", function() {
+            expect(window.fetch).toHaveBeenCalledWith("https://www.googleapis.com/books/v1/volumes?q=intitle:book 1+inauthor:author 1&maxResults=1&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y");
+        });
 
         it("should return a div item element with display none", function() {
             expect(element.tagName).toEqual("DIV");
@@ -83,12 +93,25 @@ describe("My Lists", function() {
             expect(element.childNodes[2].tagName).toEqual("UL");
         });
 
-        it("should create li elements inside of the ul books element for each book", function() {
-            expect(element.childNodes[2].childNodes.length).toEqual(2);
-            expect(element.childNodes[2].childNodes[0].tagName).toEqual("LI");
-            expect(element.childNodes[2].childNodes[0].innerText).toEqual("book 1");
-            expect(element.childNodes[2].childNodes[1].innerText).toEqual("book 2");
+    });
+
+    describe("when a book is not found through Google Books and is displayed", function() {
+        var element = createNoGoogleBookResult("book 1 by author 1");
+
+        it("should return a div item element with display none", function() {
+            expect(element.tagName).toEqual("DIV");
         });
+
+        it("should create img element inside result element for thumbnail", function() {
+            expect(element.childNodes[0].tagName).toEqual("IMG");
+            expect(element.childNodes[0].src).toContain("/images/book-cover.png");
+        });
+
+        it("should create p element inside result element for title and author", function() {
+            expect(element.childNodes[1].tagName).toEqual("P");
+            expect(element.childNodes[1].innerText).toContain("book 1 by author 1");
+        });
+
     });
 
     describe("when user clicks on a list link", function() {

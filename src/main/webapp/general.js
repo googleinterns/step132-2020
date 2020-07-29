@@ -34,7 +34,7 @@ function readComponents(queryString, window) {
 function setTutorName(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
+        tutorElement.innerHTML = "Tutoring Session with " + tutor.name;
     });
 }
 

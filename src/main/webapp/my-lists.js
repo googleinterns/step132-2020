@@ -42,6 +42,47 @@ function getListsProfile() {
     return getListsHelper(window, '/lists?tutorID=' + queryString["userID"]);
 }
 
+// /** Helper function for getLists, used for testing. */
+// async function getListsHelper(window, url) {
+//     await fetch(url, {method: 'GET'}).then((response) => {
+//         //if the tutor is not the current user or not signed in, used for the my-lists page
+//         if(response.redirected) {
+//             window.location.href = response.url;
+//             alert("You must be signed in to manage lists.");
+//             return null;
+//         }
+//         return response.json();
+        
+//     }).then((lists) => {
+//         //page was redirected
+//         if(lists === null) {
+//             return;
+//         }
+
+//         if(lists.error) {
+//             var message = document.createElement("p");
+//             message.innerText = timeslots.error;
+//             document.getElementById('list-names').appendChild(message);
+//             return;
+//         }
+
+//         if(Object.keys(lists).length === 0) {
+//             var message = document.createElement("p");
+//             message.innerText = "This user has no lists.";
+//             document.getElementById('list-names').appendChild(message);
+//             return;
+//         }
+
+//         var listNames = document.getElementById('list-names');
+//         var listInfo = document.getElementById('list-info-container')
+
+//         lists.forEach((list) => {
+//             listNames.appendChild(createListNameLink(list));
+//             listInfo.appendChild(createListElement(list));
+//         });
+//     });
+// }
+
 /** Helper function for getLists, used for testing. */
 async function getListsHelper(window, url) {
     await fetch(url, {method: 'GET'}).then((response) => {
@@ -111,10 +152,20 @@ function createListElement(list) {
     topic.innerText = capitalizeFirstLetter(list.topic.toLowerCase());
 
     list.books.forEach((book) => {
-        var elem = document.createElement("li");
-        elem.className = "book";
-        elem.innerText = book;
-        books.appendChild(elem);
+        var titleAndAuthor = book.toLowerCase().split(" by ");
+        var title = titleAndAuthor[0].trim();
+        //if user left out author, use empty string
+        var author = titleAndAuthor[1] === undefined ? "" : titleAndAuthor[1].trim();
+
+        fetch("https://www.googleapis.com/books/v1/volumes?q=intitle:" + title + "+inauthor:" + author + "&maxResults=1&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y")
+            .then(response => response.json()).then((results) => {
+                if(results.totalItems === 0) {
+                    books.appendChild(createNoGoogleBookResult(book));
+                    return;
+                }
+
+                books.appendChild(createBookResult(results.items[0].volumeInfo));
+            });
     });
 
     container.id = list.name;
@@ -130,6 +181,25 @@ function createListElement(list) {
     container.appendChild(books);
 
     container.style.display = "none";
+
+    return container;
+}
+
+/** Creates a book result with an empty book cover and the name of the book. */
+function createNoGoogleBookResult(result) {
+    var container = document.createElement("div");
+    var thumbnail = document.createElement("img");
+    var book = document.createElement("p");
+
+    thumbnail.src = "/images/book-cover.png";
+
+    book.innerText = result;
+
+    container.classList.add("book-result");
+    container.classList.add("col-md-4");
+
+    container.appendChild(thumbnail);
+    container.appendChild(book);
 
     return container;
 }

@@ -156,7 +156,7 @@ async function getBooks(topic) {
             }
 
             //Only make "books" plural if there are 0 or more than 1 books
-            numSearchResults.innerText = "Found " + results.items.length + (results.items.length > 1 || results.items.length === 0 ? " books for " : " book for ") + topic;
+            numSearchResults.innerText = "Found " + results.totalItems + (results.totalItems > 1 || results.totalItems === 0 ? " books for " : " book for ") + topic;
 
             //create container to put books
             var booksContainer = document.getElementById("books-container");
