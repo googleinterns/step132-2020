@@ -89,12 +89,13 @@ async function getPosts(groupId) {
 /** Creates a div element containing information about a post result. */
 function createPostResult(result) {
     var container = document.createElement("div");
-    var name = document.createElement("h3");
+    var name = document.createElement("h5");
     name.style.textTransform = 'capitalize';
-    var content = document.createElement("h5");
+    var content = document.createElement("h4");
     var replyForm = document.createElement("form");
     var replyInput = document.createElement("input");
     var replySubmit = document.createElement("button");
+    var viewThread = document.createElement("button");
 
     if (result.userID != "anonymous") {
         getUser(result.userID).then((user) => {
@@ -105,10 +106,10 @@ function createPostResult(result) {
             } else {
                 userInfo = user;
             }
-            name.innerText = userInfo.name;
+            name.innerText = "By " + userInfo.name;
         });
     } else {
-        name.innerText = result.userID;
+        name.innerText = "By " + result.userID;
     }
 
     replyForm.className = "form-inline my-2 my-lg-0";
@@ -130,22 +131,94 @@ function createPostResult(result) {
     replyForm.appendChild(replyInput);
     replyForm.appendChild(replySubmit);
 
-
-   // profileLink.href = "/profile.html?userID=" + result.userId;
+    viewThread.className = "btn btn-outline-success my-2 my-sm-0";
+    viewThread.innerText = "View Thread";
+    viewThread.addEventListener('click', () => {
+        displayThread(result, container);
+    });
+   
 
     container.classList.add("user-result");
     container.classList.add("list-group-item");
 
-    container.appendChild(name);
     container.appendChild(content);
+    container.appendChild(name);
     container.appendChild(replyForm);
+    container.appendChild(viewThread);
 
     return container;
 }
 
 function addReply(result, content) {
+    const params = new URLSearchParams();
+
+    params.append('postId', result.id);
+    params.append('content', content);
+
+    fetch('/manage-replies', {method: 'POST', body: params}).then((response) => {
+        //if there was an error posting to the group
+        if(response.error) {
+            window.location.href = "/group.html?groupId=" + result.groupID;
+            alert("There was an error when posting to this group.");
+            return;
+        }
+        window.location.href = "/group.html?groupId=" + result.groupID;
+    });
+}
+
+function displayThread(post, container) {
+    fetch("/manage-replies?postId=" + post.id).then(response => response.json()).then((results) => {
+        location.reload();
+        
+        var numSearchResults = document.createElement("h4");
+        numSearchResults.className = "num-search-results";
+
+        container.appendChild(numSearchResults);
+        
+        //if there was an error reported by the servlet, display the error message
+        if(results.error) {
+            numSearchResults.innerText = results.error;
+            return;
+        }
+
+        //Only make "replies" plural if there are 0 or more than 1 replies
+        numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " replies for this post" : " reply for this post");
+
+        results.forEach(function(result) {
+            container.append(createReplyResult(result));
+        });
+    });
+}
+
+/** Creates a div element containing information about a post result. */
+function createReplyResult(result) {
+    var container = document.createElement("div");
+    var name = document.createElement("h5");
+    name.style.textTransform = 'capitalize';
+    var content = document.createElement("h4");
+
     console.log(result);
-    console.log(content);
+    
+    getUser(result.userID).then((user) => {
+        var userInfo;
+        // If the user is both a student and a tutor access the appropriate location to find informaton
+        if (user.student != null) {
+            userInfo = user.student;
+        } else {
+            userInfo = user;
+        }
+        name.innerText = "By " + userInfo.name;
+    });
+
+    content.innerText = result.content;
+
+    container.classList.add("user-result");
+    container.classList.add("list-group-item");
+    
+    container.appendChild(content);
+    container.appendChild(name);
+
+    return container;
 }
 
 
