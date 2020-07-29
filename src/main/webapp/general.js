@@ -40,7 +40,6 @@ function setTutorName(tutorElement, tutorID) {
 
 /** Gets information about the given user from the server. */
 function getUser(userID) {
-    console.log(userID);
     return fetch('/profile?userId='+userID).then(response => response.json()).then((user) => {
         if(user.error) {
             var message = document.createElement("p");

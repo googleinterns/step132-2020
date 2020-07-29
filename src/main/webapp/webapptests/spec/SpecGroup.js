@@ -122,9 +122,6 @@ describe("Single Group", function() {
             expect(window.fetch).toHaveBeenCalledTimes(1);
             expect(window.fetch.calls.allArgs()[0][0]).toEqual("/manage-replies?postId=123");
 
-            console.log(mockContainer);
-            console.log(mockContainer.childNodes);
-
             //one for the number of results label + 2 for the number of results in testResults
             expect(mockContainer.childNodes.length).toEqual(3);
             expect(mockContainer.childNodes[0].innerText).toContain("Found 2 replies for this post");
