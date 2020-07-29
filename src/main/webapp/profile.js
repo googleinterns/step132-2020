@@ -142,7 +142,6 @@ function editProfile(user, role, document) {
     console.log(role);
 
     if (role == "both") {
-        console.log("both");
         // Set default value of bio to what user previously had
         // This will prevent this data from being lost if the user decides not change this field
         document.getElementById('bio').value = user.student.bio;
@@ -150,12 +149,10 @@ function editProfile(user, role, document) {
         editProfileTutor(user, true, document);
         editProfileStudent(user, true, document);
     } else if (role == 'student') {
-        console.log("student");
         document.getElementById('bio').value = user.bio;
 
         editProfileStudent(user, false, document);
     } else if (role == 'tutor') {
-        console.log("tutor");
         document.getElementById('bio').value = user.bio;
 
         editProfileTutor(user, false, document);
