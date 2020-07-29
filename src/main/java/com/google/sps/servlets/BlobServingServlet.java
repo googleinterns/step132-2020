@@ -30,9 +30,8 @@ public class BlobServingServlet extends HttpServlet {
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws IOException {   
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {   
             BlobKey blobKey = new BlobKey(request.getParameter("blob-key"));
             blobstoreService.serve(blobKey, response);
-        }
+    }
 }
