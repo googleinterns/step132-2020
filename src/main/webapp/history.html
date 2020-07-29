@@ -31,9 +31,7 @@
                     <a class="navbar-brand" href="/homepage.html">Sullivan</a>
                 </div>
                 <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="button-hover"><a href="#about">ABOUT</a></li>
-                        <li class="button-hover"><a href="#about">CONTACT</a></li>
+                    <ul class="nav navbar-nav">
                         <li class="button-hover" id="account-dropdown" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">MY ACCOUNT <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li><a id="profile">Profile</a></li>
@@ -44,8 +42,6 @@
                                 <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
                             </ul>
                         </li>
-                        <li class="button-hover" id="login" style="display: none"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
-                        <li class="button-hover" id="logout" style="display: none"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                         
                         <li id="label-student" style="display: none"><a href="#" class="role-view-label">STUDENT</a></li>
                         <li id="role-view-switch" style="display: none">
@@ -58,16 +54,19 @@
                     </ul>
 
                     <ul class="nav navbar-nav navbar-right">
-                        <form class="form-inline my-2 my-lg-0" id="search-bar-user" onsubmit="return redirectToResultsUsers();">
-                            <input class="form-control mr-sm-2" id="searched-name" type="search" placeholder="Search users by name" aria-label="Search" required>
-                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                        </form>
+                        <li>
+                            <form class="form-inline my-2 my-lg-0" id="search-bar-user" onsubmit="return redirectToResultsUsers();">
+                                <input class="form-control mr-sm-2" id="searched-name" type="search" placeholder="Search users by name" aria-label="Search" required>
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
+                        </li>
                         <li id="login" style="display: none"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
                         <li id="logout" style="display: none"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
+        
         <div class="bg-description-blue">
             <div class="container-fluid text-center bg-white bg-white-lg">
                 <h1>Tutoring Sessions History</h1>
