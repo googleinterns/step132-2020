@@ -29,12 +29,17 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/blob-upload-url")
 public class BlobUploadUrlServlet extends HttpServlet {
 
-  @Override
-  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-    String uploadUrl = blobstoreService.createUploadUrl("/registration");
+    private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
-    response.setContentType("text/html");
-    response.getWriter().println(uploadUrl);
-  }
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        setResponse(request, response, blobstoreService);
+    }
+
+    public void setResponse(HttpServletRequest request, HttpServletResponse response, BlobstoreService blobstoreService) throws IOException {
+        String uploadUrl = blobstoreService.createUploadUrl("/registration");
+
+        response.setContentType("text/html");
+        response.getWriter().println(uploadUrl);
+    }
 }
