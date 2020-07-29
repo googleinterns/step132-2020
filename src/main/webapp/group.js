@@ -149,7 +149,7 @@ function createPostResult(result) {
     return container;
 }
 
-function addReply(result, content) {
+function addReply(result, content, window) {
     const params = new URLSearchParams();
 
     params.append('postId', result.id);
@@ -166,10 +166,14 @@ function addReply(result, content) {
     });
 }
 
-function displayThread(post, container) {
-    fetch("/manage-replies?postId=" + post.id).then(response => response.json()).then((results) => {
-        location.reload();
-        
+async function displayThread(post, container, document) {
+    var replies = displayThreadHelper(post, container, document);
+    
+    await replies;
+}
+
+async function displayThreadHelper(post, container, document) {
+    await fetch("/manage-replies?postId=" + post.id).then(response => response.json()).then((results) => {        
         var numSearchResults = document.createElement("h4");
         numSearchResults.className = "num-search-results";
 
@@ -196,19 +200,24 @@ function createReplyResult(result) {
     var name = document.createElement("h5");
     name.style.textTransform = 'capitalize';
     var content = document.createElement("h4");
-
-    console.log(result);
     
-    getUser(result.userID).then((user) => {
-        var userInfo;
-        // If the user is both a student and a tutor access the appropriate location to find informaton
-        if (user.student != null) {
-            userInfo = user.student;
-        } else {
-            userInfo = user;
-        }
-        name.innerText = "By " + userInfo.name;
-    });
+    // Call getUser normally if it is not being used for testing purposes
+    if (result.test == null) {
+        getUser(result.userID).then((user) => {
+            var userInfo;
+            // If the user is both a student and a tutor access the appropriate location to find informaton
+            if (user.student != null) {
+                userInfo = user.student;
+            } else {
+                userInfo = user;
+            }
+            name.innerText = "By " + userInfo.name;
+        });
+
+        // If it is being used for testing purposes, define name as test
+    } else {
+        name.innerText = "By Test";
+    }
 
     content.innerText = result.content;
 
