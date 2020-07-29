@@ -1,0 +1,17 @@
+indexes:
+
+- kind: Tutor
+  ancestor: no
+  properties:
+  - name: topics
+    direction: asc
+  - name: name
+    direction: asc
+
+- kind: Tutor
+  ancestor: no
+  properties:
+  - name: topics
+    direction: asc
+  - name: rating
+    direction: desc
