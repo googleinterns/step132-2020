@@ -19,22 +19,26 @@ function createCalendar() {
     const tutorID = queryString["tutorID"];
 
     fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
-        if(timeslots.error) {
+        const container = document.getElementById('calendar');
+        
+        if (timeslots.error) {
             var message = document.createElement("p");
             p.innerText = timeslots.error;
-            document.getElementById('calendar').appendChild(message);
+            container.appendChild(message);
             return;
         }
 
         // Don't create a calendar if there are no available timeslots
         if (timeslots === undefined || timeslots.length == 0) {
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user has not set any available timeslots";
+            container.appendChild(errorMessage);
             return;
         }
 
         // There are available timeslots, display header and calendar
         document.getElementById('calendar-header').style.display = 'block';
         
-        const container = document.getElementById('calendar');
         const chart = new google.visualization.Timeline(container);
 
         const dataTable = new google.visualization.DataTable();
