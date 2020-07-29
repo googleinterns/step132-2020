@@ -74,8 +74,13 @@ function setMinDateHelper(document, year, month, day, hour, minute) {
     document.getElementById('startTime').min = hour + ":" + minute;
 }
 
-/** Creates a calendar with the Charts API and renders it on the page  */
-function createCalendar() {
+// Fetches info used to create the calendar
+function fetchTimeslotInfo() {
+    fetchTimeslotInfoHelper(window);
+}
+
+// Helper function for fetchCalendarInfo, used for testing
+function fetchTimeslotInfoHelper(window) {
     fetch('/manage-availability', {method: 'GET'}).then((response) => {
         //if the student is not the current user or not signed in
         if(response.redirected) {
@@ -102,12 +107,12 @@ function createCalendar() {
             return;
         }
 
-        createCalendarHelper(timeslots, container);
+        createCalendar(timeslots, container);
     });
 }
 
-// Helper function for createCalendar to improve readability 
-function createCalendarHelper(timeslots, container) {
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar(timeslots, container) {
     const chart = new google.visualization.Timeline(container);
 
     const dataTable = new google.visualization.DataTable();
@@ -202,4 +207,4 @@ function asMinutes(date) {
 }
 
 google.charts.load('current', {'packages': ['timeline']});
-google.charts.setOnLoadCallback(createCalendar);
+google.charts.setOnLoadCallback(fetchTimeslotInfo);

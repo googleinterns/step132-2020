@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Creates a calendar with the Charts API and renders it on the page  */
-function createCalendar() {
+/** Fetches info used to create the calendar  */
+function fetchSessionInfo() {
+    fetchSessionInfoHelper(window);
+}
+
+// Helper function for fetchSessionInfo, used for testing
+function fetchSessionInfoHelper(window) {
     fetch('/confirmation', {method: 'GET'}).then((response) => {
         //if the student is not the current user or not signed in
         if(response.redirected) {
@@ -39,12 +44,12 @@ function createCalendar() {
             container.appendChild(errorMessage);
             return;
         }
-        createCalendarHelper(scheduledSessions, container);
+        createCalendar(scheduledSessions, container);
     });
 }
 
-// Helper function for createCalendar to improve readability 
-async function createCalendarHelper(scheduledSessions, container) {
+/** Creates a calendar with the Charts API and renders it on the page  */
+async function createCalendar(scheduledSessions, container) {
     const chart = new google.visualization.Timeline(container);
 
     const dataTable = new google.visualization.DataTable();
@@ -145,4 +150,4 @@ function asDate(minutes) {
 }
    
 google.charts.load('current', {'packages': ['timeline']});
-google.charts.setOnLoadCallback(createCalendar);
+google.charts.setOnLoadCallback(fetchSessionInfo);

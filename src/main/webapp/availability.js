@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Creates a calendar with the Charts API and renders it on the page  */
-function createCalendar() {
+/** Fetches info used to create the calendar */
+function fetchAvailabilityInfo() {
+    fetchAvailabilityInfoHelper(window);
+}
+
+// Helper function for fetchAvailabilityInfo, used for testing
+function fetchAvailabilityInfoHelper(window) {
     var queryString = new Array();
     window.onload = readComponents(queryString, window);
     const tutorID = queryString["tutorID"];
@@ -39,12 +44,12 @@ function createCalendar() {
         // There are available timeslots, display header and calendar
         document.getElementById('calendar-header').style.display = 'block';
 
-        createCalendarHelper(timeslots, tutorID, container);
+        createCalendar(timeslots, tutorID, container);
     });
 }
 
-// Helper function for createCalendar to improve readability 
-function createCalendarHelper(timeslots, tutorID, container) {
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar(timeslots, tutorID, container) {
     const chart = new google.visualization.Timeline(container);
 
     const dataTable = new google.visualization.DataTable();
@@ -125,4 +130,4 @@ function asMinutes(date) {
 }
 
 google.charts.load('current', {'packages': ['timeline']});
-google.charts.setOnLoadCallback(createCalendar);
+google.charts.setOnLoadCallback(fetchAvailabilityInfo);

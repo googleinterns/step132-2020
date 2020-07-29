@@ -12,13 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Creates a calendar with the Charts API and renders it on the page  */
-async function createCalendar() {
+/** Fetches info used to create the calendar  */
+function fetchUpcomingSessions() {
+    fetchUpcomingSessionsHelper(window);
+}
+
+// Helper function for fetchUpcomingSessions, used for testing
+async function fetchUpcomingSessionsHelper(window) {
     await fetch('/confirmation', {method: 'GET'}).then((response) => {
         //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
-            alert("You must be signed in to manage sessions.");
+            alert("You must be signed in to view upcoming sessions.");
             return [];
         }
         return response.json();
@@ -40,12 +45,12 @@ async function createCalendar() {
             return;
         }
 
-        createCalendarHelper(scheduledSessions, container);
+        createCalendar(scheduledSessions, container);
     });
 }
 
-// Helper function for createCalendar to improve readability 
-async function createCalendarHelper(scheduledSessions, container) {
+/** Creates a calendar with the Charts API and renders it on the page  */ 
+async function createCalendar(scheduledSessions, container) {
     const chart = new google.visualization.Timeline(container);
 
     const dataTable = new google.visualization.DataTable();
@@ -113,4 +118,4 @@ function asDate(minutes) {
 }
    
 google.charts.load('current', {'packages': ['timeline']});
-google.charts.setOnLoadCallback(createCalendar);
+google.charts.setOnLoadCallback(fetchUpcomingSessions);
