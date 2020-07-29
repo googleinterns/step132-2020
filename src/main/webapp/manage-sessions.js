@@ -54,10 +54,7 @@ async function createCalendarHelper(scheduledSessions, container) {
     dataTable.addColumn({type: 'date', id: 'End'});
 
     // Sort sessions in chronological order
-    scheduledSessions.sort(function(a, b) {
-        return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
-            (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
-    });
+    sortSessions(scheduledSessions);
     
     var sessionIDs = new Object();
 
@@ -105,6 +102,14 @@ async function createCalendarHelper(scheduledSessions, container) {
     });
 
     chart.draw(dataTable, options);
+}
+
+// Sorts all scheduled sessions in chronological order
+function sortSessions(scheduledSessions) {
+    scheduledSessions.sort(function(a, b) {
+        return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
+            (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
+    });
 }
 
 // Cancels the tutor session associated with the specified session ID

@@ -53,9 +53,7 @@ function createCalendarHelper(timeslots, tutorID, container) {
     dataTable.addColumn({type: 'date', id: 'End'});
 
     // Sort timeslots in chronological order
-    timeslots.sort(function(a, b) {
-        return (a.date.year + a.date.month/12 + a.date.dayOfMonth/365) - (b.date.year + b.date.month/12 + b.date.dayOfMonth/365);
-    });
+    sortTimeslots(timeslots);
 
     for (var slot of timeslots) {
         // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
@@ -87,6 +85,13 @@ function createCalendarHelper(timeslots, tutorID, container) {
         }
     });
     chart.draw(dataTable, options);
+}
+
+// Sorts all available time slots in chronological order
+function sortTimeslots(timeslots) {
+    timeslots.sort(function(a, b) {
+        return (a.date.year + a.date.month/12 + a.date.dayOfMonth/365) - (b.date.year + b.date.month/12 + b.date.dayOfMonth/365);
+    });
 }
 
 // Redirects the user to the scheduling page and passes down the tutor ID along with the selected time range for the session.

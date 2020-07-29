@@ -55,10 +55,7 @@ async function createCalendarHelper(scheduledSessions, container) {
     dataTable.addColumn({type: 'date', id: 'End'});
 
     // Sort sessions in chronological order
-    scheduledSessions.sort(function(a, b) {
-        return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
-            (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
-    });
+    sortSessions(scheduledSessions);
 
     for (var session of scheduledSessions) {
         // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
@@ -94,6 +91,14 @@ async function createCalendarHelper(scheduledSessions, container) {
     };
 
     chart.draw(dataTable, options);
+}
+
+// Sorts all scheduled sessions in chronological order
+function sortSessions(scheduledSessions) {
+    scheduledSessions.sort(function(a, b) {
+        return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
+            (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
+    });
 }
 
 /**
