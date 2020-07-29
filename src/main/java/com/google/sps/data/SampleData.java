@@ -17,6 +17,11 @@ package com.google.sps.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.Filter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -126,6 +131,9 @@ public final class SampleData {
         return null;
     }
 
+    /**
+    * Adds all the sample Tutor objects to datastore.
+    */
     public void addTutorsToDatastore() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -138,6 +146,7 @@ public final class SampleData {
             entity.setProperty("topics", tutor.getSkills());
             entity.setProperty("ratingSum", 0);
             entity.setProperty("ratingCount", 0);
+            entity.setProperty("rating", 0);
             entity.setProperty("userId", tutor.getUserId());
             datastore.put(entity);
 
@@ -146,6 +155,9 @@ public final class SampleData {
         }
     }
 
+    /**
+    * Adds all the sample Student objects to datastore.
+    */
     public void addStudentsToDatastore() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -162,6 +174,9 @@ public final class SampleData {
         }
     }
 
+    /**
+    * Adds all sample User objects to datastore.
+    */
     public void addUsersToDatastore() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -176,6 +191,33 @@ public final class SampleData {
             entity.setProperty("lastName", nameSplit[1].toLowerCase());
             datastore.put(entity);
         }
+    }
+
+    /**
+    * Rates a sample tutor with the given rating.
+    */
+    public void rateTutor(String userId, int rating) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        //get tutor with user id
+        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
+        Query query = new Query("Tutor").setFilter(filter);
+
+        PreparedQuery pq = datastore.prepare(query);
+
+        Entity tutorEntity = pq.asSingleEntity();
+
+        int ratingSum = Math.toIntExact((long) tutorEntity.getProperty("ratingSum")) + rating;
+        int ratingCount = Math.toIntExact((long) tutorEntity.getProperty("ratingCount")) + 1;
+
+        tutorEntity.setProperty("ratingSum", ratingSum);
+        tutorEntity.setProperty("ratingCount", ratingCount);
+        tutorEntity.setProperty("rating", Math.round(ratingSum/ratingCount));
+
+        datastore.put(tutorEntity);
+
+        Tutor tutor = getTutorByEmail((String) tutorEntity.getProperty("email"));
+        tutor.addRating(rating);
     }
 
     private void addTutorAvailabilityToDatastore(DatastoreService datastore, ArrayList<TimeRange> times, String userId) {

@@ -30,6 +30,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.datastore.Query.CompositeFilter;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import java.lang.String;
@@ -47,11 +48,19 @@ public final class SearchDatastoreService {
     * it should not return that tutor in results.
     * @return List<Tutor>
     */
-    public List<Tutor> getTutorsForTopic(String topic, String studentID) {
+    public List<Tutor> getTutorsForTopic(String topic, String studentID, String sortType) {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
         Filter topicFilter = new FilterPredicate("topics", FilterOperator.EQUAL, topic.toLowerCase());
         Query tutorQuery = new Query("Tutor").setFilter(topicFilter);
+
+        switch(sortType.toLowerCase()) {
+            case "rating":
+                tutorQuery.addSort("rating", SortDirection.DESCENDING);
+                break;
+            default:
+                tutorQuery.addSort("name", SortDirection.ASCENDING);
+        }
 
         ArrayList<Tutor> tutors = new ArrayList<Tutor>();
 
@@ -124,7 +133,7 @@ public final class SearchDatastoreService {
         ArrayList<TutorSession> sessions = new ArrayList<TutorSession>();
 
         //get all sessions with user id
-        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
+        Filter filter = new FilterPredicate("tutorID", FilterOperator.EQUAL, userId);
         Query query = new Query("TutorSession").setFilter(filter);
 
         PreparedQuery sessionEntities = datastore.prepare(query);

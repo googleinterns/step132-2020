@@ -225,11 +225,12 @@ public final class TutorSessionDatastoreService {
 
         Entity tutorEntity = pq.asSingleEntity();
 
-        int ratingSum = Math.toIntExact((long) tutorEntity.getProperty("ratingSum"));
-        int ratingCount = Math.toIntExact((long) tutorEntity.getProperty("ratingCount"));
+        int ratingSum = Math.toIntExact((long) tutorEntity.getProperty("ratingSum")) + rating;
+        int ratingCount = Math.toIntExact((long) tutorEntity.getProperty("ratingCount")) + 1;
 
-        tutorEntity.setProperty("ratingSum", ratingSum + rating);
-        tutorEntity.setProperty("ratingCount", ratingCount + 1);
+        tutorEntity.setProperty("ratingSum", ratingSum);
+        tutorEntity.setProperty("ratingCount", ratingCount);
+        tutorEntity.setProperty("rating", Math.round(ratingSum/ratingCount));
 
         datastore.put(txn, tutorEntity);
 

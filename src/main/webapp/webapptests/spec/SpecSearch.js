@@ -63,10 +63,10 @@ describe("Search", function() {
 
             spyOn(window, "createTutorListElement").and.returnValue(document.createElement("div"));
 
-            await getSearchResultsHelper(document, mockWindow);
+            await getSearchResultsHelper(mockWindow);
 
             expect(window.fetch).toHaveBeenCalledTimes(3);
-            expect(window.fetch.calls.allArgs()[0][0]).toEqual("/search?topic=math");
+            expect(window.fetch.calls.allArgs()[0][0]).toEqual("/search?topic=math&sort-type=alpha");
             expect(window.fetch.calls.allArgs()[1][0]).toEqual("/lists?topic=math");
             expect(window.fetch.calls.allArgs()[2][0]).toContain("https://www.googleapis.com/books/v1/volumes");
 
@@ -305,6 +305,18 @@ describe("Search", function() {
             expect(modalBody.childNodes[1].innerText).toBe("book 2");
         });
 
+    });
+
+    describe("when sort type is changed to rating", function() {
+        var radioButton = document.createElement("input");
+        radioButton.value = "rating";
+        it("should call getSearchResultsHelper with the correct parameters", function() {
+            spyOn(window, "getSearchResultsHelper");
+            handleTutorSort(radioButton);
+            expect(window.getSearchResultsHelper).toHaveBeenCalledTimes(1);
+            expect(window.getSearchResultsHelper.calls.allArgs()[0][1]).toEqual("rating");
+
+        });
     });
     
 });
