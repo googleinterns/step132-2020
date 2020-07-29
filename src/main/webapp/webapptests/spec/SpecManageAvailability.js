@@ -14,12 +14,12 @@
 
 describe("Manage Availability", function() {
 
-    describe("when the tutor requests to see a their availability", function() {
+    describe("when the tutor requests to see their availability", function() {
         var mockWindow = {location: {href: "manage-availability.html?tutorID=123", search: "?123"}};
 
         it("should trigger the fetch function", async function() {
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
-            getAvailabilityManageHelper(mockWindow);
+            fetchTimeslotInfoHelper(mockWindow);
             expect(window.fetch).toHaveBeenCalled();
         });
     });
@@ -30,40 +30,14 @@ describe("Manage Availability", function() {
         it("should redirect user to homepage", async function() {
             spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
-            await getAvailabilityManageHelper(mockWindow);
+            await fetchTimeslotInfoHelper(mockWindow);
             expect(window.alert).toHaveBeenCalledWith('You must be signed in to manage availability.');
             expect(mockWindow.location.href).toBe('/homepage.html');
         });
     });
-    
-    describe("when a time slot box is created", function() {
-        var timeslot = {start: 480, date: {month: 4, dayOfMonth: 18, year: 2020}};
-        var actual = createTimeSlotBoxManage(timeslot);
 
-        it("should return a list item element", function() {
-            expect(actual.tagName).toEqual("LI");
-        });
+    describe("when the calendar is created", function() {
 
-        it("should have div elements as the children of each list item element", function() {
-            expect(actual.childNodes[0].tagName).toEqual("DIV");
-            expect(actual.childNodes[1].tagName).toEqual("DIV");
-        });
-
-        it("should have an h3 element as the child of the first div element inside each list item element", function() {
-            expect(actual.childNodes[0].childNodes[0].tagName).toEqual("H3");
-        });
-
-        it("should have a button element as the child of the second div element inside each list item element", function() {
-            expect(actual.childNodes[1].childNodes[0].tagName).toEqual("BUTTON");
-        });
-
-        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
-            expect(actual.childNodes[0].childNodes[0].innerHTML).toEqual("8:00am on May 18, 2020");
-        })
-
-        it("should have the inner text of the button equal to Select", function() {
-            expect(actual.childNodes[1].childNodes[0].innerText).toEqual("Delete");
-        });
     });
 
     describe("when a user adds a time slot", function() {
@@ -101,25 +75,6 @@ describe("Manage Availability", function() {
             expect(window.fetch).toHaveBeenCalledWith('/manage-availability', {method: 'POST', body: params})
             expect(window.fetch).toHaveBeenCalled();
             expect(mockWindow.location.href).toBe("manage-availability.html?tutorID=123");
-        });
-    });
-
-    describe("when a user deletes a time slot", function() {
-        var mockWindow = {location: {href: "manage-availability.html"}};
-        var timeslot = {duration: 60, end: 540, start: 480, date: {year: 2020, month: 5, dayOfMonth: 18}};
-        var params = new URLSearchParams();
-        params.append('year', 2020);
-        params.append('month', 5);
-        params.append('day', 18);
-        params.append('start', 480);
-        params.append('end', 540);
-
-        it("should trigger the fetch function", function() {
-            spyOn(window, 'alert');
-            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve([])}));
-            deleteTimeSlot(mockWindow, timeslot);
-            expect(window.fetch).toHaveBeenCalledWith('/delete-availability', {method: 'POST', body: params})
-            expect(window.fetch).toHaveBeenCalled();
         });
     });
 
