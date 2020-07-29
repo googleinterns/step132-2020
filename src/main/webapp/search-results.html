@@ -87,19 +87,16 @@ See the License for the specific language governing permissions and
 
         <div id="result-container bg-white" class="list-group">
             <div id="tutors" class="list-group active-container">
-                <div id="tutor-filter">
-                    <p style="margin-bottom:0; font-weight: 700;">Sort by:</p>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sort" id="alpha-sort" value="alpha" onclick="handleTutorSort(this)" checked>
-                        <label class="form-check-label" for="alpha-sort" style="font-weight:100">
-                            Alphabetical
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="sort" id="rating-sort" value="rating" onclick="handleTutorSort(this)">
-                        <label class="form-check-label" for="rating-sort" style="font-weight:100">
-                            Rating
-                        </label>
+                <div id="tutor-sort">
+                    <div class="form-group">
+                        <label for="sort-select">Sort by:</label>
+                        <select class="form-control" id="sort-select" onchange="handleTutorSort(this)">
+                            <option value="alpha">Alphabetical</option>
+                            <option value="rating">Rating</option>
+                            <option value="availability">Most Availability</option>
+                            <option value="most-students">Most Students</option>
+                            <option value="least-students">Least Students</option>
+                        </select>
                     </div>
                 </div>
                 <h4 class="container-label" id="num-tutor-results"></h4>
