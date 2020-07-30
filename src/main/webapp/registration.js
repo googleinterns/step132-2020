@@ -58,6 +58,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         document.getElementById('login').style.display = "none";
         document.getElementById('account-dropdown').style.display = "block";
         document.getElementById('profile').style.display = "block";
+        document.getElementById('groups').style.display = "block";
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = "#";
         document.getElementById('logout-url').addEventListener('click', () => {
@@ -65,6 +66,9 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
         });
         document.getElementById('profile').addEventListener('click', () => {
             setProfileQueryString(window, loginStatus);
+        });
+        document.getElementById('groups').addEventListener('click', () => {
+            redirectToGroups(window, loginStatus);
         });
 
         if (loginStatus.role == "both") {
@@ -137,6 +141,14 @@ function logout(window) {
  */
 function setProfileQueryString(window, loginStatus) {
     var url = "profile.html?userID=" + encodeURIComponent(loginStatus.userId);
+    window.location.href = url;
+}
+
+/**
+ * Redirects the user to the groups page.
+ */
+function redirectToGroups(window, loginStatus) {
+    var url = "groups.html";
     window.location.href = url;
 }
 
