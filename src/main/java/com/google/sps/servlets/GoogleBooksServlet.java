@@ -18,9 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonObject;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +36,31 @@ public class GoogleBooksServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String topic = request.getParameter("topic");
         //number of books already loaded
-        int numLoaded = Integer.parseInt(Optional.ofNullable(request.getParameter("num-loaded")).orElse("0"));
+        int startIndex = Integer.parseInt(Optional.ofNullable(request.getParameter("startIndex")).orElse("-1"));
+        //title and author is for getting specific book data for book lists
+        String title = request.getParameter("title");
+        String author = request.getParameter("author");
 
         response.setContentType("application/json;");
         response.setCharacterEncoding("UTF-8");
+
+        String params = "q=";
+
+        if(topic != null) {
+            params += topic;
+        }
+
+        if(title != null) {
+            params += "intitle:" + title;
+        }
+
+        if(author != null) {
+            params += "+inauthor:" + author;
+        }
+
+        if(startIndex >= 0) {
+            params += "&startIndex=" + startIndex;
+        }
 
         //send error message if the search was invalid
         if(topic == null || topic.equals("")) {
@@ -49,7 +68,7 @@ public class GoogleBooksServlet extends HttpServlet {
             return;
         }
 
-        URL url = new URL("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&startIndex=" + numLoaded + "&key=" + System.getenv("GOOGLE_API_KEY"));
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?" + params + "&key=" + System.getenv("GOOGLE_API_KEY"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
 

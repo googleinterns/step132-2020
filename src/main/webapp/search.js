@@ -156,7 +156,7 @@ async function getBooks(topic) {
             }
 
             //Only make "books" plural if there are 0 or more than 1 books
-            numSearchResults.innerText = "Found " + results.items.length + (results.items.length > 1 || results.items.length === 0 ? " books for " : " book for ") + topic;
+            numSearchResults.innerText = "Found " + results.totalItems + (results.totalItems > 1 || results.totalItems === 0 ? " books for " : " book for ") + topic;
 
             //create container to put books
             var booksContainer = document.getElementById("books-container");
@@ -167,8 +167,8 @@ async function getBooks(topic) {
                 booksContainer.append(createBookResult(result.volumeInfo));
             });
 
-            //if we got the max results, there might be more
-            if(results.items.length == 40) {
+            //if we got more than 40 results (the max # displayed initially), then we can load more
+            if(results.totalItems > 40) {
                 var loadMore = document.createElement("button");
                 loadMore.id = "load-more";
                 loadMore.classList.add("btn");
@@ -184,7 +184,7 @@ async function getBooks(topic) {
 }
 
 function loadMoreBooks(topic) {
-    fetch("/books?topic=" + topic + "&num-loaded=" + numResultsLoaded)
+    fetch("/books?topic=" + topic + "&startIndex=" + numResultsLoaded)
         .then(response => response.json()).then((results) => {
             var numSearchResults = document.getElementById("num-book-results");
 
@@ -196,9 +196,6 @@ function loadMoreBooks(topic) {
 
             numResultsLoaded += results.items.length;
 
-            //Only make "books" plural if there are 0 or more than 1 books
-            numSearchResults.innerText = "Found " + numResultsLoaded + " books for " + topic;
-
             //create container to put books
             var booksContainer = document.getElementById("books-container");
 
@@ -206,7 +203,7 @@ function loadMoreBooks(topic) {
                 booksContainer.append(createBookResult(result.volumeInfo));
             });
 
-            if(results.items.length < 40) {
+            if(results.totalItems === numResultsLoaded) {
                 document.getElementById("load-more").display = "none";
             }
 
