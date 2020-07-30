@@ -25,14 +25,14 @@ function loadGroupHeader() {
     loadGroupHeaderHelper(document, window);
 }
 
-async function loadGroupHeaderHelper(document, window) {
+function loadGroupHeaderHelper(document, window) {
     const params = new URLSearchParams();
 
     var queryString = new Array();
     window.onload = readComponents(queryString, window);
     const groupId = queryString["groupId"];
 
-    await fetch("/group-data?groupId=" + groupId).then(response => response.json()).then((result) => {
+    fetch("/group-data?groupId=" + groupId).then(response => response.json()).then((result) => {
         var groupHeaderContainer = document.getElementById("group-header");
         
         //if there was an error reported by the servlet, display the error message
@@ -54,6 +54,9 @@ async function loadGroupHeaderHelper(document, window) {
         groupHeaderContainer.appendChild(name);
         groupHeaderContainer.appendChild(topic);
         groupHeaderContainer.appendChild(description);
+
+        // Returned for testing purposes
+        return groupHeaderContainer;
     });
 }
 
