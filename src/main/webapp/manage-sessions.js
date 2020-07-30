@@ -68,8 +68,17 @@ async function createCalendar(scheduledSessions, container) {
         var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
 
         // Wait for this promise to resolve so tutor is defined when making calendar row
-        var tutor = await getUser(session.tutorID);
+        var tutorInfo = await getUser(session.tutorID);
         var description;
+        var tutor;
+
+        // If the tutor is also a student, get the information that relates to the tutor
+        if (tutorInfo.student != null) {
+            tutor = tutorInfo.tutor;
+        } else {
+            tutor = tutorInfo;
+        }
+        
         if (session.subtopics == '') {
             description = "Tutoring session with " + tutor.name;
         } else {
