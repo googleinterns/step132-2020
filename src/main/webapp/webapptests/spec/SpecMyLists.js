@@ -62,11 +62,11 @@ describe("My Lists", function() {
 
     describe("when a list info box is created", function() {
         var list = {name: "list 1", books: ["book 1 by author 1", "book 2 by author 2"], topic: "math"};
-        var googleBookResult = {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}};
+        var googleBookResults = {"totalItems": 1, "items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]};
         var element;
 
         beforeAll(function() {
-            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(googleBookResult)}));
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(googleBookResults)}));
             element = createListElement(list);
         });
         

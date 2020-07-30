@@ -45,7 +45,6 @@ describe("User Profile", function() {
             spyOn(window, 'getPastSessionsAndTopics');
             spyOn(window, 'getListsProfile');
             
-            spyOn(window, "getListsProfile");
             actualDiv = createProfileDiv(mockUser, {role: "tutor", userId: "123"});
 
             actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);

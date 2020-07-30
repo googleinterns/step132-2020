@@ -37,7 +37,9 @@ describe("Search", function() {
         var lists = [{name: "list 1", books: ["book 1", "book 2"], topic: "math"}, {name: "list 2", books: ["book 1", "book 2"], topic: "math"}];
 
         var books = {"totalItems": 2, "items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}},
-                    {"volumeInfo": {"infoLink": "", "title": "Book 2", "authors": ["Author 2"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]}
+                    {"volumeInfo": {"infoLink": "", "title": "Book 2", "authors": ["Author 2"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]};
+
+        var googleBookResults = {"totalItems": 1, "items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]};
 
         var tutorsLabel = document.createElement("p");
         tutorsLabel.id = "num-tutor-results";
@@ -48,30 +50,37 @@ describe("Search", function() {
         var listContainer = document.createElement("div");
         listContainer.id = "lists-container";
 
+        var listsLabel = document.createElement("p");
+        listsLabel.id = "num-lists-results"
+
         var booksLabel = document.createElement("p");
         booksLabel.id = "num-book-results";
 
         var bookContainer = document.createElement("div");
         bookContainer.id = "books-container";
 
+        var panel = document.createElement("div");
+
         var mockWindow = {location: {href: "search-results.html?topic=math", search: "?topic=math"}};
 
         it("should create result elements inside tutorContainer, listContainer, and bookContainer", async function() {
-            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutors)}), Promise.resolve({json: () => Promise.resolve(lists)}), Promise.resolve({json: () => Promise.resolve(books)}));
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutors)}), 
+                                                    Promise.resolve({json: () => Promise.resolve(lists)}), 
+                                                    Promise.resolve({json: () => Promise.resolve(books)}));
 
-            spyOn(document, "getElementById").and.returnValues(tutorsLabel, tutorContainer, listContainer, booksLabel, bookContainer);
+            spyOn(document, "getElementById").and.returnValues(tutorsLabel, tutorContainer, listsLabel, panel, panel, panel, listContainer, booksLabel, bookContainer);
 
-            spyOn(window, "createTutorListElement").and.returnValue(document.createElement("div"));
+            spyOn(window, "createTutorListElement").and.returnValues(document.createElement("div"), document.createElement("div"));
 
             await getSearchResultsHelper(mockWindow);
 
             expect(window.fetch).toHaveBeenCalledTimes(3);
-            expect(window.fetch.calls.allArgs()[0][0]).toEqual("/search?topic=math&sort-type=alpha");
-            expect(window.fetch.calls.allArgs()[1][0]).toEqual("/lists?topic=math");
-            expect(window.fetch.calls.allArgs()[2][0]).toContain("https://www.googleapis.com/books/v1/volumes");
 
             expect(tutorContainer.childNodes.length).toEqual(2);
             expect(tutorsLabel.innerText).toContain("Found 2 tutors for math");
+
+            expect(listContainer.childNodes.length).toEqual(2);
+            expect(listsLabel.innerText).toContain("Found 2 book playlists for math");
 
             expect(bookContainer.childNodes.length).toEqual(2);
             expect(booksLabel.innerText).toContain("Found 2 books for math");
@@ -174,6 +183,55 @@ describe("Search", function() {
 
     });
 
+    describe("when book lists are fetched and there are 0 results", function() {
+        var tutorBooksPanel = document.createElement("div");
+        var collapseOne = document.createElement("div");
+
+        var googleBooksPanel = document.createElement("div");
+        var collapseTwo = document.createElement("div");
+
+        var listsLabel = document.createElement("p");
+
+        it("should open google books panel", async function() {
+            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve([])})); 
+            spyOn(document, "getElementById").and.returnValues(listsLabel, collapseTwo, collapseTwo, googleBooksPanel); 
+            await getTutorBooks("math");
+            expect(listsLabel.innerText).toBe("No lists found for math.");
+            expect(googleBooksPanel.getAttribute("aria-expanded")).toBe("true");
+            expect(collapseTwo.getAttribute("aria-expanded")).toBe("true");
+            expect(collapseTwo.classList).toContain("in");
+            expect(tutorBooksPanel.hasAttribute("aria-expanded")).toBe(false);
+            expect(collapseOne.hasAttribute("aria-expanded")).toBe(false);
+            expect(collapseOne.classList).not.toContain("in");
+        });
+
+    });
+
+    describe("when book lists are fetched and there are 0 results", function() {
+        var tutorBooksPanel = document.createElement("div");
+        var collapseOne = document.createElement("div");
+
+        var googleBooksPanel = document.createElement("div");
+        var collapseTwo = document.createElement("div");
+
+        var listsLabel = document.createElement("p");
+        var listContainer = document.createElement("div");
+
+        it("should open tutor books panel", async function() {
+            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve(["1", "2"])})); 
+            spyOn(document, "getElementById").and.returnValues(listsLabel, collapseOne, collapseOne, tutorBooksPanel, listContainer); 
+            spyOn(window, "createTutorListElement").and.returnValues(document.createElement("div"), document.createElement("div"));
+            await getTutorBooks("math");
+            expect(tutorBooksPanel.getAttribute("aria-expanded")).toBe("true");
+            expect(collapseOne.getAttribute("aria-expanded")).toBe("true");
+            expect(collapseOne.classList).toContain("in");
+            expect(googleBooksPanel.hasAttribute("aria-expanded")).toBe(false);
+            expect(collapseTwo.hasAttribute("aria-expanded")).toBe(false);
+            expect(collapseTwo.classList).not.toContain("in");
+        });
+
+    });
+
     describe("when a tutor result is created", function() {
         var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", " ", "History"], "userId": "123", "ratingCount": 1, "ratingSum": 5};
         var element = createTutorResult(result);
@@ -257,19 +315,16 @@ describe("Search", function() {
 
     describe("when a list result is created", function() {
         var result = {name: "list 1", books: ["book 1", "book 2"], topic: "math", tutorID: "123"};
-        var modalName = document.createElement("div");
-        modalName.id = "list-modal-name";
-        var modalBody = document.createElement("div");
-        modalBody.id = "list-modal-body";
+        var googleBookResults = {"totalItems": 1, "items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]};
         var element;
 
-        beforeAll(function() { 
-            spyOn(document, "getElementById").and.returnValues(modalName, modalBody);
+        beforeAll(function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(googleBookResults)}));
             element = createTutorListElement(result);
         });
 
-        it("should create li for result element", function() {
-            expect(element.tagName).toEqual("LI");
+        it("should create div for result element", function() {
+            expect(element.tagName).toEqual("DIV");
         });
 
         it("should create h4 element inside result element for list name", function() {
@@ -282,29 +337,23 @@ describe("Search", function() {
             expect(element.childNodes[1].getAttribute("href")).toEqual("/profile.html?userID=123");
         });
 
-        it("should set anchor element to tutor name", async function() {
-            var tutor = {name: "Test"};
-            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutor)}));
+        it("should create div element inside result element to display books in list", function() {
+            expect(element.childNodes[2].tagName).toEqual("DIV");
+            expect(element.childNodes[2].childNodes.length).toEqual(2);
+        });
 
-            const tutorElement = element.childNodes[1];
+    });
+
+    describe("when setTutorNameInLink is called", function() {
+        var tutor = {name: "Test"};
+
+        it("should set anchor element to tutor name", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(tutor)}));
+            const tutorElement = document.createElement("a");
             await setTutorNameInLink(tutorElement, "123").then(() => {
                 expect(tutorElement.innerText).toEqual("Test");
             });
         });
-
-        it("should create button element inside result element to view list", function() {
-            expect(element.childNodes[2].tagName).toEqual("BUTTON");
-            expect(element.childNodes[2].innerText).toContain("View List");
-        });
-
-        it("should set modal content when view list button is clicked", function() {
-            element.childNodes[2].click();
-            expect(modalName.innerText).toContain("list 1");
-            expect(modalBody.childNodes.length).toBe(2);
-            expect(modalBody.childNodes[0].innerText).toBe("book 1");
-            expect(modalBody.childNodes[1].innerText).toBe("book 2");
-        });
-
     });
 
     describe("when sort type is changed", function() {

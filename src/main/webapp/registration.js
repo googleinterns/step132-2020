@@ -100,6 +100,7 @@ function displayLoginLogoutLinkHelper(document, loginStatus) {
 function displayStudentView(document, loginStatus) {
     document.getElementById('availability-settings').style.display = "none";
     document.getElementById('my-students').style.display = "none";
+    document.getElementById('my-lists').style.display = "none";
     document.getElementById('tutor-session-settings').style.display = "block";
     document.getElementById('history').style.display = "block";
     document.getElementById('tutor-session-settings').addEventListener('click', () => {
@@ -113,6 +114,7 @@ function displayStudentView(document, loginStatus) {
 function displayTutorView(document, loginStatus) {
     document.getElementById('availability-settings').style.display = "block";
     document.getElementById('my-students').style.display = "block";
+    document.getElementById('my-lists').style.display = "block";
     document.getElementById('tutor-session-settings').style.display = "none";
     document.getElementById('history').style.display = "none";
     document.getElementById('availability-settings').addEventListener('click', () => {
@@ -120,6 +122,9 @@ function displayTutorView(document, loginStatus) {
     });
     document.getElementById('my-students').addEventListener('click', () => {
         redirectToMyStudents(window, loginStatus);
+    });
+    document.getElementById('my-lists').addEventListener('click', () => {
+        redirectToMyLists(window, loginStatus);
     });
 }
 
