@@ -66,7 +66,7 @@ function checkMinTime(year, month, day, hour, minute, sessionDate, startTime, wi
 
     // Add check to see if user-inputted time is in the past
     if (yearMonthDay == sessionDate) {
-        if (Number(startTimeArr[0]*60) + Number(startTimeArr[1]) < hour*60 + minute) {
+        if (parseInt(startTimeArr[0]*60, 10) + parseInt(startTimeArr[1], 10) < hour*60 + minute) {
             alert("You cannot add an available timeslot in the past!");
             return true;
         }
