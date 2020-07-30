@@ -77,8 +77,6 @@ See the License for the specific language governing permissions and
 }
 
 #books-container {
-    width: 75%;
-    margin: auto;
     margin-top: 3%;
     overflow: scroll;
 }
@@ -107,6 +105,11 @@ See the License for the specific language governing permissions and
   }
 }
 
+.panel {
+    width: 75%;
+    margin: auto;
+}
+
 #load-more {
     position:relative;
     left:50%;
@@ -116,9 +119,9 @@ See the License for the specific language governing permissions and
 #lists-container {
     overflow-x: auto;
     white-space: nowrap;
-    width: 75%;
     margin: auto;
     overflow: scroll;
+    margin-top: 2%;
 }
 
 #tutor-books {
@@ -131,12 +134,12 @@ See the License for the specific language governing permissions and
     margin-right: 2% !important;
 }
 
-.tutor-list-result h4 {
+.list-name-result {
     font-weight: 700;
     margin: 0;
 }
 
-.tutor-list-result a {
+.tutor-name-result {
     color: black;
     text-decoration: none;
     display: block;
@@ -150,5 +153,33 @@ See the License for the specific language governing permissions and
 
 .nav-pills>li.active>a {
     background-color: rgb(67, 127, 151) !important;
+}
+
+.book-list-container {
+    overflow-x: auto;
+    white-space: nowrap;
+    margin: auto;
+    overflow: scroll;
+    margin-top: 2%;
+}
+
+.list-book {
+    margin: 0;
+    display: inline-block !important;
+    width: 25%;
+    text-align: center;
+}
+
+.list-book p {
+    margin-bottom: 0;
+}
+
+.list-book p:first-of-type {
+    margin-top: 10px;
+}
+
+.list-book img {
+    width: 150px;
+    height: 200px;
 }
 

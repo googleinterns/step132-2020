@@ -75,15 +75,26 @@ async function getTutorBooks(topic) {
     await fetch("/lists?topic=" + topic).then(response => response.json()).then((results) => {
         //if there was an error, display the error message
         if(results.error) {
-            document.getElementById("tutor-books-label").innerText = results.error;
+            document.getElementById("num-lists-results").innerText = results.error;
             return;
         }
 
         if(Object.keys(results).length === 0) {
-            document.getElementById("tutor-books").style.display = "none";
+            document.getElementById("num-lists-results").innerText = "No lists found for " + topic + ".";
+            //open google books panel
+            document.getElementById("collapsible-2").classList.add("in");
+            document.getElementById("collapsible-2").setAttribute("aria-expanded", true);
+            document.getElementById("google-books-panel").setAttribute("aria-expanded", true);
             return;
         }
 
+        document.getElementById("num-lists-results").innerText = "Found " + Object.keys(results).length + " book playlists for " + topic;
+
+        //open lists panel
+        document.getElementById("collapsible-1").classList.add("in");
+        document.getElementById("collapsible-1").setAttribute("aria-expanded", true);
+        document.getElementById("tutor-books-panel").setAttribute("aria-expanded", true);
+        
         var listContainer = document.getElementById("lists-container");
 
         results.forEach((result) => {
@@ -95,49 +106,48 @@ async function getTutorBooks(topic) {
 
 /** Creates a tutor list result element and sets the modal content to the list when the user clicks on "view list" button. */
 function createTutorListElement(result) {
-    var container = document.createElement("li");
+    var container = document.createElement("div");
     var listName = document.createElement("h4");
     var tutorName = document.createElement("a"); 
-    var listButton = document.createElement("button");
+    var books = document.createElement("div");
 
     listName.innerText = result.name;
     setTutorNameInLink(tutorName, result.tutorID);
-    listButton.innerText = "View List";
 
     //link to tutor profile
     tutorName.href = "/profile.html?userID=" + result.tutorID;
 
+
+    result.books.forEach((book) => {
+        var titleAndAuthor = book.toLowerCase().split(" by ");
+        var title = titleAndAuthor[0].trim();
+        //if user left out author, use empty string
+        var author = titleAndAuthor[1] === undefined ? "" : titleAndAuthor[1].trim();
+        
+        fetch("https://www.googleapis.com/books/v1/volumes?q=intitle:" + title + "+inauthor:" + author + "&maxResults=1&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y")
+            .then(response => response.json()).then((results) => {
+
+               if(results.totalItems === 0) {
+                    books.appendChild(createNoGoogleBookResult(book, "list-book"));
+                    return;
+                }
+
+                books.appendChild(createBookResult(results.items[0].volumeInfo, "list-book"));
+            });
+    });
+
     listName.className = "list-name-result";
     tutorName.className = "tutor-name-result";
-    listButton.classList.add("list-modal-button");
-    listButton.classList.add("btn");
-    listButton.classList.add("btn-sm");
-    container.classList.add("list-group-item");
+    books.classList.add("book-list-container");
+    books.classList.add("list-inline");
     container.classList.add("tutor-list-result");
 
     tutorName.setAttribute("target", "_blank");
-    listButton.setAttribute("data-toggle", "modal");
-    listButton.setAttribute("data-target", "#view-list-modal");
 
-    //set the modal content when user clicks on view list button
-    listButton.addEventListener("click", function() {
-        var modalName = document.getElementById("list-modal-name");
-        modalName.innerText = result.name;
-
-        var modalBody = document.getElementById("list-modal-body");
-        modalBody.innerHTML = "";
-
-        result.books.forEach((book) => {
-            var element = document.createElement("li");
-            element.classList.add("list-group-item");
-            element.innerText = book;
-            modalBody.appendChild(element);
-        });
-    });
 
     container.appendChild(listName);
     container.appendChild(tutorName);
-    container.appendChild(listButton);
+    container.appendChild(books);
 
     return container;
 }
@@ -156,15 +166,14 @@ async function getBooks(topic) {
             }
 
             //Only make "books" plural if there are 0 or more than 1 books
-            numSearchResults.innerText = "Found " + results.items.length + (results.items.length > 1 || results.items.length === 0 ? " books for " : " book for ") + topic;
+            numSearchResults.innerText = "Found " + results.totalItems + (results.totalItems > 1 || results.totalItems === 0 ? " books for " : " book for ") + topic;
 
             //create container to put books
             var booksContainer = document.getElementById("books-container");
-
             numResultsLoaded = results.items.length;
 
             results.items.forEach(function(result) {
-                booksContainer.append(createBookResult(result.volumeInfo));
+                booksContainer.append(createBookResult(result.volumeInfo, "book-result col-md-4"));
             });
 
             //if we got the max results, there might be more
@@ -183,10 +192,10 @@ async function getBooks(topic) {
     });
 }
 
+/** Gets the next 40 books from the Google Books API for the specified topic. */
 function loadMoreBooks(topic) {
     fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&startIndex=" + numResultsLoaded + "&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y")
         .then(response => response.json()).then((results) => {
-            var numSearchResults = document.getElementById("num-book-results");
 
             //if there was an error reported by the api, display the error message
             if(results.error) {
@@ -195,9 +204,6 @@ function loadMoreBooks(topic) {
             }
 
             numResultsLoaded += results.items.length;
-
-            //Only make "books" plural if there are 0 or more than 1 books
-            numSearchResults.innerText = "Found " + numResultsLoaded + " books for " + topic;
 
             //create container to put books
             var booksContainer = document.getElementById("books-container");
@@ -246,8 +252,27 @@ async function getTutors(topic, sort) {
 
 }
 
+/** Creates a book result with an empty book cover and the name of the book. */
+function createNoGoogleBookResult(result, className) {
+    var container = document.createElement("div");
+    var thumbnail = document.createElement("img");
+    var book = document.createElement("p");
+
+    thumbnail.src = "/images/book-cover.png";
+
+    book.innerText = result;
+
+    container.classList.add(className);
+    container.classList.add("col-md-4");
+
+    container.appendChild(thumbnail);
+    container.appendChild(book);
+
+    return container;
+}
+
 /** Creates a anchor element containing information about a book result. */
-function createBookResult(result) {
+function createBookResult(result, className) {
     var container = document.createElement("a");
     var thumbnail = document.createElement("img");
     var title = document.createElement("p");
@@ -268,8 +293,7 @@ function createBookResult(result) {
         author.innerText = "by " + result.authors.join(", ");
     }
 
-    container.classList.add("book-result");
-    container.classList.add("col-md-4");
+    container.className = className;
 
     container.appendChild(thumbnail);
     container.appendChild(title);
@@ -341,7 +365,12 @@ function loadStars(starsElement, rating) {
 //Sets tutor's name in tutor anchor element
 function setTutorNameInLink(tutorElement, tutorID) {
     var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerText = tutor.name;
+    return getUser(tutorID).then(user => {
+        if(user.student != null) {
+            tutorElement.innerText = user.tutor.name;
+        } else {
+            tutorElement.innerText = user.name;
+        }
+        
     });
 }

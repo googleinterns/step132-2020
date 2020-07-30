@@ -34,6 +34,7 @@ async function getListsHelper(window, url) {
             alert("You must be signed in to manage lists.");
             return null;
         }
+
         return response.json();
         
     }).then((lists) => {
@@ -94,10 +95,20 @@ function createListElement(list) {
     topic.innerText = capitalizeFirstLetter(list.topic.toLowerCase());
 
     list.books.forEach((book) => {
-        var elem = document.createElement("li");
-        elem.className = "book";
-        elem.innerText = book;
-        books.appendChild(elem);
+        var titleAndAuthor = book.toLowerCase().split(" by ");
+        var title = titleAndAuthor[0].trim();
+        //if user left out author, use empty string
+        var author = titleAndAuthor[1] === undefined ? "" : titleAndAuthor[1].trim();
+
+        fetch("https://www.googleapis.com/books/v1/volumes?q=intitle:" + title + "+inauthor:" + author + "&maxResults=1&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y")
+            .then(response => response.json()).then((results) => {
+                if(results.totalItems === 0) {
+                    books.appendChild(createNoGoogleBookResult(book, "book-result"));
+                    return;
+                }
+
+                books.appendChild(createBookResult(results.items[0].volumeInfo, "book-result col-md-4"));
+            });
     });
 
     container.id = list.name;
