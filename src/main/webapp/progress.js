@@ -22,7 +22,6 @@ function loadProgress(document, loginStatus, user) {
 
     getExperiences(document, loginStatus, user);
     getGoals(document, loginStatus, user);
-    getAchievements(document, loginStatus);
     getPastSessionsAndTopics(document, loginStatus, user);
 }
 
@@ -82,6 +81,7 @@ function getExperiencesHelper(document, experiences, loginStatus, user) {
         var experienceContainer = document.getElementById('experiences');
         var errorMessage = document.createElement("p");
         errorMessage.innerText = "This user has not set any past experiences";
+        errorMessage.className = "text-center";
         experienceContainer.appendChild(errorMessage);
         return;
     }
@@ -130,17 +130,10 @@ function getGoalsHelper(document, goals, loginStatus, user) {
         var goalContainer = document.getElementById('goals');
         var errorMessage = document.createElement("p");
         errorMessage.innerText = "This user has not set any goals";
+        errorMessage.className = "text-center";
         goalContainer.appendChild(errorMessage);
         return;
     }
-}
-
-function getAchievements(document, loginStatus) {
-    var achievementsContainer = document.getElementById('achievements');
-    var errorMessage = document.createElement("p");
-    errorMessage.innerText = "This user does not have any achievements";
-    achievementsContainer.appendChild(errorMessage);
-    return;
 }
 
 function getPastSessionsAndTopics(document, loginStatus, user) {
@@ -203,6 +196,8 @@ function getPastSessionsAndTopicsHelper(document, tutoringSessions) {
         var errorMessage2 = document.createElement("p");
         errorMessage1.innerText = "This user has not had any tutoring sessions yet.";
         errorMessage2.innerText = "This user has not had any tutoring sessions yet.";
+        errorMessage1.className = "text-center";
+        errorMessage2.className = "text-center";
         pastSessions.appendChild(errorMessage1);
         pastTopics.appendChild(errorMessage2);
         return;
