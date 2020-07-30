@@ -146,7 +146,7 @@ function createTutorListElement(result) {
 var numResultsLoaded = 0;
 /** Fetches the list of books for the topic the user searched for and displays them on the page. */
 async function getBooks(topic) {
-    await fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y")
+    await fetch("/books?topic="+topic)
         .then(response => response.json()).then((results) => {
             var numSearchResults = document.getElementById("num-book-results");
             //if there was an error reported by the api, display the error message
@@ -184,7 +184,7 @@ async function getBooks(topic) {
 }
 
 function loadMoreBooks(topic) {
-    fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&startIndex=" + numResultsLoaded + "&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y")
+    fetch("/books?topic=" + topic + "&num-loaded=" + numResultsLoaded)
         .then(response => response.json()).then((results) => {
             var numSearchResults = document.getElementById("num-book-results");
 
