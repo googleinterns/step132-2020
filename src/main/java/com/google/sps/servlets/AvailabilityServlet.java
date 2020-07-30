@@ -78,7 +78,14 @@ public class AvailabilityServlet extends HttpServlet {
     private List<TimeRange> filterUpcomingTimeslots(List<TimeRange> allTimeslots) {
         List<TimeRange> upcomingTimeslots = new ArrayList<TimeRange>();
 
-        Calendar currentCalendar = Calendar.getInstance();
+        // Calendar object on timeslots don't have hour or minute, so create this calendar with only year, month, and day
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        Calendar currentCalendar = new Calendar.Builder()
+                                                    .setCalendarType("iso8601")
+                                                    .setDate(year, month, day)
+                                                    .build();
 
         for (TimeRange timeslot : allTimeslots) {
             Calendar timeslotCalendar = timeslot.getDate();
