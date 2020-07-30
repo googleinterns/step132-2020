@@ -80,7 +80,7 @@ public final class GroupDatastoreService {
             Entity groupEntity = new Entity("Group");
 
             groupEntity.setProperty("name", group.getName().toLowerCase());
-            groupEntity.setProperty("topic", group.getTopic());
+            groupEntity.setProperty("topic", group.getTopic().toLowerCase());
             groupEntity.setProperty("description", group.getDescription());
             groupEntity.setProperty("owner", group.getOwner());
 
