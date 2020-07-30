@@ -22,7 +22,6 @@ function loadProgress(document, loginStatus, user) {
 
     getExperiences(document, loginStatus, user);
     getGoals(document, loginStatus, user);
-    getAchievements(document, loginStatus);
     getPastSessionsAndTopics(document, loginStatus, user);
 }
 
@@ -133,14 +132,6 @@ function getGoalsHelper(document, goals, loginStatus, user) {
         goalContainer.appendChild(errorMessage);
         return;
     }
-}
-
-function getAchievements(document, loginStatus) {
-    var achievementsContainer = document.getElementById('achievements');
-    var errorMessage = document.createElement("p");
-    errorMessage.innerText = "This user does not have any achievements";
-    achievementsContainer.appendChild(errorMessage);
-    return;
 }
 
 function getPastSessionsAndTopics(document, loginStatus, user) {
