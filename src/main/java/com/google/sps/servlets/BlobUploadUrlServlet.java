@@ -36,6 +36,7 @@ public class BlobUploadUrlServlet extends HttpServlet {
         setResponse(request, response, blobstoreService);
     }
 
+    // Sets the content of the response to the Blobstore upload URL, created for testing
     public void setResponse(HttpServletRequest request, HttpServletResponse response, BlobstoreService blobstoreService) throws IOException {
         String uploadUrl = blobstoreService.createUploadUrl("/registration");
 
