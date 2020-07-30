@@ -142,7 +142,7 @@ public final class ManageRepliesTest {
 
         verify(request, times(1)).getParameter("postId");
 
-        String expected = "{\"error\": \"Invalid search request.\"}";
+        String expected = "{\"error\": \"Invalid post id.\"}";
       
         writer.flush();
 
