@@ -62,12 +62,6 @@ public class GoogleBooksServlet extends HttpServlet {
             params += "&startIndex=" + startIndex;
         }
 
-        //send error message if the search was invalid
-        if(topic == null || topic.equals("")) {
-            response.getWriter().println("{\"error\": \"Invalid search request.\"}");
-            return;
-        }
-
         URL url = new URL("https://www.googleapis.com/books/v1/volumes?" + params + "&key=" + System.getenv("GOOGLE_API_KEY"));
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
