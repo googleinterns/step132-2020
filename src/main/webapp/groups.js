@@ -77,14 +77,12 @@ function createGroupResult(result) {
     var container = document.createElement("div");
     var name = document.createElement("h3");
     name.style.textTransform = 'capitalize';
-    //var members = document.createElement("h4");
     var topic = document.createElement("h4");
     topic.style.textTransform = 'capitalize';
     var description = document.createElement("h5");
     var groupLink = document.createElement("a");
 
     name.innerText = result.name;
-    //members.innerText = result.members + (result.members > 1 || result.members === 0 ? " members" : " member");
     topic.innerText = result.topic;
     description.innerText = result.description;
     groupLink.innerText = "View";
@@ -94,7 +92,6 @@ function createGroupResult(result) {
     container.classList.add("list-group-item");
 
     container.appendChild(name);
-    //container.appendChild(members);
     container.appendChild(topic);
     container.appendChild(description);
     container.appendChild(groupLink);
@@ -102,20 +99,5 @@ function createGroupResult(result) {
     return container;
 }
 
-/** When a user selects "other" topic, it displays the text input so that the user can type their topic. If the user 
-*   selects a different topic, it hides the text input.
-*/
-function checkOtherSelected(value) {
-    var otherTextBox = document.getElementById('other-topic');
-    if(value === 'other') {
-        otherTextBox.style.display = 'block';
-        otherTextBox.setAttribute("required", "");
-        otherTextBox.setAttribute("aria-required", true);
-    } else  {
-        otherTextBox.style.display = 'none';
-        otherTextBox.removeAttribute("required");
-        otherTextBox.removeAttribute("aria-required");
-    }
-}
 
 
