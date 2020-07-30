@@ -110,10 +110,19 @@ public final class AvailabilityDatastoreService {
         TransactionOptions options = TransactionOptions.Builder.withXG(true);
         Transaction txn = datastore.beginTransaction(options);
 
+        int start = time.getStart();
+        int end = time.getEnd();
+        // If timeslot bleeds into next day (i.e. 11:30pm - 12:30am), start time is shown as 1410 and end time 30
+        // However in the datastore, start time is 1410 and end time is 1470, so the filter below doesn't work
+        // If the end time is less than the start time, update the end time so it can be found in datastore
+        if (end < start) {
+            end = start + 60;
+        }
+
         //filter by tutor's id and time range properties
         CompositeFilter timeFilter = CompositeFilterOperator.and(FilterOperator.EQUAL.of("tutorID", userId),
-                                                                 FilterOperator.EQUAL.of("start", time.getStart()), 
-                                                                 FilterOperator.EQUAL.of("end", time.getEnd()), 
+                                                                 FilterOperator.EQUAL.of("start", start), 
+                                                                 FilterOperator.EQUAL.of("end", end), 
                                                                  FilterOperator.EQUAL.of("date", new Gson().toJson(time.getDate())));
 
         Query query = new Query("TimeRange").setFilter(timeFilter);
