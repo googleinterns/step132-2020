@@ -44,7 +44,7 @@ public class ManageRepliesServlet extends HttpServlet {
 
         // Send error message if the search was invalid.
         if (postId == null || postId.equals("")) {
-            response.getWriter().println("{\"error\": \"Invalid search request.\"}");
+            response.getWriter().println("{\"error\": \"Invalid post id.\"}");
             return;
          }
 
