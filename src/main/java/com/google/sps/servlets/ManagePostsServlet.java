@@ -44,7 +44,7 @@ public class ManagePostsServlet extends HttpServlet {
 
         // Send error message if the search was invalid.
         if (groupId == null || groupId.equals("")) {
-            response.getWriter().println("{\"error\": \"Invalid search request.\"}");
+            response.getWriter().println("{\"error\": \"Invalid group id.\"}");
             return;
          }
 
