@@ -20,7 +20,6 @@ describe("User Profile", function() {
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
             email: "sfalberg@google.com", skills: ["Math", "Physics"]};
         var mockLoginStatus = {role:"tutor", userId: "123"};
-        var actualText;
 
         beforeAll(function() {
             var mockEditButton = document.createElement('btn');
