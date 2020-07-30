@@ -241,50 +241,55 @@ describe("Search", function() {
             expect(element.tagName).toEqual("DIV");
         });
 
-        it("should create h3 element inside result element for name", function() {
-            expect(element.childNodes[0].tagName).toEqual("H3");
-            expect(element.childNodes[0].innerText).toContain("Tutor 1");
+        it("should create div for header row that has name, profile link, and rating inside", function() {
+            expect(element.childNodes[0].tagName).toEqual("DIV");
+            expect(element.childNodes[0].childNodes.length).toEqual(3);
         });
 
-        it("should create anchor element inside name element for link to user's profile", function() {
-            expect(element.childNodes[0].childNodes[0].tagName).toEqual("A");
-            expect(element.childNodes[0].childNodes[0].href).toContain("/profile.html?userID=123");
+        it("should create h3 element inside header row for name", function() {
+            expect(element.childNodes[0].childNodes[0].tagName).toEqual("H3");
+            expect(element.childNodes[0].childNodes[0].innerText).toContain("Tutor 1");
         });
 
-        it("should create div element inside result element for rating", function() {
-            expect(element.childNodes[1].tagName).toEqual("DIV");
+        it("should create anchor element with profile icon inside header for link to user's profile", function() {
+            expect(element.childNodes[0].childNodes[1].tagName).toEqual("A");
+            expect(element.childNodes[0].childNodes[1].getAttribute("href")).toEqual("/profile.html?userID=123");
+        });
+
+        it("should create div element inside header row for rating", function() {
+            expect(element.childNodes[0].childNodes[2].tagName).toEqual("DIV");
         });
 
         it("should create a span element for each star inside of rating element", function() {
-            expect(element.childNodes[1].childNodes[0].tagName).toEqual("SPAN");
-            expect(element.childNodes[1].childNodes[1].tagName).toEqual("SPAN");
-            expect(element.childNodes[1].childNodes[2].tagName).toEqual("SPAN");
-            expect(element.childNodes[1].childNodes[3].tagName).toEqual("SPAN");
-            expect(element.childNodes[1].childNodes[4].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[0].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[1].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[2].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[3].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[4].tagName).toEqual("SPAN");
         });
 
         it("should have all stars inside the rating element of class glyphicon glyphicon-star", function() {
-            expect(element.childNodes[1].childNodes[0].className).toContain("glyphicon glyphicon-star");
-            expect(element.childNodes[1].childNodes[1].className).toContain("glyphicon glyphicon-star");
-            expect(element.childNodes[1].childNodes[2].className).toContain("glyphicon glyphicon-star");
-            expect(element.childNodes[1].childNodes[3].className).toContain("glyphicon glyphicon-star");
-            expect(element.childNodes[1].childNodes[4].className).toContain("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[0].className).toEqual("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[1].className).toEqual("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[2].className).toEqual("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[3].className).toEqual("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[4].className).toEqual("glyphicon glyphicon-star");
         });
 
         it("should create h6 element inside result element for email", function() {
-            expect(element.childNodes[2].tagName).toEqual("H6");
-            expect(element.childNodes[2].innerText).toContain("tutor1@gmail.com");
+            expect(element.childNodes[1].tagName).toEqual("H6");
+            expect(element.childNodes[1].innerText).toContain("tutor1@gmail.com");
         });
 
         it("should create p element inside result element for skills", function() {
-            expect(element.childNodes[3].tagName).toEqual("P");
-            expect(element.childNodes[3].innerText).toContain("Skills: Math, History");
+            expect(element.childNodes[2].tagName).toEqual("P");
+            expect(element.childNodes[2].innerText).toContain("Skills: Math, History");
         });
 
         it("should create anchor element inside result element for availability link", function() {
-            expect(element.childNodes[4].tagName).toEqual("A");
-            expect(element.childNodes[4].innerText).toContain("Availability");
-            expect(element.childNodes[4].href).toContain("/availability.html?tutorID=123");
+            expect(element.childNodes[3].tagName).toEqual("A");
+            expect(element.childNodes[3].innerText).toContain("Availability");
+            expect(element.childNodes[3].href).toContain("/availability.html?tutorID=123");
         });
 
     });
