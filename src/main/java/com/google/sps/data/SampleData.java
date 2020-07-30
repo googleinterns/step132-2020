@@ -57,14 +57,22 @@ public final class SampleData {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 18)
                                                         .build();
+    private final Calendar NOV182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 10, 18)
+                                                        .build();
+    private final Calendar DEC102020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 11, 10)
+                                                        .build();                
     //9 and 14 are the ids local datastore gives to these entities
     private final TutorSession bernardoSession = new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9); 
     private final TutorSession samSession = new TutorSession("2", "2", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14);
 
     private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
         new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("math", "history")),
-                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, NOV182020),
+                            TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, DEC102020))),
                 new ArrayList<TutorSession> (Arrays.asList()), "0"),
         new Tutor("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("english", "physics")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),

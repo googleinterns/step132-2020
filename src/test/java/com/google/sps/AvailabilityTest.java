@@ -44,13 +44,13 @@ public final class AvailabilityTest {
     private final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
     private final int TIME_0300PM = TimeRange.getTimeInMinutes(15, 00);
     private final int TIME_0500PM = TimeRange.getTimeInMinutes(17, 00);
-    private final Calendar MAY182020 = new Calendar.Builder()
+    private final Calendar NOV182020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 4, 18)
+                                                        .setDate(2020, 10, 18)
                                                         .build();
-    private final Calendar AUGUST102020 = new Calendar.Builder()
+    private final Calendar DEC102020 = new Calendar.Builder()
                                                         .setCalendarType("iso8601")
-                                                        .setDate(2020, 7, 10)
+                                                        .setDate(2020, 11, 10)
                                                         .build();
     
     private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
@@ -89,8 +89,8 @@ public final class AvailabilityTest {
       
         servlet.doGet(request, response);
 
-        String expected = new Gson().toJson(Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                                                    TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020)));
+        String expected = new Gson().toJson(Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, NOV182020),
+                                                    TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, DEC102020)));
 
         verify(request, times(1)).getParameter("tutorID");
         writer.flush();
