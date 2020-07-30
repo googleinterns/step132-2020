@@ -77,12 +77,13 @@ See the License for the specific language governing permissions and
             <div class="container-fluid bg-white">
                 <form id="registration-form" enctype="multipart/form-data" method="POST" style="display:none">
 
-                    <p>Would you like to sign up as a student, a tutor, or both?</p>
+                    <h3>Would you like to sign up as a student, a tutor, or both?</h3>
                     <input onclick="displayRegistrationInfo()" type="radio" name="role" id="student" value="student"> Student<br>
                     <input onclick="displayRegistrationInfo()" type="radio" name="role" id="tutor" value="tutor"> Tutor<br>
                     <input onclick="displayRegistrationInfo()" type="radio" name="role" id="both" value="both"> Both<br><br>
                     
                     <div id="general-info" style="display:none">
+                        <h3>Personal Information</h3>
                         <label for="first-name">First Name:</label>
                         <input type="text" name="first-name" required><br>
                         <label for="last-name">Last Name:</label>
@@ -90,10 +91,11 @@ See the License for the specific language governing permissions and
                         <label for="bio">Tell us about yourself (optional):</label><br>
                         <textarea name="bio"></textarea><br>
                         <label for="image">Profile picture (optional):</label>
-                        <input type="file" name="pfp"><br><br>
+                        <input type="file" name="pfp">
 
                         <div id="student-topics" style="display:none">
-                            <p>What topic(s) would you like to learn?</p>
+                            <br><br>
+                            <h3>What topic(s) would you like to learn?</h3>
                             <input type="checkbox" id="math-learn" name="math-learn" value="Math">
                             <label for="math-learn"> Math</label><br>
                             <input type="checkbox" id="physics-learn" name="physics-learn" value="Physics">
@@ -119,7 +121,8 @@ See the License for the specific language governing permissions and
                         </div>
 
                         <div id="tutor-topics" style="display:none">
-                            <p>What topic(s) would you like to tutor in?</p>
+                            <br><br>
+                            <h3>What topic(s) would you like to tutor in?</h3>
                             <input type="checkbox" id="math-tutor" name="math-tutor" value="Math">
                             <label for="math-tutor"> Math</label><br>
                             <input type="checkbox" id="physics-tutor" name="physics-tutor" value="Physics">
@@ -143,8 +146,10 @@ See the License for the specific language governing permissions and
                             <label for="other-subject-tutor">Please add any other topics in a comma separated list (e.g. "Business, Music Theory"):</label><br>
                             <input type="text" id="other-subject-tutor" name="other-tutor">
                         </div>
-
-                    <button class="btn btn-lg" type="submit" id="register-submit">Submit</button>
+                        
+                    <br><br>
+                    <button class="btn btn-lg" type="submit" id="register-submit">Submit</button><br><br>
+                    <br><br>
                 </form>
             </div>
         </div>
