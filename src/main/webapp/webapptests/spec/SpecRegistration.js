@@ -150,6 +150,9 @@ describe("Registration", function() {
                 var mockProfileLink = document.createElement('button');
                 mockProfileLink.id = 'profile';
 
+                var mockGroupsLink = document.createElement('button');
+                mockGroupsLink.id = 'groups';
+
                 var mockAvailabilitySettingsLink = document.createElement('button');
                 mockAvailabilitySettingsLink.id = 'availability-settings';
 
@@ -188,6 +191,7 @@ describe("Registration", function() {
                 document.body.appendChild(mockLogoutForm);
                 document.body.appendChild(mockLogoutUrl);
                 document.body.appendChild(mockProfileLink);
+                document.body.appendChild(mockGroupsLink);
                 document.body.appendChild(mockAvailabilitySettingsLink);
                 document.body.appendChild(mockMyStudentsLink);
                 document.body.appendChild(mockMyListsLink);
@@ -216,6 +220,7 @@ describe("Registration", function() {
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
                 expect(document.getElementById('profile').style.display).toBe('block');
+                expect(document.getElementById('groups').style.display).toBe('block');
                 expect(document.getElementById('availability-settings').style.display).toBe('none');
                 expect(document.getElementById('my-students').style.display).toBe('none');
                 expect(document.getElementById('my-lists').style.display).toBe('none');
@@ -231,6 +236,7 @@ describe("Registration", function() {
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
                 expect(document.getElementById('profile').style.display).toBe('block');
+                expect(document.getElementById('groups').style.display).toBe('block');
                 expect(document.getElementById('availability-settings').style.display).toBe('block');
                 expect(document.getElementById('my-students').style.display).toBe('block');
                 expect(document.getElementById('my-lists').style.display).toBe('block');
@@ -246,6 +252,7 @@ describe("Registration", function() {
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
                 expect(document.getElementById('profile').style.display).toBe('block');
+                expect(document.getElementById('groups').style.display).toBe('block');
                 expect(document.getElementById('availability-settings').style.display).toBe('none');
                 expect(document.getElementById('my-students').style.display).toBe('none');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('block');
@@ -264,6 +271,7 @@ describe("Registration", function() {
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
                 expect(document.getElementById('profile').style.display).toBe('block');
+                expect(document.getElementById('groups').style.display).toBe('block');
                 expect(document.getElementById('availability-settings').style.display).toBe('block');
                 expect(document.getElementById('my-students').style.display).toBe('block');
                 expect(document.getElementById('tutor-session-settings').style.display).toBe('none');
@@ -311,6 +319,15 @@ describe("Registration", function() {
 
                 expect(mockWindow.location.href).toEqual("profile.html?userID=123");
             });
+
+            it("adds event listener that redirects the user to the groups page", function() {
+                mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'123', role: "tutor"};
+                var mockWindow = {location: {href: "homepage.html"}};
+                redirectToGroups(mockWindow, mockLoginStatus);
+
+                expect(mockWindow.location.href).toEqual("groups.html");
+            });
+
 
             it("adds event listener that redirects the user to their availability settings", function() {
                 mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:'123', role: "tutor"};

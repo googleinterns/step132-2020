@@ -78,29 +78,45 @@ describe("Manage Availability", function() {
         });
     });
 
+    describe("when checking inputted time", function() {
+        var mockWindow = {location: {href: "manage-availability.html"}};
+        
+        it("should prohibit times from the past when the date is set to today", function() {
+            spyOn(window, 'alert');
+            var actual = checkMinTime(2020, 7, 30, 15, 10, '2020-07-30', '13:30', mockWindow);
+            expect(window.alert).toHaveBeenCalledWith("You cannot add an available timeslot in the past!");
+            expect(actual).toBe(true);
+        });
+
+        it("should do nothing when the date is in the future", function() {
+            spyOn(window, 'alert');
+            var actual = checkMinTime(2020, 7, 30, 15, 10, '2020-07-31', '13:30', mockWindow);
+            expect(actual).toBe(false);
+        });
+
+        it("should do nothing when the time is in the future and the date is set to today", function() {
+            spyOn(window, 'alert');
+            var actual = checkMinTime(2020, 7, 30, 15, 10, '2020-07-30', '16:30', mockWindow);
+            expect(actual).toBe(false);
+        });
+    });
+
     describe("when setting a min date", function() {  
         var year = 2020;
         var month = 5;
         var day = 4;
-        var hour = 3;
-        var minute = 2;
 
         beforeAll(function() {
-            var mockTimeInput = document.createElement('input');
-            mockTimeInput.id = 'startTime';
-            mockTimeInput.setAttribute('type', 'time');
             var mockDateInput = document.createElement('input');
             mockDateInput.id = 'date';
             mockDateInput.setAttribute('type', 'date');
 
-            document.body.appendChild(mockTimeInput);
             document.body.appendChild(mockDateInput);
         })
     
         it("should correctly format the month, day, hour, and minute", function() {
-            setMinDateHelper(document, year, month, day, hour, minute);
+            setMinDateHelper(document, year, month, day);
 
-            expect(document.getElementById('startTime').min).toBe('03:02');
             expect(document.getElementById('date').min).toBe('2020-05-04');
         });
     });
