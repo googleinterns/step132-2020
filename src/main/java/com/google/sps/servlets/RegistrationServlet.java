@@ -168,15 +168,15 @@ public class RegistrationServlet extends HttpServlet {
         return null;
     } 
 
-    // Form only contains a single file input, so get the first index.
-    String blobKey = blobKeys.get(0).getKeyString();
-
     // User submitted form without selecting a file, so we can't get a URL. (live server)
     BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKeys.get(0));
     if (blobInfo.getSize() == 0) {
         blobstoreService.delete(blobKeys.get(0));
         return null;
     }
+
+    // Form only contains a single file input, so get the first index.
+    String blobKey = blobKeys.get(0).getKeyString();
 
     return blobKey;        
   }
