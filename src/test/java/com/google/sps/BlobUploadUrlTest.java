@@ -44,7 +44,7 @@ public final class BlobUploadUrlTest {
 
     @Test
     public void doGetRespondsWithCorrectUrl() throws IOException {
-        when(blobstore.createUploadUrl("/registration")).thenReturn("/registration.html");
+        when(blobstore.createUploadUrl("/registration")).thenReturn("/registration");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -52,7 +52,7 @@ public final class BlobUploadUrlTest {
 
         servlet.setResponse(request, response, blobstore);
 
-        String expected = "/registration.html";
+        String expected = "/registration";
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
