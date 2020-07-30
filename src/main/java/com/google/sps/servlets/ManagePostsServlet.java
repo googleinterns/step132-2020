@@ -62,23 +62,19 @@ public class ManagePostsServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
 
-        String userID;
-
-        // If the user opted to post anonymously, make their userId anonymous.
-        String anonymous = Optional.ofNullable(request.getParameter("anonymous")).orElse("false");
-        if (anonymous.equals("true")) {
-            userID = "anonymous";
-        } else {
-            //Set default value to -1 
-            userID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
-        }
-
+        String userID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
         String content = request.getParameter("post-content");
         String groupID = Optional.ofNullable((String) request.getParameter("groupId")).orElse("-1");
 
         if(userID.equals("-1") || groupID.equals("-1")) {
             response.getWriter().println("{\"error\": \"There was an error posting to this group.\"}");
             return;
+        }
+
+        // If the user opted to post anonymously, make their userId anonymous.
+        String anonymous = Optional.ofNullable(request.getParameter("anonymous")).orElse("false");
+        if (anonymous.equals("true")) {
+            userID = "anonymous";
         }
 
         Post newPost = new Post(userID, groupID, content);

@@ -142,7 +142,7 @@ public final class ManagePostsTest {
 
         verify(request, times(1)).getParameter("groupId");
 
-        String expected = "{\"error\": \"Invalid search request.\"}";
+        String expected = "{\"error\": \"Invalid group id.\"}";
       
         writer.flush();
 
@@ -227,7 +227,6 @@ public final class ManagePostsTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("anonymous");
         verify(request, times(1)).getParameter("post-content");
         verify(request, times(1)).getParameter("groupId");
 
@@ -256,7 +255,6 @@ public final class ManagePostsTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("anonymous");
         verify(request, times(1)).getParameter("post-content");
         verify(request, times(1)).getParameter("groupId");
 
