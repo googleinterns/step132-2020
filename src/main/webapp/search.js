@@ -281,32 +281,44 @@ function createBookResult(result) {
 /** Creates a div element containing information about a tutor result. */
 function createTutorResult(result) {
     var container = document.createElement("div");
+    var headerRow = document.createElement("div");
     var name = document.createElement("h3");
+    var profileLink = document.createElement("a");
     var rating = document.createElement("div");
     var email = document.createElement("h6");
     var skills = document.createElement("p");
     var availabilityLink = document.createElement("a");
 
-    name.innerHTML = "<a style='color:black' href='/profile.html?userID=" + result.userId + "'>" + result.name + "</a>";
+    name.innerText = result.name;
+    profileLink.innerHTML = "<img alt='View profile' src='/images/profile-icon.png'/>";
+    profileLink.href = "/profile.html?userID=" + result.userId;
     email.innerText = result.email;
+
     // Remove blank entry before adding to inner text
     var index = result.skills.indexOf(' ');
     result.skills.splice(index, 1);
     skills.innerText = "Skills: " + result.skills.join(", ");
-    availabilityLink.innerText = "Availability";
-    loadStars(rating, Math.round(parseInt(result.ratingSum) / parseInt(result.ratingCount)));
 
+    availabilityLink.innerText = "Availability";
     availabilityLink.href = "/availability.html?tutorID=" + result.userId;
 
+    loadStarsForTutorRating(rating, Math.round(result.ratingSum / result.ratingCount));
+
+    headerRow.classList.add("tutor-result-header");
     name.classList.add("tutor-name");
     rating.classList.add("tutor-rating");
+    availabilityLink.classList.add("btn");
     container.classList.add("tutor-result");
     container.classList.add("list-group-item");
 
+    profileLink.setAttribute("aria-label", "View profile");
+
     skills.style.textTransform = "capitalize";
 
-    container.appendChild(name);
-    container.appendChild(rating);
+    headerRow.appendChild(name);
+    headerRow.appendChild(profileLink);
+    headerRow.appendChild(rating);
+    container.appendChild(headerRow);
     container.appendChild(email);
     container.appendChild(skills);
     container.appendChild(availabilityLink);
@@ -315,7 +327,7 @@ function createTutorResult(result) {
 }
 
 /** Loads filled and unfilled stars for tutor's rating. */
-function loadStars(starsElement, rating) {
+function loadStarsForTutorRating(starsElement, rating) {
     //tutor does not have a rating yet, don't display anything
     if (rating == 0) {
         return;

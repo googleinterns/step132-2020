@@ -14,6 +14,19 @@ See the License for the specific language governing permissions and
     width: 75%;
 }
 
+.tutor-result:first-child h3 {
+    vertical-align: bottom;
+}
+
+.tutor-result-header a {
+    display: inline-block;
+    margin-left: 1%;
+}
+
+.tutor-result-header img {
+    width: 25px;
+}
+
 #tutor-sort {
     position: fixed;
     margin-left: 1.5%;
