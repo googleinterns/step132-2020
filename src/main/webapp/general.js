@@ -34,7 +34,7 @@ function readComponents(queryString, window) {
 function setTutorName(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerText = "Tutoring Session with " + tutor.name;
+        tutorElement.innerHTML = "Tutoring Session with " + tutor.name;
     });
 }
 
@@ -55,6 +55,22 @@ function getUserId() {
     return fetch('/login-status').then(response => response.json()).then((loginStatus) => {
         return loginStatus.userId;
     });
+}
+
+/** When a user selects "other" topic, it displays the text input so that the user can type their topic. If the user 
+*   selects a different topic, it hides the text input.
+*/
+function checkOtherSelected(value) {
+    var otherTextBox = document.getElementById('other-topic');
+    if(value === 'other') {
+        otherTextBox.style.display = 'block';
+        otherTextBox.setAttribute("required", "");
+        otherTextBox.setAttribute("aria-required", true);
+    } else  {
+        otherTextBox.style.display = 'none';
+        otherTextBox.removeAttribute("required");
+        otherTextBox.removeAttribute("aria-required");
+    }
 }
 
 

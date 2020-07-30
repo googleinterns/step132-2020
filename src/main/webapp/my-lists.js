@@ -12,23 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
-/** When a user selects "other" topic, it displays the text input so that the user can type their topic. If the user 
-*   selects a different topic, it hides the text input.
-*/
-function checkOtherSelected(value) {
-    var otherTextBox = document.getElementById('other-topic');
-    if(value === 'other') {
-        otherTextBox.style.display = 'block';
-        otherTextBox.setAttribute("required", "");
-        otherTextBox.setAttribute("aria-required", true);
-    } else  {
-        otherTextBox.style.display = 'none';
-        otherTextBox.removeAttribute("required");
-        otherTextBox.removeAttribute("aria-required");
-    }
-}
-
 /** Gets all of the tutor's lists from the server, used for the manage-lists page. */
 function getListsManage() {
     return getListsHelper(window, '/manage-lists');
