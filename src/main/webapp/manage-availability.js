@@ -27,10 +27,19 @@ function addTimeSlot() {
 
 //Helper function for addTimeSlot, used for testing.
 function addTimeSlotHelper(window) {
+    var today = new Date();
+    var sessionDate = document.getElementById('date');
+    var startTime = document.getElementById('startTime');
+
+    // Return early if user tried to schedule session in the past
+    if (checkMinTime(today.getFullYear(), today.getMonth()+1, today.getDate(), today.getHours(), today.getMinutes(), sessionDate.value, startTime.value, window)) {
+        return;
+    }
+
     const params = new URLSearchParams();
 
-    params.append('startTime', document.getElementById('startTime').value);
-    params.append('date', document.getElementById('date').value);
+    params.append('startTime', startTime.value);
+    params.append('date', sessionDate.value);
 
     fetch('/manage-availability', {method: 'POST', body: params}).then((response) => {
         //if the tutor is not the current user or not signed in
@@ -43,35 +52,49 @@ function addTimeSlotHelper(window) {
     });
 }
 
-// Sets the minimum date and time that the user can enter into the timeslot form
-function setMinDate() {
-    var today = new Date();
-    var year = today.getFullYear();
-    var month = today.getMonth() + 1; 
-    var day = today.getDate(); 
-    var hour = today.getHours(); 
-    var minute = today.getMinutes(); 
-    setMinDateHelper(document, year, month, day, hour, minute);
-}
-
-// Helper function for setMinDate, used for testing
-function setMinDateHelper(document, year, month, day, hour, minute) {
-    // Add a 0 before the month, day, hour, and minute if they're less than 10 so the min value is properly set
+// Checks if the tutor tried to add a timeslot with a time in the past, returns true if they did
+function checkMinTime(year, month, day, hour, minute, sessionDate, startTime, window) {
+    // Add 0's when month and day are less than 10 so it matches HTML value format
     if (month < 10) {
         month = "0" + month;
     }
     if (day < 10) {
         day = "0" + day;
     }
-    if (hour < 10) {
-        hour = "0" + hour;
+    var yearMonthDay = year + '-' + month + '-' + day;
+    var startTimeArr = startTime.split(':');
+
+    // Add check to see if user-inputted time is in the past
+    if (yearMonthDay == sessionDate) {
+        if (Number(startTimeArr[0]*60) + Number(startTimeArr[1]) < hour*60 + minute) {
+            alert("You cannot add an available timeslot in the past!");
+            return true;
+        }
     }
-    if (minute < 10) {
-        minute = "0" + minute;
+
+    return false;
+}
+
+// Sets the minimum date and time that the user can enter into the timeslot form
+function setMinDate() {
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = today.getMonth() + 1; 
+    var day = today.getDate(); 
+    setMinDateHelper(document, year, month, day);
+}
+
+// Helper function for setMinDate, used for testing
+function setMinDateHelper(document, year, month, day) {
+    // Add a 0 before the month and day if they're less than 10 so the min value is properly set
+    if (month < 10) {
+        month = "0" + month;
+    }
+    if (day < 10) {
+        day = "0" + day;
     }
 
     document.getElementById('date').min = year + '-' + month + '-' + day;
-    document.getElementById('startTime').min = hour + ":" + minute;
 }
 
 // Fetches info used to create the calendar
