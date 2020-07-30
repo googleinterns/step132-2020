@@ -161,7 +161,7 @@ async function getBooks(topic) {
             //create container to put books
             var booksContainer = document.getElementById("books-container");
 
-            numResultsLoaded = results.items.length;
+            numResultsLoaded = results.items === undefined ? 0 : results.items.length;
 
             results.items.forEach(function(result) {
                 booksContainer.append(createBookResult(result.volumeInfo));
@@ -183,8 +183,8 @@ async function getBooks(topic) {
     });
 }
 
-function loadMoreBooks(topic) {
-    fetch("/books?topic=" + topic + "&startIndex=" + numResultsLoaded)
+async function loadMoreBooks(topic) {
+    await fetch("/books?topic=" + topic + "&startIndex=" + numResultsLoaded)
         .then(response => response.json()).then((results) => {
             var numSearchResults = document.getElementById("num-book-results");
 
@@ -199,13 +199,13 @@ function loadMoreBooks(topic) {
             //create container to put books
             var booksContainer = document.getElementById("books-container");
 
+            if(results.totalItems === numResultsLoaded) {
+                document.getElementById("load-more").style.display = "none";
+            }
+
             results.items.forEach(function(result) {
                 booksContainer.append(createBookResult(result.volumeInfo));
             });
-
-            if(results.totalItems === numResultsLoaded) {
-                document.getElementById("load-more").display = "none";
-            }
 
     });
 }

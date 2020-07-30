@@ -36,7 +36,7 @@ describe("Search", function() {
 
         var lists = [{name: "list 1", books: ["book 1", "book 2"], topic: "math"}, {name: "list 2", books: ["book 1", "book 2"], topic: "math"}];
 
-        var books = {"items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}},
+        var books = {"totalItems": 2, "items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}},
                     {"volumeInfo": {"infoLink": "", "title": "Book 2", "authors": ["Author 2"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]}
 
         var tutorsLabel = document.createElement("p");
@@ -68,7 +68,7 @@ describe("Search", function() {
             expect(window.fetch).toHaveBeenCalledTimes(3);
             expect(window.fetch.calls.allArgs()[0][0]).toEqual("/search?topic=math&sort-type=alpha");
             expect(window.fetch.calls.allArgs()[1][0]).toEqual("/lists?topic=math");
-            expect(window.fetch.calls.allArgs()[2][0]).toContain("https://www.googleapis.com/books/v1/volumes");
+            expect(window.fetch.calls.allArgs()[2][0]).toEqual("/books?topic=math");
 
             expect(tutorContainer.childNodes.length).toEqual(2);
             expect(tutorsLabel.innerText).toContain("Found 2 tutors for math");
@@ -325,6 +325,28 @@ describe("Search", function() {
             handleTutorSort(select);
             expect(window.getSearchResultsHelper).toHaveBeenCalledTimes(1);
             expect(window.getSearchResultsHelper.calls.allArgs()[0][1]).toEqual("rating");
+
+        });
+    });
+
+    describe("when the load more button is clicked", function() {
+        numResultsLoaded = 2;
+
+        var resultsLabel = document.createElement("p");
+
+        var bookContainer = document.createElement("div");
+        bookContainer.id = "books-container";
+
+        var loadMoreButton = document.createElement("button");
+        loadMoreButton.style.display = "block";
+        
+        it("should call fetch with the correct parameter and hide the load more button", async function() {
+            spyOn(window, "createBookResult").and.returnValue(document.createElement("div"));
+            spyOn(document, "getElementById").and.returnValues(resultsLabel, bookContainer, loadMoreButton);
+            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve({totalItems: 3, items: [{volumeInfo: ""}]})}));
+            await loadMoreBooks("math");
+            expect(window.fetch.calls.allArgs()[0][0]).toEqual("/books?topic=math&startIndex=2");
+            expect(loadMoreButton.style.display).toBe("none");
 
         });
     });
