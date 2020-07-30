@@ -81,6 +81,7 @@ function getExperiencesHelper(document, experiences, loginStatus, user) {
         var experienceContainer = document.getElementById('experiences');
         var errorMessage = document.createElement("p");
         errorMessage.innerText = "This user has not set any past experiences";
+        errorMessage.className = "text-center";
         experienceContainer.appendChild(errorMessage);
         return;
     }
@@ -129,6 +130,7 @@ function getGoalsHelper(document, goals, loginStatus, user) {
         var goalContainer = document.getElementById('goals');
         var errorMessage = document.createElement("p");
         errorMessage.innerText = "This user has not set any goals";
+        errorMessage.className = "text-center";
         goalContainer.appendChild(errorMessage);
         return;
     }
@@ -194,6 +196,8 @@ function getPastSessionsAndTopicsHelper(document, tutoringSessions) {
         var errorMessage2 = document.createElement("p");
         errorMessage1.innerText = "This user has not had any tutoring sessions yet.";
         errorMessage2.innerText = "This user has not had any tutoring sessions yet.";
+        errorMessage1.className = "text-center";
+        errorMessage2.className = "text-center";
         pastSessions.appendChild(errorMessage1);
         pastTopics.appendChild(errorMessage2);
         return;
