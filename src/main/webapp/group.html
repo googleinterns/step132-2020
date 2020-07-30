@@ -20,7 +20,7 @@ See the License for the specific language governing permissions and
         <link rel="stylesheet" type="text/css" href="general.css">
         <link rel="stylesheet" type="text/css" href="group.css">
     </head>
-    <body onload="displayLoginLogoutLink(), addEventListeners(), displayGroupPosts()">
+    <body onload="displayLoginLogoutLink(), loadGroupHeader(), addEventListeners(), displayGroupPosts()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -69,7 +69,8 @@ See the License for the specific language governing permissions and
             </div>
         </nav>
 
-        <div class="container-fluid bg-white" id="group-header">
+        <div class="container-fluid bg-white">
+            <div id="group-header"></div>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-post-modal" style="display:block">
                 + New Post
             </button>

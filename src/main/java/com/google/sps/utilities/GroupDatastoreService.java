@@ -68,6 +68,26 @@ public final class GroupDatastoreService {
         return groups;
     }
 
+     /**
+    * Retrieves a group for the given group id.
+    */
+    public Group getGroupById(long groupId) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+        Key groupKey = KeyFactory.createKey("Group", groupId);
+
+        try {
+            Entity groupEntity = datastore.get(groupKey);
+            String name = (String) groupEntity.getProperty("name");
+            String topic = (String) groupEntity.getProperty("topic");
+            String description = (String) groupEntity.getProperty("description");
+            String owner = (String) groupEntity.getProperty("owner");
+
+            return new Group(name, topic, description, owner, groupId);
+        } catch (EntityNotFoundException e) {
+            return null;
+        }
+    }
+
     /**
     * Creates a new group.
     */
