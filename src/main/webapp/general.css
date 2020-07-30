@@ -175,6 +175,7 @@ input:checked + .slider:before {
 
 #search-bar-user {
     padding: 2% 0;
+    display: inline-block;
 }
 
 .footer {

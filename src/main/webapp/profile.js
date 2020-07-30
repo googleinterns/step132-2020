@@ -139,6 +139,8 @@ function editProfile(user, role, document) {
     document.getElementById('profile-container').style.display = 'none';
     document.getElementById('edit-profile-form').style.display = 'block';
 
+    console.log(role);
+
     if (role == "both") {
         // Set default value of bio to what user previously had
         // This will prevent this data from being lost if the user decides not change this field
@@ -199,7 +201,7 @@ function editProfileTutor(user, both, document) {
         document.getElementById('chinese-tutor').checked = true;
     }
     var otherTopicsIndex = tutor.skills.indexOf(' ');
-    var otherTopics;
+    var otherTopics = [];
     // Check if any other entries exist
     if (otherTopicsIndex > -1 && tutor.skills.length > otherTopicsIndex + 1) {
         otherTopics = tutor.skills.slice(otherTopicsIndex + 1);
@@ -249,7 +251,7 @@ function editProfileStudent(user, both, document) {
         document.getElementById('chinese-learn').checked = true;
     }
     var otherTopicsIndex = student.learning.indexOf(' ');
-    var otherTopics;
+    var otherTopics = [];
     // Check if any other entries exist
     if (otherTopicsIndex > -1 && student.learning.length > otherTopicsIndex + 1) {
         otherTopics = student.learning.slice(otherTopicsIndex + 1);
