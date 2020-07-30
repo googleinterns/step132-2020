@@ -40,12 +40,6 @@ public class DeleteAvailabilityServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("plain/text");
-        response.getWriter().println("To be implemented");
-    }
-
-    @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         //if parameter is null, make the default id -1 so nothing gets deleted because there is no tutor with id = -1
         String tutorID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
