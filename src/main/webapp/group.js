@@ -166,10 +166,8 @@ function addReply(result, content, window) {
     });
 }
 
-async function displayThread(post, container, document) {
-    var replies = displayThreadHelper(post, container, document);
-    
-    await replies;
+function displayThread(post, container, document) {
+    return displayThreadHelper(post, container, document);
 }
 
 async function displayThreadHelper(post, container, document) {
