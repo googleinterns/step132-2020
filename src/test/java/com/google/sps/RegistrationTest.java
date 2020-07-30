@@ -14,6 +14,8 @@
 
 package com.google.sps;
 
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -54,6 +56,7 @@ public final class RegistrationTest {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private DatastoreService datastore;
+    private BlobstoreService blobstore;
     private RegistrationServlet servlet;
 
     @Before 
@@ -63,6 +66,7 @@ public final class RegistrationTest {
         request = mock(HttpServletRequest.class);       
         response = mock(HttpServletResponse.class);
         datastore = mock(DatastoreService.class);
+        blobstore = mock(BlobstoreService.class);
         servlet = new RegistrationServlet();
     }
 
@@ -85,7 +89,7 @@ public final class RegistrationTest {
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.doPost(request, response);
+        servlet.doPostHelper(request, response, blobstore);
 
         ArgumentCaptor<String> url = ArgumentCaptor.forClass(String.class);
         verify(response).sendRedirect(url.capture());

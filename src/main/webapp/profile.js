@@ -30,7 +30,20 @@ function displayProfile() {
                 });
             }
 
-            document.getElementById('profile-container').appendChild(createProfileDiv(user, loginStatus));
+            const profilePfp = document.createElement('img');
+            //If user submitted a file, fetch the served blob
+            if (user.pfp != null) {
+                const request = new Request('/blobstore-serve?blob-key=' + user.pfp);
+                
+                fetch(request).then(response => response.blob()).then((blob) => {
+                    profilePfp.src = window.URL.createObjectURL(blob);
+                })
+            } else {  // else set pfp to default
+                profilePfp.src = 'images/pfp.jpg';
+            }
+
+
+            document.getElementById('profile-container').appendChild(createProfileDiv(user, profilePfp, loginStatus));
         });
     });
 }
@@ -42,13 +55,16 @@ function getIdParameter(window) {
 }
  
 // Create elements and fill their inner HTML with user info
-function createProfileDiv(user, loginStatus) {
+function createProfileDiv(user, profilePfp, loginStatus) {
     const profileDiv = document.createElement('div');
     const profileName = document.createElement('h3');
     const profileBio = document.createElement('p');
-    const profilePfp = document.createElement('img');
-    profilePfp.width = 100;
-    profilePfp.height = 100;
+    
+    profileBio.innerText = "About me: " + user.bio;
+
+    profilePfp.width = 250;
+    profilePfp.height = 250;
+
     const profileEmail = document.createElement('p');
     const profileTopics = document.createElement('p');
 
@@ -61,7 +77,6 @@ function createProfileDiv(user, loginStatus) {
     }
     profileName.innerText = userInfo.name;
     profileBio.innerText = "About me: " + userInfo.bio;
-    profilePfp.src = userInfo.pfp;
     profileEmail.innerText = userInfo.email;
 
     // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile

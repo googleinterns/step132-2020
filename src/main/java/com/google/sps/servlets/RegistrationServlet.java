@@ -14,6 +14,11 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -26,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -47,9 +53,15 @@ public class RegistrationServlet extends HttpServlet {
   
   private UserService userService = UserServiceFactory.getUserService();
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    doPostHelper(request, response, blobstoreService);
+  }
+
+  // Helper function for doPost, created for testing
+  public void doPostHelper(HttpServletRequest request, HttpServletResponse response, BlobstoreService blobstoreService) throws IOException {
     String role = Optional.ofNullable(request.getParameter("role")).orElse(null);
     String firstName = Optional.ofNullable(request.getParameter("first-name"))
             .orElseThrow(() -> new IllegalArgumentException("Must fill out first name"));
@@ -58,7 +70,7 @@ public class RegistrationServlet extends HttpServlet {
     String fullName = firstName + " " + lastName;
     String bio = Optional.ofNullable(request.getParameter("bio")).orElse("");
     // For now, we will automatically set everyone's profile picture to a default avatar
-    String pfp = "images/pfp.jpg";
+    String pfp = getBlobKey(request, "pfp", blobstoreService);
     
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
@@ -144,6 +156,29 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("firstName", firstName);
     entity.setProperty("lastName", lastName);
     ds.put(entity);
+  }
+
+  /** Returns the blob key for the user-uploaded file */
+  private String getBlobKey(HttpServletRequest request, String name, BlobstoreService blobstoreService) {
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(name);
+
+    // User submitted form without selecting a file, so we can't get a URL. (dev server)
+    if (blobKeys == null || blobKeys.isEmpty()) {
+        return null;
+    } 
+
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKeys.get(0));
+    if (blobInfo.getSize() == 0) {
+        blobstoreService.delete(blobKeys.get(0));
+        return null;
+    }
+
+    // Form only contains a single file input, so get the first index.
+    String blobKey = blobKeys.get(0).getKeyString();
+
+    return blobKey;        
   }
 
   /**

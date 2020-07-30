@@ -21,8 +21,8 @@ See the License for the specific language governing permissions and
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="fetchLoginStatus(), displayLoginLogoutLink()">
-<nav class="navbar navbar-default navbar-fixed-top" id="top">
+    <body onload="fetchLoginStatus(), displayLoginLogoutLink(), fetchBlobstoreUrl()">
+        <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -75,7 +75,7 @@ See the License for the specific language governing permissions and
       
         <div class="bg-description-blue">
             <div class="container-fluid bg-white">
-                <form id="registration-form" action="/registration" method="POST" style="display:none">
+                <form id="registration-form" enctype="multipart/form-data" method="POST" style="display:none">
 
                     <h3>Would you like to sign up as a student, a tutor, or both?</h3>
                     <input onclick="displayRegistrationInfo()" type="radio" name="role" id="student" value="student"> Student<br>

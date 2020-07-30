@@ -209,3 +209,13 @@ function displayRegistrationInfoHelper(document) {
     }
 }
 
+// Sets the action type of the registration form to the upload URL
+function fetchBlobstoreUrl() {
+    fetch('/blob-upload-url')
+      .then((response) => {
+        return response.text();
+      })
+      .then((imageUploadUrl) => {
+        document.getElementById('registration-form').action = imageUploadUrl;
+      });
+}
