@@ -20,6 +20,43 @@ function addEventListeners() {
     });
 }
 
+/** A function that displays information about a group at the top of the group's page. */
+function loadGroupHeader() {
+    loadGroupHeaderHelper(document, window);
+}
+
+async function loadGroupHeaderHelper(document, window) {
+    const params = new URLSearchParams();
+
+    var queryString = new Array();
+    window.onload = readComponents(queryString, window);
+    const groupId = queryString["groupId"];
+
+    await fetch("/group-data?groupId=" + groupId).then(response => response.json()).then((result) => {
+        var groupHeaderContainer = document.getElementById("group-header");
+        
+        //if there was an error reported by the servlet, display the error message
+        if(result.error) {
+            groupHeaderContainer.innerText = result.error;
+            return;
+        }
+
+        var name = document.createElement("h1");
+        name.style.textTransform = 'capitalize';
+        var topic = document.createElement("h3");
+        topic.style.textTransform = 'capitalize';
+        var description = document.createElement("h4");
+
+        name.innerText = result.name;
+        topic.innerText = result.topic;
+        description.innerText = result.description;
+
+        groupHeaderContainer.appendChild(name);
+        groupHeaderContainer.appendChild(topic);
+        groupHeaderContainer.appendChild(description);
+    });
+}
+
 function addPost(window) {
     const params = new URLSearchParams();
 
@@ -54,14 +91,14 @@ async function displayGroupPostsHelper(document, window) {
     var groupId = queryString["groupId"];
 
     if(groupId != null) {
-        var posts = getPosts(groupId);
+        var posts = getPosts(groupId, document);
         
         await posts;
     }
 }
 
 /** Fetches the posts connected with the given group id. */
-async function getPosts(groupId) {
+async function getPosts(groupId, document) {
     await fetch("/manage-posts?groupId=" + groupId).then(response => response.json()).then((results) => {
         var postsContainer = document.getElementById("posts");
 
@@ -80,14 +117,14 @@ async function getPosts(groupId) {
         numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " posts for this group" : " post for this group");
 
         results.forEach(function(result) {
-            postsContainer.append(createPostResult(result));
+            postsContainer.append(createPostResult(result, document));
         });
     });
 
 }
 
 /** Creates a div element containing information about a post result. */
-function createPostResult(result) {
+function createPostResult(result, document) {
     var container = document.createElement("div");
     var name = document.createElement("h5");
     name.style.textTransform = 'capitalize';
@@ -95,6 +132,7 @@ function createPostResult(result) {
     var replyForm = document.createElement("form");
     var replyInput = document.createElement("input");
     var replySubmit = document.createElement("button");
+    var br = document.createElement("br");
     var viewThread = document.createElement("button");
 
     if (result.userID != "anonymous") {
@@ -134,7 +172,7 @@ function createPostResult(result) {
     viewThread.className = "btn btn-outline-success my-2 my-sm-0";
     viewThread.innerText = "View Thread";
     viewThread.addEventListener('click', () => {
-        displayThread(result, container);
+        displayThread(result, container, document);
     });
    
 
@@ -144,6 +182,7 @@ function createPostResult(result) {
     container.appendChild(content);
     container.appendChild(name);
     container.appendChild(replyForm);
+    container.appendChild(br);
     container.appendChild(viewThread);
 
     return container;
