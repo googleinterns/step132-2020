@@ -29,13 +29,11 @@ describe("Progress", function() {
             spyOn(window, 'addEventListeners');
             spyOn(window, 'getExperiences');
             spyOn(window, 'getGoals');
-            spyOn(window, 'getAchievements');
             spyOn(window, 'getPastSessionsAndTopics');
             loadProgress(document, loginStatus, user);
             expect(document.getElementById('progress-tracker').style.display).toBe('block');
             expect(window.getExperiences).toHaveBeenCalledWith(document, loginStatus, user);
             expect(window.getGoals).toHaveBeenCalledWith(document, loginStatus, user);
-            expect(window.getAchievements).toHaveBeenCalledWith(document, loginStatus);
             expect(window.getPastSessionsAndTopics).toHaveBeenCalledWith(document, loginStatus, user);
         });
     });
@@ -221,30 +219,6 @@ describe("Progress", function() {
 
             expect(document.getElementById('goals').childNodes[0].tagName).toEqual('P');
             expect(document.getElementById('goals').childNodes[0].innerHTML).toEqual('This user has not set any goals');
-        });
-    });
-
-    describe("when get achievements is called", function() {
-
-        beforeEach(function() {
-            var mockAchievementsContainer = document.createElement('div');
-            mockAchievementsContainer.id = 'achievements';
-
-            document.body.appendChild(mockAchievementsContainer);
-        })
-
-        afterEach(function() {
-            document.getElementById('achievements').remove();
-        })
-
-        it("should say no achievements exist", function() {
-            var mockWindow = {location: {href: "profile.html?userID=123", search: "?userID=123"}};
-            var mockLoginStatus = {};
-
-            getAchievements(document, mockLoginStatus, mockWindow);
-
-            expect(document.getElementById('achievements').childNodes[0].tagName).toEqual('P');
-            expect(document.getElementById('achievements').childNodes[0].innerHTML).toEqual('This user does not have any achievements');
         });
     });
 

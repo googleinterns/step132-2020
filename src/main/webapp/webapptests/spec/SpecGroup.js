@@ -30,6 +30,23 @@ describe("Single Group", function() {
         });
     });
 
+    describe("when the group header is loaded", function() {
+        var mockWindow = {location: {href: "group.html?groupId=123", search: "?groupId=123"}};
+
+        it("should trigger the fetch function with the correct params and display the correct header", function() {
+            var result = {"name": "test", "topic": "test", "description": "test"}
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(result)}));
+            var headerContainer = await loadGroupHeaderHelper(mockWindow, document);
+            expect(window.fetch).toHaveBeenCalledWith('/group-data?groupId=undefined');
+            expect(headerContainer.childNodes[0].tagName).toEqual("H1");
+            expect(headerContainer.childNodes[0].innerText).toContain("test");
+            expect(headerContainer.childNodes[1].tagName).toEqual("H3");
+            expect(headerContainer.childNodes[1].innerText).toContain("test");
+            expect(headerContainer.childNodes[2].tagName).toEqual("H4");
+            expect(headerContainer.childNodes[2].innerText).toContain("test");
+        });
+    });
+
     describe("when posts are displayed", function() {
         var posts = [{"userID": "anonymous", "groupID": "321", "content": "test", "id": "1"}, 
                         {"userID": "anonymous", "groupID": "321", "content": "test", "id": "3"}];
@@ -58,7 +75,7 @@ describe("Single Group", function() {
 
     describe("when a post result is created", function() {
         var result = {"userID": "anonymous", "content": "test"};
-        var element = createPostResult(result);
+        var element = createPostResult(result, document);
 
         it("should create div for result element", function() {
             expect(element.tagName).toEqual("DIV");
@@ -84,9 +101,13 @@ describe("Single Group", function() {
             expect(element.childNodes[2].childNodes[1].innerText).toContain("Submit");
         });
 
+        it("should create break element inside result element", function() {
+            expect(element.childNodes[3].tagName).toEqual("BR");
+        });
+
         it("should create button element inside result element for viewing a thread", function() {
-            expect(element.childNodes[3].tagName).toEqual("BUTTON");
-            expect(element.childNodes[3].innerText).toContain("View Thread");
+            expect(element.childNodes[4].tagName).toEqual("BUTTON");
+            expect(element.childNodes[4].innerText).toContain("View Thread");
         });
 
     });
