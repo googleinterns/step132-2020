@@ -42,47 +42,6 @@ function getListsProfile() {
     return getListsHelper(window, '/lists?tutorID=' + queryString["userID"]);
 }
 
-// /** Helper function for getLists, used for testing. */
-// async function getListsHelper(window, url) {
-//     await fetch(url, {method: 'GET'}).then((response) => {
-//         //if the tutor is not the current user or not signed in, used for the my-lists page
-//         if(response.redirected) {
-//             window.location.href = response.url;
-//             alert("You must be signed in to manage lists.");
-//             return null;
-//         }
-//         return response.json();
-        
-//     }).then((lists) => {
-//         //page was redirected
-//         if(lists === null) {
-//             return;
-//         }
-
-//         if(lists.error) {
-//             var message = document.createElement("p");
-//             message.innerText = timeslots.error;
-//             document.getElementById('list-names').appendChild(message);
-//             return;
-//         }
-
-//         if(Object.keys(lists).length === 0) {
-//             var message = document.createElement("p");
-//             message.innerText = "This user has no lists.";
-//             document.getElementById('list-names').appendChild(message);
-//             return;
-//         }
-
-//         var listNames = document.getElementById('list-names');
-//         var listInfo = document.getElementById('list-info-container')
-
-//         lists.forEach((list) => {
-//             listNames.appendChild(createListNameLink(list));
-//             listInfo.appendChild(createListElement(list));
-//         });
-//     });
-// }
-
 /** Helper function for getLists, used for testing. */
 async function getListsHelper(window, url) {
     await fetch(url, {method: 'GET'}).then((response) => {
