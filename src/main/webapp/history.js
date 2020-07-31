@@ -80,8 +80,8 @@ function createTutoringSessionBox(tutoringSession) {
         amOrPm = "pm"
     }
     var minute = parseInt(tutoringSession.timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
+    if (minute < 10) {
+        minute = "0" + minute;
     }
     dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
                              " " + tutoringSession.timeslot.date.dayOfMonth + ", " + tutoringSession.timeslot.date.year;

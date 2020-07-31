@@ -87,8 +87,8 @@ async function getTutorBooks(topic) {
             document.getElementById("google-books-panel").setAttribute("aria-expanded", true);
             return;
         }
-
-        document.getElementById("num-lists-results").innerText = "Found " + Object.keys(results).length + " book playlists for " + topic;
+        
+        document.getElementById("num-lists-results").innerText = "Found " + Object.keys(results).length + " book" + (Object.keys(results).length === 1 ? " playlist for " : " playlists for ") + topic;
 
         //open lists panel
         document.getElementById("collapsible-1").classList.add("in");
@@ -124,7 +124,7 @@ function createTutorListElement(result) {
         //if user left out author, use empty string
         var author = titleAndAuthor[1] === undefined ? "" : titleAndAuthor[1].trim();
         
-        fetch("https://www.googleapis.com/books/v1/volumes?q=intitle:" + title + "+inauthor:" + author + "&maxResults=1&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y")
+        fetch("/books?title=" + encodeURIComponent(title) + "&author=" + encodeURIComponent(author))
             .then(response => response.json()).then((results) => {
 
                if(results.totalItems === 0) {
@@ -214,7 +214,7 @@ async function loadMoreBooks(topic) {
             }
 
             results.items.forEach(function(result) {
-                booksContainer.append(createBookResult(result.volumeInfo));
+                booksContainer.append(createBookResult(result.volumeInfo, "book-result col-md-4"));
             });
 
     });
