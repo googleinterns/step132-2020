@@ -49,9 +49,8 @@ describe("Groups", function() {
             expect(window.fetch).toHaveBeenCalledTimes(1);
             expect(window.fetch.calls.allArgs()[0][0]).toEqual("/manage-groups?group=Test");
 
-            //one for the number of results label + 2 for the number of results in testResults
-            expect(groupContainer.childNodes.length).toEqual(3);
-            expect(groupContainer.childNodes[0].innerText).toContain("Found 2 groups named Test");
+            expect(groupContainer.childNodes.length).toEqual(2);
+            expect(resultsLabel.innerText).toContain("Found 2 groups named Test");
         });
 
     });
