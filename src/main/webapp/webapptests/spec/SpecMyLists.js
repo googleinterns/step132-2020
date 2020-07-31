@@ -71,7 +71,7 @@ describe("My Lists", function() {
         });
         
         it("should call fetch with the correct parameter", function() {
-            expect(window.fetch).toHaveBeenCalledWith("https://www.googleapis.com/books/v1/volumes?q=intitle:book 1+inauthor:author 1&maxResults=1&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y");
+            expect(window.fetch).toHaveBeenCalledWith("/books?title=book%201&author=author%201");
         });
 
         it("should return a div item element with display none", function() {

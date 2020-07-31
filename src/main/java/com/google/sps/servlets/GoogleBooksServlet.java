@@ -27,6 +27,10 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Properties;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.io.File;
 
 /** Fetches data from the Google Books API. */
 @WebServlet("/books")
@@ -47,24 +51,34 @@ public class GoogleBooksServlet extends HttpServlet {
         String params = "q=";
 
         if(topic != null) {
-            params += topic;
+            params += URLEncoder.encode(topic);
         }
 
         if(title != null) {
-            params += "intitle:" + title;
+            params += "intitle:" + URLEncoder.encode(title);
         }
 
         if(author != null) {
-            params += "+inauthor:" + author;
+            params += "+inauthor:" + URLEncoder.encode(author);
         }
 
         if(startIndex >= 0) {
             params += "&startIndex=" + startIndex;
         }
 
-        URL url = new URL("https://www.googleapis.com/books/v1/volumes?" + params + "&key=" + System.getenv("GOOGLE_API_KEY"));
+        //get .properties file that stores the api key
+        Properties prop = new Properties();
+        InputStream input = getClass().getResourceAsStream("/api.properties");
+        prop.load(input);
+
+        //need country param here for appengine copyright purposes
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?" + params + "&maxResults=40&country=US");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
+        connection.setRequestProperty("key", prop.getProperty("GCP_API_KEY"));
+        connection.addRequestProperty("User-Agent", "Mozilla/4.76");
+
+        System.setProperty("http.agent", "Chrome");
 
         BufferedReader stream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String line;
