@@ -133,10 +133,15 @@ function fetchStatusHelper(user, loginStatus, window, document) {
         text = "I am tutoring in: " + listWithSpaces;
         getListsProfile();
 
-        document.getElementById('tutor-availability').style.display = 'block';
-        document.getElementById('tutor-availability-btn').addEventListener('click', () => {
-            redirectToAvailability(user, window); 
-        });
+        // Only students should be allowed to schedule sessions with tutors from their profile
+        if (role == 'student' || role == 'both') {
+            document.getElementById('tutor-availability').style.display = 'block';
+            document.getElementById('tutor-availability-btn').addEventListener('click', () => {
+                redirectToAvailability(user, window); 
+            });
+        } else {
+            document.getElementById('tutor-availability').style.display = 'none';
+        }
     }
 
     if (loginStatus.userId == getIdParameter(window)) {
