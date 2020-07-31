@@ -95,6 +95,24 @@ describe("History", function() {
         });
     });
 
+    describe("when a tutoring session box is created with single minutes (from 1 to 9)", function() {
+        var tutoringSession = {tutorID: "123", timeslot: {start: 482, date: {month: 4, dayOfMonth: 18, year: 2020}}};
+        var actual = createTutoringSessionBox(tutoringSession);
+
+        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session (formatted correctly)", function() {
+            expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:02am on May 18, 2020");
+        });
+    });
+
+    describe("when a tutoring session box is created with regular minutes (from 10 to 59)", function() {
+        var tutoringSession = {tutorID: "123", timeslot: {start: 510, date: {month: 4, dayOfMonth: 18, year: 2020}}};
+        var actual = createTutoringSessionBox(tutoringSession);
+
+        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session (formatted correctly)", function() {
+            expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:30am on May 18, 2020");
+        });
+    });
+
     describe("when loadStars is called and the tutoring session has been rated", function() {
         var fakeTutoringSession = {tutorID: "123", rated: true, rating: 3, timeslot: {start: 480}};
         var fakeStarsElement = document.createElement('div');
