@@ -44,26 +44,31 @@ function fetchLoginStatusHelper(document, loginStatus) {
  */
 function displayLoginLogoutLink() {
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
-        console.log(loginStatus);   
-        displayLoginLogoutLinkHelper(document, loginStatus);
+        displayLoginLogoutLinkHelper(document, window, loginStatus);
     });
 }
 
 /**
  * Used for testing purposes with Jasmine
  */
-function displayLoginLogoutLinkHelper(document, loginStatus) {
+function displayLoginLogoutLinkHelper(document, window, loginStatus) {
     // User is logged in, display logout and profile link on page 
     if (loginStatus.isLoggedIn) {
+        //user needs to register and they are not on the registration page already
+        if(loginStatus.needsToRegister && !window.location.href.includes("/registration.html")) {
+            window.location.href = "/registration.html";
+            return;
+        }
+
         document.getElementById('login').style.display = "none";
-        document.getElementById('account-dropdown').style.display = "block";
-        document.getElementById('profile').style.display = "block";
-        document.getElementById('groups').style.display = "block";
         document.getElementById('logout').style.display = "block";
         document.getElementById('logout-url').href = "#";
         document.getElementById('logout-url').addEventListener('click', () => {
              logout(window);
         });
+        document.getElementById('account-dropdown').style.display = "block";
+        document.getElementById('profile').style.display = "block";
+        document.getElementById('groups').style.display = "block";
         document.getElementById('profile').addEventListener('click', () => {
             setProfileQueryString(window, loginStatus);
         });
@@ -137,6 +142,8 @@ function logout(window) {
     fetch('/logout', {method: 'GET'}).then((response) => {
         if(response.redirected) {
             window.location.href = response.url;
+        } else {
+            window.location.href = "/_gcp_iap/clear_login_cookie";
         }
     });
 }
