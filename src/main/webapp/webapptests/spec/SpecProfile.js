@@ -19,22 +19,21 @@ describe("User Profile", function() {
         var actualUserID = getIdParameter(mockWindow);
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
             email: "sfalberg@google.com", skills: ["Math", "Physics"]};
-        var mockLoginStatus = {role:"tutor", userId: "123"};
-
+        var mockLoginStatusTutor = {role:"tutor", userId: "123"};
+        var mockLoginStatusStudent = {role:"student", userId: "abc"};
+ 
         beforeAll(function() {
             var mockEditButton = document.createElement('btn');
             mockEditButton.style.display = 'none';
             mockEditButton.id = "edit-profile-btn";
-
+ 
             var mockAvailability = document.createElement('div');
             mockAvailability.style.display = 'none';
             mockAvailability.id = "tutor-availability";
-
+ 
             var mockAvailabilityButton = document.createElement('btn');
             mockAvailabilityButton.id = "tutor-availability-btn";
-
-            var mockProfilePicture = document.createElement('img');
-
+ 
             document.body.appendChild(mockEditButton);
             document.body.appendChild(mockAvailability);
             document.body.appendChild(mockAvailabilityButton);
@@ -45,63 +44,68 @@ describe("User Profile", function() {
             spyOn(window, 'getPastSessionsAndTopics');
             spyOn(window, 'getListsProfile');
         })
-
+ 
         it("should correctly get the userID parameter from the URL", function() {
             expect(actualUserID).toEqual("123");
         });
-
+ 
         it("should create div for inside the container", function() {
             spyOn(window, 'fetchStatusHelper');
             var mockProfilePicture = document.createElement('img');
-            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatus);
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.tagName).toEqual("DIV");
         });
-
+ 
         it("should create and set img element for pfp", function() {
             spyOn(window, 'fetchStatusHelper');
             var mockProfilePicture = document.createElement('img');
-            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatus);
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[0].tagName).toEqual("IMG");
         });
-
+ 
         it("should create and set h3 element for name", function() {
             spyOn(window, 'fetchStatusHelper');
             var mockProfilePicture = document.createElement('img');
-            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatus);
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[1].tagName).toEqual("H3");
             expect(actualDiv.childNodes[1].innerHTML).toEqual("Sam Falberg");
         });
-
+ 
         it("should create and set p element for bio", function() {
             spyOn(window, 'fetchStatusHelper');
             var mockProfilePicture = document.createElement('img');
-            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatus);
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[2].tagName).toEqual("P");
             expect(actualDiv.childNodes[2].innerHTML).toEqual("About me: The best bio");
         });
-
+ 
         it("should create and set p element for email", function() {
             spyOn(window, 'fetchStatusHelper');
             var mockProfilePicture = document.createElement('img');
-            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatus);
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[3].tagName).toEqual("P");
             expect(actualDiv.childNodes[3].innerHTML).toEqual("sfalberg@google.com");
         });
-
+ 
         it("should create p", function() {
             spyOn(window, 'fetchStatusHelper');
             var mockProfilePicture = document.createElement('img');
-            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatus);
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[4].tagName).toEqual("P");
         });
-
+ 
         it("should set p to the correct topics", function() {
-            var actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
+            var actualText = fetchStatusHelper(mockUser, mockLoginStatusTutor, mockWindow, document);
             expect(actualText).toEqual("I am tutoring in: Math, Physics");
         });
-
-        it("should set make the tutor availability button visible", function() {
-            fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
+ 
+        it("should hide the tutor availability button if current user is a tutor", function() {
+            fetchStatusHelper(mockUser, mockLoginStatusTutor, mockWindow, document);
+            expect(document.getElementById('tutor-availability').style.display).toBe('none');
+        });
+ 
+        it("should set make the tutor availability button visible if current user is a student", function() {
+            fetchStatusHelper(mockUser, mockLoginStatusStudent, mockWindow, document);
             expect(document.getElementById('tutor-availability').style.display).toBe('block');
         });
 
