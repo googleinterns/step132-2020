@@ -49,11 +49,9 @@ async function getSearchGroupResultsHelper(document, window) {
 /** Fetches the list of groups for the group name the user searched for. */
 async function getGroups(group) {
     await fetch("/manage-groups?group=" + group).then(response => response.json()).then((results) => {
-        var groupContainer = document.getElementById("groups-results");
+        var groupContainer = document.getElementById("groups-result");
 
         var numSearchResults = document.getElementById("num-groups-results");
-
-        groupContainer.appendChild(numSearchResults);
         
         //if there was an error reported by the servlet, display the error message
         if(results.error) {
