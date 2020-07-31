@@ -62,7 +62,7 @@ describe("My Students", function() {
             expect(actual.childNodes[1].innerHTML).toEqual("tester@example.com");
         });
 
-        it("should learning set to Math, English", function() {
+        it("should set learning to Math, English", function() {
             expect(actual.childNodes[2].innerHTML).toEqual("Learning: math, english");
         });
 
