@@ -187,7 +187,10 @@ function getPastSessionsAndTopicsHelper(document, tutoringSessions) {
     if (Object.keys(tutoringSessions).length != 0) {
         tutoringSessions.forEach((tutoringSession) => {
             document.getElementById('past-sessions').appendChild(createPastSessionBox(tutoringSession));
-            document.getElementById('past-topics').appendChild(createPastTopicBox(tutoringSession));
+            // If the tutoring session subtopics field is not empty, create a box for it
+            if (tutoringSession.subtopics != "") {
+                document.getElementById('past-topics').appendChild(createPastTopicBox(tutoringSession));
+            }
         })
     } else {
         var pastSessions = document.getElementById('past-sessions');
