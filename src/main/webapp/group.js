@@ -105,8 +105,7 @@ async function getPosts(groupId, document, window) {
     await fetch("/manage-posts?groupId=" + groupId).then(response => response.json()).then((results) => {
         var postsContainer = document.getElementById("posts");
 
-        var numSearchResults = document.createElement("h4");
-        numSearchResults.className = "num-search-results";
+        var numSearchResults = document.getElementById("num-posts-results");
 
         postsContainer.appendChild(numSearchResults);
         

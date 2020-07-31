@@ -32,6 +32,8 @@ describe("Groups", function() {
         var groups = [{"name": "Test", "topic": "test", "description": "test", "id": "1"}, 
                         {"name": "Test", "topic": "test", "description": "test", "id": "3"}];
 
+        var resultsLabel = document.createElement("p");
+
         var groupContainer = document.createElement("div");
         groupContainer.id = "groups-results";
 
@@ -40,7 +42,7 @@ describe("Groups", function() {
         it("should create result elements inside groupContainer", async function() {
             spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(groups)}));
 
-            spyOn(document, "getElementById").and.returnValues(groupContainer);
+            spyOn(document, "getElementById").and.returnValues(groupContainer, resultsLabel);
 
             await getSearchGroupResultsHelper(document, mockWindow);
 

@@ -53,8 +53,7 @@ async function getUsers(name) {
     await fetch("/search-user?name=" + name).then(response => response.json()).then((results) => {
         var userContainer = document.getElementById("users");
 
-        var numSearchResults = document.createElement("h4");
-        numSearchResults.className = "num-search-results";
+        var numSearchResults = document.getElementById("num-users-results");
 
         userContainer.appendChild(numSearchResults);
         
