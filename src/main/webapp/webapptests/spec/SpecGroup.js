@@ -33,11 +33,13 @@ describe("Single Group", function() {
     describe("when the group header is loaded", function() {
         var mockWindow = {location: {href: "group.html?groupId=123", search: "?groupId=123"}};
 
-        it("should trigger the fetch function with the correct params and display the correct header", function() {
+        it("should trigger the fetch function with the correct params and display the correct header", async function() {
             var result = {"name": "test", "topic": "test", "description": "test"}
+            var headerContainer = document.createElement("div");
+            spyOn(document, 'getElementById').and.returnValue(headerContainer);
             spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(result)}));
-            var headerContainer = await loadGroupHeaderHelper(mockWindow, document);
-            expect(window.fetch).toHaveBeenCalledWith('/group-data?groupId=undefined');
+            await loadGroupHeaderHelper(document, mockWindow);
+            expect(window.fetch).toHaveBeenCalledWith('/group-data?groupId=123');
             expect(headerContainer.childNodes[0].tagName).toEqual("H1");
             expect(headerContainer.childNodes[0].innerText).toContain("test");
             expect(headerContainer.childNodes[1].tagName).toEqual("H3");
