@@ -387,8 +387,6 @@ describe("Search", function() {
     describe("when the load more button is clicked", function() {
         numResultsLoaded = 2;
 
-        var resultsLabel = document.createElement("p");
-
         var bookContainer = document.createElement("div");
         bookContainer.id = "books-container";
 
@@ -396,8 +394,8 @@ describe("Search", function() {
         loadMoreButton.style.display = "block";
         
         it("should call fetch with the correct parameter and hide the load more button", async function() {
-            spyOn(window, "createBookResult").and.returnValue(document.createElement("div"));
-            spyOn(document, "getElementById").and.returnValues(resultsLabel, bookContainer, loadMoreButton);
+            spyOn(window, "createBookResult").and.returnValues(document.createElement("div"));
+            spyOn(document, "getElementById").and.returnValues(bookContainer, loadMoreButton);
             spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve({totalItems: 3, items: [{volumeInfo: ""}]})}));
             await loadMoreBooks("math");
             expect(window.fetch.calls.allArgs()[0][0]).toEqual("/books?topic=math&startIndex=2");
