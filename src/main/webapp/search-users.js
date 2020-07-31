@@ -54,8 +54,6 @@ async function getUsers(name) {
         var userContainer = document.getElementById("users");
 
         var numSearchResults = document.getElementById("num-users-results");
-
-        userContainer.appendChild(numSearchResults);
         
         //if there was an error reported by the servlet, display the error message
         if(results.error) {
