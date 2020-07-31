@@ -34,6 +34,10 @@ function readComponents(queryString, window) {
 function setTutorName(tutorElement, tutorID) {
     var tutor;
     return getUser(tutorID).then(user => tutor = user).then(() => {
+        // If the tutur is also a student get the information that relates to the tutor
+        if (tutor.student != null) {
+            tutor = tutor.tutor;
+        }
         tutorElement.innerHTML = "Tutoring Session with " + tutor.name;
     });
 }
