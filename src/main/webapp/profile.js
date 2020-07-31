@@ -134,7 +134,7 @@ function fetchStatusHelper(user, loginStatus, window, document) {
         getListsProfile();
 
         // Only students should be allowed to schedule sessions with tutors from their profile
-        if (role == 'student') {
+        if (role == 'student' || role == 'both') {
             document.getElementById('tutor-availability').style.display = 'block';
             document.getElementById('tutor-availability-btn').addEventListener('click', () => {
                 redirectToAvailability(user, window); 
