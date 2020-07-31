@@ -176,6 +176,7 @@ function createPostResult(result, document, window) {
     viewThread.innerText = "View Thread";
     viewThread.addEventListener('click', () => {
         displayThread(result, container, document);
+        viewThread.style.display = 'none';
     });
    
 
@@ -205,7 +206,10 @@ function addReply(result, content, container, window) {
             return;
         }
         
-        displayThread(result, container, document);
+        // Only display a new thread if there is not one inside the container yet
+        if (container.childNodes.length <= 5) {
+            displayThread(result, container, document);
+        }
     });
 }
 
