@@ -56,21 +56,22 @@ describe("Single Group", function() {
         var postContainer = document.createElement("div");
         postContainer.id = "posts";
 
+        var resultsLabel = document.createElement("p");
+
         var mockWindow = {location: {href: "group.html?groupId=123", search: "?groupId=123"}};
 
         it("should create result elements inside postContainer", async function() {
             spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(posts)}));
 
-            spyOn(document, "getElementById").and.returnValues(postContainer);
+            spyOn(document, "getElementById").and.returnValues(postContainer, resultsLabel);
 
             await displayGroupPostsHelper(document, mockWindow);
 
             expect(window.fetch).toHaveBeenCalledTimes(1);
             expect(window.fetch.calls.allArgs()[0][0]).toEqual("/manage-posts?groupId=123");
 
-            //one for the number of results label + 2 for the number of results in testResults
-            expect(postContainer.childNodes.length).toEqual(3);
-            expect(postContainer.childNodes[0].innerText).toContain("Found 2 posts for this group");
+            expect(postContainer.childNodes.length).toEqual(2);
+            expect(resultsLabel.innerText).toContain("Found 2 posts for this group");
         });
 
     });
