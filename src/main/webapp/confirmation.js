@@ -98,6 +98,7 @@ async function createCalendar(scheduledSessions, container) {
     const options = {
         width: 1000,
         height: 300,
+        timeline: { singleColor: '#437f97' },
         hAxis: {
             minValue: min,
             maxValue: max

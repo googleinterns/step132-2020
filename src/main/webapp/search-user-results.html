@@ -19,7 +19,7 @@ See the License for the specific language governing permissions and
         <link rel="stylesheet" type="text/css" href="search-results.css">
         <link rel="stylesheet" type="text/css" href="general.css">
     </head>
-    <body onload="getSearchUserResults(), displayLoginLogoutLink()">
+    <body style="padding-top: 100px" onload="getSearchUserResults(), displayLoginLogoutLink()">
         <nav class="navbar navbar-default navbar-fixed-top" id="top">
             <div class="container">
                 <div class="navbar-header">
@@ -68,8 +68,9 @@ See the License for the specific language governing permissions and
             </div>
         </nav>
         
-        <div id="result-container" class="list-group bg-white bg-white-lg">
-            <div id="users" class="list-group active-container"></div>
+        <div id="result-container" class="bg-white bg-white-lg">
+            <h4 class="container-label" id="num-users-results"></h4>
+            <div id="users" class="list-group"></div>
         </div>
 
         <div class="bg-description-blue">

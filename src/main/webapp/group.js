@@ -22,17 +22,17 @@ function addEventListeners() {
 
 /** A function that displays information about a group at the top of the group's page. */
 function loadGroupHeader() {
-    loadGroupHeaderHelper(document, window);
+    return loadGroupHeaderHelper(document, window);
 }
 
-function loadGroupHeaderHelper(document, window) {
+async function loadGroupHeaderHelper(document, window) {
     const params = new URLSearchParams();
 
     var queryString = new Array();
     window.onload = readComponents(queryString, window);
     const groupId = queryString["groupId"];
 
-    fetch("/group-data?groupId=" + groupId).then(response => response.json()).then((result) => {
+    await fetch("/group-data?groupId=" + groupId).then(response => response.json()).then((result) => {
         var groupHeaderContainer = document.getElementById("group-header");
         
         //if there was an error reported by the servlet, display the error message
@@ -105,8 +105,7 @@ async function getPosts(groupId, document, window) {
     await fetch("/manage-posts?groupId=" + groupId).then(response => response.json()).then((results) => {
         var postsContainer = document.getElementById("posts");
 
-        var numSearchResults = document.createElement("h4");
-        numSearchResults.className = "num-search-results";
+        var numSearchResults = document.getElementById("num-posts-results");
 
         postsContainer.appendChild(numSearchResults);
         
