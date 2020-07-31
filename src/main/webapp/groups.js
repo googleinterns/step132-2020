@@ -52,7 +52,7 @@ async function getGroups(group) {
         var groupContainer = document.getElementById("groups-result");
 
         var numSearchResults = document.getElementById("num-groups-results");
-        console.log(numSearchResults);
+
         //if there was an error reported by the servlet, display the error message
         if(results.error) {
             numSearchResults.innerText = results.error;
