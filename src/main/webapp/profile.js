@@ -113,6 +113,18 @@ function fetchStatusHelper(user, loginStatus, window, document) {
             "I am tutoring in: " + listWithSpacesTutor;
 
         loadProgress(document, loginStatus, user);
+
+        getListsProfile();
+
+        // Only students should be allowed to schedule sessions with tutors from their profile
+        if (role == 'student' || role == 'both') {
+            document.getElementById('tutor-availability').style.display = 'block';
+            document.getElementById('tutor-availability-btn').addEventListener('click', () => {
+                redirectToAvailability(user, window); 
+            });
+        } else {
+            document.getElementById('tutor-availability').style.display = 'none';
+        }
         
          // If the user is only a student
     } else if (user.learning != null) { // Display topics as comma-separated list with spaces

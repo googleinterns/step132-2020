@@ -21,6 +21,7 @@ describe("User Profile", function() {
             email: "sfalberg@google.com", skills: ["Math", "Physics"]};
         var mockLoginStatusTutor = {role:"tutor", userId: "123"};
         var mockLoginStatusStudent = {role:"student", userId: "abc"};
+        var mockLoginStatusBoth = {role:"both", userId: "abc"};
  
         beforeAll(function() {
             var mockEditButton = document.createElement('btn');
@@ -30,12 +31,17 @@ describe("User Profile", function() {
             var mockAvailability = document.createElement('div');
             mockAvailability.style.display = 'none';
             mockAvailability.id = "tutor-availability";
+
+            var mockTutorLists = document.createElement("div");
+            mockTutorLists.style.display = 'none';
+            mockTutorLists.id = "list-container-profile";
  
             var mockAvailabilityButton = document.createElement('btn');
             mockAvailabilityButton.id = "tutor-availability-btn";
  
             document.body.appendChild(mockEditButton);
             document.body.appendChild(mockAvailability);
+            document.body.appendChild(mockTutorLists);
             document.body.appendChild(mockAvailabilityButton);
             
             spyOn(window, 'addEventListeners');
@@ -106,6 +112,11 @@ describe("User Profile", function() {
  
         it("should set make the tutor availability button visible if current user is a student", function() {
             fetchStatusHelper(mockUser, mockLoginStatusStudent, mockWindow, document);
+            expect(document.getElementById('tutor-availability').style.display).toBe('block');
+        });
+
+        it("should set make the tutor availability button visible if current user is a both", function() {
+            fetchStatusHelper(mockUser, mockLoginStatusBoth, mockWindow, document);
             expect(document.getElementById('tutor-availability').style.display).toBe('block');
         });
 
