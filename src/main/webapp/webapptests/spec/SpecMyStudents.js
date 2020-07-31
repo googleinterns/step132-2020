@@ -40,7 +40,7 @@ describe("My Students", function() {
     });
 
     describe("when a student box is created", function() {
-        var student = {name: "Tester", email: "tester@example.com", learning: ["math", "english"], userId: "123"};
+        var student = {name: "Tester", email: "tester@example.com", learning: ["math", "english", " "], userId: "123"};
         var actual = createStudentBox(student);
 
         it("should return a div item element", function() {
