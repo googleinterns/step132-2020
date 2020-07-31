@@ -94,14 +94,14 @@ async function displayGroupPostsHelper(document, window) {
     var groupId = queryString["groupId"];
 
     if(groupId != null) {
-        var posts = getPosts(groupId, document);
+        var posts = getPosts(groupId, document, window);
         
         await posts;
     }
 }
 
 /** Fetches the posts connected with the given group id. */
-async function getPosts(groupId, document) {
+async function getPosts(groupId, document, window) {
     await fetch("/manage-posts?groupId=" + groupId).then(response => response.json()).then((results) => {
         var postsContainer = document.getElementById("posts");
 
@@ -119,14 +119,14 @@ async function getPosts(groupId, document) {
         numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " posts for this group" : " post for this group");
 
         results.forEach(function(result) {
-            postsContainer.append(createPostResult(result, document));
+            postsContainer.append(createPostResult(result, document, window));
         });
     });
 
 }
 
 /** Creates a div element containing information about a post result. */
-function createPostResult(result, document) {
+function createPostResult(result, document, window) {
     var container = document.createElement("div");
     var name = document.createElement("h5");
     name.style.textTransform = 'capitalize';
@@ -163,7 +163,7 @@ function createPostResult(result, document) {
     replySubmit.innerText = "Submit";
     replyForm.addEventListener('submit', event => {
         event.preventDefault();
-        addReply(result, document.getElementById('reply-input').value);  
+        addReply(result, document.getElementById('reply-input').value, container, window);  
     });
 
     content.innerText = result.content;
@@ -175,6 +175,7 @@ function createPostResult(result, document) {
     viewThread.innerText = "View Thread";
     viewThread.addEventListener('click', () => {
         displayThread(result, container, document);
+        viewThread.style.display = 'none';
     });
    
 
@@ -190,7 +191,7 @@ function createPostResult(result, document) {
     return container;
 }
 
-function addReply(result, content, window) {
+function addReply(result, content, container, window) {
     const params = new URLSearchParams();
 
     params.append('postId', result.id);
@@ -203,7 +204,11 @@ function addReply(result, content, window) {
             alert("There was an error when posting to this group.");
             return;
         }
-        window.location.href = "/group.html?groupId=" + result.groupID;
+        
+        // Only display a new thread if there is not one inside the container yet
+        if (container.childNodes.length <= 5) {
+            displayThread(result, container, document);
+        }
     });
 }
 
