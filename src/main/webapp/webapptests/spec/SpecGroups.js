@@ -33,7 +33,7 @@ describe("Groups", function() {
                         {"name": "Test", "topic": "test", "description": "test", "id": "3"}];
 
         var groupContainer = document.createElement("div");
-        groupContainer.id = "groups";
+        groupContainer.id = "groups-results";
 
         var mockWindow = {location: {href: "groups.html?group=Test", search: "?group=Test"}};
 
