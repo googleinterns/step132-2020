@@ -70,6 +70,16 @@ describe("History", function() {
             });
         });
 
+        it("should have the inner HTML of the h3 tag equal to to the email of the tutor even if the tutor is also a student", async function() {
+            var tutor = {student: {}, tutor: {name: "Test"}};
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutor)}));
+
+            const tutorElement = document.createElement('h3');
+            await setTutorName(tutorElement, "123").then(() => {
+                expect(tutorElement.innerHTML).toEqual("Tutoring Session with Test");
+            });
+        });
+
         it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
             expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:00am on May 18, 2020");
         });
