@@ -106,8 +106,6 @@ async function getPosts(groupId, document, window) {
         var postsContainer = document.getElementById("posts");
 
         var numSearchResults = document.getElementById("num-posts-results");
-
-        postsContainer.appendChild(numSearchResults);
         
         //if there was an error reported by the servlet, display the error message
         if(results.error) {
