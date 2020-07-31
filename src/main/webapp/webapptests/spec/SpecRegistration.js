@@ -206,7 +206,7 @@ describe("Registration", function() {
 
             it("displays login link when user logged out", function() {
                 mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:''};
-                displayLoginLogoutLinkHelper(document, mockLoginStatus);
+                displayLoginLogoutLinkHelper(document, window, mockLoginStatus);
 
                 expect(document.getElementById('login').style.display).toBe('block');
                 expect(document.getElementById('logout').style.display).toBe('none');
@@ -215,7 +215,7 @@ describe("Registration", function() {
 
             it("displays logout link when user logged in and the user is a student", function() {
                 mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'', role: "student"};
-                displayLoginLogoutLinkHelper(document, mockLoginStatus);
+                displayLoginLogoutLinkHelper(document, window, mockLoginStatus);
 
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
@@ -231,7 +231,7 @@ describe("Registration", function() {
 
             it("displays logout link when user logged in and the user is a tutor", function() {
                 mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'', role: "tutor"};
-                displayLoginLogoutLinkHelper(document, mockLoginStatus);
+                displayLoginLogoutLinkHelper(document, window, mockLoginStatus);
 
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
@@ -247,7 +247,7 @@ describe("Registration", function() {
 
             it("displays logout link when user logged in and the user is both student and tutor but is in student view", function() {
                 mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'', role: "both", view: "student"};
-                displayLoginLogoutLinkHelper(document, mockLoginStatus);
+                displayLoginLogoutLinkHelper(document, window, mockLoginStatus);
 
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
@@ -266,7 +266,7 @@ describe("Registration", function() {
 
             it("displays logout link when user logged in and the user is both student and tutor but is in tutor view", function() {
                 mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'', role: "both", view: "tutor"};
-                displayLoginLogoutLinkHelper(document, mockLoginStatus);
+                displayLoginLogoutLinkHelper(document, window, mockLoginStatus);
 
                 expect(document.getElementById('login').style.display).toBe('none');
                 expect(document.getElementById('logout').style.display).toBe('block');
@@ -285,7 +285,7 @@ describe("Registration", function() {
 
             it("sets logout link correctly", function() {
                 mockLoginStatus = {isLoggedIn:true, needsToRegister:false, url:'#', userId:'abc123', role: "tutor"};
-                displayLoginLogoutLinkHelper(document, mockLoginStatus);
+                displayLoginLogoutLinkHelper(document, window, mockLoginStatus);
 
                 expect(document.getElementById('logout-url').getAttribute("href")).toBe('#');
             });
@@ -299,9 +299,17 @@ describe("Registration", function() {
 
             it("sets login link correctly", function() {
                 mockLoginStatus = {isLoggedIn:false, needsToRegister:false, url:'/_ah/login?continue=%2Fregistration.html', userId:null, role: "tutor"};
-                displayLoginLogoutLinkHelper(document, mockLoginStatus);
+                displayLoginLogoutLinkHelper(document, window, mockLoginStatus);
 
                 expect(document.getElementById('login-url').href).toBe('http://localhost:8080/_ah/login?continue=%2Fregistration.html');
+            });
+
+            it("redirects user to registration if the user is logged in and needs to register", function() {
+                mockLoginStatus = {isLoggedIn:true, needsToRegister:true, url:'#', userId:"123"};
+                var mockWindow = {location: {href: "homepage.html"}};
+                displayLoginLogoutLinkHelper(document, mockWindow, mockLoginStatus);
+
+                expect(mockWindow.location.href).toBe('/registration.html');
             });
 
             it("adds event listener that redirects the user to their profile", function() {
