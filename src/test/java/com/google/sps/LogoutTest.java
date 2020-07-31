@@ -30,8 +30,6 @@ import javax.servlet.*;
 import javax.servlet.http.HttpSession;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.mockito.ArgumentCaptor;
-import javax.servlet.http.Cookie;
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.appengine.api.utils.SystemProperty.Environment;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
@@ -60,11 +58,8 @@ public final class LogoutTest {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
         HttpSession session = mock(HttpSession.class);
-        Cookie cookie = mock(Cookie.class);
         
         when(request.getSession(false)).thenReturn(session);
-        when(request.getCookies()).thenReturn(new Cookie[]{cookie});
-        when(cookie.getName()).thenReturn("SACSID");
         
         //mock the invalidate method for session
         doAnswer(new Answer() {
@@ -74,9 +69,6 @@ public final class LogoutTest {
         }}).when(session).invalidate();
 
         servlet.doGet(request, response);
-
-        ArgumentCaptor<Cookie> deletedCookie = ArgumentCaptor.forClass(Cookie.class);
-        verify(response).addCookie(deletedCookie.capture());
 
         Assert.assertNull(request.getSession(false));
     }
