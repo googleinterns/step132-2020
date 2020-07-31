@@ -66,11 +66,12 @@ public class GoogleBooksServlet extends HttpServlet {
             params += "&startIndex=" + startIndex;
         }
 
+        //get .properties file that stores the api key
         Properties prop = new Properties();
         InputStream input = getClass().getResourceAsStream("/api.properties");
         prop.load(input);
 
-
+        //need country param here for appengine copyright purposes
         URL url = new URL("https://www.googleapis.com/books/v1/volumes?" + params + "&maxResults=40&country=US");
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
