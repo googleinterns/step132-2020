@@ -44,6 +44,7 @@ function getTutoringSessionHistoryHelper(window) {
         } else {
             var historyContainer = document.getElementById('tutoringSessionHistory');
             var errorMessage = document.createElement("p");
+            errorMessage.className = "text-center";
             errorMessage.innerText = "This user does not have any tutoring session history.";
             historyContainer.appendChild(errorMessage);
             return;
