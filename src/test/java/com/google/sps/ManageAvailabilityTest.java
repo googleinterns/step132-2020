@@ -52,6 +52,14 @@ public final class ManageAvailabilityTest {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 10)
                                                         .build();
+    private final Calendar NOV182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 10, 18)
+                                                        .build();
+    private final Calendar DEC102020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 11, 10)
+                                                        .build();
 
     private final int TIME_1200AM = TimeRange.getTimeInMinutes(12, 00);
     private final int TIME_0100PM = TimeRange.getTimeInMinutes(13, 00);
@@ -95,8 +103,8 @@ public final class ManageAvailabilityTest {
       
         servlet.doGet(request, response);
 
-        String expected = new Gson().toJson(Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                                                    TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020)));
+        String expected = new Gson().toJson(Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, NOV182020),
+                                                    TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, DEC102020)));
 
         writer.flush();
         Assert.assertTrue(stringWriter.toString().contains(expected));
@@ -108,13 +116,8 @@ public final class ManageAvailabilityTest {
         HttpServletResponse response = mock(HttpServletResponse.class);
         TestUtilities.setSessionId(request, "0");   
 
-        when(request.getParameter("startHour")).thenReturn("22");
-        when(request.getParameter("startMinute")).thenReturn("00");
-        when(request.getParameter("endHour")).thenReturn("23");
-        when(request.getParameter("endMinute")).thenReturn("00");
-        when(request.getParameter("day")).thenReturn("20");
-        when(request.getParameter("month")).thenReturn("1");
-        when(request.getParameter("year")).thenReturn("2021");
+        when(request.getParameter("startTime")).thenReturn("22:00");
+        when(request.getParameter("date")).thenReturn("2021-02-20");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
@@ -123,13 +126,8 @@ public final class ManageAvailabilityTest {
 
         servlet.doPost(request, response);
 
-        verify(request, times(1)).getParameter("startHour");
-        verify(request, times(1)).getParameter("startMinute");
-        verify(request, times(1)).getParameter("endHour");
-        verify(request, times(1)).getParameter("endMinute");
-        verify(request, times(1)).getParameter("day");
-        verify(request, times(1)).getParameter("month");
-        verify(request, times(1)).getParameter("year");
+        verify(request, times(1)).getParameter("startTime");
+        verify(request, times(1)).getParameter("date");
 
         Calendar expectedDate = new Calendar.Builder()
                                             .setCalendarType("iso8601")
@@ -137,13 +135,13 @@ public final class ManageAvailabilityTest {
                                             .build();
 
         String expected = new Gson()
-                            .toJson(new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020), 
+                            .toJson(new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, NOV182020),
+                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, DEC102020), 
                                                 TimeRange.fromStartToEnd(TIME_1000PM,TIME_1100PM, expectedDate))));
 
         String unexpected = new Gson()
-                            .toJson(new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))));
+                            .toJson(new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, NOV182020),
+                                                TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, DEC102020))));
       
         writer.flush();
         // New available timeslot should have been added

@@ -12,93 +12,123 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-function getAvailability() {
+/** Fetches info used to create the calendar */
+function fetchAvailabilityInfo() {
+    fetchAvailabilityInfoHelper(window);
+}
+
+// Helper function for fetchAvailabilityInfo, used for testing
+function fetchAvailabilityInfoHelper(window) {
     var queryString = new Array();
-    window.onload = readTutorID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const tutorID = queryString["tutorID"];
 
-    fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {
-        if(timeslots.error) {
+    fetch('/availability?tutorID=' + tutorID, {method: 'GET'}).then(response => response.json()).then((timeslots) => {  
+        const container = document.getElementById('calendar');
+
+        if (timeslots.error) {
             var message = document.createElement("p");
             p.innerText = timeslots.error;
-            document.getElementById('timeslots').appendChild(message);
+            container.appendChild(message);
             return;
         }
-        timeslots.forEach((timeslot) => {
-            document.getElementById('timeslots').appendChild(createTimeSlotBox(timeslot, tutorID));
-        })
-    });
-}
 
-// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
-// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readTutorID(queryString, window) {
-    if (queryString.length == 0) {
-        if (window.location.search.split('?').length > 1) {
-            var params = window.location.search.split('?')[1].split('&');
-            for (var i = 0; i < params.length; i++) {
-                var key = params[i].split('=')[0];
-                var value = decodeURIComponent(params[i].split('=')[1]);
-                queryString[key] = value;
-            }
+        // Don't create a calendar if there are no available timeslots
+        if (timeslots === undefined || timeslots.length == 0) {
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user has not set any available timeslots";
+            container.appendChild(errorMessage);
+            return;
         }
-    }
+
+        // There are available timeslots, display header and calendar
+        document.getElementById('calendar-header').style.display = 'block';
+
+        createCalendar(timeslots, tutorID, container);
+    });
 }
 
-function createTimeSlotBox(timeslot, tutorID) {
-    var months = [ "January", "February", "March", "April", "May", "June", 
-           "July", "August", "September", "October", "November", "December" ];
+/** Creates a calendar with the Charts API and renders it on the page  */
+function createCalendar(timeslots, tutorID, container) {
+    const chart = new google.visualization.Timeline(container);
 
-    const timeslotElement = document.createElement('li');
-    timeslotElement.className = 'list-group-item';
+    const dataTable = new google.visualization.DataTable();
+    dataTable.addColumn({type: 'string', id: 'Date'});
+    dataTable.addColumn({type: 'date', id: 'Start'});
+    dataTable.addColumn({type: 'date', id: 'End'});
 
-    const dateElement = document.createElement('h3');
-    dateElement.style.textAlign = 'left';
-    dateElement.style.display = 'inline';
-    var hour = Math.floor(parseInt(timeslot.start) / 60);
-    var amOrPm = "am";
-    if (hour > 12) {
-        hour = hour - 12;
-        amOrPm = "pm"
+    // Sort timeslots in chronological order
+    sortTimeslots(timeslots);
+
+    for (var slot of timeslots) {
+        // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+        var date = (slot.date.month+1) + '/' + slot.date.dayOfMonth + '/' + slot.date.year;
+        dataTable.addRow([
+            date, asDate(slot.start), asDate(slot.end)
+        ]);
     }
-    var minute = parseInt(timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
-    }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[timeslot.date.month] + " " + timeslot.date.dayOfMonth + ", " + timeslot.date.year;
 
-    const dateLineElement = document.createElement('div');
-    dateLineElement.className = 'd-flex w-100 justify-content-between';
-    dateLineElement.style.padding = '10px';
-    dateLineElement.appendChild(dateElement);
+    // Have timeline span 24 hours regardless of what's scheduled
+    var min = new Date();
+    min.setHours(0);
+    var max = new Date();
+    max.setHours(24);
 
-    const selectButtonElement = document.createElement('button');
-    selectButtonElement.innerText = 'Select';
-    selectButtonElement.style.textAlign = 'right';
-    selectButtonElement.style.display = 'inline';
-    selectButtonElement.className = 'btn btn-default btn-lg';
-    selectButtonElement.addEventListener('click', () => {
-        selectTimeSlot(tutorID, window, timeslot);
+    const options = {
+        width: 1000,
+        height: 300,
+        timeline: { singleColor: '#437f97' },
+        hAxis: {
+            minValue: min,
+            maxValue: max
+        }
+    };
+
+    google.visualization.events.addListener(chart, 'select', function() {
+        var selection = chart.getSelection()[0];
+        if (selection) {
+            selectTime(tutorID, dataTable, selection);
+        }
     });
+    chart.draw(dataTable, options);
+}
 
-    const buttonLineElement = document.createElement('div');
-    buttonLineElement.className = 'd-flex w-100 justify-content-between';
-    buttonLineElement.style.padding = '10px';
-    buttonLineElement.appendChild(selectButtonElement);
-
-    timeslotElement.appendChild(dateLineElement);
-    timeslotElement.appendChild(buttonLineElement);
-    return timeslotElement;
+// Sorts all available time slots in chronological order
+function sortTimeslots(timeslots) {
+    timeslots.sort(function(a, b) {
+        return (a.date.year + a.date.month/12 + a.date.dayOfMonth/365) - (b.date.year + b.date.month/12 + b.date.dayOfMonth/365);
+    });
 }
 
 // Redirects the user to the scheduling page and passes down the tutor ID along with the selected time range for the session.
-function selectTimeSlot(tutorID, window, timeslot) {
+function selectTime(tutorID, dataTable, selection) {
+    var start = asMinutes(dataTable.getValue(selection.row, 1));
+    var end = asMinutes(dataTable.getValue(selection.row, 2));
+    var date = dataTable.getValue(selection.row, 0).split('/');
     var url = "scheduling.html?tutorID=" + encodeURIComponent(tutorID) +
-                "&start=" + encodeURIComponent(timeslot.start) +
-                "&end=" + encodeURIComponent(timeslot.end) +
-                "&year=" + encodeURIComponent(timeslot.date.year) +
-                "&month=" + encodeURIComponent(timeslot.date.month) +
-                "&day=" + encodeURIComponent(timeslot.date.dayOfMonth);
+                "&start=" + encodeURIComponent(start) +
+                "&end=" + encodeURIComponent(end) +
+                "&year=" + encodeURIComponent(date[2]) +
+                "&month=" + encodeURIComponent(date[0]-1) +
+                "&day=" + encodeURIComponent(date[1]);
     window.location.href = url;
 }
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+
+// Converts a JavaScript Date object into "minutes since midnight"
+function asMinutes(date) {
+    return date.getHours()*60 + date.getMinutes();
+}
+
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(fetchAvailabilityInfo);

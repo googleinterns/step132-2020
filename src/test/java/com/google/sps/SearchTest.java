@@ -14,8 +14,10 @@
 
 package com.google.sps;
 
+import com.google.utilities.TestUtilities;
 import com.google.sps.data.SampleData;
 import com.google.sps.data.Tutor;
+import com.google.sps.data.Student;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import org.junit.Assert;
@@ -59,6 +61,7 @@ public final class SearchTest {
                                                         .build();
 
     private final LocalServiceTestHelper helper =  new LocalServiceTestHelper(new LocalDatastoreServiceTestConfig());
+    private SampleData sample;
 
     private SearchServlet servlet;
 
@@ -66,8 +69,9 @@ public final class SearchTest {
     public void setUp() {
         helper.setUp();	  
 
-        SampleData sample = new SampleData();
+        sample = new SampleData();
         sample.addTutorsToDatastore();
+        sample.addStudentsToDatastore();
 
         servlet = new SearchServlet();
         servlet.init();
@@ -82,6 +86,7 @@ public final class SearchTest {
     public void doGetReturnsCorrectResponseForHistory() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
 
         when(request.getParameter("topic")).thenReturn("history");
 
@@ -89,18 +94,179 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
         verify(request, times(1)).getParameter("topic"); 
         writer.flush(); // it may not have been flushed yet...
-        List<Tutor> expectedTutorList = Arrays.asList(new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", 
-                                                            new ArrayList<String> (Arrays.asList("math", "history")),
-                                                            new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                                                                        TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
-                                                            new ArrayList<TutorSession> (Arrays.asList()), 0, 0, "0"));
+        List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("kashisharora@google.com"));
         String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testDefaultSortBy() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        when(request.getParameter("topic")).thenReturn("english");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        writer.flush(); // it may not have been flushed yet...
+        List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("btrevisan@google.com"), sample.getTutorByEmail("sfalberg@google.com"));
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testSortByRating() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        //rate Sam
+        sample.rateTutor("2", 5);
+
+        when(request.getParameter("topic")).thenReturn("english");
+        when(request.getParameter("sort-type")).thenReturn("rating");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("sort-type"); 
+        writer.flush(); // it may not have been flushed yet...
+        //Sam should be before Bernardo now
+        List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("sfalberg@google.com"), sample.getTutorByEmail("btrevisan@google.com"));
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testSortByAvailability() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        when(request.getParameter("topic")).thenReturn("english");
+        when(request.getParameter("sort-type")).thenReturn("availability");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("sort-type"); 
+        writer.flush(); // it may not have been flushed yet...
+        //Bernardo has more available timeslots
+        List<Tutor> expectedTutorList = Arrays.asList(sample.getTutorByEmail("btrevisan@google.com"), sample.getTutorByEmail("sfalberg@google.com"));
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testSortByMostStudents() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        when(request.getParameter("topic")).thenReturn("geology");
+        when(request.getParameter("sort-type")).thenReturn("most-students");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("sort-type"); 
+        writer.flush(); // it may not have been flushed yet...
+
+        Tutor samTutor = sample.getTutorByEmail("sfalberg@google.com");
+        Student samStudent = new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", 
+                                        new ArrayList<String> (Arrays.asList("Finance", "Chemistry")), new ArrayList<String> (Arrays.asList("2")), "2");
+        samTutor.addStudent(samStudent);
+
+        Tutor elianTutor = sample.getTutorByEmail("elian@google.com");
+        elianTutor.setStudents(new ArrayList<Student>());
+        //Sam has more students
+        List<Tutor> expectedTutorList = Arrays.asList(samTutor, elianTutor);
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    @Test
+    public void testSortByLeastStudents() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
+
+        when(request.getParameter("topic")).thenReturn("geology");
+        when(request.getParameter("sort-type")).thenReturn("least-students");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        verify(request, times(1)).getParameter("sort-type"); 
+        writer.flush(); // it may not have been flushed yet...
+
+        Tutor samTutor = sample.getTutorByEmail("sfalberg@google.com");
+        Student samStudent = new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", 
+                                        new ArrayList<String> (Arrays.asList("Finance", "Chemistry")), new ArrayList<String> (Arrays.asList("2")), "2");
+        samTutor.addStudent(samStudent);
+
+        Tutor elianTutor = sample.getTutorByEmail("elian@google.com");
+        elianTutor.setStudents(new ArrayList<Student>());
+        //Elian has less students
+        List<Tutor> expectedTutorList = Arrays.asList(elianTutor, samTutor);
+        String expected = new Gson().toJson(expectedTutorList);
+        Assert.assertTrue(stringWriter.toString().contains(expected));
+    }
+
+    /**
+    * The current searcher is a tutor and that tutor is the only result for history. They should not be able to see themselves in the result.
+    */
+    @Test
+    public void testWhenSearcherIsPartOfResult() throws IOException {
+        HttpServletRequest request = mock(HttpServletRequest.class);       
+        HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "0");
+
+        when(request.getParameter("topic")).thenReturn("history");
+
+        StringWriter stringWriter = new StringWriter();
+        PrintWriter writer = new PrintWriter(stringWriter);
+        when(response.getWriter()).thenReturn(writer);
+
+        servlet.doGet(request, response);
+
+        //verify that getParameter was called
+        verify(request, times(1)).getParameter("topic"); 
+        writer.flush(); // it may not have been flushed yet...
+
+        String expected = "[]";
         System.out.println(stringWriter.toString());
         System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
@@ -110,14 +276,13 @@ public final class SearchTest {
     public void doGetReturnsCorrectEmptyResponseForBusiness() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
-
+        TestUtilities.setSessionId(request, "");
         when(request.getParameter("topic")).thenReturn("business");
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called
@@ -133,6 +298,7 @@ public final class SearchTest {
     public void doGetReturnsCorrectErrorResponseForEmptyString() throws IOException {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class); 
+        TestUtilities.setSessionId(request, "");
 
         when(request.getParameter("topic")).thenReturn("");
 
@@ -140,7 +306,6 @@ public final class SearchTest {
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
 
-        //create the hard coded data
         servlet.doGet(request, response);
 
         //verify that getParameter was called

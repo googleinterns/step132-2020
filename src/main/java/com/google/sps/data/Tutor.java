@@ -29,6 +29,7 @@ public final class Tutor {
     private ArrayList<String>  skills;
     private ArrayList<TimeRange> availability;
     private ArrayList<TutorSession> scheduledSessions;
+    private ArrayList<Student> students;
     private int ratingSum;
     private int ratingCount;
     private String userId;
@@ -88,11 +89,38 @@ public final class Tutor {
         return this.scheduledSessions;
     }
 
+    public ArrayList<Student> getStudents() {
+        return this.students;
+    }
+
     public Float getRating() {
         return (float) this.ratingSum / this.ratingCount;
     }
 
     public String getUserId() {
         return this.userId;
+    }
+
+    /**
+    * Used for sorting by number of students.
+    */
+    public void setStudents(ArrayList<Student> students) {
+        this.students = students;
+    }
+
+    public void addStudent(Student student) {
+        if(this.students == null) {
+            this.students = new ArrayList<Student>();
+        }
+
+        this.students.add(student);
+    }
+
+    /**
+    * Used for testing.
+    */
+    public void addRating(int rating) {
+        this.ratingCount++;
+        this.ratingSum += rating;
     }
 }

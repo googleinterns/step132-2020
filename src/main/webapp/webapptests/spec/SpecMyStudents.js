@@ -31,6 +31,8 @@ describe("My Students", function() {
         it("should redirect user to homepage", async function() {
             spyOn(window, 'alert');
             spyOn(window, 'fetch').and.returnValue(Promise.resolve(response));
+            var studentsContainer = document.createElement("div");
+            spyOn(document, 'getElementById').and.returnValue(studentsContainer);
             await getMyStudentsHelper(mockWindow);
             expect(window.alert).toHaveBeenCalledWith('You must be signed in to view your students.');
             expect(mockWindow.location.href).toBe('/homepage.html');
@@ -38,7 +40,7 @@ describe("My Students", function() {
     });
 
     describe("when a student box is created", function() {
-        var student = {name: "Tester", email: "tester@example.com", learning: ["math", "english"], userId: "123"};
+        var student = {name: "Tester", email: "tester@example.com", learning: ["math", "english", " "], userId: "123"};
         var actual = createStudentBox(student);
 
         it("should return a div item element", function() {
@@ -60,7 +62,7 @@ describe("My Students", function() {
             expect(actual.childNodes[1].innerHTML).toEqual("tester@example.com");
         });
 
-        it("should learning set to Math, English", function() {
+        it("should set learning to Math, English", function() {
             expect(actual.childNodes[2].innerHTML).toEqual("Learning: math, english");
         });
 

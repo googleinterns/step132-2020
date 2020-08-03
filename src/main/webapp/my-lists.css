@@ -1,0 +1,78 @@
+ /* Copyright 2019 Google LLC
+ 
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+     
+     https://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+ limitations under the License.  */
+
+.active-list {
+    display: block !important;
+}
+
+.list-name {
+    margin: 0;
+}
+
+.list-topic {
+    font-style: italic;
+}
+
+.list-info {
+    text-align: left;
+}
+
+.book-list {
+    padding-left: 10px;
+}
+
+.list-names {
+    margin-top: 3%;
+    height: 50vh;
+    overflow: scroll;
+}
+
+.modal-body {
+    width: 90%;
+    margin: auto;
+}
+
+#list-topic-select {
+    width: 200px;
+}
+
+#other-topic {
+    display: none;
+    float: right;
+    margin: 10px auto auto;
+    width: 160px;
+}
+
+#new-list-submit {
+    display: block !important;
+    margin-top: 3%;
+}
+
+#book-list-text {
+    width: 100% !important;
+    margin-top: 2%;
+}
+
+.list-group-item.active {
+    background-color: #437f97 !important;
+    border-color: #437f97 !important;
+}
+
+.footer {
+    position: relative;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+

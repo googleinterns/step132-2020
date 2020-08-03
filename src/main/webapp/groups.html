@@ -1,0 +1,157 @@
+ <!-- Copyright 2019 Google LLC
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+     https://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+ limitations under the License. -->
+ 
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Groups</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="search-results.css">
+        <link rel="stylesheet" type="text/css" href="general.css">
+        <link rel="stylesheet" type="text/css" href="groups.css">
+    </head>
+    <body onload="displayLoginLogoutLink(), getSearchGroupResults()">
+        <nav class="navbar navbar-default navbar-fixed-top" id="top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/homepage.html">Sullivan</a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                        <li class="button-hover" id="account-dropdown" class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">MY ACCOUNT <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a id="profile">Profile</a></li>
+                                <li><a id="groups">Groups</a></li>
+                                <li><a id="history">History</a></li>
+                                <li><a id="availability-settings">Manage Availability</a></li>
+                                <li><a id="my-students">My Students</a></li>
+                                <li><a id="my-lists">My Lists</a></li>
+                                <li><a id="tutor-session-settings">Manage Tutoring Sessions</a></li>
+                            </ul>
+                        </li>
+                        
+                        <li id="label-student" style="display: none"><a href="#" class="role-view-label">STUDENT</a></li>
+                        <li id="role-view-switch" style="display: none">
+                            <label class="switch">
+                                <input id="view-checkbox" type="checkbox" onclick="switchView();">
+                                <span class="slider round"></span>
+                            </label>
+                        </li>
+                        <li id="label-tutor" style="display: none"><a href="#">TUTOR</a></li>
+                    </ul>
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <form class="form-inline my-2 my-lg-0" id="search-bar-user" onsubmit="return redirectToResultsUsers();">
+                                <input class="form-control mr-sm-2" id="searched-name" type="search" placeholder="Search users by name" aria-label="Search" required>
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
+                        </li>
+                        <li id="login" style="display: none"><a id="login-url"><span class="glyphicon glyphicon-user"></span> Login</a></li>
+                        <li id="logout" style="display: none"><a id="logout-url"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid bg-white" id="groups-header">
+            <h1>Groups</h1>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-group-modal" style="display:block">
+                + New Group
+            </button>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="new-group-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="vertical-alignment-helper">
+                <div class="modal-dialog modal-dialog-centered vertical-align-center" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="new-group-form-title" style="display:inline-block">Create a new group</h3>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="new-group-form" class="form-inline" action="/manage-groups" method="POST">
+                            <div class="form-group mx-sm-3 mb-2"><input name="name" class="form-control" type="text" id="group-name-input" required="" aria-required=true placeholder="Group name"></div>
+                            <div class="form-group" style="float:right">
+                                <label for="group-topic-select">Topic:</label>
+                                <select name="topic" id="group-topic-select" class="form-control" onchange="checkOtherSelected(this.value)" required>
+                                    <option value="math">Math</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="biology">Biology</option>
+                                    <option value="computer science">Computer Science</option>
+                                    <option value="social studies">Social Studies</option>
+                                    <option value="english">English</option>
+                                    <option value="spanish">Spanish</option>
+                                    <option value="french">French</option>
+                                    <option value="chinese">Chinese</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div style="float:right" class="form-group mx-sm-3 mb-2"><input name="otherTopic" class="form-control" type="text" id="other-topic" placeholder="Other topic"></div>
+                            <div style="width: 100%; margin-top: 3%"> 
+                                <label for="group-description">Description:</label> 
+                                <p>Please enter a description for this group. <br>
+                                <textarea name="group-description" class="form-control" id="group-description" rows="8" required="" aria-reqiured=true></textarea>
+                            </div>
+                            <button class="btn" type="submit" id="new-group-submit">Create</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        <div class="container-fluid bg-white" style="text-align: center;">
+            <form id="search-groups-form" onsubmit="return redirectToResultsGroups();">
+                <input class="form-control search-box" type="text" id="search-box-results" required="" aria-required=true placeholder="What group are you looking for?">
+                <button class="btn btn-default" type="submit" id="search-submit-results">Go</button>
+            </form>
+        </div>
+
+        <div id="result-container" class="list-group bg-white bg-white-lg">
+            <h4 id="num-groups-results" class="container-label"></h4>
+            <div id="groups-result" class="list-group active-container"></div>
+        </div>
+
+        <div class="footer">
+            <div class="bg-description-blue">
+                <div class="container-fluid bg-white"></div>
+            </div>       
+            <footer class="container-fluid text-center bg-blue">
+                <a href="#top" title="To Top">
+                    <span id="top-arrow" class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+                <p>Bootstrap Theme Made By W3Schools</a></p>
+            </footer>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="general.js"></script>
+        <script src="search-users.js"></script>
+        <script src="registration.js"></script>
+        <script src="groups.js"></script>
+    </body>
+</html>

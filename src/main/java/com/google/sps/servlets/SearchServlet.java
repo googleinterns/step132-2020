@@ -4,7 +4,7 @@
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     https://www.apache.org/licenses/LICENSE-2.0
+//     https://www.apache.org/licenses/LICENSE-2.0 
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.String;
+import java.util.Optional;
 import com.google.gson.Gson;
 import com.google.sps.utilities.SearchDatastoreService;
 
@@ -39,6 +40,11 @@ public class SearchServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //get the id of the student if logged in
+        String studentID = "-1";
+        if(request.getSession(false) != null) {
+            studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
+        }
 
         String topic = request.getParameter("topic");
 
@@ -50,7 +56,9 @@ public class SearchServlet extends HttpServlet {
             return;
         }
 
-        List<Tutor> results = datastore.getTutorsForTopic(topic);
+        String sortType = Optional.ofNullable(request.getParameter("sort-type")).orElse("alpha");
+
+        List<Tutor> results = datastore.getTutorsForTopic(topic, studentID, sortType);
 
         response.setCharacterEncoding("UTF-8");
 

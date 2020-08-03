@@ -14,6 +14,11 @@
 
 package com.google.sps.servlets;
 
+import com.google.appengine.api.blobstore.BlobInfo;
+import com.google.appengine.api.blobstore.BlobInfoFactory;
+import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
@@ -26,6 +31,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -47,9 +53,15 @@ public class RegistrationServlet extends HttpServlet {
   
   private UserService userService = UserServiceFactory.getUserService();
   private DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    doPostHelper(request, response, blobstoreService);
+  }
+
+  // Helper function for doPost, created for testing
+  public void doPostHelper(HttpServletRequest request, HttpServletResponse response, BlobstoreService blobstoreService) throws IOException {
     String role = Optional.ofNullable(request.getParameter("role")).orElse(null);
     String firstName = Optional.ofNullable(request.getParameter("first-name"))
             .orElseThrow(() -> new IllegalArgumentException("Must fill out first name"));
@@ -58,53 +70,37 @@ public class RegistrationServlet extends HttpServlet {
     String fullName = firstName + " " + lastName;
     String bio = Optional.ofNullable(request.getParameter("bio")).orElse("");
     // For now, we will automatically set everyone's profile picture to a default avatar
-    String pfp = "images/pfp.jpg";
+    String pfp = getBlobKey(request, "pfp", blobstoreService);
     
     String email = userService.getCurrentUser().getEmail();
     String userId = userService.getCurrentUser().getUserId();
-    
-    // Make list of selected topics, remove unchecked topics
-    List<Optional<String>> topics = new ArrayList<Optional<String>>();
-    topics.add(Optional.ofNullable(request.getParameter("math")));
-    topics.add(Optional.ofNullable(request.getParameter("physics")));
-    topics.add(Optional.ofNullable(request.getParameter("chemistry")));
-    topics.add(Optional.ofNullable(request.getParameter("biology")));
-    topics.add(Optional.ofNullable(request.getParameter("computer-science")));
-    topics.add(Optional.ofNullable(request.getParameter("social-studies")));
-    topics.add(Optional.ofNullable(request.getParameter("english")));
-    topics.add(Optional.ofNullable(request.getParameter("spanish")));
-    topics.add(Optional.ofNullable(request.getParameter("french")));
-    topics.add(Optional.ofNullable(request.getParameter("chinese")));
-    List<String> topicsToStr = topics
-                                .stream()
-                                .filter(t -> t.isPresent())
-                                .map(t -> t.get().toLowerCase())
-                                .collect(Collectors.toList());
-
-    // Add blank entry to topics list to know where default topics end and custom topics begin
-    topicsToStr.add(" ");
-
-    String otherTopics = Optional.ofNullable(request.getParameter("other")).orElse("");
-    if (!otherTopics.equals("")) {
-        // Split the list, removing commas and whitespace, and add to the rest of the topics
-        List<String> otherTopicsToList = Arrays.asList(otherTopics.split("\\s*,\\s*"));
-        for (String otherTopic : otherTopicsToList) {
-            topicsToStr.add(otherTopic);
-        }
-    }
 
     // Make entity for user with all registration info
     Entity userEntity = new Entity("User");
-    createUserEntityAndPutInDatastore(datastore, userEntity, role, userId);
+    createUserEntityAndPutInDatastore(datastore, userEntity, role, userId, fullName.toLowerCase(), firstName.toLowerCase(), lastName.toLowerCase());
 
-    if(role.toLowerCase().equals("tutor")) {
+    // The "learn" parameter in the getTopics function refers to the topics that the user is learning and the 
+    // "tutor" parameter refers to the topics the user is tutoring in. The distinction between these two sets of
+    // topics exist to that a user can have different topics to tutor in from the topics they are learning.
+    if (role.toLowerCase().equals("both")) {
+        List<String> learningTopics = getTopics(request, "learn");
+        List<String> tutoringTopics = getTopics(request, "tutor");
+
         Entity tutorEntity = new Entity("Tutor");
-        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, bio, pfp, email, topicsToStr, userId);
-    }
+        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, bio, pfp, email, tutoringTopics, userId);
 
-    if(role.toLowerCase().equals("student")) {
         Entity studentEntity = new Entity("Student");
-        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, bio, pfp, email, topicsToStr, userId);
+        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, bio, pfp, email, learningTopics, userId);
+    } else if (role.toLowerCase().equals("tutor")) {
+        List<String> tutoringTopics = getTopics(request, "tutor");
+
+        Entity tutorEntity = new Entity("Tutor");
+        createTutorEntityAndPutInDatastore(datastore, tutorEntity, fullName, bio, pfp, email, tutoringTopics, userId);
+    } else if (role.toLowerCase().equals("student")) {
+        List<String> learningTopics = getTopics(request, "learn");
+
+        Entity studentEntity = new Entity("Student");
+        createStudentEntityAndPutInDatastore(datastore, studentEntity, fullName, bio, pfp, email, learningTopics, userId);
     }
 
     boolean testRegistrationEmail = sendRegistrationEmail(fullName, email);
@@ -141,6 +137,7 @@ public class RegistrationServlet extends HttpServlet {
     entity.setProperty("topics", topics);
     entity.setProperty("ratingSum", 0);
     entity.setProperty("ratingCount", 0);
+    entity.setProperty("rating", 0);
     entity.setProperty("userId", userId);
     ds.put(entity);
   }
@@ -148,10 +145,40 @@ public class RegistrationServlet extends HttpServlet {
  /**
   * Creates a user entity and puts it in datastore, used for testing
   */
-  public void createUserEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String userId) {
+  public void createUserEntityAndPutInDatastore(DatastoreService ds, Entity entity, String role, String userId, String fullName, String firstName, String lastName) {
     entity.setProperty("role", role);
     entity.setProperty("userId", userId);
+    // If the user has both roles, set the first view to student by default
+    if (role.equals("both")) {
+        entity.setProperty("view", "student");
+    }
+    entity.setProperty("fullName", fullName);
+    entity.setProperty("firstName", firstName);
+    entity.setProperty("lastName", lastName);
     ds.put(entity);
+  }
+
+  /** Returns the blob key for the user-uploaded file */
+  private String getBlobKey(HttpServletRequest request, String name, BlobstoreService blobstoreService) {
+    Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
+    List<BlobKey> blobKeys = blobs.get(name);
+
+    // User submitted form without selecting a file, so we can't get a URL. (dev server)
+    if (blobKeys == null || blobKeys.isEmpty()) {
+        return null;
+    } 
+
+    // User submitted form without selecting a file, so we can't get a URL. (live server)
+    BlobInfo blobInfo = new BlobInfoFactory().loadBlobInfo(blobKeys.get(0));
+    if (blobInfo.getSize() == 0) {
+        blobstoreService.delete(blobKeys.get(0));
+        return null;
+    }
+
+    // Form only contains a single file input, so get the first index.
+    String blobKey = blobKeys.get(0).getKeyString();
+
+    return blobKey;        
   }
 
   /**
@@ -187,5 +214,39 @@ public class RegistrationServlet extends HttpServlet {
             System.out.println("Failed to encode email.");
             return false;
         }
+    }
+
+    public List<String> getTopics(HttpServletRequest request, String type) {
+        // Make list of selected topics, remove unchecked topics
+        List<Optional<String>> topics = new ArrayList<Optional<String>>();
+        topics.add(Optional.ofNullable(request.getParameter("math-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("physics-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("chemistry-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("biology-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("computer-science-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("social-studies-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("english-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("spanish-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("french-" + type)));
+        topics.add(Optional.ofNullable(request.getParameter("chinese-" + type)));
+        List<String> topicsToStr = topics
+                                    .stream()
+                                    .filter(t -> t.isPresent())
+                                    .map(t -> t.get().toLowerCase())
+                                    .collect(Collectors.toList());
+
+        // Add blank entry to topics list to know where default topics end and custom topics begin
+        topicsToStr.add(" ");
+
+        String otherTopics = Optional.ofNullable(request.getParameter("other-" + type)).orElse("");
+        if (!otherTopics.equals("")) {
+            // Split the list, removing commas and whitespace, and add to the rest of the topics
+            List<String> otherTopicsToList = Arrays.asList(otherTopics.split("\\s*,\\s*"));
+            for (String otherTopic : otherTopicsToList) {
+                topicsToStr.add(otherTopic);
+            }
+        }
+
+        return topicsToStr;
     }
 }

@@ -20,7 +20,7 @@ function getTutoringSessionHistory() {
 //Helper function for getTutoringSessionHistory, used for testing.
 function getTutoringSessionHistoryHelper(window) {
     fetch('/history', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to view history.");
@@ -37,9 +37,18 @@ function getTutoringSessionHistoryHelper(window) {
             return;
         }
 
-        tutoringSessions.forEach((tutoringSession) => {
-            document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
-        })
+        if (Object.keys(tutoringSessions).length != 0) {
+            tutoringSessions.forEach((tutoringSession) => {
+                document.getElementById('tutoringSessionHistory').appendChild(createTutoringSessionBox(tutoringSession));
+            });
+        } else {
+            var historyContainer = document.getElementById('tutoringSessionHistory');
+            var errorMessage = document.createElement("p");
+            errorMessage.className = "text-center";
+            errorMessage.innerText = "This user does not have any tutoring session history.";
+            historyContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
@@ -55,7 +64,7 @@ function createTutoringSessionBox(tutoringSession) {
     tutorElement.style.textAlign = 'left';
     tutorElement.style.display = 'inline';
 
-    setTutorEmail(tutorElement, tutoringSession.tutorID);
+    setTutorName(tutorElement, tutoringSession.tutorID);
 
     const tutorLineElement = document.createElement('div');
     tutorLineElement.className = 'd-flex w-100 justify-content-between';
@@ -71,10 +80,10 @@ function createTutoringSessionBox(tutoringSession) {
         amOrPm = "pm"
     }
     var minute = parseInt(tutoringSession.timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
+    if (minute < 10) {
+        minute = "0" + minute;
     }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
+    dateElement.innerText = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
                              " " + tutoringSession.timeslot.date.dayOfMonth + ", " + tutoringSession.timeslot.date.year;
 
     const dateLineElement = document.createElement('div');
@@ -91,16 +100,6 @@ function createTutoringSessionBox(tutoringSession) {
     tutoringSessionElement.appendChild(starsLineElement);
     return tutoringSessionElement;
 }
-
-//Helper function for testing purposes
-//Sets the tutor element's email field to the tutor email
-function setTutorEmail(tutorElement, tutorID) {
-    var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerHTML = "Tutoring Session with " + tutor.email;
-    });
-}
-
 
 function loadStars(starsElement, tutoringSession) {
     var rating = 0;

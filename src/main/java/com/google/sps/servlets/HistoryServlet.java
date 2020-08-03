@@ -48,6 +48,11 @@ public class HistoryServlet extends HttpServlet {
         // Get the id of the student whose tutoring history will be displayed.
         // Make the default id -1 if the parameter is null, so an empty list will be returned
         String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
+        String studentIDTutorView = Optional.ofNullable(request.getParameter("studentIDTutorView")).orElse("-1");
+
+        if (!studentIDTutorView.equals("-1")) {
+            studentID = studentIDTutorView;
+        }
 
         if(studentID.equals("-1")) {
             response.setContentType("application/json");
@@ -68,7 +73,14 @@ public class HistoryServlet extends HttpServlet {
     private List<TutorSession> filterPastSessions(List<TutorSession> allSessions) {
         List<TutorSession> previousSessions = new ArrayList<TutorSession>();
 
-        Calendar currentCalendar = Calendar.getInstance();
+        // Calendar object on timeslots don't have hour or minute, so create this calendar with only year, month, and day
+        int year = Calendar.getInstance().get(Calendar.YEAR);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        Calendar currentCalendar = new Calendar.Builder()
+                                                    .setCalendarType("iso8601")
+                                                    .setDate(year, month, day)
+                                                    .build();
 
         for (TutorSession session : allSessions) {
             Calendar sessionCalendar = session.getTimeslot().getDate();

@@ -18,7 +18,7 @@ function getMyStudents() {
 
 async function getMyStudentsHelper(window) {
     await fetch('/my-students', {method: 'GET'}).then((response) => {
-        //if the tutor id is not the id of the current user
+        //if the tutor is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to view your students.");
@@ -32,15 +32,23 @@ async function getMyStudentsHelper(window) {
             document.getElementById('students').appendChild(message);
             return;
         }
-        students.forEach((student) => {
-            document.getElementById('students').appendChild(createStudentBox(student));
-        })
+
+        if (Object.keys(students).length != 0) {
+            students.forEach((student) => {
+                document.getElementById('students').appendChild(createStudentBox(student));
+            });
+        } else {
+            var studentsContainer = document.getElementById('students');
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any students.";
+            studentsContainer.appendChild(errorMessage);
+            return;
+        }
     });
 }
 
 /** Creates a div element containing information about a student. */
 function createStudentBox(student) {
-    console.log(student);
     const studentContainer = document.createElement("div");
     const name = document.createElement("h3");
     const email = document.createElement("h6");
@@ -48,7 +56,11 @@ function createStudentBox(student) {
     const progressLink = document.createElement("a");
     name.innerText = student.name;
     email.innerText = student.email;
-    learning.innerText = "Learning: " + student.learning.join(", ");
+    var learningString = student.learning.toString();
+    // Remove blank entry that marks start of other topics
+    var removeBlankLearning = learningString.replace(', ', '');
+    var listWithSpacesLearning = removeBlankLearning.replace(/,/g, ', ');
+    learning.innerText = "Learning: " + listWithSpacesLearning;
     progressLink.innerText = "Track Progress";
 
     progressLink.href = "/profile.html?userID=" + student.userId;

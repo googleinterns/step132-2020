@@ -31,40 +31,60 @@ describe("Search", function() {
     });
 
     describe("when search results page is loaded", function() {
-        var tutors = [{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId":"1"}, 
-                            {"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"], "userId":"2"}];
+        var tutors = [{"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", "History"], "userId":"1", "ratingCount": 1, "ratingSum": 5}, 
+                            {"name": "Tutor 2", "email": "tutor2@gmail.com", "skills": ["Math", "History"], "userId":"2", "ratingCount": 2, "ratingSum": 8}];
 
-        var books = {"items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}},
-                    {"volumeInfo": {"infoLink": "", "title": "Book 2", "authors": ["Author 2"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]}
+        var lists = [{name: "list 1", books: ["book 1", "book 2"], topic: "math"}, {name: "list 2", books: ["book 1", "book 2"], topic: "math"}];
+
+        var books = {"totalItems": 2, "items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}},
+                    {"volumeInfo": {"infoLink": "", "title": "Book 2", "authors": ["Author 2"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]};
+
+        var tutorsLabel = document.createElement("p");
+        tutorsLabel.id = "num-tutor-results";
 
         var tutorContainer = document.createElement("div");
-        tutorContainer.id = "tutors";
+        tutorContainer.id = "tutors-container";
+
+        var listContainer = document.createElement("div");
+        listContainer.id = "lists-container";
+
+        var listsLabel = document.createElement("p");
+        listsLabel.id = "num-lists-results"
+
+        var booksLabel = document.createElement("p");
+        booksLabel.id = "num-book-results";
 
         var bookContainer = document.createElement("div");
-        bookContainer.id = "books";
+        bookContainer.id = "books-container";
+
+        var panel = document.createElement("div");
 
         var mockWindow = {location: {href: "search-results.html?topic=math", search: "?topic=math"}};
 
-        it("should create result elements inside tutorContainer and bookContainer", async function() {
-            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutors)}), Promise.resolve({json: () => Promise.resolve(books)}));
+        it("should create result elements inside tutorContainer, listContainer, and bookContainer", async function() {
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutors)}), 
+                                                    Promise.resolve({json: () => Promise.resolve(lists)}), 
+                                                    Promise.resolve({json: () => Promise.resolve(books)}));
 
-            spyOn(document, "getElementById").and.returnValues(tutorContainer, bookContainer);
+            spyOn(document, "getElementById").and.returnValues(tutorsLabel, tutorContainer, listsLabel, panel, panel, panel, listContainer, booksLabel, bookContainer);
 
-            await getSearchResultsHelper(document, mockWindow);
+            spyOn(window, "createTutorListElement").and.returnValues(document.createElement("div"), document.createElement("div"));
 
-            expect(window.fetch).toHaveBeenCalledTimes(2);
-            expect(window.fetch.calls.allArgs()[0][0]).toEqual("/search?topic=math");
-            expect(window.fetch.calls.allArgs()[1][0]).toContain("https://www.googleapis.com/books/v1/volumes");
+            await getSearchResultsHelper(mockWindow);
 
-            //one for the number of results label + 2 for the number of results in testResults
-            expect(tutorContainer.childNodes.length).toEqual(3);
-            expect(tutorContainer.childNodes[0].innerText).toContain("Found 2 tutors for math");
+            expect(window.fetch).toHaveBeenCalledTimes(3);
+            expect(window.fetch.calls.allArgs()[0][0]).toEqual("/search?topic=math&sort-type=alpha");
+            expect(window.fetch.calls.allArgs()[1][0]).toEqual("/lists?topic=math");
+            expect(window.fetch.calls.allArgs()[2][0]).toEqual("/books?topic=math");
 
-            //one for the number of results label + div container that contains the book results
+            expect(tutorContainer.childNodes.length).toEqual(2);
+            expect(tutorsLabel.innerText).toContain("Found 2 tutors for math");
+
+            expect(listContainer.childNodes.length).toEqual(2);
+            expect(listsLabel.innerText).toContain("Found 2 book playlists for math");
+
             expect(bookContainer.childNodes.length).toEqual(2);
-            expect(bookContainer.childNodes[0].innerText).toContain("Found 2 books for math");
-            //the div child container should contain the 2 books 
-            expect(bookContainer.childNodes[1].childNodes.length).toEqual(2);
+            expect(booksLabel.innerText).toContain("Found 2 books for math");
         });
 
     });
@@ -164,17 +184,96 @@ describe("Search", function() {
 
     });
 
+    describe("when book lists are fetched and there are 0 results", function() {
+        var tutorBooksPanel = document.createElement("div");
+        var collapseOne = document.createElement("div");
+
+        var googleBooksPanel = document.createElement("div");
+        var collapseTwo = document.createElement("div");
+
+        var listsLabel = document.createElement("p");
+
+        it("should open google books panel", async function() {
+            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve([])})); 
+            spyOn(document, "getElementById").and.returnValues(listsLabel, collapseTwo, collapseTwo, googleBooksPanel); 
+            await getTutorBooks("math");
+            expect(listsLabel.innerText).toBe("No lists found for math.");
+            expect(googleBooksPanel.getAttribute("aria-expanded")).toBe("true");
+            expect(collapseTwo.getAttribute("aria-expanded")).toBe("true");
+            expect(collapseTwo.classList).toContain("in");
+            expect(tutorBooksPanel.hasAttribute("aria-expanded")).toBe(false);
+            expect(collapseOne.hasAttribute("aria-expanded")).toBe(false);
+            expect(collapseOne.classList).not.toContain("in");
+        });
+
+    });
+
+    describe("when book lists are fetched and there are 0 results", function() {
+        var tutorBooksPanel = document.createElement("div");
+        var collapseOne = document.createElement("div");
+
+        var googleBooksPanel = document.createElement("div");
+        var collapseTwo = document.createElement("div");
+
+        var listsLabel = document.createElement("p");
+        var listContainer = document.createElement("div");
+
+        it("should open tutor books panel", async function() {
+            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve(["1", "2"])})); 
+            spyOn(document, "getElementById").and.returnValues(listsLabel, collapseOne, collapseOne, tutorBooksPanel, listContainer); 
+            spyOn(window, "createTutorListElement").and.returnValues(document.createElement("div"), document.createElement("div"));
+            await getTutorBooks("math");
+            expect(tutorBooksPanel.getAttribute("aria-expanded")).toBe("true");
+            expect(collapseOne.getAttribute("aria-expanded")).toBe("true");
+            expect(collapseOne.classList).toContain("in");
+            expect(googleBooksPanel.hasAttribute("aria-expanded")).toBe(false);
+            expect(collapseTwo.hasAttribute("aria-expanded")).toBe(false);
+            expect(collapseTwo.classList).not.toContain("in");
+        });
+
+    });
+
     describe("when a tutor result is created", function() {
-        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", " ", "History"], "userId": "123"};
+        var result = {"name": "Tutor 1", "email": "tutor1@gmail.com", "skills": ["Math", " ", "History"], "userId": "123", "ratingCount": 1, "ratingSum": 5};
         var element = createTutorResult(result);
 
         it("should create div for result element", function() {
             expect(element.tagName).toEqual("DIV");
         });
 
-        it("should create h3 element inside result element for name", function() {
-            expect(element.childNodes[0].tagName).toEqual("H3");
-            expect(element.childNodes[0].innerText).toContain("Tutor 1");
+        it("should create div for header row that has name, profile link, and rating inside", function() {
+            expect(element.childNodes[0].tagName).toEqual("DIV");
+            expect(element.childNodes[0].childNodes.length).toEqual(3);
+        });
+
+        it("should create h3 element inside header row for name", function() {
+            expect(element.childNodes[0].childNodes[0].tagName).toEqual("H3");
+            expect(element.childNodes[0].childNodes[0].innerText).toContain("Tutor 1");
+        });
+
+        it("should create anchor element with profile icon inside header for link to user's profile", function() {
+            expect(element.childNodes[0].childNodes[1].tagName).toEqual("A");
+            expect(element.childNodes[0].childNodes[1].getAttribute("href")).toEqual("/profile.html?userID=123");
+        });
+
+        it("should create div element inside header row for rating", function() {
+            expect(element.childNodes[0].childNodes[2].tagName).toEqual("DIV");
+        });
+
+        it("should create a span element for each star inside of rating element", function() {
+            expect(element.childNodes[0].childNodes[2].childNodes[0].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[1].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[2].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[3].tagName).toEqual("SPAN");
+            expect(element.childNodes[0].childNodes[2].childNodes[4].tagName).toEqual("SPAN");
+        });
+
+        it("should have all stars inside the rating element of class glyphicon glyphicon-star", function() {
+            expect(element.childNodes[0].childNodes[2].childNodes[0].className).toEqual("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[1].className).toEqual("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[2].className).toEqual("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[3].className).toEqual("glyphicon glyphicon-star");
+            expect(element.childNodes[0].childNodes[2].childNodes[4].className).toEqual("glyphicon glyphicon-star");
         });
 
         it("should create h6 element inside result element for email", function() {
@@ -199,7 +298,7 @@ describe("Search", function() {
         var result = {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}};
         var element = createBookResult(result);
 
-        it("should create div for result element", function() {
+        it("should create anchor element for result element", function() {
             expect(element.tagName).toEqual("A");
         });
 
@@ -218,6 +317,91 @@ describe("Search", function() {
             expect(element.childNodes[2].innerText).toContain("by Author 1");
         });
 
+    });
+
+    describe("when a list result is created", function() {
+        var result = {name: "list 1", books: ["book 1", "book 2"], topic: "math", tutorID: "123"};
+        var googleBookResults = {"totalItems": 1, "items": [{"volumeInfo": {"infoLink": "", "title": "Book 1", "authors": ["Author 1"], "subject": "Math", "imageLinks": {"smallThumbnail": ""}}}]};
+        var element;
+
+        beforeAll(function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(googleBookResults)}));
+            element = createTutorListElement(result);
+        });
+
+        it("should create div for result element", function() {
+            expect(element.tagName).toEqual("DIV");
+        });
+
+        it("should create h4 element inside result element for list name", function() {
+            expect(element.childNodes[0].tagName).toEqual("H4");
+            expect(element.childNodes[0].innerText).toContain("list 1");
+        });
+
+        it("should create anchor element inside result element and set href to tutor profile", function() {
+            expect(element.childNodes[1].tagName).toEqual("A");
+            expect(element.childNodes[1].getAttribute("href")).toEqual("/profile.html?userID=123");
+        });
+
+        it("should create div element inside result element to display books in list", function() {
+            expect(element.childNodes[2].tagName).toEqual("DIV");
+            expect(element.childNodes[2].childNodes.length).toEqual(2);
+        });
+
+    });
+
+    describe("when setTutorNameInLink is called", function() {
+        var tutor = {name: "Test"};
+
+        it("should set anchor element to tutor name", async function() {
+            spyOn(window, 'fetch').and.returnValue(Promise.resolve({json: () => Promise.resolve(tutor)}));
+            const tutorElement = document.createElement("a");
+            await setTutorNameInLink(tutorElement, "123").then(() => {
+                expect(tutorElement.innerText).toEqual("Test");
+            });
+        });
+    });
+
+    describe("when sort type is changed", function() {
+        var select = document.createElement("select");
+        var rating = document.createElement("option");
+        rating.value = "rating";
+
+        rating.selected = 'selected';
+
+        var availability = document.createElement("option");
+        availability.value = "availability";
+
+        select.appendChild(rating);
+        select.appendChild(availability);
+        
+        it("should call getSearchResultsHelper with the correct parameters", function() {
+            spyOn(window, "getSearchResultsHelper");
+            handleTutorSort(select);
+            expect(window.getSearchResultsHelper).toHaveBeenCalledTimes(1);
+            expect(window.getSearchResultsHelper.calls.allArgs()[0][1]).toEqual("rating");
+
+        });
+    });
+
+    describe("when the load more button is clicked", function() {
+        numResultsLoaded = 2;
+
+        var bookContainer = document.createElement("div");
+        bookContainer.id = "books-container";
+
+        var loadMoreButton = document.createElement("button");
+        loadMoreButton.style.display = "block";
+        
+        it("should call fetch with the correct parameter and hide the load more button", async function() {
+            spyOn(window, "createBookResult").and.returnValues(document.createElement("div"));
+            spyOn(document, "getElementById").and.returnValues(bookContainer, loadMoreButton);
+            spyOn(window, "fetch").and.returnValue(Promise.resolve({json: () => Promise.resolve({totalItems: 3, items: [{volumeInfo: ""}]})}));
+            await loadMoreBooks("math");
+            expect(window.fetch.calls.allArgs()[0][0]).toEqual("/books?topic=math&startIndex=2");
+            expect(loadMoreButton.style.display).toBe("none");
+
+        });
     });
     
 });

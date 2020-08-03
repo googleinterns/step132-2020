@@ -25,6 +25,10 @@ function switchTab(elem) {
     elem.parentNode.classList.add("active");
 }
 
+function handleTutorSort(elem) {
+    return getSearchResultsHelper(window, elem.options[elem.selectedIndex].value);
+}
+
 /** Gets the topic the user searched for from the search box and redirects the page to the search-results page with a url that contains a query parameter for the topic. 
     The user may already be on the search-results page. In that case, the page will reload with a different value for the topic query parameter. */
 function redirectToResults() {
@@ -43,11 +47,11 @@ function redirectToResultsHelper(document, window) {
 
 /** Fetches the search results for the topic that the user searched for. */
 function getSearchResults() {
-    return getSearchResultsHelper(document, window);
+    return getSearchResultsHelper(window);
 }
 
 /** Helper function for getSearchResults, used for testing purposes. */
-async function getSearchResultsHelper(document, window) {
+async function getSearchResultsHelper(window, sort) {
     var topic;
 
     if (window.location.search.split('?').length > 0) {
@@ -56,101 +60,174 @@ async function getSearchResultsHelper(document, window) {
     }
 
     if(topic != null) {
-        var tutors = getTutors(topic);
-        var books = getBooks(topic);
+        var tutors = getTutors(topic, sort);
+        var tutorBooks = getTutorBooks(topic);
+        var googleBooks = getBooks(topic);
         
         await tutors;
-        await books;
+        await tutorBooks;
+        await googleBooks;
     }
 }
 
-var numResultsLoaded = 0;
-/** Fetches the list of books for the topic the user searched for. */
-async function getBooks(topic) {
-    await fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y").then(response => response.json()).then((results) => {
-        var books = document.getElementById("books");
-
-        var numSearchResults = document.createElement("h4");
-        numSearchResults.className = "num-search-results";
-        numSearchResults.id = "num-book-results";
-
-        books.appendChild(numSearchResults);
-
-        //if there was an error reported by the api, display the error message
+/** Fetches book lists created by tutors for the specified topic and displays them on the page. */
+async function getTutorBooks(topic) {
+    await fetch("/lists?topic=" + topic).then(response => response.json()).then((results) => {
+        //if there was an error, display the error message
         if(results.error) {
-            numSearchResults.innerText = results.error.message;
+            document.getElementById("num-lists-results").innerText = results.error;
             return;
         }
 
-        //Only make "books" plural if there are 0 or more than 1 books
-        numSearchResults.innerText = "Found " + results.items.length + (results.items.length > 1 || results.items.length === 0 ? " books for " : " book for ") + topic;
-
-        //create container to put books
-        var booksContainer = document.createElement("div");
-        booksContainer.id = "books-container";
-
-        numResultsLoaded = results.items.length;
-
-        results.items.forEach(function(result) {
-            booksContainer.append(createBookResult(result.volumeInfo));
-        });
-
-        books.appendChild(booksContainer);
-
-        //if we got the max results, there might be more
-        if(results.items.length == 40) {
-            var loadMore = document.createElement("button");
-            loadMore.id = "load-more";
-            loadMore.classList.add("btn");
-            loadMore.classList.add("btn-default");
-            loadMore.addEventListener("click", function() {
-                loadMoreBooks(topic);
-            });
-            loadMore.innerText = "Load More";
-            books.appendChild(loadMore);
+        if(Object.keys(results).length === 0) {
+            document.getElementById("num-lists-results").innerText = "No lists found for " + topic + ".";
+            //open google books panel
+            document.getElementById("collapsible-2").classList.add("in");
+            document.getElementById("collapsible-2").setAttribute("aria-expanded", true);
+            document.getElementById("google-books-panel").setAttribute("aria-expanded", true);
+            return;
         }
+        
+        document.getElementById("num-lists-results").innerText = "Found " + Object.keys(results).length + " book" + (Object.keys(results).length === 1 ? " playlist for " : " playlists for ") + topic;
+
+        //open lists panel
+        document.getElementById("collapsible-1").classList.add("in");
+        document.getElementById("collapsible-1").setAttribute("aria-expanded", true);
+        document.getElementById("tutor-books-panel").setAttribute("aria-expanded", true);
+        
+        var listContainer = document.getElementById("lists-container");
+
+        results.forEach((result) => {
+            listContainer.appendChild(createTutorListElement(result));
+        });
 
     });
 }
 
-function loadMoreBooks(topic) {
-    fetch("https://www.googleapis.com/books/v1/volumes?q=" + topic + "&maxResults=40&startIndex=" + numResultsLoaded + "&key=AIzaSyB1IWrd3mYWJsTWOqK7IYDrw9q_MOk1K9Y").then(response => response.json()).then((results) => {
-        var numSearchResults = document.getElementById("num-book-results");
+/** Creates a tutor list result element and sets the modal content to the list when the user clicks on "view list" button. */
+function createTutorListElement(result) {
+    var container = document.createElement("div");
+    var listName = document.createElement("h4");
+    var tutorName = document.createElement("a"); 
+    var books = document.createElement("div");
 
-        //if there was an error reported by the api, display the error message
-        if(results.error) {
-            numSearchResults.innerText = results.error.message;
-            return;
-        }
+    listName.innerText = result.name;
+    setTutorNameInLink(tutorName, result.tutorID);
 
-        numResultsLoaded += results.items.length;
+    //link to tutor profile
+    tutorName.href = "/profile.html?userID=" + result.tutorID;
 
-        //Only make "books" plural if there are 0 or more than 1 books
-        numSearchResults.innerText = "Found " + numResultsLoaded + " books for " + topic;
 
-        //create container to put books
-        var booksContainer = document.getElementById("books-container");
+    result.books.forEach((book) => {
+        var titleAndAuthor = book.toLowerCase().split(" by ");
+        var title = titleAndAuthor[0].trim();
+        //if user left out author, use empty string
+        var author = titleAndAuthor[1] === undefined ? "" : titleAndAuthor[1].trim();
+        
+        fetch("/books?title=" + encodeURIComponent(title) + "&author=" + encodeURIComponent(author))
+            .then(response => response.json()).then((results) => {
 
-        results.items.forEach(function(result) {
-            booksContainer.append(createBookResult(result.volumeInfo));
-        });
+               if(results.totalItems === 0) {
+                    books.appendChild(createNoGoogleBookResult(book, "list-book"));
+                    return;
+                }
 
-        if(results.items.length < 40) {
-            document.getElementById("load-more").display = "none";
-        }
+                books.appendChild(createBookResult(results.items[0].volumeInfo, "list-book"));
+            });
+    });
+
+    listName.className = "list-name-result";
+    tutorName.className = "tutor-name-result";
+    books.classList.add("book-list-container");
+    books.classList.add("list-inline");
+    container.classList.add("tutor-list-result");
+
+    tutorName.setAttribute("target", "_blank");
+
+
+    container.appendChild(listName);
+    container.appendChild(tutorName);
+    container.appendChild(books);
+
+    return container;
+}
+
+//keeps track of the number of books loaded so far from the Google Books API
+var numResultsLoaded = 0;
+/** Fetches the list of books for the topic the user searched for and displays them on the page. */
+async function getBooks(topic) {
+    await fetch("/books?topic="+topic)
+        .then(response => response.json()).then((results) => {
+            var numSearchResults = document.getElementById("num-book-results");
+            //if there was an error reported by the api, display the error message
+            if(results.error) {
+                numSearchResults.innerText = results.error.message;
+                return;
+            }
+
+            //Only make "books" plural if there are 0 or more than 1 books
+            numSearchResults.innerText = "Found " + results.totalItems + (results.totalItems > 1 || results.totalItems === 0 ? " books for " : " book for ") + topic;
+
+            //create container to put books
+            var booksContainer = document.getElementById("books-container");
+
+            numResultsLoaded = results.items === undefined ? 0 : results.items.length;
+      
+            results.items.forEach(function(result) {
+                booksContainer.append(createBookResult(result.volumeInfo, "book-result col-md-4"));
+            });
+
+            //if we got more than 40 results (the max # displayed initially), then we can load more
+            if(results.totalItems > 40) {
+                var loadMore = document.createElement("button");
+                loadMore.id = "load-more";
+                loadMore.classList.add("btn");
+                loadMore.classList.add("btn-default");
+                loadMore.addEventListener("click", function() {
+                    loadMoreBooks(topic);
+                });
+                loadMore.innerText = "Load More";
+                document.getElementById("google-books").appendChild(loadMore);
+            }
+
+    });
+}
+
+/** Gets the next 40 books from the Google Books API for the specified topic. */
+async function loadMoreBooks(topic) {
+    await fetch("/books?topic=" + topic + "&startIndex=" + numResultsLoaded)
+        .then(response => response.json()).then((results) => {
+
+            //if there was an error reported by the api, display the error message
+            if(results.error) {
+                numSearchResults.innerText = results.error.message;
+                return;
+            }
+
+            numResultsLoaded += results.items.length;
+
+            //create container to put books
+            var booksContainer = document.getElementById("books-container");
+
+            if(results.totalItems === numResultsLoaded) {
+                document.getElementById("load-more").style.display = "none";
+            }
+
+            results.items.forEach(function(result) {
+                booksContainer.append(createBookResult(result.volumeInfo, "book-result col-md-4"));
+            });
 
     });
 }
 
 /** Fetches the list of tutors for the topic the user searched for. */
-async function getTutors(topic) {
-    await fetch("/search?topic="+topic).then(response => response.json()).then((results) => {
-        var tutorContainer = document.getElementById("tutors");
+async function getTutors(topic, sort) {
+    if(sort === undefined) {
+        sort = "alpha";
+    }
+    await fetch("/search?topic=" + topic + "&sort-type=" + sort).then(response => response.json()).then((results) => {
 
-        var numSearchResults = document.createElement("h4");
-        numSearchResults.className = "num-search-results";
-
-        tutorContainer.appendChild(numSearchResults);
+        var numSearchResults = document.getElementById("num-tutor-results");
         
         //if there was an error reported by the servlet, display the error message
         if(results.error) {
@@ -161,6 +238,14 @@ async function getTutors(topic) {
         //Only make "tutors" plural if there are 0 or more than 1 tutors
         numSearchResults.innerText = "Found " + results.length + (results.length > 1 || results.length === 0 ? " tutors for " : " tutor for ") + topic;
 
+        if(results.length == 0) {
+            document.getElementById("tutor-sort").style.display = "none";
+        }
+
+        var tutorContainer = document.getElementById("tutors-container");
+
+        tutorContainer.innerHTML = "";
+
         results.forEach(function(result) {
             tutorContainer.append(createTutorResult(result));
         });
@@ -168,8 +253,27 @@ async function getTutors(topic) {
 
 }
 
+/** Creates a book result with an empty book cover and the name of the book. */
+function createNoGoogleBookResult(result, className) {
+    var container = document.createElement("div");
+    var thumbnail = document.createElement("img");
+    var book = document.createElement("p");
+
+    thumbnail.src = "/images/book-cover.png";
+
+    book.innerText = result;
+
+    container.classList.add(className);
+    container.classList.add("col-md-4");
+
+    container.appendChild(thumbnail);
+    container.appendChild(book);
+
+    return container;
+}
+
 /** Creates a anchor element containing information about a book result. */
-function createBookResult(result) {
+function createBookResult(result, className) {
     var container = document.createElement("a");
     var thumbnail = document.createElement("img");
     var title = document.createElement("p");
@@ -190,8 +294,7 @@ function createBookResult(result) {
         author.innerText = "by " + result.authors.join(", ");
     }
 
-    container.classList.add("book-result");
-    container.classList.add("col-md-4");
+    container.className = className;
 
     container.appendChild(thumbnail);
     container.appendChild(title);
@@ -203,30 +306,84 @@ function createBookResult(result) {
 /** Creates a div element containing information about a tutor result. */
 function createTutorResult(result) {
     var container = document.createElement("div");
+    var headerRow = document.createElement("div");
     var name = document.createElement("h3");
+    var profileLink = document.createElement("a");
+    var rating = document.createElement("div");
     var email = document.createElement("h6");
     var skills = document.createElement("p");
     var availabilityLink = document.createElement("a");
 
     name.innerText = result.name;
+    profileLink.innerHTML = "<img alt='View profile' src='/images/profile-icon.png'/>";
+    profileLink.href = "/profile.html?userID=" + result.userId;
     email.innerText = result.email;
+
     // Remove blank entry before adding to inner text
     var index = result.skills.indexOf(' ');
     result.skills.splice(index, 1);
     skills.innerText = "Skills: " + result.skills.join(", ");
-    availabilityLink.innerText = "Availability";
 
+    availabilityLink.innerText = "Availability";
     availabilityLink.href = "/availability.html?tutorID=" + result.userId;
 
+    loadStarsForTutorRating(rating, Math.round(result.ratingSum / result.ratingCount));
+
+    headerRow.classList.add("tutor-result-header");
+    name.classList.add("tutor-name");
+    rating.classList.add("tutor-rating");
+    availabilityLink.classList.add("btn");
     container.classList.add("tutor-result");
     container.classList.add("list-group-item");
 
+    profileLink.setAttribute("aria-label", "View profile");
+
     skills.style.textTransform = "capitalize";
 
-    container.appendChild(name);
+    headerRow.appendChild(name);
+    headerRow.appendChild(profileLink);
+    headerRow.appendChild(rating);
+    container.appendChild(headerRow);
     container.appendChild(email);
     container.appendChild(skills);
     container.appendChild(availabilityLink);
 
     return container;
+}
+
+/** Loads filled and unfilled stars for tutor's rating. */
+function loadStarsForTutorRating(starsElement, rating) {
+    //tutor does not have a rating yet, don't display anything
+    if (rating == 0) {
+        return;
+    }
+    
+    var stars = [];
+    for (var i = 0; i < rating; i++) {
+        stars[i] = document.createElement('span');
+        stars[i].className = 'glyphicon glyphicon-star';
+        starsElement.appendChild(stars[i]);
+    }
+
+    for (var i = rating; i < 5; i++) {
+        stars[i] = document.createElement('span');
+        stars[i].className = 'glyphicon glyphicon-star-empty';
+        starsElement.appendChild(stars[i]);
+    }
+
+    return starsElement;
 } 
+
+//Helper function for testing purposes
+//Sets tutor's name in tutor anchor element
+function setTutorNameInLink(tutorElement, tutorID) {
+    var tutor;
+    return getUser(tutorID).then(user => {
+        if(user.student != null) {
+            tutorElement.innerText = user.tutor.name;
+        } else {
+            tutorElement.innerText = user.name;
+        }
+        
+    });
+}

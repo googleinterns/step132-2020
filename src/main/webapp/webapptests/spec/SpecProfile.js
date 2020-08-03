@@ -10,7 +10,7 @@
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
-// limitations under the License.
+// limitations under the License. 
 
 describe("User Profile", function() {
     
@@ -19,56 +19,119 @@ describe("User Profile", function() {
         var actualUserID = getIdParameter(mockWindow);
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
             email: "sfalberg@google.com", skills: ["Math", "Physics"]};
-        var actualDiv = createProfileDiv(mockUser);
-        var mockLoginStatus = {role:"tutor"};
-        var actualText;
-
+        var mockLoginStatusTutor = {role:"tutor", userId: "123"};
+        var mockLoginStatusStudent = {role:"student", userId: "abc"};
+        var mockLoginStatusBoth = {role:"both", userId: "abc"};
+ 
         beforeAll(function() {
             var mockEditButton = document.createElement('btn');
             mockEditButton.style.display = 'none';
+            mockEditButton.id = "edit-profile-btn";
+ 
+            var mockAvailability = document.createElement('div');
+            mockAvailability.style.display = 'none';
+            mockAvailability.id = "tutor-availability";
 
+            var mockTutorLists = document.createElement("div");
+            mockTutorLists.style.display = 'none';
+            mockTutorLists.id = "list-container-profile";
+ 
+            var mockAvailabilityButton = document.createElement('btn');
+            mockAvailabilityButton.id = "tutor-availability-btn";
+ 
             document.body.appendChild(mockEditButton);
-
-            actualText = fetchStatusHelper(mockUser, mockLoginStatus, mockWindow, document);
+            document.body.appendChild(mockAvailability);
+            document.body.appendChild(mockTutorLists);
+            document.body.appendChild(mockAvailabilityButton);
+            
+            spyOn(window, 'addEventListeners');
+            spyOn(window, 'getExperiences');
+            spyOn(window, 'getGoals');
+            spyOn(window, 'getPastSessionsAndTopics');
+            spyOn(window, 'getListsProfile');
         })
-
+ 
         it("should correctly get the userID parameter from the URL", function() {
             expect(actualUserID).toEqual("123");
         });
-
+ 
         it("should create div for inside the container", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var mockProfilePicture = document.createElement('img');
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.tagName).toEqual("DIV");
         });
-
+ 
         it("should create and set img element for pfp", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var mockProfilePicture = document.createElement('img');
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[0].tagName).toEqual("IMG");
-            expect(actualDiv.childNodes[0].src).toEqual("http://localhost:8080/images/pfp.jpg");
         });
-
+ 
         it("should create and set h3 element for name", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var mockProfilePicture = document.createElement('img');
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[1].tagName).toEqual("H3");
             expect(actualDiv.childNodes[1].innerHTML).toEqual("Sam Falberg");
         });
-
+ 
         it("should create and set p element for bio", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var mockProfilePicture = document.createElement('img');
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[2].tagName).toEqual("P");
             expect(actualDiv.childNodes[2].innerHTML).toEqual("About me: The best bio");
         });
-
+ 
         it("should create and set p element for email", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var mockProfilePicture = document.createElement('img');
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[3].tagName).toEqual("P");
             expect(actualDiv.childNodes[3].innerHTML).toEqual("sfalberg@google.com");
         });
-
-        it("should create and set p element for topics", function() {
+ 
+        it("should create p", function() {
+            spyOn(window, 'fetchStatusHelper');
+            var mockProfilePicture = document.createElement('img');
+            var actualDiv = createProfileDiv(mockUser, mockProfilePicture, mockLoginStatusTutor);
             expect(actualDiv.childNodes[4].tagName).toEqual("P");
+        });
+ 
+        it("should set p to the correct topics", function() {
+            var actualText = fetchStatusHelper(mockUser, mockLoginStatusTutor, mockWindow, document);
             expect(actualText).toEqual("I am tutoring in: Math, Physics");
+        });
+ 
+        it("should hide the tutor availability button if current user is a tutor", function() {
+            fetchStatusHelper(mockUser, mockLoginStatusTutor, mockWindow, document);
+            expect(document.getElementById('tutor-availability').style.display).toBe('none');
+        });
+ 
+        it("should set make the tutor availability button visible if current user is a student", function() {
+            fetchStatusHelper(mockUser, mockLoginStatusStudent, mockWindow, document);
+            expect(document.getElementById('tutor-availability').style.display).toBe('block');
+        });
+
+        it("should set make the tutor availability button visible if current user is a both", function() {
+            fetchStatusHelper(mockUser, mockLoginStatusBoth, mockWindow, document);
+            expect(document.getElementById('tutor-availability').style.display).toBe('block');
+        });
+
+        it("adds event listener that redirects the user to the tutor's availability", function() {
+            var mockWindow = {location: {href: "profile.html"}};
+            var mockUser = {userId: "123"};
+            redirectToAvailability(mockUser, mockWindow);
+
+            expect(mockWindow.location.href).toEqual("availability.html?tutorID=123");
         });
     });
 
     describe("When the user edits their profile", function() {
         var mockUser = {name: "Sam Falberg", bio: "The best bio", pfp: "images/pfp.jpg", 
-            email: "sfalberg@google.com", skills: ["Math", "English", " ", "Other"]};
+            email: "sfalberg@google.com", skills: ["math", "english", " ", "Other"]};
         
         beforeAll(function() {
             var mockProfileContainer = document.createElement('div');
@@ -95,16 +158,20 @@ describe("User Profile", function() {
             mockTutorTopics.style.display = 'none';
 
             var mockMathCheckbox = document.createElement('checkbox');
-            mockMathCheckbox.id = 'math';
+            mockMathCheckbox.id = 'math-tutor';
+
+            mockMathCheckbox.checked = true;
 
             var mockEnglishCheckbox = document.createElement('checkbox');
-            mockEnglishCheckbox.id = 'english';
+            mockEnglishCheckbox.id = 'english-tutor';
+
+            mockEnglishCheckbox.checked = true;
 
             var mockPhysicsCheckbox = document.createElement('checkbox');
-            mockPhysicsCheckbox.id = 'physics';
+            mockPhysicsCheckbox.id = 'physics-tutor';
             
             var mockOtherTextbox = document.createElement('text');
-            mockOtherTextbox.id = 'other-subject';
+            mockOtherTextbox.id = 'other-subject-tutor';
 
             document.body.appendChild(mockProfileContainer);
             document.body.appendChild(mockButtonsDiv);
@@ -130,9 +197,9 @@ describe("User Profile", function() {
         });
 
         it("should check off the topics the user had previously selected", function() {
-            expect(document.getElementById('math').checked).toBe(true);
-            expect(document.getElementById('english').checked).toBe(true);
-            expect(document.getElementById('physics').checked).toBe(undefined);
+            expect(document.getElementById('math-tutor').checked).toBe(true);
+            expect(document.getElementById('english-tutor').checked).toBe(true);
+            expect(document.getElementById('physics-tutor').checked).toBe(undefined);
         });
     });
 });

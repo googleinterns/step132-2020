@@ -22,7 +22,6 @@ function loadProgress(document, loginStatus, user) {
 
     getExperiences(document, loginStatus, user);
     getGoals(document, loginStatus, user);
-    getAchievements(document, loginStatus);
     getPastSessionsAndTopics(document, loginStatus, user);
 }
 
@@ -41,7 +40,7 @@ function addEventListeners() {
 
 function getExperiences(document, loginStatus, user) {
     var queryString = new Array();
-    window.onload = readStudentID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const studentID = queryString["userID"];
 
     const params = new URLSearchParams();
@@ -50,8 +49,15 @@ function getExperiences(document, loginStatus, user) {
         getExperiencesHelper(document, experiences, loginStatus, user);
     });
 
-    // If the user is a student, allow them to add experiences
-    if (loginStatus.userId == user.userId) {
+    // If user is both a student and a tutor
+    if (user.student != null ) {
+        // If user is the one whose profile is being displayed
+        if (loginStatus.userId == user.student.userId) {
+            document.getElementById('experiences-form').style.display = "block";
+        } else {
+            document.getElementById('experiences-form').style.display = "none";
+        }
+    } else if (loginStatus.userId == user.userId) {
         document.getElementById('experiences-form').style.display = "block";
     } else {
         document.getElementById('experiences-form').style.display = "none";
@@ -75,6 +81,7 @@ function getExperiencesHelper(document, experiences, loginStatus, user) {
         var experienceContainer = document.getElementById('experiences');
         var errorMessage = document.createElement("p");
         errorMessage.innerText = "This user has not set any past experiences";
+        errorMessage.className = "text-center";
         experienceContainer.appendChild(errorMessage);
         return;
     }
@@ -82,7 +89,7 @@ function getExperiencesHelper(document, experiences, loginStatus, user) {
 
 function getGoals(document, loginStatus, user) {
     var queryString = new Array();
-    window.onload = readStudentID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const studentID = queryString["userID"];
 
     const params = new URLSearchParams();
@@ -91,8 +98,15 @@ function getGoals(document, loginStatus, user) {
         getGoalsHelper(document, goals, loginStatus, user);
     });
 
-    // If the user is a student, allow them to add goals
-    if (loginStatus.userId == user.userId) {
+    // If user is both a student and a tutor
+    if (user.student != null ) {
+        // If user is the one whose profile is being displayed
+        if (loginStatus.userId == user.student.userId) {
+            document.getElementById('goals-form').style.display = "block";
+        } else {
+            document.getElementById('goals-form').style.display = "none";
+        }
+    } else if (loginStatus.userId == user.userId) {
         document.getElementById('goals-form').style.display = "block";
     } else {
         document.getElementById('goals-form').style.display = "none";
@@ -116,35 +130,43 @@ function getGoalsHelper(document, goals, loginStatus, user) {
         var goalContainer = document.getElementById('goals');
         var errorMessage = document.createElement("p");
         errorMessage.innerText = "This user has not set any goals";
+        errorMessage.className = "text-center";
         goalContainer.appendChild(errorMessage);
         return;
     }
 }
 
-function getAchievements(document, loginStatus) {
-    var achievementsContainer = document.getElementById('achievements');
-    var errorMessage = document.createElement("p");
-    errorMessage.innerText = "This user does not have any achievements";
-    achievementsContainer.appendChild(errorMessage);
-    return;
-}
-
 function getPastSessionsAndTopics(document, loginStatus, user) {
-    // Do not display past tutoring sessions and past learned topics if the user viewing the profile is not one of the student's tutors or 
-    // the student themselves
-    if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
-        var queryString = new Array();
-        window.onload = readStudentID(queryString, window);
-        const studentID = queryString["userID"];
+    
+    // If the user is both a tutor and a student
+    if (user.student != null) {
+        // Do not display past tutoring sessions and past learned topics if the user viewing the profile is not one of the student's tutors or 
+        // the student themselves
+        if (user.student.tutors.includes(loginStatus.userId) || user.student.userId == loginStatus.userId) {
+            const studentID = user.student.userId;
 
-        const params = new URLSearchParams();
-        params.append('studentID', studentID);
-        fetch('/history?studentID=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
-            getPastSessionsAndTopicsHelper(document, tutoringSessions);
-        });
+            const params = new URLSearchParams();
+            params.append('studentID', studentID);
+            fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+                getPastSessionsAndTopicsHelper(document, tutoringSessions);
+            });
+        } else {
+            document.getElementById("sessionsAndAchievements").style.display = "none";
+            return;
+        }
     } else {
-        document.getElementById("sessionsAndAchievements").style.display = "none";
-        return;
+        if (user.tutors.includes(loginStatus.userId) || user.userId == loginStatus.userId) {
+            const studentID = user.userId;
+
+            const params = new URLSearchParams();
+            params.append('studentID', studentID);
+            fetch('/history?studentIDTutorView=' + studentID, {method: 'GET'}).then(response => response.json()).then((tutoringSessions) => {
+                getPastSessionsAndTopicsHelper(document, tutoringSessions);
+            });
+        } else {
+            document.getElementById("sessionsAndAchievements").style.display = "none";
+            return;
+        }
     }
 }
 
@@ -165,7 +187,10 @@ function getPastSessionsAndTopicsHelper(document, tutoringSessions) {
     if (Object.keys(tutoringSessions).length != 0) {
         tutoringSessions.forEach((tutoringSession) => {
             document.getElementById('past-sessions').appendChild(createPastSessionBox(tutoringSession));
-            document.getElementById('past-topics').appendChild(createPastTopicBox(tutoringSession));
+            // If the tutoring session subtopics field is not empty, create a box for it
+            if (tutoringSession.subtopics != "") {
+                document.getElementById('past-topics').appendChild(createPastTopicBox(tutoringSession));
+            }
         })
     } else {
         var pastSessions = document.getElementById('past-sessions');
@@ -174,25 +199,11 @@ function getPastSessionsAndTopicsHelper(document, tutoringSessions) {
         var errorMessage2 = document.createElement("p");
         errorMessage1.innerText = "This user has not had any tutoring sessions yet.";
         errorMessage2.innerText = "This user has not had any tutoring sessions yet.";
+        errorMessage1.className = "text-center";
+        errorMessage2.className = "text-center";
         pastSessions.appendChild(errorMessage1);
         pastTopics.appendChild(errorMessage2);
         return;
-    }
-}
-
-// Referenced to https://www.aspsnippets.com/Articles/Redirect-to-another-Page-on-Button-Click-using-JavaScript.aspx#:~:text=Redirecting%
-// 20on%20Button%20Click%20using%20JavaScript&text=Inside%20the%20Send%20JavaScript%20function,is%20redirected%20to%20the%20URL on June 23rd.
-// This function reads the id of the tutor that the student has selected, which is passed as an URI component, and add it to the queryString array..
-function readStudentID(queryString, window) {
-    if (queryString.length == 0) {
-        if (window.location.search.split('?').length > 1) {
-            var params = window.location.search.split('?')[1].split('&');
-            for (var i = 0; i < params.length; i++) {
-                var key = params[i].split('=')[0];
-                var value = decodeURIComponent(params[i].split('=')[1]);
-                queryString[key] = value;
-            }
-        }
     }
 }
 
@@ -217,7 +228,7 @@ function createPastSessionBox(tutoringSession) {
     if (minute == 0) {
         minute = "00";
     }
-    date.innerHTML = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
+    date.innerText = hour + ":" + minute + amOrPm + " on " + months[tutoringSession.timeslot.date.month] +
                      " " + tutoringSession.timeslot.date.dayOfMonth + ", " + tutoringSession.timeslot.date.year;
 
     sessionContainer.classList.add("result");
@@ -227,33 +238,12 @@ function createPastSessionBox(tutoringSession) {
     return sessionContainer;
 }
 
-//Sets tutorName to the name of the tutor who has the given id
-function setTutorName(tutorName, tutorID) {
-    var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorName.innerHTML = "Tutoring Session with " + tutor.name;
-    });
-}
-
-/** Gets information about the given user from the server. */
-function getUser(userID) {
-    return fetch('/profile?userId='+userID).then(response => response.json()).then((user) => {
-        if(user.error) {
-            var message = document.createElement("p");
-            message.innerText = user.error;
-            document.body.appendChild(message);
-            return;
-        }
-        return user;
-    });
-}
-
 /** Creates a div element containing information about a past topic. */
 function createPastTopicBox(tutoringSession) {
     const topicContainer = document.createElement("div");
     const topic = document.createElement("h3");
 
-    topic.innerHTML = tutoringSession.subtopics;
+    topic.innerText = tutoringSession.subtopics;
     topic.style.textTransform = "capitalize";
 
     topicContainer.classList.add("result");
@@ -267,7 +257,7 @@ function createGoalBox(goal, loginStatus, user) {
     const goalContainer = document.createElement("div");
     const description = document.createElement("h3");
 
-    description.innerHTML = goal.goal;
+    description.innerText = goal.goal;
     description.style.textTransform = "capitalize";
     description.style.display = 'inline';
     description.style.padding = '0px 15px 0px 0px';
@@ -276,8 +266,21 @@ function createGoalBox(goal, loginStatus, user) {
     goalContainer.classList.add("list-group-item");
     goalContainer.appendChild(description);
 
-    // Only create the delete button if the user has the student role
-    if (loginStatus.userId == user.userId) {
+    // If user is both a student and a tutor
+    if (user.student != null ) {
+        // If user is the one whose profile is being displayed, display delete button
+        if (loginStatus.userId == user.student.userId) {
+            const deleteGoalButton = document.createElement('button');
+            deleteGoalButton.innerText = 'Delete';
+            deleteGoalButton.className = 'btn btn-default btn-lg';
+            deleteGoalButton.addEventListener('click', () => {
+                deleteGoal(goal, loginStatus.userId, window);
+
+                goalContainer.remove();
+            });
+            goalContainer.appendChild(deleteGoalButton);
+        }
+    } else if (loginStatus.userId == user.userId) {
         const deleteGoalButton = document.createElement('button');
         deleteGoalButton.innerText = 'Delete';
         deleteGoalButton.className = 'btn btn-default btn-lg';
@@ -297,7 +300,7 @@ function createExperienceBox(experience, loginStatus, user) {
     const experienceContainer = document.createElement("div");
     const description = document.createElement("h3");
 
-    description.innerHTML = experience.experience;
+    description.innerText = experience.experience;
     description.style.textTransform = "capitalize";
     description.style.display = 'inline';
     description.style.padding = '0px 15px 0px 0px';
@@ -306,8 +309,21 @@ function createExperienceBox(experience, loginStatus, user) {
     experienceContainer.classList.add("list-group-item");
     experienceContainer.appendChild(description);
 
-    // Only create the delete button if the user has the student role
-    if (loginStatus.userId == user.userId) {
+    // If user is both a student and a tutor
+    if (user.student != null ) {
+        // If user is the one whose profile is being displayed, display delete button
+        if (loginStatus.userId == user.student.userId) {
+            const deleteExperienceButton = document.createElement('button');
+            deleteExperienceButton.innerText = 'Delete';
+            deleteExperienceButton.className = 'btn btn-default btn-lg';
+            deleteExperienceButton.addEventListener('click', () => {
+                deleteExperience(experience, loginStatus.userId, window);
+
+                experienceContainer.remove();
+            });
+            experienceContainer.appendChild(deleteExperienceButton);
+        }
+    } else if (loginStatus.userId == user.userId) {
         const deleteExperienceButton = document.createElement('button');
         deleteExperienceButton.innerText = 'Delete';
         deleteExperienceButton.className = 'btn btn-default btn-lg';
@@ -318,7 +334,7 @@ function createExperienceBox(experience, loginStatus, user) {
         });
         experienceContainer.appendChild(deleteExperienceButton);
     }
-
+    
     return experienceContainer;
 }
 
@@ -326,13 +342,13 @@ function addGoal(window) {
     const params = new URLSearchParams();
 
     var queryString = new Array();
-    window.onload = readStudentID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const studentID = queryString["userID"];
 
     params.append('goal', document.getElementById('newGoal').value);
 
     fetch('/add-goal', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to add a goal.");
@@ -347,7 +363,7 @@ function deleteGoal(goal, window) {
     params.append('id', goal.id);
 
     fetch('/delete-goal', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to delete a goal.");
@@ -360,13 +376,13 @@ function addExperience(window) {
     const params = new URLSearchParams();
 
     var queryString = new Array();
-    window.onload = readStudentID(queryString, window);
+    window.onload = readComponents(queryString, window);
     const studentID = queryString["userID"];
 
     params.append('experience', document.getElementById('newExperience').value);
 
     fetch('/add-experience', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to add an experience.");
@@ -382,7 +398,7 @@ function deleteExperience(experience, window) {
     params.append('id', experience.id);
 
     fetch('/delete-experience', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to delete an experience.");

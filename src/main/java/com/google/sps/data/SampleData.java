@@ -17,6 +17,11 @@ package com.google.sps.data;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.Filter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -52,14 +57,22 @@ public final class SampleData {
                                                         .setCalendarType("iso8601")
                                                         .setDate(2020, 7, 18)
                                                         .build();
+    private final Calendar NOV182020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 10, 18)
+                                                        .build();
+    private final Calendar DEC102020 = new Calendar.Builder()
+                                                        .setCalendarType("iso8601")
+                                                        .setDate(2020, 11, 10)
+                                                        .build();                
     //9 and 14 are the ids local datastore gives to these entities
     private final TutorSession bernardoSession = new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9); 
     private final TutorSession samSession = new TutorSession("2", "2", null, null, TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14);
 
     private ArrayList<Tutor> tutors = new ArrayList<Tutor> (Arrays.asList(
         new Tutor("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("math", "history")),
-                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, MAY182020),
-                            TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, AUGUST102020))),
+                new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_1200AM, TIME_0100PM, NOV182020),
+                            TimeRange.fromStartToEnd(TIME_0300PM,TIME_0500PM, DEC102020))),
                 new ArrayList<TutorSession> (Arrays.asList()), "0"),
         new Tutor("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("english", "physics")),
                 new ArrayList<TimeRange> (Arrays.asList(TimeRange.fromStartToEnd(TIME_0800AM, TIME_1000AM, MAY182020),
@@ -84,13 +97,18 @@ public final class SampleData {
         new Student("Kashish Arora", "Kashish\'s bio", "images/pfp.jpg", "kashisharora@google.com", new ArrayList<String> (Arrays.asList("English", "Physics")),
                 new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList()), "0"),
         new Student("Bernardo Eilert Trevisan", "Bernardo\'s bio", "images/pfp.jpg", "btrevisan@google.com", new ArrayList<String> (Arrays.asList("Math", "History")),
-                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), "1"),
+                new ArrayList<String> (Arrays.asList("1")), new ArrayList<TutorSession> (Arrays.asList(bernardoSession)), "1"),
         new Student("Sam Falberg", "Sam\'s bio", "images/pfp.jpg", "sfalberg@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
-                new ArrayList<String> (Arrays.asList()), new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
+                new ArrayList<String> (Arrays.asList("2")), new ArrayList<TutorSession> (Arrays.asList(samSession)), "2"),
         new Student("Anand Desai", "Anand\'s bio", "images/pfp.jpg", "thegoogler@google.com", new ArrayList<String> (Arrays.asList("Geology", "English")),
                 new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "3"),
         new Student("Elian Dumitru", "Elian\'s bio", "images/pfp.jpg", "elian@google.com", new ArrayList<String> (Arrays.asList("Finance", "Chemistry")),
                 new ArrayList<String> (Arrays.asList("0")), new ArrayList<TutorSession> (Arrays.asList()), "4")
+    ));
+
+    private ArrayList<User> users = new ArrayList<User> (Arrays.asList(
+        new User("Test Tester", "0"),
+        new User("Tester Test", "1")
     ));
 
    /** 
@@ -121,6 +139,9 @@ public final class SampleData {
         return null;
     }
 
+    /**
+    * Adds all the sample Tutor objects to datastore.
+    */
     public void addTutorsToDatastore() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -133,6 +154,7 @@ public final class SampleData {
             entity.setProperty("topics", tutor.getSkills());
             entity.setProperty("ratingSum", 0);
             entity.setProperty("ratingCount", 0);
+            entity.setProperty("rating", 0);
             entity.setProperty("userId", tutor.getUserId());
             datastore.put(entity);
 
@@ -141,6 +163,9 @@ public final class SampleData {
         }
     }
 
+    /**
+    * Adds all the sample Student objects to datastore.
+    */
     public void addStudentsToDatastore() {
         DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
@@ -155,6 +180,52 @@ public final class SampleData {
             entity.setProperty("userId", student.getUserId());
             datastore.put(entity);
         }
+    }
+
+    /**
+    * Adds all sample User objects to datastore.
+    */
+    public void addUsersToDatastore() {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        for (User user : users) {
+            Entity entity = new Entity("User");
+            entity.setProperty("userId", user.getUserId());
+
+            String fullName = user.getName();
+            entity.setProperty("fullName", fullName.toLowerCase());
+            String[] nameSplit = fullName.split(" ", 2); 
+            entity.setProperty("firstName", nameSplit[0].toLowerCase());
+            entity.setProperty("lastName", nameSplit[1].toLowerCase());
+            datastore.put(entity);
+        }
+    }
+
+    /**
+    * Rates a sample tutor with the given rating.
+    */
+    public void rateTutor(String userId, int rating) {
+        DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+
+        //get tutor with user id
+        Filter filter = new FilterPredicate("userId", FilterOperator.EQUAL, userId);
+        Query query = new Query("Tutor").setFilter(filter);
+
+        PreparedQuery pq = datastore.prepare(query);
+
+        Entity tutorEntity = pq.asSingleEntity();
+
+        int ratingSum = Math.toIntExact((long) tutorEntity.getProperty("ratingSum")) + rating;
+        int ratingCount = Math.toIntExact((long) tutorEntity.getProperty("ratingCount")) + 1;
+
+        tutorEntity.setProperty("ratingSum", ratingSum);
+        tutorEntity.setProperty("ratingCount", ratingCount);
+        tutorEntity.setProperty("rating", Math.round(ratingSum/ratingCount));
+
+        datastore.put(tutorEntity);
+
+        Tutor tutor = getTutorByEmail((String) tutorEntity.getProperty("email"));
+        tutor.addRating(rating);
     }
 
     private void addTutorAvailabilityToDatastore(DatastoreService datastore, ArrayList<TimeRange> times, String userId) {

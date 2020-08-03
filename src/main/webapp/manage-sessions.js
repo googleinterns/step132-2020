@@ -12,126 +12,152 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/** Gets a list of scheduled sessions for the student and displays them on the page with a delete button. */
-function getTutorSessionsManage() {
-    return getTutorSessionsManageHelper(window);
+/** Fetches info used to create the calendar  */
+function fetchSessionInfo() {
+    fetchSessionInfoHelper(window);
 }
 
-//Helper function for getTutorSessionManage, used for testing
-async function getTutorSessionsManageHelper(window) {
-    await fetch('/confirmation', {method: 'GET'}).then((response) => {
-        //if the student id is not the id of the current user
+// Helper function for fetchSessionInfo, used for testing
+function fetchSessionInfoHelper(window) {
+    fetch('/confirmation', {method: 'GET'}).then((response) => {
+        //if the student is not the current user or not signed in
         if(response.redirected) {
             window.location.href = response.url;
             alert("You must be signed in to manage sessions.");
             return [];
         }
         return response.json();
-    }).then((scheduledSessions) => {
+    }).then(async (scheduledSessions) => {
+        const container = document.getElementById('calendar');
+        
         if(scheduledSessions.error) {
             var message = document.createElement("p");
             p.innerText = scheduledSessions.error;
-            document.getElementById('timeslots').appendChild(message);
+            document.getElementById('calendar').appendChild(message);
             return;
         }
-        scheduledSessions.forEach((scheduledSession) => {
-            document.getElementById('scheduledSessions').appendChild(createScheduledSessionBoxManage(scheduledSession));
-        });
+
+        // Don't create a calendar if there are no scheduled sessions
+        if (scheduledSessions === undefined || scheduledSessions.length == 0) {
+            var errorMessage = document.createElement("p");
+            errorMessage.innerText = "This user does not have any scheduled tutoring sessions.";
+            container.appendChild(errorMessage);
+            return;
+        }
+        createCalendar(scheduledSessions, container);
     });
 }
 
-function createScheduledSessionBoxManage(scheduledSession) {
-    var months = [ "January", "February", "March", "April", "May", "June", 
-           "July", "August", "September", "October", "November", "December" ];
+/** Creates a calendar with the Charts API and renders it on the page  */
+async function createCalendar(scheduledSessions, container) {
+    const chart = new google.visualization.Timeline(container);
 
-    const scheduledSessionElement = document.createElement('li');
-    scheduledSessionElement.className = 'list-group-item';
+    const dataTable = new google.visualization.DataTable();
+    dataTable.addColumn({type: 'string', id: 'Date'});
+    dataTable.addColumn({type: 'string', id: 'Description'});
+    dataTable.addColumn({type: 'date', id: 'Start'});
+    dataTable.addColumn({type: 'date', id: 'End'});
 
-    const tutorElement = document.createElement('h3');
-    tutorElement.style.textAlign = 'left';
-    tutorElement.style.display = 'inline';
-
-    setTutorEmail(tutorElement, scheduledSession.tutorID);
-
-    const tutorLineElement = document.createElement('div');
-    tutorLineElement.className = 'd-flex w-100 justify-content-between';
-    tutorLineElement.appendChild(tutorElement);
-
-    const dateElement = document.createElement('h3');
-    dateElement.style.textAlign = 'left';
-    dateElement.style.display = 'inline';
-    var hour = Math.floor(parseInt(scheduledSession.timeslot.start) / 60);
-    var amOrPm = "am";
-    if (hour > 12) {
-        hour = hour - 12;
-        amOrPm = "pm"
-    }
-    var minute = parseInt(scheduledSession.timeslot.start) % 60;
-    if (minute == 0) {
-        minute = "00";
-    }
-    dateElement.innerHTML = hour + ":" + minute + amOrPm + " on " + months[scheduledSession.timeslot.date.month] +
-                             " " + scheduledSession.timeslot.date.dayOfMonth + ", " + scheduledSession.timeslot.date.year;
-
-    const dateLineElement = document.createElement('div');
-    dateLineElement.className = 'd-flex w-100 justify-content-between';
-    dateLineElement.appendChild(dateElement);
+    // Sort sessions in chronological order
+    sortSessions(scheduledSessions);
     
-    const cancelButtonElement = document.createElement('button');
-    cancelButtonElement.innerText = 'Cancel';
-    cancelButtonElement.style.textAlign = 'right';
-    cancelButtonElement.style.display = 'inline';
-    cancelButtonElement.className = 'btn btn-default btn-lg';
-    cancelButtonElement.addEventListener('click', () => {
-        cancelTutorSession(window, scheduledSession);
+    var sessionIDs = new Object();
 
-        scheduledSessionElement.remove();
-    });
+    for (var session of scheduledSessions) {
+        // Add 1 to the month so it displays correctly (January's default value is 0, February's is 1, etc.)
+        var date = (session.timeslot.date.month+1) + '/' + session.timeslot.date.dayOfMonth + '/' + session.timeslot.date.year;
 
-    const buttonLineElement = document.createElement('div');
-    buttonLineElement.className = 'd-flex w-100 justify-content-between';
-    buttonLineElement.style.padding = '10px';
-    buttonLineElement.appendChild(cancelButtonElement);
+        // Wait for this promise to resolve so tutor is defined when making calendar row
+        var tutorInfo = await getUser(session.tutorID);
+        var description;
+        var tutor;
 
-    scheduledSessionElement.appendChild(tutorLineElement);
-    scheduledSessionElement.appendChild(dateLineElement);
-    scheduledSessionElement.appendChild(buttonLineElement);
-    return scheduledSessionElement;
-}
-
-//Helper function for testing purposes
-//Sets the tutor element's email field to the tutor email
-function setTutorEmail(tutorElement, tutorID) {
-    var tutor;
-    return getUser(tutorID).then(user => tutor = user).then(() => {
-        tutorElement.innerHTML = "Tutoring Session with " + tutor.name;
-    });
-}
-
-/** Gets information about the given user from the server. */
-function getUser(userID) {
-    return fetch('/profile?userId='+userID).then(response => response.json()).then((user) => {
-        if(user.error) {
-            var message = document.createElement("p");
-            p.innerText = user.error;
-            document.body.appendChild(message);
-            return;
+        // If the tutor is also a student, get the information that relates to the tutor
+        if (tutorInfo.student != null) {
+            tutor = tutorInfo.tutor;
+        } else {
+            tutor = tutorInfo;
         }
-        return user;
-    });
-}
+        
+        if (session.subtopics == '') {
+            description = "Tutoring session with " + tutor.name;
+        } else {
+            description = session.subtopics + " with " + tutor.name;
+        }
 
+        // Add to associative array with calendar entry info as key and session ID as value so we can use them in the chart's event listener
+        sessionIDs[date+description+asDate(session.timeslot.start)] = session.id;
+        
+        dataTable.addRow([
+            date, description, asDate(session.timeslot.start), asDate(session.timeslot.end)
+        ]);
+    }
 
-function cancelTutorSession(window, scheduledSession) {
-    const params = new URLSearchParams();
-    params.append('id', scheduledSession.id);
+    // Have timeline span 24 hours regardless of what's scheduled
+    var min = new Date();
+    min.setHours(0);
+    var max = new Date();
+    max.setHours(24);
 
-    fetch('/delete-tutor-session', {method: 'POST', body: params}).then((response) => {
-        //if the student id is not the id of the current user
-        if(response.redirected) {
-            window.location.href = response.url;
-            alert("You must be signed in to cancel a tutoring session.");
-            return;
+    const options = {
+        width: 1000,
+        height: 300,
+        timeline: { singleColor: '#437f97' },
+        hAxis: {
+            minValue: min,
+            maxValue: max
+        }
+    };
+
+    google.visualization.events.addListener(chart, 'select', function() {
+        var selection = chart.getSelection()[0];
+        if (selection) {
+            cancelSession(sessionIDs, dataTable, selection);
         }
     });
+
+    chart.draw(dataTable, options);
 }
+
+// Sorts all scheduled sessions in chronological order
+function sortSessions(scheduledSessions) {
+    scheduledSessions.sort(function(a, b) {
+        return (a.timeslot.date.year + a.timeslot.date.month/12 + a.timeslot.date.dayOfMonth/365) - 
+            (b.timeslot.date.year + b.timeslot.date.month/12 + b.timeslot.date.dayOfMonth/365);
+    });
+}
+
+// Cancels the tutor session associated with the specified session ID
+function cancelSession(sessionIDs, dataTable, selection) {
+    // Add confirmation popup in case user accidentally clicked on session
+    var deleteSession = confirm("Cancel upcoming tutor session?");
+
+    if (deleteSession) {
+        const params = new URLSearchParams();
+        // Use associative array to get session ID
+        params.append('id', sessionIDs[dataTable.getValue(selection.row, 0)+dataTable.getValue(selection.row, 1)+dataTable.getValue(selection.row, 2)]);
+
+        fetch('/delete-tutor-session', {method: 'POST', body: params}).then((response) => {
+            //if the student is not the current user or not signed in
+            if(response.redirected) {
+                window.location.href = response.url;
+                alert("You must be signed in to cancel a tutoring session.");
+                return;
+            }
+        }).then(location.reload());
+    }
+}
+
+/**
+ * Converts "minutes since midnight" into a JavaScript Date object.
+ * Code used from the week 5 unit testing walkthrough of Google's STEP internship trainings
+ */
+function asDate(minutes) {
+  const date = new Date();
+  date.setHours(Math.floor(minutes / 60));
+  date.setMinutes(minutes % 60);
+  return date;
+}
+   
+google.charts.load('current', {'packages': ['timeline']});
+google.charts.setOnLoadCallback(fetchSessionInfo);
