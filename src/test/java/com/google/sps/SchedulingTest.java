@@ -37,11 +37,17 @@ import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TutorSession;
+import com.google.sps.data.RatingEmailTask;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
+import com.google.cloud.tasks.v2.AppEngineHttpRequest;
+import com.google.cloud.tasks.v2.CloudTasksClient;
+import com.google.cloud.tasks.v2.HttpMethod;
+import com.google.cloud.tasks.v2.QueueName;
+import com.google.cloud.tasks.v2.Task;
 
 
 @RunWith(JUnit4.class)
@@ -77,6 +83,7 @@ public final class SchedulingTest {
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        RatingEmailTask mockRatingEmailTask = mock(RatingEmailTask.class);
         TestUtilities.setSessionId(request, "3");
 
         when(request.getParameter("tutorID")).thenReturn("1");
@@ -88,12 +95,14 @@ public final class SchedulingTest {
         when(request.getParameter("subtopics")).thenReturn("algebra");
         when(request.getParameter("questions")).thenReturn("How does it work?");
 
+        doNothing().when(mockRatingEmailTask).scheduleTask();
+
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.doPost(request, response);
+        servlet.doPost(request, response, true);
 
         verify(request, times(1)).getParameter("tutorID");
         verify(request, times(1)).getParameter("start");

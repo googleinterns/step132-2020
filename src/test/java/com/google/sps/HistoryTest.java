@@ -107,8 +107,6 @@ public final class HistoryTest {
         String expected = new Gson().toJson(new ArrayList<TutorSession> (Arrays.asList(new TutorSession("1", "1", null, null, TimeRange.fromStartToEnd(540, 600, MAY182020), 9))));
 
         writer.flush();
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
         // If the user has a tutoring session history, the return json string should reflect that history
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }

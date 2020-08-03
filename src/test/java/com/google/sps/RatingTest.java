@@ -90,7 +90,6 @@ public final class RatingTest {
         verify(request, atLeast(1)).getParameter("sessionId");
         verify(request, atLeast(1)).getParameter("rating");
         writer.flush();
-        System.out.println(stringWriter.toString());
         // Rating should be 5
         Assert.assertTrue(stringWriter.toString().contains("5"));
         // Tutor session should be rated

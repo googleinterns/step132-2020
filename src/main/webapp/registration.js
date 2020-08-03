@@ -17,7 +17,6 @@
  */
 function fetchLoginStatus() {
     fetch('/login-status').then(response => response.json()).then((loginStatus) => {
-        console.log(loginStatus);    
         fetchLoginStatusHelper(document, loginStatus);
     });
 }
