@@ -79,7 +79,8 @@ public class GoogleBooksServlet extends HttpServlet {
     }
 
     /**
-    *
+    * Creates a new HttpURLConnection to make a request to the Books API with the given parameters.
+    * @return HttpURLConnection
     */
     public HttpURLConnection getConnection(String params) throws IOException {
         //need country param here for appengine copyright purposes
