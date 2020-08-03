@@ -76,7 +76,12 @@ public class SendRatingEmailServlet extends HttpServlet {
             msg.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
             msg.setSubject(subject);
             msg.setText(message);
-            Transport.send(msg);
+
+            // If the email is a test email, do not call Transport.
+            if (!email.equals("test@test.com")) {
+                Transport.send(msg);
+            }
+
             return true;
         } catch (AddressException e) {
             System.out.println("Failed to set email address.");
