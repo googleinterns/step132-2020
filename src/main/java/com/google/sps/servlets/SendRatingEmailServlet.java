@@ -49,6 +49,8 @@ public class SendRatingEmailServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String email = request.getReader().lines().collect(Collectors.joining());
 
+        System.out.println(email);
+
         boolean testRatingEmail = sendRatingEmailToStudent(email);
 
         response.setContentType("application/json;");
