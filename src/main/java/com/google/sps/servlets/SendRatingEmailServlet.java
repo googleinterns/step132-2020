@@ -47,11 +47,14 @@ public class SendRatingEmailServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String email = request.getReader().lines().collect(Collectors.joining());
+        String payload = request.getReader().lines().collect(Collectors.joining());
 
-        System.out.println(email);
+        String[] params = payload.trim().split("\\s+");
 
-        boolean testRatingEmail = sendRatingEmailToStudent(email);
+        String email = params[0];
+        String name = params[1];
+
+        boolean testRatingEmail = sendRatingEmailToStudent(email, name);
 
         response.setContentType("application/json;");
         response.getWriter().println("{testRatingEmail: " + testRatingEmail + "} " + email);
@@ -62,12 +65,12 @@ public class SendRatingEmailServlet extends HttpServlet {
     /**
   * Sends an email prompting the student to rate the tutor
   */
-  public boolean sendRatingEmailToStudent(String email) {
+  public boolean sendRatingEmailToStudent(String email, String name) {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
 
         String subject = "Rate Your Tutoring Session";
-        String message = "Hi there,\n" +
+        String message = "Hi " + name + ",\n" +
                         "We hope you had a great tutoring session! Don't forget to rate your tutor by " +
                         "accessing your tutoring session history.\n" + 
                         "The Sullivan Team";
