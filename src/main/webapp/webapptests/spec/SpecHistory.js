@@ -70,6 +70,16 @@ describe("History", function() {
             });
         });
 
+        it("should have the inner HTML of the h3 tag equal to to the email of the tutor even if the tutor is also a student", async function() {
+            var tutor = {student: {}, tutor: {name: "Test"}};
+            spyOn(window, "fetch").and.returnValues(Promise.resolve({json: () => Promise.resolve(tutor)}));
+
+            const tutorElement = document.createElement('h3');
+            await setTutorName(tutorElement, "123").then(() => {
+                expect(tutorElement.innerHTML).toEqual("Tutoring Session with Test");
+            });
+        });
+
         it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session", function() {
             expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:00am on May 18, 2020");
         });
@@ -92,6 +102,24 @@ describe("History", function() {
             expect(actual.childNodes[2].childNodes[0].childNodes[2].className).toContain("glyphicon glyphicon-star");
             expect(actual.childNodes[2].childNodes[0].childNodes[3].className).toContain("glyphicon glyphicon-star");
             expect(actual.childNodes[2].childNodes[0].childNodes[4].className).toContain("glyphicon glyphicon-star");
+        });
+    });
+
+    describe("when a tutoring session box is created with single minutes (from 1 to 9)", function() {
+        var tutoringSession = {tutorID: "123", timeslot: {start: 482, date: {month: 4, dayOfMonth: 18, year: 2020}}};
+        var actual = createTutoringSessionBox(tutoringSession);
+
+        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session (formatted correctly)", function() {
+            expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:02am on May 18, 2020");
+        });
+    });
+
+    describe("when a tutoring session box is created with regular minutes (from 10 to 59)", function() {
+        var tutoringSession = {tutorID: "123", timeslot: {start: 510, date: {month: 4, dayOfMonth: 18, year: 2020}}};
+        var actual = createTutoringSessionBox(tutoringSession);
+
+        it("should have the inner HTML of the h3 tag equal to the time slot for that tutoring session (formatted correctly)", function() {
+            expect(actual.childNodes[1].childNodes[0].innerHTML).toEqual("8:30am on May 18, 2020");
         });
     });
 
