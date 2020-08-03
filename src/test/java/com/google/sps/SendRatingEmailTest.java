@@ -47,6 +47,6 @@ public final class SendRatingEmailTest {
     @Test
     public void testSendRatingEmail() throws Exception {
         // Expect email to be sent out successfully.
-        Assert.assertTrue(servlet.sendRatingEmailToStudent("test@test.com"));
+        Assert.assertTrue(servlet.sendRatingEmailToStudent("test@test.com", "test"));
     }
 }
