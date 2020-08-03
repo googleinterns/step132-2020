@@ -138,6 +138,4 @@ public class SchedulingServlet extends HttpServlet {
             return false;
         } 
     }
-    
-
 }

@@ -32,7 +32,7 @@ import java.time.Instant;
 /**
  * Task to send a reminder email to the user once the tutoring session ends
  */
-public final class RatingEmailTask {
+public class RatingEmailTask {
     private long scheduledSeconds;
     private String studentEmail;
 
@@ -57,6 +57,7 @@ public final class RatingEmailTask {
     }
 
     public void scheduleTask() throws IOException {
+
         // Instantiates a client.
         try (CloudTasksClient client = CloudTasksClient.create()) {
             

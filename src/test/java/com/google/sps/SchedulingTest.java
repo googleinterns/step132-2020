@@ -37,6 +37,7 @@ import com.google.sps.data.SampleData;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.Tutor;
 import com.google.sps.data.TutorSession;
+import com.google.sps.data.RatingEmailTask;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,6 +83,7 @@ public final class SchedulingTest {
     public void testDoPost() throws Exception {
         HttpServletRequest request = mock(HttpServletRequest.class);       
         HttpServletResponse response = mock(HttpServletResponse.class);
+        RatingEmailTask mockRatingEmailTask = mock(RatingEmailTask.class);
         TestUtilities.setSessionId(request, "3");
 
         when(request.getParameter("tutorID")).thenReturn("1");
@@ -92,6 +94,19 @@ public final class SchedulingTest {
         when(request.getParameter("day")).thenReturn("18");
         when(request.getParameter("subtopics")).thenReturn("algebra");
         when(request.getParameter("questions")).thenReturn("How does it work?");
+
+        //Calendar date = new Calendar.Builder()
+        //                        .setCalendarType("iso8601")
+        //                        .setDate(2020, 4, 18)
+        //                        .build();
+        //System.out.println("test");
+        //System.out.println(TimeRange.fromStartToEnd(480, 600, date));
+        //System.out.println(null);
+        //when(servlet.createRatingTask(any(TimeRange.class), anyString())).thenReturn(null);
+
+        //TestClass spy = spy(new TestClass());
+        doNothing().when(mockRatingEmailTask).scheduleTask();
+        //spy.methodToTest(); 
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
