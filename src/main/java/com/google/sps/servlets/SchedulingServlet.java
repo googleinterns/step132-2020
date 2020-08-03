@@ -18,6 +18,7 @@ import com.google.sps.data.Tutor;
 import com.google.sps.data.TimeRange;
 import com.google.sps.data.TutorSession;
 import com.google.sps.data.SampleData;
+import com.google.sps.data.RatingEmailTask;
 import com.google.sps.utilities.TutorSessionDatastoreService;
 import com.google.appengine.api.datastore.Entity;
 import com.google.gson.Gson;
@@ -105,6 +106,68 @@ public class SchedulingServlet extends HttpServlet {
         boolean testTutorEmail = sendConfirmationEmail(messageTutor, tutorEmail);
         boolean testStudentEmail = sendConfirmationEmail(messageStudent, studentEmail);
 
+        new RatingEmailTask(timeslot, studentEmail, studentName);
+
+        String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
+        response.getWriter().println(json);
+        return;
+    }
+
+    // This function is used for testing purposes only. If the test variable has been passed down, this post method will be 
+    // triggered instead. The difference is that this post method does not create a rating email task and, therefore, 
+    // serves the purpose of testing the scheduling servlet only.
+    public void doPost(HttpServletRequest request, HttpServletResponse response, boolean test) throws IOException {
+        response.setContentType("application/json;");
+
+        //make the default value -1 if ids were null
+        String tutorID = Optional.ofNullable(request.getParameter("tutorID")).orElse("-1");
+        String studentID = Optional.ofNullable((String)request.getSession(false).getAttribute("userId")).orElse("-1");
+        String start = request.getParameter("start");
+        String end = request.getParameter("end");
+        String year = request.getParameter("year");
+        String month = request.getParameter("month");
+        String day = request.getParameter("day");
+        String subtopics = request.getParameter("subtopics");
+        String questions = request.getParameter("questions");
+
+        //if the tutor or student id was null
+        if(tutorID.equals("-1") || studentID.equals("-1")) {
+            response.getWriter().println("{\"error\": \"There was an error scheduling your session.\"}");
+            return;
+        }
+
+        if(tutorID.equals(studentID)) {
+            response.getWriter().println("{\"error\": \"You cannot schedule your own session.\"}");
+            return;
+        }
+        
+        Calendar date = new Calendar.Builder()
+                                .setCalendarType("iso8601")
+                                .setDate(Integer.parseInt(year), Integer.parseInt(month), Integer.parseInt(day))
+                                .build();
+
+        TimeRange timeslot = TimeRange.fromStartToEnd(Integer.parseInt(start), Integer.parseInt(end), date);
+        
+        TutorSession tutoringSession = new TutorSession(studentID, tutorID, subtopics, questions, timeslot);
+
+        datastore.addTutorSession(tutoringSession);
+
+        Entity studentEntity = datastore.getStudentForUserId(studentID);
+        String studentName = (String) studentEntity.getProperty("name");
+        String studentEmail = (String) studentEntity.getProperty("email");
+        Entity tutorEntity = datastore.getTutorForUserId(tutorID);
+        String tutorName = (String) tutorEntity.getProperty("name");
+        String tutorEmail = (String) tutorEntity.getProperty("email");
+        String monthString = new DateFormatSymbols().getMonths()[Integer.parseInt(month)];
+
+        String messageStudent = "You have scheduled a tutoring session with " + tutorName + " on " +
+                        monthString + " " + Integer.parseInt(day) + ", " + Integer.parseInt(year) + ". Check your Manage Tutoring Sessions page for more information.";
+
+        String messageTutor = studentName + " has scheduled a tutoring session with you on " +
+                        monthString + " " + Integer.parseInt(day) + ", " + Integer.parseInt(year) + ". Check your My Student page for more information.";
+
+        boolean testTutorEmail = sendConfirmationEmail(messageTutor, tutorEmail);
+        boolean testStudentEmail = sendConfirmationEmail(messageStudent, studentEmail);
 
         String json = new Gson().toJson(datastore.getScheduledSessionsForTutor(tutorID));
         response.getWriter().println(json);
@@ -136,6 +199,4 @@ public class SchedulingServlet extends HttpServlet {
             return false;
         } 
     }
-    
-
 }

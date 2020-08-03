@@ -267,8 +267,6 @@ public final class SearchTest {
         writer.flush(); // it may not have been flushed yet...
 
         String expected = "[]";
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 

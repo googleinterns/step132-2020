@@ -107,8 +107,6 @@ public final class ConfirmationTest {
                                                                         TimeRange.fromStartToEnd(540, 600, AUGUST182020), 14)));
 
         writer.flush();
-        System.out.println(stringWriter.toString());
-        System.out.println(expected);
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 }

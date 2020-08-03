@@ -103,8 +103,6 @@ public final class ProfileTest {
 
         Student expectedStudent = sample.getStudentByEmail("btrevisan@google.com");
         String expected = new Gson().toJson(expectedStudent);
-        System.out.println(expected);
-        System.out.println(stringWriter.toString());
         Assert.assertTrue(stringWriter.toString().contains(expected));
     }
 
