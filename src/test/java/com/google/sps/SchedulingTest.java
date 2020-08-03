@@ -95,25 +95,14 @@ public final class SchedulingTest {
         when(request.getParameter("subtopics")).thenReturn("algebra");
         when(request.getParameter("questions")).thenReturn("How does it work?");
 
-        //Calendar date = new Calendar.Builder()
-        //                        .setCalendarType("iso8601")
-        //                        .setDate(2020, 4, 18)
-        //                        .build();
-        //System.out.println("test");
-        //System.out.println(TimeRange.fromStartToEnd(480, 600, date));
-        //System.out.println(null);
-        //when(servlet.createRatingTask(any(TimeRange.class), anyString())).thenReturn(null);
-
-        //TestClass spy = spy(new TestClass());
         doNothing().when(mockRatingEmailTask).scheduleTask();
-        //spy.methodToTest(); 
 
         StringWriter stringWriter = new StringWriter();
         PrintWriter writer = new PrintWriter(stringWriter);
         when(response.getWriter()).thenReturn(writer);
         when(request.getContentType()).thenReturn("application/json");
 
-        servlet.doPost(request, response);
+        servlet.doPost(request, response, true);
 
         verify(request, times(1)).getParameter("tutorID");
         verify(request, times(1)).getParameter("start");
