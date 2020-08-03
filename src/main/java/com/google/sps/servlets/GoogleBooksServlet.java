@@ -30,7 +30,6 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 import java.io.InputStream;
 import java.net.URLEncoder;
-import java.io.File;
 
 /** Fetches data from the Google Books API. */
 @WebServlet("/books")
@@ -66,21 +65,49 @@ public class GoogleBooksServlet extends HttpServlet {
             params += "&startIndex=" + startIndex;
         }
 
+        HttpURLConnection connection = getConnection(params);
+        connection.setRequestMethod("GET");
+        connection.setRequestProperty("key", getApiKey());
+        connection.setRequestProperty("User-Agent", "Mozilla/4.76");
+
+        String output = readStream(connection.getInputStream());
+
+        JsonObject jsonObject = new JsonParser().parse(output).getAsJsonObject();
+
+        response.getWriter().println(jsonObject);
+        
+    }
+
+    /**
+    *
+    */
+    public HttpURLConnection getConnection(String params) throws IOException {
+        //need country param here for appengine copyright purposes
+        URL url = new URL("https://www.googleapis.com/books/v1/volumes?" + params + "&maxResults=40&country=US");
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        return connection;
+
+    }
+
+    /**
+    * Gets the .properties file that contains the GCP API key.
+    * @return String
+    */
+    public String getApiKey() throws IOException {
         //get .properties file that stores the api key
         Properties prop = new Properties();
         InputStream input = getClass().getResourceAsStream("/api.properties");
         prop.load(input);
 
-        //need country param here for appengine copyright purposes
-        URL url = new URL("https://www.googleapis.com/books/v1/volumes?" + params + "&maxResults=40&country=US");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.setRequestProperty("key", prop.getProperty("GCP_API_KEY"));
-        connection.addRequestProperty("User-Agent", "Mozilla/4.76");
+        return prop.getProperty("GCP_API_KEY");
+    }
 
-        System.setProperty("http.agent", "Chrome");
-
-        BufferedReader stream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    /**
+    * Reads the input stream and returns the String inside of it.
+    * @return String
+    */
+    public String readStream(InputStream input) throws IOException {
+        BufferedReader stream = new BufferedReader(new InputStreamReader(input));
         String line;
         StringBuffer output = new StringBuffer();
 
@@ -90,9 +117,7 @@ public class GoogleBooksServlet extends HttpServlet {
 
         stream.close();
 
-        JsonObject jsonObject = new JsonParser().parse(output.toString()).getAsJsonObject();
+        return output.toString();
 
-        response.getWriter().println(jsonObject);
-        
     }
 }
