@@ -331,10 +331,8 @@ describe("Progress", function() {
 
     describe("when a PastSession box is created", function() {
         beforeAll(function() {
-            spyOn(window, "setTutorName").and.callFake(function() {
-                console.log("ok");
-            });
-        })
+            spyOn(window, "setTutorName");
+        });
 
         var tutoringSession = {tutorID: "123", timeslot: {start: 600, date: {month: 1, dayOfMonth: 1, year: 2020}}};
         var actual = createPastSessionBox(tutoringSession);

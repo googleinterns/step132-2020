@@ -83,7 +83,6 @@ public class RatingEmailTask {
 
             // Add the scheduled time to the request.
             int seconds = (int) (this.scheduledSeconds - current) / 1000;
-            //System.out.println(seconds + "");
             taskBuilder.setScheduleTime(
                 Timestamp.newBuilder()
                     .setSeconds(Instant.now(Clock.systemUTC()).plusSeconds(seconds).getEpochSecond()));

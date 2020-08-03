@@ -17,7 +17,6 @@ function displayProfile() {
     const userID = getIdParameter(window);
 
     getUser(userID).then((user) => {
-        console.log(user);
         document.getElementById('profile-container').style.display = 'block';
 
         // Check if profile belongs to user currently logged in; if not, don't allow them to edit the profile
@@ -170,8 +169,6 @@ function fetchStatusHelper(user, loginStatus, window, document) {
 function editProfile(user, role, document) {
     document.getElementById('profile-container').style.display = 'none';
     document.getElementById('edit-profile-form').style.display = 'block';
-
-    console.log(role);
 
     if (role == "both") {
         // Set default value of bio to what user previously had
