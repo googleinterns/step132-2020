@@ -28,7 +28,7 @@ async function getMyStudentsHelper(window) {
     }).then((students) => {
         if(students.error) {
             var message = document.createElement("p");
-            p.innerText = students.error;
+            message.innerText = students.error;
             document.getElementById('students').appendChild(message);
             return;
         }
