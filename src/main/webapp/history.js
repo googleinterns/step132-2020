@@ -32,7 +32,7 @@ function getTutoringSessionHistoryHelper(window) {
         if(tutoringSessions.error) {
             var container = document.getElementById('tutoringSessionHistory');
             var errorMessage = document.createElement("p");
-            p.innerText = tutoringSessions.error;
+            errorMessage.innerText = tutoringSessions.error;
             container.appendChild(errorMessage);
             return;
         }

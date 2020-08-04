@@ -32,7 +32,7 @@ async function fetchUpcomingSessionsHelper(window) {
         
         if(scheduledSessions.error) {
             var message = document.createElement("p");
-            p.innerText = scheduledSessions.error;
+            message.innerText = scheduledSessions.error;
             document.getElementById('calendar').appendChild(message);
             return;
         }
