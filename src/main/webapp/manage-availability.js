@@ -117,7 +117,7 @@ function fetchTimeslotInfoHelper(window) {
         
         if(timeslots.error) {
             var message = document.createElement("p");
-            p.innerText = timeslots.error;
+            message.innerText = timeslots.error;
             document.getElementById('calendar').appendChild(message);
             return;
         }
